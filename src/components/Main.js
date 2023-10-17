@@ -1,22 +1,18 @@
 import React, { useState, useRef } from "react";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
+import { extractMainTextFromURL } from "../logic/Extraction";
 import "react-tabs/style/react-tabs.css";
 
 function Main() {
-  const [inputValue, setInputValue] = useState(""); // state to manage input value
-  const inputRef = useRef(null); // ref to access input element directly
+  const [inputValue, setInputValue] = useState("");
+  const [extractedText, setExtractedText] = useState(""); // To store extracted text
+  const inputRef = useRef(null);
 
-  // Function that will be called when the button is pressed
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (inputRef.current) {
-      processInput(inputRef.current.value); // pass input value to your function
+      const result = await extractMainTextFromURL(inputRef.current.value);
+      setExtractedText(result || "Failed to extract content."); // Set the state with the result
     }
-  };
-
-  // Sample function to process the input
-  const processInput = (value) => {
-    console.log(value);
-    // Your logic here
   };
 
   return (
@@ -41,6 +37,20 @@ function Main() {
           <button onClick={handleSubmit}>Submit</button>
         </TabPanel>
       </Tabs>
+
+      {/* Two side-by-side text areas */}
+      <div style={{ display: "flex", marginTop: "20px" }}>
+        <textarea
+          style={{ flex: "1", marginRight: "10px" }}
+          placeholder="Enter your text here..."
+        />
+        <textarea
+          style={{ flex: "1" }}
+          placeholder="Extracted content will appear here..."
+          value={extractedText}
+          readOnly
+        />
+      </div>
     </div>
   );
 }
