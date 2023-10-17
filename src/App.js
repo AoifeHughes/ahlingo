@@ -1,8 +1,8 @@
-import React from 'react';
-import Header from './Header';
-import Main from './components/Main';
-import Footer from './Footer';
-import './styles.css';
+import React from "react";
+import Header from "./Header";
+import Main from "./components/Main";
+import Footer from "./Footer";
+import "./styles.css";
 
 function App() {
   return (
@@ -13,6 +13,5 @@ function App() {
     </div>
   );
 }
-
 
 export default App;
