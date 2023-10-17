@@ -10,6 +10,7 @@ function createWindow() {
       nodeIntegration: true,
       contextIsolation: false,
     },
+    icon: path.join(__dirname, "assets/logo.icns"),
   });
 
   if (isDev) {

@@ -25,9 +25,36 @@
     "start": "npm run start-renderer & npm run start-electron",
     "start-renderer": "webpack-dev-server --mode development",
     "start-electron": "electron .",
+    "pack": "electron-builder --dir",
     "test": "react-scripts test",
+    "dist": "electron-builder",
     "eject": "react-scripts eject",
     "electron-start": "electron ."
+  },
+  "build": {
+    "appId": "ah.lingo.app",
+    "mac": {
+      "category": "public.app-category.productivity",
+      "target": "dmg",
+      "icon": "./assets/logo.icns"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "linux": {
+      "target": "AppImage"
+    },
+    "files": [
+      "./electron.js",
+      "src/**/*",
+      "dist/**/*",
+      "package.json",
+      "./assets/**/*"
+    ],
+    "extends": null,
+    "extraMetadata": {
+      "main": "electron.js"
+    }
   },
   "eslintConfig": {
     "extends": [
