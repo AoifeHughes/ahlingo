@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow } = require("electron");
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -6,12 +6,12 @@ function createWindow() {
     height: 600,
     webPreferences: {
       nodeIntegration: true,
-      contextIsolation: false
-    }
+      contextIsolation: false,
+    },
   });
 
   //win.loadFile('public/index.html');
-  win.loadURL('http://localhost:3000'); // hot reloading during dev
+  win.loadURL("http://localhost:3000"); // hot reloading during dev
 }
 
-app.on('ready', createWindow);
+app.on("ready", createWindow);
