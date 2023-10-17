@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
-import { extractMainTextFromURL } from "../logic/Extraction";
-import "react-tabs/style/react-tabs.css";
+import TextTranslation from "./TextTranslation"; // Import the new component
 import { promises as fs } from "fs";
 import { join } from "path";
+import { extractMainTextFromURL } from "../logic/Extraction";
 
 function Main() {
   const [inputValue, setInputValue] = useState("");
@@ -13,6 +12,7 @@ function Main() {
   const [evaluationOutput, setEvaluationOutput] = useState("");
   const [translationEvaluations, setTranslationEvaluations] = useState([]);
   const inputRef = useRef(null);
+  const [currentView, setCurrentView] = useState("mainMenu"); // To manage navigation
 
   // Define the path to the CSV file
   const csvFilePath = join(
@@ -98,14 +98,8 @@ function Main() {
     }
   };
 
-  const getRandomSentence = () => {
-    const randomIndex = Math.floor(Math.random() * sentences.length);
-    setExtractedText(sentences[randomIndex]);
-  };
-
   const evaluateTranslation = (userInput, challengeSentence) => {
-    // For now, the function just returns 0
-    return 0;
+    return 0; // TODO: Implement this
   };
 
   const handleTranslationSubmission = () => {
@@ -123,57 +117,49 @@ function Main() {
     ]);
   };
 
-  return (
-    <div className="main-content">
-      <Tabs>
-        <TabList>
-          <Tab>Upload your own text</Tab>
-          <Tab>Use a URL</Tab>
-        </TabList>
+  const getRandomSentence = () => {
+    const randomIndex = Math.floor(Math.random() * sentences.length);
+    setExtractedText(sentences[randomIndex]);
+  };
 
-        <TabPanel>
-          <input type="file" accept=".txt" onChange={handleFileUpload} />
-          {sentences.length > 0 && (
-            <button onClick={getRandomSentence}>Get Random Sentence</button>
-          )}
-        </TabPanel>
-        <TabPanel>
-          <input
-            type="text"
-            ref={inputRef}
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            placeholder="Enter a URL"
-          />
-          <button onClick={handleSubmit}>Submit</button>
-        </TabPanel>
-      </Tabs>
+  if (currentView === "mainMenu") {
+    return (
+      <div className="main-content">
+        <h2>Main Menu</h2>
+        <button onClick={() => setCurrentView("textTranslation")}>
+          Text Translation
+        </button>
+        {/* Add more options/buttons as needed */}
+      </div>
+    );
+  }
 
-      <div style={{ display: "flex", marginTop: "20px" }}>
-        <textarea
-          style={{ flex: "1", marginRight: "10px" }}
-          placeholder="Enter your text here..."
-          value={userInput}
-          onChange={(e) => setUserInput(e.target.value)}
-        />
-        <textarea
-          style={{ flex: "1" }}
-          placeholder="Extracted content will appear here..."
-          value={extractedText}
-          readOnly
+  if (currentView === "textTranslation") {
+    return (
+      <div className="main-content">
+        <button onClick={() => setCurrentView("mainMenu")}>
+          Back to Main Menu
+        </button>
+        <TextTranslation
+          extractedText={extractedText}
+          setExtractedText={setExtractedText}
+          userInput={userInput}
+          setUserInput={setUserInput}
+          handleFileUpload={handleFileUpload}
+          getRandomSentence={getRandomSentence}
+          sentences={sentences}
+          handleTranslationSubmission={handleTranslationSubmission}
+          evaluationOutput={evaluationOutput}
+          inputRef={inputRef}
+          inputValue={inputValue}
+          setInputValue={setInputValue}
+          handleSubmit={handleSubmit}
         />
       </div>
-      <button onClick={handleTranslationSubmission}>Submit translation</button>
-      {evaluationOutput && (
-        <textarea
-          style={{ marginTop: "20px", width: "100%" }}
-          placeholder="Evaluation result will appear here..."
-          value={evaluationOutput}
-          readOnly
-        />
-      )}
-    </div>
-  );
+    );
+  }
+
+  // Additional conditional renderings for other views can be added similarly
 }
 
 export default Main;
