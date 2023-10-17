@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@extractus/article-extractor": "^8.0.3",
     "@postlight/mercury-parser": "^2.2.1",
     "@testing-library/jest-dom": "^5.17.0",
@@ -20,8 +21,10 @@
   },
   "main": "electron.js",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "webpack --mode production",
+    "start": "npm run start-renderer & npm run start-electron",
+    "start-renderer": "webpack-dev-server --mode development",
+    "start-electron": "electron .",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "electron-start": "electron ."
