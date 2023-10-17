@@ -1,6 +1,6 @@
 name: Electron Build
 
-on: [push]
+on: [release]
 
 jobs:
   build:
