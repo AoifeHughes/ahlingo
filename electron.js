@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, session } = require("electron");
 const isDev = process.env.NODE_ENV !== "production";
 const path = require("path");
 
@@ -20,4 +20,16 @@ function createWindow() {
   }
 }
 
-app.on("ready", createWindow);
+app.on("ready", () => {
+  createWindow();
+
+  // Set up the webRequest to modify headers
+  session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+    callback({
+      responseHeaders: {
+        ...details.responseHeaders,
+        "Access-Control-Allow-Origin": ["*"],
+      },
+    });
+  });
+});
