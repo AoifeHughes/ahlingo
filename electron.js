@@ -10,7 +10,8 @@ function createWindow() {
     }
   });
 
-  win.loadFile('public/index.html');
+  //win.loadFile('public/index.html');
+  win.loadURL('http://localhost:3000'); // hot reloading during dev
 }
 
 app.on('ready', createWindow);

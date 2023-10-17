@@ -1,0 +1,32 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+/* Setting the App container to fill at least the viewport height */
+.App {
+    display: flex;
+    flex-direction: column; /* Stack children vertically */
+    min-height: 100vh; /* 100% of the viewport height */
+}
+
+header, footer {
+    padding: 20px;
+    background-color: #f4f4f4;
+    text-align: center;
+}
+
+footer a {
+    text-decoration: none;
+    color: #333;
+}
+
+footer p {
+    margin-top: 10px;
+}
+
+.main-content {
+    flex: 1; /* This allows the main content to grow and fill the available space */
+    padding: 20px;
+}
