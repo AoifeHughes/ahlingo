@@ -1,34 +1,111 @@
-html,
+/* General Settings */
 body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-}
-
-/* Setting the App container to fill at least the viewport height */
-.App {
-  display: flex;
-  flex-direction: column; /* Stack children vertically */
-  min-height: 100vh; /* 100% of the viewport height */
-}
-
-header,
-footer {
-  padding: 20px;
-  background-color: #f4f4f4;
-  text-align: center;
-}
-
-footer a {
-  text-decoration: none;
-  color: #333;
-}
-
-footer p {
-  margin-top: 10px;
+  font-family: "Arial", sans-serif;
+  background-color: #d8dee9; /* Nordic Light Blue */
+  color: #2e3440; /* Nordic Dark Blue */
+  padding: 2rem 5%;
+  line-height: 1.5;
 }
 
 .main-content {
-  flex: 1; /* This allows the main content to grow and fill the available space */
-  padding: 20px;
+  background-color: #eceff4; /* Nordic Pale Blue */
+  padding: 2rem;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Tabs */
+.react-tabs {
+  border-radius: 5px;
+  overflow: hidden;
+  background-color: #e5e9f0; /* Nordic Blue */
+}
+
+.react-tabs__tab-list {
+  display: flex;
+  border-bottom: 1px solid #d8dee9;
+}
+
+.react-tabs__tab {
+  flex-grow: 1;
+  padding: 1rem 2rem;
+  background-color: #88c0d0; /* Nordic Cyan */
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.react-tabs__tab--selected {
+  background-color: #eceff4; /* Nordic Pale Blue */
+  border-bottom: 2px solid #bf616a; /* Nordic Red for distinction */
+  font-weight: bold;
+}
+
+/* Textareas & Inputs */
+input[type="text"],
+textarea {
+  width: 100%;
+  padding: 10px 15px;
+  margin-top: 1rem;
+  border: 1px solid #b48ead; /* Nordic Purple */
+  border-radius: 5px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+input[type="text"]:focus,
+textarea:focus {
+  border-color: #5e81ac; /* Nordic Blue */
+  outline: none;
+  box-shadow: 0 0 5px rgba(94, 129, 172, 0.5);
+}
+
+/* Buttons */
+button {
+  background-color: #5e81ac; /* Nordic Blue */
+  color: #eceff4; /* Nordic Pale Blue */
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-top: 1rem;
+}
+
+button:hover {
+  background-color: #434c5e; /* Nordic Darker Blue */
+}
+
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Flex layout for textareas */
+div[style*="display: flex"] {
+  gap: 1rem;
+}
+
+/* Additional Styles for clarity and readability */
+h1,
+h2,
+h3 {
+  color: #4c566a; /* Nordic Grey-Blue */
+}
+
+input[type="text"] {
+  width: 95%; /* Decreased from 100% to 95% */
+  padding: 10px 15px;
+  margin-top: 1rem;
+  border: 1px solid #b48ead; /* Nordic Purple */
+  border-radius: 5px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+input[type="text"]:focus {
+  border-color: #5e81ac; /* Nordic Blue */
+  outline: none;
+  box-shadow: 0 0 5px rgba(94, 129, 172, 0.5);
 }

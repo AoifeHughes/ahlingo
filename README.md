@@ -1,70 +1,58 @@
-# Getting Started with Create React App
+# Ahlingo Translation Evaluator
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+![logo](./logo.png)
 
-## Available Scripts
+Ahlingo Translation Evaluator is a comprehensive tool designed to assist language learners in improving their translation skills. By evaluating translations against source texts, users gain insight into their proficiency and areas of improvement.
 
-In the project directory, you can run:
+## Features
 
-### `npm start`
+- **Custom Text Upload**: Allows users to upload their own texts and get random sentences for translation.
+- **URL Text Extraction**: Enter a URL and extract the main content for translation.
+- **Evaluation**: Once a translation is submitted, it evaluates the user's translation against the source text.
+- **Translation Evaluations Storage**: Evaluations are saved locally in a CSV file, so users can track their progress over time.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Installation & Setup
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+1. **Clone the Repository**:
 
-### `npm test`
+```bash
+git clone https://github.com/yourusername/ahlingo.git
+cd ahlingo
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+2. **Install Dependencies**:
 
-### `npm run build`
+```bash
+npm install
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+3. **Start the App**:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+To start the app in development mode, run:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```bash
+npm start
+```
 
-### `npm run eject`
+to build the app for production, run:
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```bash
+npm run build
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Usage
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+1. Select the Upload your own text tab to input your text.
+2. Or, switch to the Use a URL tab to extract text from a URL.
+3. Translate the given sentence.
+4. Submit your translation for evaluation.
+5. View your evaluation score and feedback.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## Contributing
 
-## Learn More
+If you are interested in contributing to this project, please contribute via
+forking the repository and making a PR.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Feedback & Issues
 
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+If you have any feedback or issues, please feel free to open an issue within this repository.
