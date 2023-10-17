@@ -22,6 +22,8 @@ jobs:
         run: npm ci
 
       - name: Build Electron App
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: npm run dist
 
       - name: Upload Artifacts (optional)
