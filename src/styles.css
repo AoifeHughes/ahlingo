@@ -14,33 +14,6 @@ body {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Tabs */
-.react-tabs {
-  border-radius: 5px;
-  overflow: hidden;
-  background-color: #e5e9f0; /* Nordic Blue */
-}
-
-.react-tabs__tab-list {
-  display: flex;
-  border-bottom: 1px solid #d8dee9;
-}
-
-.react-tabs__tab {
-  flex-grow: 1;
-  padding: 1rem 2rem;
-  background-color: #88c0d0; /* Nordic Cyan */
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.react-tabs__tab--selected {
-  background-color: #eceff4; /* Nordic Pale Blue */
-  border-bottom: 2px solid #bf616a; /* Nordic Red for distinction */
-  font-weight: bold;
-}
-
 /* Textareas & Inputs */
 input[type="text"],
 textarea {
