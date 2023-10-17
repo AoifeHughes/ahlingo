@@ -42,20 +42,36 @@ function Main() {
       console.error("Failed to write to CSV file:", error);
     });
   }, [translationEvaluations]);
+
   // Convert CSV string to evaluations array
   const csvToEvaluations = (csv) => {
     const lines = csv.split("\n").slice(1); // Exclude header
-    return lines.map((line) => {
-      const [userInput, challengeSentence, score] = line.split(",");
-      return { userInput, challengeSentence, score };
-    });
+    return lines
+      .map((line) => {
+        const match = line.match(/"(.*?)","(.*?)","(.*?)"/);
+        if (match) {
+          const [, userInput, challengeSentence, score] = match;
+          return {
+            userInput: userInput.replace(/""/g, '"'),
+            challengeSentence: challengeSentence.replace(/""/g, '"'),
+            score: score.replace(/""/g, '"'),
+          };
+        }
+        return null;
+      })
+      .filter(Boolean); // Filter out nulls
   };
 
   // Convert evaluations array to CSV string
   const evaluationsToCsv = (evaluations) => {
-    const header = "userInput,challengeSentence,score\n";
+    const header = '"userInput","challengeSentence","score"\n';
     const rows = evaluations
-      .map((e) => `${e.userInput},${e.challengeSentence},${e.score}`)
+      .map(
+        (e) =>
+          `"${e.userInput.replace(/"/g, '""')}",
+           "${e.challengeSentence.replace(/"/g, '""')}",
+           "${e.score}"`
+      )
       .join("\n");
     return header + rows;
   };

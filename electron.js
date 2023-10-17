@@ -1,4 +1,6 @@
 const { app, BrowserWindow } = require("electron");
+const isDev = process.env.NODE_ENV !== "production";
+const path = require("path");
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -10,8 +12,11 @@ function createWindow() {
     },
   });
 
-  //win.loadFile('public/index.html');
-  win.loadURL("http://localhost:3000"); // hot reloading during dev
+  if (isDev) {
+    win.loadURL("http://localhost:8080");
+  } else {
+    win.loadFile(path.join(__dirname, "dist", "index.html"));
+  }
 }
 
 app.on("ready", createWindow);
