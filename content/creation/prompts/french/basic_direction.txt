@@ -1,0 +1,12 @@
+Generate 10 beginner-friendly sentences in French and their English
+translations. The topics should asking for directions and giving directions. Please format
+the output as a JSON. Do not output anything else but the sentences and the JSON
+structure. End your response by properly closing the JSON. Do not repeat any sentences.
+
+
+{
+    "sentences": [
+        {
+            "French": "Où est la bibliothèque?",
+            "English": "Where is the library?"
+        },

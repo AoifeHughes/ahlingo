@@ -1,0 +1,12 @@
+Generate 10 beginner-friendly sentences in French and their English
+translations. The topics should be about describing things. Please format
+the output as a JSON. Do not output anything else but the sentences and the JSON
+structure. End your response by properly closing the JSON. Do not repeat any sentences.
+
+{
+    "sentences": [
+        {
+            "French": "Le ciel est bleu et clair aujourd'hui.",
+            "English": "The sky is blue and clear today."
+        },
+
