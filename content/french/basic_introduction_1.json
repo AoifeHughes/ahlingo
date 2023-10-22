@@ -1,0 +1,59 @@
+{
+  "sentences": [
+    {
+      "French": "Bonjour, comment ça va?",
+      "English": "Hello, how are you?"
+    },
+
+    {
+      "French": "Je m'appelle Paul.",
+      "English": "My name is Paul."
+    },
+
+    {
+      "French": "Ça va.",
+      "English": "OK."
+    },
+
+    {
+      "French": "Bonjour",
+      "English": "Hello"
+    },
+
+    {
+      "French": "Bonsoir",
+      "English": "Good evening"
+    },
+
+    {
+      "French": "Comment ça va?",
+      "English": "How are you?"
+    },
+
+    {
+      "French": "Bonsoir et merci",
+      "English": "Good evening and thank you."
+    },
+
+    {
+      "French": "Bonjour mon ami",
+      "English": "Hello my friend"
+    },
+
+    {
+      "French": "Bonjour et merci",
+      "English": "Hello and thank you"
+    },
+
+    {
+      "French": "Bonjour",
+      "English": "Hello"
+    },
+
+    {
+      "French": "Bonsoir",
+      "English": "Good evening"
+    }
+  ],
+  "English": "Hey, how are you?"
+}

@@ -1,0 +1,44 @@
+{
+  "sentences": [
+    {
+      "French": "Combien coûte cette robe?",
+      "English": "How much does this dress cost?"
+    },
+    {
+      "French": "Où est le magasin de chaussures?",
+      "English": "Where is the shoe store?"
+    },
+    {
+      "French": "Est-ce qu’il y a un magasin de chaussures dans le coin?",
+      "English": "Is there a shoe store near here?"
+    },
+    {
+      "French": "C’est combien pour cette robe?",
+      "English": "How much is this dress?"
+    },
+    {
+      "French": "Est-ce que vous avez un magasin de chaussures dans le coin?",
+      "English": "Do you have a shoe store near here?"
+    },
+    {
+      "French": "Je cherche un magasin de chaussures.",
+      "English": "I am looking for a shoe store."
+    },
+    {
+      "French": "Je cherche le magasin de chaussures.",
+      "English": "I am looking for the shoe store."
+    },
+    {
+      "French": "Où est le magasin de chaussures?",
+      "English": "Where is the shoe store?"
+    },
+    {
+      "French": "Qu’est-ce que c’est?",
+      "English": "What is this?"
+    },
+    {
+      "French": "Est-ce que je peux voir ces chaussures?",
+      "English": "Can I see these shoes?"
+    }
+  ]
+}
