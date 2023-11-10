@@ -25,11 +25,11 @@
     "sqlite3": "^5.1.6",
     "web-vitals": "^2.1.4"
   },
-  "main": "electron.js",
+  "main": "src/main/main.js",
   "scripts": {
     "build": "webpack --mode production",
     "start": "npm run start-renderer & npm run start-electron",
-    "start-renderer": "webpack-dev-server --mode development",
+    "start-renderer": "webpack serve --mode development --config ./webpack.config.js --no-open",
     "start-electron": "electron .",
     "pack": "electron-builder --dir",
     "test": "react-scripts test",
@@ -51,15 +51,15 @@
       "target": "AppImage"
     },
     "files": [
-      "./electron.js",
-      "src/**/*",
-      "dist/**/*",
-      "package.json",
-      "./assets/**/*"
+      "src/main/**/*",
+      "src/renderer/**/*",
+      "src/database/**/*",
+      "public/**/*",
+      "assets/**/*",
+      "package.json"
     ],
-    "extends": null,
     "extraMetadata": {
-      "main": "electron.js"
+      "main": "src/main/main.js"
     }
   },
   "eslintConfig": {
