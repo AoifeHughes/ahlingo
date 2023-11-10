@@ -1,4 +1,4 @@
-Task: Generate a JSON file containing a series of French sentences with their English translations, tailored for a intermediate learner. The sentences should focus on the theme of 'Travel'. Each entry should be a single sentence.
+Task: Generate a JSON file containing a series of French sentences with their English translations, tailored for a intermediate learner. The sentences should focus on the theme of 'Travel'. Each entry should be a single sentence. Do not repeat a sentence or ones too similar to it.
 
 Format Example:
 
@@ -10,4 +10,4 @@ Format Example:
   // More sentences here
 ]
 
-Please provide 5 such sentences in JSON format only for the topic 'Travel'. Do not include any other responses or explanations.
+Please provide 20 such sentences in JSON format only for the topic 'Travel'. Ensure valid JSON is given. Do not include any other responses or explanations.
