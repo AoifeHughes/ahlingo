@@ -25,16 +25,19 @@ process_prompt() {
     mkdir -p "${OUTPUT_DIR}${LEVEL}"
 
     # Set output file name
-    OUTPUT_FILE="${OUTPUT_DIR}${LEVEL}/${BASENAME}.json"
+    OUTPUT_FILE="${OUTPUT_DIR}${LEVEL}/${BASENAME}_response.json"
 
     # Prepare data for POST request
     local DATA=$(cat "$PROMPTS_FILE" | jq -Rs '{model: "'$MODEL_NAME'", prompt: ., stream: false}')
 
-    # Send prompt to Ollama server and save output
-    curl --request POST \
-         --url http://${SERVER_HOST}:${SERVER_PORT}/api/generate \
-         --header "Content-Type: application/json" \
-         --data "$DATA" > "$OUTPUT_FILE"
+    # Send prompt to Ollama server and capture the entire output
+    local FULL_RESPONSE=$(curl --silent --request POST \
+                                   --url http://${SERVER_HOST}:${SERVER_PORT}/api/generate \
+                                   --header "Content-Type: application/json" \
+                                   --data "$DATA")
+
+    # Extract only the 'response' part of the output
+    echo "$FULL_RESPONSE" | jq '.response' > "$OUTPUT_FILE"
 }
 
 # Iterate over all .txt files in the PROMPTS_DIR and process each one
