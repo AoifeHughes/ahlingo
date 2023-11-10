@@ -37,10 +37,10 @@ function UserInfo() {
         <Paper elevation={3} style={{ padding: 16 }}>
           <List>
             <ListItem>
-              <ListItemText primary="Name" secondary="John Doe" />
+              <ListItemText primary="Name" secondary="Aoife H" />
             </ListItem>
             <ListItem>
-              <ListItemText primary="Email" secondary="john.doe@example.com" />
+              <ListItemText primary="Email" secondary="A.H@example.com" />
             </ListItem>
             {/* Add more user information fields here */}
           </List>
