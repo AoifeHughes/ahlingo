@@ -17,7 +17,7 @@ do
     do
         # Create a prompt for each topic and level
         prompt=$(cat <<EOF
-Task: Generate a JSON file containing a series of French sentences with their English translations, tailored for a $level learner. The sentences should focus on the theme of '$topic'. Each entry should be a single sentence.
+Task: Generate a JSON file containing a series of French sentences with their English translations, tailored for a $level learner. The sentences should focus on the theme of '$topic'. Each entry should be a single sentence. Do not repeat a sentence or ones too similar to it.
 
 Format Example:
 
@@ -29,7 +29,7 @@ Format Example:
   // More sentences here
 ]
 
-Please provide 5 such sentences in JSON format only for the topic '$topic'. Do not include any other responses or explanations.
+Please provide 20 such sentences in JSON format only for the topic '$topic'. Ensure valid JSON is given. Do not include any other responses or explanations.
 EOF
         )
 
