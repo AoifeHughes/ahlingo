@@ -1,21 +1,21 @@
 #!/bin/bash
 
-# Define the variables
-SERVER_EXEC="$HOME/git/llama.cpp/server"
-MODEL_PATH="$HOME/git/llama.cpp/models/llama-2-13b/ggml-model-q4_0-v2.gguf"
-PROMPTS_DIR="./prompts/french/"
-OUTPUT_DIR="./output/french/"
-SERVER_HOST="127.0.0.1"
-SERVER_PORT="8080"
-
-# Start the server in the background
-$SERVER_EXEC -m $MODEL_PATH -c 2048 &
+# Start Ollama server
+ollama serve &
 SERVER_PID=$!
 
 # Wait for the server to start
 sleep 10  # Adjust this sleep time as necessary
 
-# Function to send prompts to the server and capture the output
+# Variables for Ollama API
+SERVER_HOST="127.0.0.1"
+SERVER_PORT="11434"
+MODEL_NAME="mistral"  # Using 'mistral' as the model
+
+PROMPTS_DIR="./"
+OUTPUT_DIR="./"
+
+# Function to send prompts to the Ollama server and capture the output
 process_prompt() {
     local PROMPTS_FILE="$1"
     local LEVEL=$(dirname "$PROMPTS_FILE" | xargs basename)
@@ -28,11 +28,11 @@ process_prompt() {
     OUTPUT_FILE="${OUTPUT_DIR}${LEVEL}/${BASENAME}.json"
 
     # Prepare data for POST request
-    local DATA=$(cat "$PROMPTS_FILE" | jq -Rs '{prompt: ., n_predict: 512}')
+    local DATA=$(cat "$PROMPTS_FILE" | jq -Rs '{model: "'$MODEL_NAME'", prompt: ., stream: false}')
 
-    # Send prompt to server and save output
+    # Send prompt to Ollama server and save output
     curl --request POST \
-         --url http://${SERVER_HOST}:${SERVER_PORT}/completion \
+         --url http://${SERVER_HOST}:${SERVER_PORT}/api/generate \
          --header "Content-Type: application/json" \
          --data "$DATA" > "$OUTPUT_FILE"
 }

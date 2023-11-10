@@ -17,22 +17,19 @@ do
     do
         # Create a prompt for each topic and level
         prompt=$(cat <<EOF
-Task: Generate a JSON file containing a series of French conversations with their English translations, tailored for a $level learner. The conversations should focus on the theme of '$topic'. Each conversation should be brief, consisting of two to three sentences. Provide both a full sentence translation and a word-for-word translation in English.
+Task: Generate a JSON file containing a series of French sentences with their English translations, tailored for a $level learner. The sentences should focus on the theme of '$topic'. Each entry should be a single sentence.
 
 Format Example:
 
 [
   {
     "French": "Example French sentence.",
-    "English": {
-      "Full": "Full English translation.",
-      "Word-for-Word": "Direct word-for-word English translation."
-    }
+    "English": "Full English translation."
   },
-  // More conversations here
+  // More sentences here
 ]
 
-Please provide 5 such conversation pairs in JSON format only for the topic '$topic'. Do not include any other responses or explanations.
+Please provide 5 such sentences in JSON format only for the topic '$topic'. Do not include any other responses or explanations.
 EOF
         )
 
