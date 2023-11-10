@@ -25,3 +25,4 @@ yarn-error.log*
 /llama
 src/database/languageLearningDatabase.db
 *.log
+*.txt
