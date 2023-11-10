@@ -1,6 +1,6 @@
 # Ahlingo Translation Evaluator
 
-![logo](./logo.png)
+![logo](./assets/logo.png)
 
 Ahlingo Translation Evaluator is a comprehensive tool designed to assist language learners in improving their translation skills. By evaluating translations against source texts, users gain insight into their proficiency and areas of improvement.
 
