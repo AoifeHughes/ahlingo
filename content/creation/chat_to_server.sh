@@ -2,12 +2,12 @@
 
 # Server and model configuration
 SERVER_EXEC="$HOME/git/llama.cpp/server"
-MODEL_PATH="$HOME/git/llama.cpp/models/llama-2-13b/ggml-model-q4_0-v2.gguf"
+MODEL_PATH="$HOME/git/LLMs/hermes-trismegistus-mistral-7b.Q5_K_M.gguf"
 SERVER_HOST="127.0.0.1"
 SERVER_PORT="8080"
 
 # Test data for the request
-REQUEST_PROMPT="Hello, world!"
+REQUEST_PROMPT="Give me a random french phrase and an english translation!"
 REQUEST_DATA=$(echo '{"prompt": "'"$REQUEST_PROMPT"'", "n_predict": 128}' | jq -c .)
 
 # Function to check if server is running
@@ -47,4 +47,4 @@ echo "Response from server:"
 echo "$RESPONSE"
 
 # Optionally, stop the server
-# kill $SERVER_PID
+kill $SERVER_PID
