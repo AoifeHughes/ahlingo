@@ -59,7 +59,7 @@ Format Example:
   // More sentences here
 ]
 
-Please provide 10 such sentences in JSON format only.
+Please provide 5 such sentences in JSON format only.
 EOF
         )
 
