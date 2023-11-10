@@ -1,16 +1,14 @@
-import React from "react";
-import Header from "./Header";
-import Main from "./components/Main";
-import Footer from "./Footer";
-import "./styles.css";
+import React, { useState } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Layout from "./components/Layout"; // New component for layout
 
 function App() {
   return (
-    <div className="App">
-      <Header />
-      <Main />
-      <Footer />
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/*" element={<Layout />} />
+      </Routes>
+    </Router>
   );
 }
 
