@@ -37,7 +37,9 @@ process_prompt() {
                                    --data "$DATA")
 
     # Extract only the 'response' part of the output
-echo "$FULL_RESPONSE" | jq -r '.response' | sed 's/\\n/\n/g' | grep -o '\[.*\]' > "$OUTPUT_FILE"
+    echo "$FULL_RESPONSE" | jq -r '.response' | sed 's/\\n/\n/g' > "$OUTPUT_FILE"
+    sed -i 's/.*\[\(.*\)\].*/\1/' "$OUTPUT_FILE"
+
 }
 
 
