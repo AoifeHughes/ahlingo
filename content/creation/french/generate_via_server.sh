@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define the number of runs for each prompt
-number_of_runs=5
+number_of_runs=1
 
 # Start Ollama server
 ollama serve &
