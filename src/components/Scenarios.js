@@ -1,9 +1,9 @@
 import React from "react";
 import SubpageTemplate from "./SubpageTemplate";
 
-function Scenarios() {
+function Scenarios({ onBack }) {
   return (
-    <SubpageTemplate title="Scenario">
+    <SubpageTemplate title="Scenario" onBack={onBack}>
       <div>Scenario Page Content</div>
     </SubpageTemplate>
   );

@@ -1,3 +1,5 @@
+// In Settings.js
+
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -6,15 +8,13 @@ import {
   IconButton,
   Typography,
   Container,
+  FormControlLabel,
+  Switch,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
-function SubpageTemplate({ title, children }) {
+function Settings() {
   const navigate = useNavigate();
-
-  const handleBack = () => {
-    navigate(-1); // Navigates back in the history
-  };
 
   return (
     <>
@@ -24,18 +24,31 @@ function SubpageTemplate({ title, children }) {
             edge="start"
             color="inherit"
             aria-label="back"
-            onClick={handleBack}
+            onClick={() => navigate(-1)}
           >
             <ArrowBackIcon />
           </IconButton>
           <Typography variant="h6" style={{ marginLeft: 20 }}>
-            {title}
+            Settings
           </Typography>
         </Toolbar>
       </AppBar>
-      <Container style={{ marginTop: 20 }}>{children}</Container>
+      <Container style={{ marginTop: 20 }}>
+        <Typography variant="h4" gutterBottom>
+          Settings
+        </Typography>
+        <FormControlLabel
+          control={<Switch name="setting1" />}
+          label="Setting 1"
+        />
+        <FormControlLabel
+          control={<Switch name="setting2" />}
+          label="Setting 2"
+        />
+        {/* Add more settings options here */}{" "}
+      </Container>
     </>
   );
 }
 
-export default SubpageTemplate;
+export default Settings;

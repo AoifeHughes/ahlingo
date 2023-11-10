@@ -10,7 +10,7 @@ sleep 10  # Adjust this sleep time as necessary
 # Variables for Ollama API
 SERVER_HOST="127.0.0.1"
 SERVER_PORT="11434"
-MODEL_NAME="llama2:13b"  # Using 'mistral' as the model
+MODEL_NAME="llama2:13bFrench" 
 
 PROMPTS_DIR="./"
 OUTPUT_DIR="./"
@@ -38,14 +38,24 @@ process_prompt() {
 
     # Extract only the 'response' part of the output
     echo "$FULL_RESPONSE" | jq -r '.response' | sed 's/\\n/\n/g' > "$OUTPUT_FILE"
-    sed -i 's/.*\[\(.*\)\].*/\1/' "$OUTPUT_FILE"
 
 }
 
+./generate_prompts.sh
 
 # Iterate over all .txt files in the PROMPTS_DIR and process each one
 find "$PROMPTS_DIR" -type f -name "*.txt" | while read FILE; do
     process_prompt "$FILE"
+done
+
+./clean_json.sh
+mkdir -p ../lessons/french
+
+target_base="../lessons/french"
+
+for dir in */; do
+    mkdir -p "${target_base}/${dir}"
+    find "$dir" -name "*.json" -exec mv {} "${target_base}/${dir}" \;
 done
 
 # Stop the server
