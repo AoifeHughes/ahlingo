@@ -1,9 +1,9 @@
 import React from "react";
 import SubpageTemplate from "./SubpageTemplate";
 
-function Reading() {
+function Reading({ onBack }) {
   return (
-    <SubpageTemplate title="Reading">
+    <SubpageTemplate title="Reading" onBack={onBack}>
       <div>Reading Page Content</div>
     </SubpageTemplate>
   );

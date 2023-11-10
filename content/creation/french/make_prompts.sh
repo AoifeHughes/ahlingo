@@ -1,10 +1,40 @@
 #!/bin/bash
 
 # Define an array of topics
-topics=("Introductions" "Asking Directions" "Daily Life" "Travel" "Work" "Culture")
+topics=(
+    "Introductions" 
+    "Asking Directions" 
+    "Daily Life" 
+    "Travel" 
+    "Work" 
+    "Culture" 
+    "Shopping" 
+    "Food and Dining" 
+    "Health and Wellness" 
+    "Sports and Leisure" 
+    "Family and Relationships" 
+    "Education and Learning" 
+    "Technology and Media" 
+    "Environment and Nature" 
+    "Politics and Society" 
+    "Arts and Entertainment" 
+    "History and Traditions" 
+    "Science and Innovation" 
+    "Holidays and Celebrations" 
+    "Emergency Situations"
+)
 
 # Define an array of language proficiency levels
-levels=("beginner" "intermediate" "advanced")
+levels=(
+    "beginner" 
+    "elementary" 
+    "pre-intermediate" 
+    "intermediate" 
+    "upper-intermediate" 
+    "advanced" 
+    "proficient" 
+    "near-native"
+)
 
 # Create folders for each language proficiency level and generate prompts
 for level in "${levels[@]}"
@@ -29,7 +59,7 @@ Format Example:
   // More sentences here
 ]
 
-Please provide 20 such sentences in JSON format only for the topic '$topic'. Ensure valid JSON is given. Do not include any other responses or explanations.
+Please provide 50 such sentences in JSON format only.
 EOF
         )
 

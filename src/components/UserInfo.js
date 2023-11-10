@@ -6,15 +6,15 @@ import {
   IconButton,
   Typography,
   Container,
+  Paper,
+  List,
+  ListItem,
+  ListItemText,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
-function SubpageTemplate({ title, children }) {
+function UserInfo() {
   const navigate = useNavigate();
-
-  const handleBack = () => {
-    navigate(-1); // Navigates back in the history
-  };
 
   return (
     <>
@@ -24,18 +24,30 @@ function SubpageTemplate({ title, children }) {
             edge="start"
             color="inherit"
             aria-label="back"
-            onClick={handleBack}
+            onClick={() => navigate(-1)}
           >
             <ArrowBackIcon />
           </IconButton>
           <Typography variant="h6" style={{ marginLeft: 20 }}>
-            {title}
+            User Information
           </Typography>
         </Toolbar>
       </AppBar>
-      <Container style={{ marginTop: 20 }}>{children}</Container>
+      <Container style={{ marginTop: 20 }}>
+        <Paper elevation={3} style={{ padding: 16 }}>
+          <List>
+            <ListItem>
+              <ListItemText primary="Name" secondary="John Doe" />
+            </ListItem>
+            <ListItem>
+              <ListItemText primary="Email" secondary="john.doe@example.com" />
+            </ListItem>
+            {/* Add more user information fields here */}
+          </List>
+        </Paper>
+      </Container>
     </>
   );
 }
 
-export default SubpageTemplate;
+export default UserInfo;
