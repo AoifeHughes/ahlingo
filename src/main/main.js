@@ -10,9 +10,11 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
+      preload: path.join(__dirname, "preload.js"), // Ensure this path is correct
     },
     icon: path.join(__dirname, "assets/logo.icns"),
   });
+  win.webContents.openDevTools();
 
   if (isDev) {
     win.loadURL("http://localhost:8080");
@@ -22,9 +24,11 @@ function createWindow() {
 }
 
 app.on("ready", () => {
+  console.log("App is ready");
   createWindow();
+  console.log("Window created");
   setupIPC(); // Set up the IPC event handlers
-
+  console.log("IPC handlers set up");
   // Set up the webRequest to modify headers if necessary
   session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
     callback({
@@ -34,6 +38,7 @@ app.on("ready", () => {
       },
     });
   });
+  console.log("Web request handler set up");
 });
 
 app.on("will-quit", () => {

@@ -1,36 +1,42 @@
 const fs = require("fs");
-const LanguageDB = require("./languageDB"); // Assuming LanguageDB is in the same directory
-
-const filePath = process.argv[2];
+const LanguageDB = require("./languageDB"); // Make sure this path is correct
 const db = new LanguageDB();
+const path = require("path");
 
-// Extract level and topic from the file path
-const pathComponents = filePath.split("/");
-const level = pathComponents[pathComponents.length - 2];
-const topic = filePath.split("_")[1]; // Adjust the index as needed
+async function processFile(filePath) {
+  try {
+    const data = fs.readFileSync(filePath, "utf8");
+    const phrases = JSON.parse(data);
 
-// Read and parse the JSON file
-fs.readFile(filePath, "utf8", (err, data) => {
-  if (err) {
-    console.error("Error reading file:", err);
-    return;
+    // Extract the level, which is the parent folder of the file
+    const level = path.basename(path.dirname(filePath));
+    // Extract the topic from the file name, assuming the format 'prompt_Topic_run_N_response.json'
+    const topic = path.basename(filePath, ".json").split("_")[1]; // Gets 'Topic' from the filename
+
+    for (const phrase of phrases) {
+      await new Promise((resolve, reject) => {
+        db.addExercise(level, topic, phrase.French, phrase.English, (error) => {
+          if (error) {
+            console.error("Error inserting data:", error);
+            reject(error);
+          } else {
+            resolve();
+          }
+        });
+      });
+    }
+  } catch (err) {
+    console.error("Error processing file:", err);
   }
-  const phrases = JSON.parse(data);
+}
 
-  // Insert each phrase into the database
-  phrases.forEach((phrase) => {
-    // Assuming 'french' and 'english' are the keys in your JSON objects
-    const french = phrase.French;
-    const english = phrase.English;
+async function processFiles(filePaths) {
+  for (const filePath of filePaths) {
+    await processFile(filePath);
+  }
+  db.close();
+}
 
-    // Modify this to suit your DB schema and methods
-    db.addExercise(level, topic, french, english, (error) => {
-      if (error) {
-        console.error("Error inserting data:", error);
-      }
-    });
-  });
-});
-
-// Close the database connection
-db.close();
+// Read all file paths from the command line arguments
+const filePaths = process.argv.slice(2);
+processFiles(filePaths);

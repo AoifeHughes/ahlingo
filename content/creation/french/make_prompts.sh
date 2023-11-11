@@ -26,11 +26,8 @@ topics=(
 
 # Define an array of language proficiency levels
 levels=(
-    "beginner" 
-    "elementary" 
-    "pre-intermediate" 
+    "beginner"  
     "intermediate" 
-    "upper-intermediate" 
     "advanced" 
     "proficient" 
     "near-native"
