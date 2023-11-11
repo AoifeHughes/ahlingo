@@ -64,9 +64,9 @@ done
 echo "Processing complete."
 
 ./clean_json.sh
-mkdir -p ../lessons/french
+mkdir -p ../../lessons/french
 
-target_base="../lessons/french"
+target_base="../../lessons/french"
 
 for dir in */; do
     mkdir -p "${target_base}/${dir}"

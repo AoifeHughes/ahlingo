@@ -58,6 +58,42 @@ function setupIPC() {
     });
   });
 
+  ipcMain.handle("get-levels", async (event) => {
+    return new Promise((resolve, reject) => {
+      db.getAllLevels((err, rows) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(rows.map((row) => row.name));
+        }
+      });
+    });
+  });
+
+  ipcMain.handle("get-topics-by-level", async (event, level) => {
+    return new Promise((resolve, reject) => {
+      db.getTopicsByLanguage(level, (err, rows) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(rows.map((row) => row.name));
+        }
+      });
+    });
+  });
+
+  ipcMain.handle("get-exercises-by-topic", async (event, topic) => {
+    return new Promise((resolve, reject) => {
+      db.getExercisesByTopic(topic, (err, rows) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(rows);
+        }
+      });
+    });
+  });
+
   ipcMain.on("get-keywords-for-exercise", (event, arg) => {
     const exerciseName = arg.name;
     db.getKeywordsForExercise(exerciseName, (err, keywords) => {

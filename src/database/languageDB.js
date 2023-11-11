@@ -17,43 +17,49 @@ class LanguageDB {
   }
 
   _initialize() {
-    // Create tables if they don't exist
+    this.db.serialize(() => {
+      const tableCreationQueries = [
+        `CREATE TABLE IF NOT EXISTS users (
+          id INTEGER PRIMARY KEY,
+          name TEXT NOT NULL UNIQUE
+        )`,
+        `CREATE TABLE IF NOT EXISTS languages (
+          id INTEGER PRIMARY KEY,
+          name TEXT NOT NULL UNIQUE
+        )`,
+        `CREATE TABLE IF NOT EXISTS topics (
+          id INTEGER PRIMARY KEY,
+          name TEXT NOT NULL,
+          language_id INTEGER,
+          FOREIGN KEY (language_id) REFERENCES languages (id)
+        )`,
+        `CREATE TABLE IF NOT EXISTS exercises (
+          id INTEGER PRIMARY KEY,
+          topic_id INTEGER,
+          french TEXT NOT NULL,
+          english TEXT NOT NULL,
+          FOREIGN KEY (topic_id) REFERENCES topics (id)
+        )`,
+        `CREATE TABLE IF NOT EXISTS user_exercises (
+          id INTEGER PRIMARY KEY,
+          user_id INTEGER,
+          exercise_id INTEGER,
+          score INTEGER NOT NULL,
+          attempts INTEGER NOT NULL DEFAULT 1,
+          last_attempt_date TEXT NOT NULL,
+          FOREIGN KEY (user_id) REFERENCES users (id),
+          FOREIGN KEY (exercise_id) REFERENCES exercises (id)
+        )`,
+      ];
 
-    this.db.run(`CREATE TABLE IF NOT EXISTS users (
-      id INTEGER PRIMARY KEY,
-      name TEXT NOT NULL UNIQUE
-    )`);
-
-    this.db.run(`CREATE TABLE IF NOT EXISTS languages (
-      id INTEGER PRIMARY KEY,
-      name TEXT NOT NULL UNIQUE
-    )`);
-
-    this.db.run(`CREATE TABLE IF NOT EXISTS topics (
-      id INTEGER PRIMARY KEY,
-      name TEXT NOT NULL,
-      language_id INTEGER,
-      FOREIGN KEY (language_id) REFERENCES languages (id)
-    )`);
-
-    this.db.run(`CREATE TABLE IF NOT EXISTS exercises (
-      id INTEGER PRIMARY KEY,
-      topic_id INTEGER,
-      french TEXT NOT NULL,
-      english TEXT NOT NULL,
-      FOREIGN KEY (topic_id) REFERENCES topics (id)
-    )`);
-
-    this.db.run(`CREATE TABLE IF NOT EXISTS user_exercises (
-      id INTEGER PRIMARY KEY,
-      user_id INTEGER,
-      exercise_id INTEGER,
-      score INTEGER NOT NULL,
-      attempts INTEGER NOT NULL DEFAULT 1,
-      last_attempt_date TEXT NOT NULL,
-      FOREIGN KEY (user_id) REFERENCES users (id),
-      FOREIGN KEY (exercise_id) REFERENCES exercises (id)
-    )`);
+      tableCreationQueries.forEach((query) => {
+        this.db.run(query, (err) => {
+          if (err) {
+            console.error("Error creating table:", err.message);
+          }
+        });
+      });
+    });
   }
 
   addLanguage(languageName, callback) {
@@ -61,13 +67,11 @@ class LanguageDB {
       "INSERT INTO languages (name) VALUES (?)",
       [languageName],
       function (err) {
-        callback(err, this.lastID);
+        if (typeof callback === "function") {
+          callback(err, this.lastID);
+        }
       }
     );
-  }
-
-  getLanguages(callback) {
-    this.db.all("SELECT * FROM languages", callback);
   }
 
   addTopic(topicName, languageId, callback) {
@@ -75,20 +79,10 @@ class LanguageDB {
       "INSERT INTO topics (name, language_id) VALUES (?, ?)",
       [topicName, languageId],
       function (err) {
-        callback(err, this.lastID);
+        if (typeof callback === "function") {
+          callback(err, this.lastID);
+        }
       }
-    );
-  }
-
-  getTopics(callback) {
-    this.db.all("SELECT * FROM topics", callback);
-  }
-
-  getTopicsByLanguage(languageId, callback) {
-    this.db.all(
-      "SELECT * FROM topics WHERE language_id = ?",
-      [languageId],
-      callback
     );
   }
 
@@ -97,64 +91,49 @@ class LanguageDB {
       "INSERT INTO exercises (topic_id, french, english) VALUES (?, ?, ?)",
       [topicId, french, english],
       function (err) {
-        callback(err, this.lastID);
+        if (typeof callback === "function") {
+          callback(err, this.lastID);
+        }
       }
-    );
-  }
-
-  getExercises(callback) {
-    this.db.all("SELECT * FROM exercises", callback);
-  }
-
-  getExercisesByTopic(topicId, callback) {
-    this.db.all(
-      "SELECT * FROM exercises WHERE topic_id = ?",
-      [topicId],
-      callback
     );
   }
 
   updateUserExercise(userId, exerciseId, score, callback) {
     this.db.run(
-      `UPDATE user_exercises SET score = ?, attempts = attempts + 1, last_attempt_date = CURRENT_TIMESTAMP 
-       WHERE user_id = ? AND exercise_id = ?`,
+      "UPDATE user_exercises SET score = ?, attempts = attempts + 1, last_attempt_date = CURRENT_TIMESTAMP WHERE user_id = ? AND exercise_id = ?",
       [score, userId, exerciseId],
       function (err) {
-        callback(err, this.changes);
+        if (typeof callback === "function") {
+          callback(err, this.changes);
+        }
       }
     );
   }
 
-  getUserExerciseHistory(userId, callback) {
-    this.db.all(
-      `SELECT u.name, e.french, e.english, ue.score, ue.attempts, ue.last_attempt_date 
-       FROM user_exercises ue 
-       JOIN users u ON ue.user_id = u.id 
-       JOIN exercises e ON ue.exercise_id = e.id 
-       WHERE u.id = ?`,
-      [userId],
-      callback
-    );
+  getAllLevels(callback) {
+    this.db.all("SELECT DISTINCT name FROM languages", callback);
   }
 
-  languageExists(languageName, callback) {
-    this.db.get(
-      "SELECT id FROM languages WHERE name = ?",
+  getTopicsByLanguage(languageName, callback) {
+    this.db.all(
+      "SELECT t.name FROM topics t JOIN languages l ON t.language_id = l.id WHERE l.name = ?",
       [languageName],
       callback
     );
   }
 
-  topicExists(topicName, callback) {
-    this.db.get("SELECT id FROM topics WHERE name = ?", [topicName], callback);
+  getExercisesByTopic(topicName, callback) {
+    this.db.all(
+      "SELECT e.french, e.english FROM exercises e JOIN topics t ON e.topic_id = t.id WHERE t.name = ?",
+      [topicName],
+      callback
+    );
   }
 
   close() {
     this.db.close((err) => {
       if (err) {
         console.error(err.message);
-      } else {
-        console.log("Closed the SQLite database connection.");
       }
     });
   }
