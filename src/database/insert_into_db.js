@@ -1,42 +1,70 @@
-const fs = require("fs");
-const LanguageDB = require("./languageDB"); // Make sure this path is correct
-const db = new LanguageDB();
-const path = require("path");
+const fs = require('fs');
+const sqlite3 = require('sqlite3').verbose();
+const LanguageDB = require('./languageDB'); // Update this path as needed
 
-async function processFile(filePath) {
+// Function to read JSON file
+function readJsonFile(filePath) {
+  return new Promise((resolve, reject) => {
+    fs.readFile(filePath, 'utf8', (err, data) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+      resolve(JSON.parse(data));
+    });
+  });
+}
+
+// Function to insert exercise into the database
+async function insertExercisesFromFile(filePath, db) {
   try {
-    const data = fs.readFileSync(filePath, "utf8");
-    const phrases = JSON.parse(data);
-
-    // Extract the level, which is the parent folder of the file
-    const level = path.basename(path.dirname(filePath));
-    // Extract the topic from the file name, assuming the format 'prompt_Topic_run_N_response.json'
-    const topic = path.basename(filePath, ".json").split("_")[1]; // Gets 'Topic' from the filename
-
-    for (const phrase of phrases) {
-      await new Promise((resolve, reject) => {
-        db.addExercise(level, topic, phrase.French, phrase.English, (error) => {
-          if (error) {
-            console.error("Error inserting data:", error);
-            reject(error);
+    const exercises = await readJsonFile(filePath);
+    exercises.forEach((exercise) => {
+      // Extracting topic, type, and difficulty from file path
+      const filePathParts = filePath.split('/');
+      const language = filePathParts[3]; // Assuming 'french' is the fourth element in the path
+      const level = filePathParts[4]; // Assuming 'advanced' is the fifth element in the path
+      
+      // Extracting the topic from the file name
+      const fileName = filePathParts[filePathParts.length - 1]; // Get the last part of the path
+      const topic = fileName
+        .replace('prompt_', '') // Remove 'prompt_'
+        .split('_run')[0] // Split at '_run' and take the first part
+        .replace(/_/g, ' '); // Replace all underscores with spaces
+      db.addExercise(
+        topic,
+        'Translation', // Assuming the type is 'Translation'
+        level,
+        exercise.French,
+        exercise.English,
+        (err, lastID) => {
+          if (err) {
+            console.error('Error inserting exercise:', err.message);
           } else {
-            resolve();
+            console.log(`Exercise inserted with ID: ${lastID}`);
           }
-        });
-      });
-    }
+        }
+      );
+    });
   } catch (err) {
-    console.error("Error processing file:", err);
+    console.error('Error processing file:', err.message);
   }
 }
 
-async function processFiles(filePaths) {
-  for (const filePath of filePaths) {
-    await processFile(filePath);
-  }
-  db.close();
+// Main function that accepts the file path as an argument
+async function main(filePath) {
+  const dbPath = './languageLearningDatabase.db'; // Adjust this path if necessary
+  const db = new LanguageDB(dbPath);
+
+  await insertExercisesFromFile(filePath, db);
+
+  db.close(); // Close the database connection
 }
 
-// Read all file paths from the command line arguments
-const filePaths = process.argv.slice(2);
-processFiles(filePaths);
+const filePath = process.argv[2]; // Get file path from command line argument
+if (!filePath) {
+  console.error('No file path provided.');
+  process.exit(1);
+}
+
+main(filePath);
