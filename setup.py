@@ -4,6 +4,10 @@ setup(
     name='AHLingo',
     version='0.1',
     packages=find_packages(),
+    package_data={
+        'AHLingo': ['assets/fonts/*.ttf'],
+    },
+    include_package_data=True,  # This line is necessary to include the specified package_data
     install_requires=[
         'kivy',
     ],
