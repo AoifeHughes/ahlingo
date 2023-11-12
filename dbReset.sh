@@ -4,7 +4,7 @@
 DB_DIRECTORY="./src/database"
 DB_FILE="$DB_DIRECTORY/languageLearningDatabase.db"
 POPULATE_SCRIPT="$DB_DIRECTORY/insert_into_db.js" # The Node.js script for populating the DB
-JSON_DIRECTORY="./content" # The directory where your JSON files are located
+JSON_DIRECTORY="./content/lessons" # The directory where your JSON files are located
 
 # Step 1: Delete the existing database file
 echo "Deleting existing database file..."

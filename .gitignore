@@ -4,7 +4,7 @@
 /node_modules
 /.pnp
 .pnp.js
-
+/app-js/node_modules
 # testing
 /coverage
 
@@ -26,3 +26,4 @@ yarn-error.log*
 src/database/languageLearningDatabase.db
 *.log
 *.txt
+prompt_*.json
