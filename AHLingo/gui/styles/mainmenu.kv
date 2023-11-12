@@ -1,0 +1,81 @@
+#:kivy 2.0.0
+
+<MainMenuScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        size: root.width, root.height
+        canvas.before:
+            Color:
+                rgba: 1, 0.9, 0.8, 1  # Light pastel background color
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        BoxLayout:
+            size_hint_y: None
+            height: '60dp'
+            padding: '12dp'
+            spacing: '10dp'
+            canvas.before:
+                Color:
+                    rgba: 0.9, 0.7, 0.6, 1  # Pastel header color
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+            Label:
+                text: 'Welcome to AHLingo'
+                color: 0, 0, 0, 1  # Black text color
+                size_hint_x: 0.8
+                font_size: '24sp'
+                halign: 'left'
+                valign: 'middle'
+                text_size: self.size
+
+            Button:
+                text: '⚙'  # Unicode cog character
+                font_size: '24sp'
+                size_hint: None, None
+                size: '48dp', '48dp'
+                background_color: 0.8, 0.6, 0.4, 1  # Button background color
+                color: 0, 0, 0, 1  # Black text color
+                on_release: root.go_to_settings()
+
+        GridLayout:
+            cols: 2
+            padding: '24dp'
+            spacing: '24dp'
+            canvas.before:
+                Color:
+                    rgba: 1, 0.9, 0.8, 1  # Light pastel background color
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+            Button:
+                text: '📖 Reading'
+                font_size: dp(100)
+                background_color: 0.9, 0.8, 0.7, 1  # Pastel button color
+                color: 0, 0, 0, 1  # Black text color
+                on_release: root.switch_to_screen('reading')
+
+            Button:
+                text: '✍ Writing'
+                background_color: 0.9, 0.8, 0.7, 1  # Pastel button color
+                color: 0, 0, 0, 1  # Black text color
+                font_size: '20sp'
+                on_release: root.switch_to_screen('writing')
+
+            Button:
+                text: '🎭 Scenarios'
+                background_color: 0.9, 0.8, 0.7, 1  # Pastel button color
+                color: 0, 0, 0, 1  # Black text color
+                font_size: '20sp'
+                on_release: root.switch_to_screen('scenarios')
+
+            Button:
+                text: '💬 Chatbot'
+                background_color: 0.9, 0.8, 0.7, 1  # Pastel button color
+                color: 0, 0, 0, 1  # Black text color
+                font_size: '20sp'
+                on_release: root.switch_to_screen('chatbot')

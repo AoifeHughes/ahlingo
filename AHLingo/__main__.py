@@ -1,5 +1,4 @@
-from .main import AHLingoApp
-
+from .gui.app import AHLingoApp as app
 
 def main():
-    AHLingoApp().run()
+    app().run()
