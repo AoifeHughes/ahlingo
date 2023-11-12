@@ -20,3 +20,4 @@ find "$JSON_DIRECTORY" -name "*.json" | while read json_file; do
 done
 
 echo "Database population complete."
+mv languageLearningDatabase.db "$DB_FILE" 

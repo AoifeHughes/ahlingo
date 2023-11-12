@@ -2,7 +2,7 @@ const sqlite3 = require("sqlite3").verbose();
 const path = require("path");
 
 class LanguageDB {
-  constructor(dbPath = path.resolve(__dirname, "languageLearningDatabase.db")) {
+  constructor(dbPath = "./languageLearningDatabase.db"){
     this.db = new sqlite3.Database(
       dbPath,
       sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE,
@@ -23,35 +23,27 @@ class LanguageDB {
           id INTEGER PRIMARY KEY,
           name TEXT NOT NULL UNIQUE
         )`,
-        `CREATE TABLE IF NOT EXISTS languages (
-          id INTEGER PRIMARY KEY,
-          name TEXT NOT NULL UNIQUE
-        )`,
-        `CREATE TABLE IF NOT EXISTS topics (
-          id INTEGER PRIMARY KEY,
-          name TEXT NOT NULL,
-          language_id INTEGER,
-          FOREIGN KEY (language_id) REFERENCES languages (id)
-        )`,
         `CREATE TABLE IF NOT EXISTS exercises (
           id INTEGER PRIMARY KEY,
-          topic_id INTEGER,
-          french TEXT NOT NULL,
-          english TEXT NOT NULL,
-          FOREIGN KEY (topic_id) REFERENCES topics (id)
+          topic TEXT NOT NULL,
+          type TEXT NOT NULL,
+          difficulty_level TEXT NOT NULL,
+          language_1 TEXT NOT NULL,
+          language_2 TEXT NOT NULL
         )`,
         `CREATE TABLE IF NOT EXISTS user_exercises (
           id INTEGER PRIMARY KEY,
           user_id INTEGER,
           exercise_id INTEGER,
-          score INTEGER NOT NULL,
-          attempts INTEGER NOT NULL DEFAULT 1,
-          last_attempt_date TEXT NOT NULL,
+          score INTEGER,
+          attempts INTEGER DEFAULT 1,
+          last_attempt_date TEXT,
           FOREIGN KEY (user_id) REFERENCES users (id),
           FOREIGN KEY (exercise_id) REFERENCES exercises (id)
         )`,
       ];
 
+      // Create tables
       tableCreationQueries.forEach((query) => {
         this.db.run(query, (err) => {
           if (err) {
@@ -59,77 +51,38 @@ class LanguageDB {
           }
         });
       });
+
+      // Create default user
+      this.db.run(
+        "INSERT OR IGNORE INTO users (id, name) VALUES (?, ?)",
+        [1, "user1"],
+        (err) => {
+          if (err) {
+            console.error("Error creating default user:", err.message);
+          }
+        }
+      );
     });
   }
 
-  addLanguage(languageName, callback) {
+  addExercise(topic, type, difficultyLevel, language1, language2, callback) {
     this.db.run(
-      "INSERT INTO languages (name) VALUES (?)",
-      [languageName],
+      "INSERT INTO exercises (topic, type, difficulty_level, language_1, language_2) VALUES (?, ?, ?, ?, ?)",
+      [topic, type, difficultyLevel, language1, language2],
       function (err) {
         if (typeof callback === "function") {
-          callback(err, this.lastID);
+          callback(err, this.lastID); // this.lastID will return the ID of the newly inserted exercise
         }
       }
     );
   }
-
-  addTopic(topicName, languageId, callback) {
-    this.db.run(
-      "INSERT INTO topics (name, language_id) VALUES (?, ?)",
-      [topicName, languageId],
-      function (err) {
-        if (typeof callback === "function") {
-          callback(err, this.lastID);
-        }
-      }
-    );
-  }
-
-  addExercise(topicId, french, english, callback) {
-    this.db.run(
-      "INSERT INTO exercises (topic_id, french, english) VALUES (?, ?, ?)",
-      [topicId, french, english],
-      function (err) {
-        if (typeof callback === "function") {
-          callback(err, this.lastID);
-        }
-      }
-    );
-  }
-
-  updateUserExercise(userId, exerciseId, score, callback) {
-    this.db.run(
-      "UPDATE user_exercises SET score = ?, attempts = attempts + 1, last_attempt_date = CURRENT_TIMESTAMP WHERE user_id = ? AND exercise_id = ?",
-      [score, userId, exerciseId],
-      function (err) {
-        if (typeof callback === "function") {
-          callback(err, this.changes);
-        }
-      }
-    );
-  }
-
-  getAllLevels(callback) {
-    this.db.all("SELECT DISTINCT name FROM languages", callback);
-  }
+  
 
   getTopicsByLanguage(languageName, callback) {
-    this.db.all(
-      "SELECT t.name FROM topics t JOIN languages l ON t.language_id = l.id WHERE l.name = ?",
-      [languageName],
-      callback
-    );
+    const query = `SELECT DISTINCT topic FROM exercises WHERE language_1 = ? OR language_2 = ?`;
+    this.db.all(query, [languageName, languageName], callback);
   }
-
-  getExercisesByTopic(topicName, callback) {
-    this.db.all(
-      "SELECT e.french, e.english FROM exercises e JOIN topics t ON e.topic_id = t.id WHERE t.name = ?",
-      [topicName],
-      callback
-    );
-  }
-
+  
   close() {
     this.db.close((err) => {
       if (err) {

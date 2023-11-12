@@ -1,5 +1,4 @@
 const { app, BrowserWindow, ipcMain, session } = require("electron");
-const LanguageDB = require('../database/languageDB');
 const isDev = process.env.NODE_ENV !== "production";
 const path = require("path");
 const setupIPC = require("./ipcHandlers"); // Import the setup function for IPC
@@ -24,19 +23,6 @@ function createWindow() {
   }
 }
 
-const db = new LanguageDB();
-
-// IPC Listener for fetching topics
-ipcMain.on('get-topics', (event, languageName) => {
-  db.getTopicsByLanguage(languageName, (err, topics) => {
-    if (err) {
-      console.error("Error fetching topics:", err);
-      event.reply('get-topics-reply', { error: err.message });
-      return;
-    }
-    event.reply('get-topics-reply', { topics });
-  });
-});
 
 app.on("ready", () => {
   console.log("App is ready");
