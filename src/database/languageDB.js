@@ -2,7 +2,7 @@ const sqlite3 = require("sqlite3").verbose();
 const path = require("path");
 
 class LanguageDB {
-  constructor(dbPath = path.resolve(__dirname, "languageLearningDatabase.db")) {
+  constructor(dbPath = "./languageLearningDatabase.db") {
     this.db = new sqlite3.Database(
       dbPath,
       sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE,
@@ -17,144 +17,78 @@ class LanguageDB {
   }
 
   _initialize() {
-    // Create tables if they don't exist
+    this.db.serialize(() => {
+      const tableCreationQueries = [
+        `CREATE TABLE IF NOT EXISTS users (
+          id INTEGER PRIMARY KEY,
+          name TEXT NOT NULL UNIQUE
+        )`,
+        `CREATE TABLE IF NOT EXISTS exercises (
+          id INTEGER PRIMARY KEY,
+          topic TEXT NOT NULL,
+          type TEXT NOT NULL,
+          difficulty_level TEXT NOT NULL,
+          language_1 TEXT NOT NULL,
+          language_2 TEXT NOT NULL,
+          language_1_content TEXT NOT NULL,
+          language_2_content TEXT NOT NULL
+        )`,
+        `CREATE TABLE IF NOT EXISTS user_exercises (
+          id INTEGER PRIMARY KEY,
+          user_id INTEGER,
+          exercise_id INTEGER,
+          score INTEGER,
+          attempts INTEGER DEFAULT 1,
+          last_attempt_date TEXT,
+          FOREIGN KEY (user_id) REFERENCES users (id),
+          FOREIGN KEY (exercise_id) REFERENCES exercises (id)
+        )`,
+      ];
 
-    this.db.run(`CREATE TABLE IF NOT EXISTS users (
-      id INTEGER PRIMARY KEY,
-      name TEXT NOT NULL UNIQUE
-    )`);
+      // Create tables
+      tableCreationQueries.forEach((query) => {
+        this.db.run(query, (err) => {
+          if (err) {
+            console.error("Error creating table:", err.message);
+          }
+        });
+      });
 
-    this.db.run(`CREATE TABLE IF NOT EXISTS languages (
-      id INTEGER PRIMARY KEY,
-      name TEXT NOT NULL UNIQUE
-    )`);
-
-    this.db.run(`CREATE TABLE IF NOT EXISTS topics (
-      id INTEGER PRIMARY KEY,
-      name TEXT NOT NULL,
-      language_id INTEGER,
-      FOREIGN KEY (language_id) REFERENCES languages (id)
-    )`);
-
-    this.db.run(`CREATE TABLE IF NOT EXISTS exercises (
-      id INTEGER PRIMARY KEY,
-      topic_id INTEGER,
-      french TEXT NOT NULL,
-      english TEXT NOT NULL,
-      FOREIGN KEY (topic_id) REFERENCES topics (id)
-    )`);
-
-    this.db.run(`CREATE TABLE IF NOT EXISTS user_exercises (
-      id INTEGER PRIMARY KEY,
-      user_id INTEGER,
-      exercise_id INTEGER,
-      score INTEGER NOT NULL,
-      attempts INTEGER NOT NULL DEFAULT 1,
-      last_attempt_date TEXT NOT NULL,
-      FOREIGN KEY (user_id) REFERENCES users (id),
-      FOREIGN KEY (exercise_id) REFERENCES exercises (id)
-    )`);
+      // Create default user
+      this.db.run(
+        "INSERT OR IGNORE INTO users (id, name) VALUES (?, ?)",
+        [1, "user1"],
+        (err) => {
+          if (err) {
+            console.error("Error creating default user:", err.message);
+          }
+        }
+      );
+    });
   }
 
-  addLanguage(languageName, callback) {
+  addExercise(topic, type, difficultyLevel, language1, language2, language1Content, language2Content, callback) {
     this.db.run(
-      "INSERT INTO languages (name) VALUES (?)",
-      [languageName],
+      "INSERT INTO exercises (topic, type, difficulty_level, language_1, language_2, language_1_content, language_2_content) VALUES (?, ?, ?, ?, ?, ?, ?)",
+      [topic, type, difficultyLevel, language1, language2, language1Content, language2Content],
       function (err) {
-        callback(err, this.lastID);
+        if (typeof callback === "function") {
+          callback(err, this.lastID); // this.lastID will return the ID of the newly inserted exercise
+        }
       }
     );
   }
+  
 
-  getLanguages(callback) {
-    this.db.all("SELECT * FROM languages", callback);
+  getTopicsByLanguage(languageName, callback) {
+    const query = `SELECT DISTINCT topic FROM exercises WHERE language_1 = ? OR language_2 = ?`;
+    this.db.all(query, [languageName, languageName], callback);
   }
-
-  addTopic(topicName, languageId, callback) {
-    this.db.run(
-      "INSERT INTO topics (name, language_id) VALUES (?, ?)",
-      [topicName, languageId],
-      function (err) {
-        callback(err, this.lastID);
-      }
-    );
-  }
-
-  getTopics(callback) {
-    this.db.all("SELECT * FROM topics", callback);
-  }
-
-  getTopicsByLanguage(languageId, callback) {
-    this.db.all(
-      "SELECT * FROM topics WHERE language_id = ?",
-      [languageId],
-      callback
-    );
-  }
-
-  addExercise(topicId, french, english, callback) {
-    this.db.run(
-      "INSERT INTO exercises (topic_id, french, english) VALUES (?, ?, ?)",
-      [topicId, french, english],
-      function (err) {
-        callback(err, this.lastID);
-      }
-    );
-  }
-
-  getExercises(callback) {
-    this.db.all("SELECT * FROM exercises", callback);
-  }
-
-  getExercisesByTopic(topicId, callback) {
-    this.db.all(
-      "SELECT * FROM exercises WHERE topic_id = ?",
-      [topicId],
-      callback
-    );
-  }
-
-  updateUserExercise(userId, exerciseId, score, callback) {
-    this.db.run(
-      `UPDATE user_exercises SET score = ?, attempts = attempts + 1, last_attempt_date = CURRENT_TIMESTAMP 
-       WHERE user_id = ? AND exercise_id = ?`,
-      [score, userId, exerciseId],
-      function (err) {
-        callback(err, this.changes);
-      }
-    );
-  }
-
-  getUserExerciseHistory(userId, callback) {
-    this.db.all(
-      `SELECT u.name, e.french, e.english, ue.score, ue.attempts, ue.last_attempt_date 
-       FROM user_exercises ue 
-       JOIN users u ON ue.user_id = u.id 
-       JOIN exercises e ON ue.exercise_id = e.id 
-       WHERE u.id = ?`,
-      [userId],
-      callback
-    );
-  }
-
-  languageExists(languageName, callback) {
-    this.db.get(
-      "SELECT id FROM languages WHERE name = ?",
-      [languageName],
-      callback
-    );
-  }
-
-  topicExists(topicName, callback) {
-    this.db.get("SELECT id FROM topics WHERE name = ?", [topicName], callback);
-  }
-
+  
   close() {
     this.db.close((err) => {
       if (err) {
         console.error(err.message);
-      } else {
-        console.log("Closed the SQLite database connection.");
       }
     });
   }
