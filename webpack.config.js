@@ -1,9 +1,10 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
-module.exports = {
-  entry: "./src/index.js", // Your app's main entry point
+module.exports = (env, argv) => ({
+  entry: "./src/index.js",
   target: "electron-renderer",
+  mode: argv.mode, // This will use 'development' or 'production' based on the build script
   output: {
     path: path.resolve(__dirname, "dist"),
     filename: "bundle.js",
@@ -35,5 +36,8 @@ module.exports = {
     fallback: {
       fs: false,
     },
+    alias: {
+      window: path.resolve(__dirname, "alias/window.js"),
+    },
   },
-};
+});

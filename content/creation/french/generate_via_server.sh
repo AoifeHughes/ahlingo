@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define the number of runs for each prompt
-number_of_runs=1
+number_of_runs=5
 
 # Start Ollama server
 ollama serve &
@@ -32,7 +32,7 @@ process_prompt() {
         OUTPUT_FILE="${OUTPUT_DIR}${LEVEL}/${BASENAME}_run_${run}_response.json"
 
         # Prepare data for POST request
-        local DATA=$(cat "$PROMPTS_FILE" | jq -Rs '{model: "'$MODEL_NAME'", prompt: ., stream: false, options: {num_predict: 512, num_ctx: 8192}}')
+        local DATA=$(cat "$PROMPTS_FILE" | jq -Rs '{model: "'$MODEL_NAME'", prompt: ., stream: false, options: {num_predict: 512, num_ctx: 4096}}')
 
         # Send prompt to Ollama server and capture the entire output
         local FULL_RESPONSE=$(curl --silent --request POST \
@@ -64,9 +64,9 @@ done
 echo "Processing complete."
 
 ./clean_json.sh
-mkdir -p ../lessons/french
+mkdir -p ../../lessons/french
 
-target_base="../lessons/french"
+target_base="../../lessons/french"
 
 for dir in */; do
     mkdir -p "${target_base}/${dir}"
