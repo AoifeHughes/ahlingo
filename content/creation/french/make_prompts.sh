@@ -3,25 +3,25 @@
 # Define an array of topics
 topics=(
     "Introductions" 
-    "Asking Directions" 
-    "Daily Life" 
-    "Travel" 
-    "Work" 
-    "Culture" 
-    "Shopping" 
-    "Food and Dining" 
-    "Health and Wellness" 
-    "Sports and Leisure" 
-    "Family and Relationships" 
-    "Education and Learning" 
-    "Technology and Media" 
-    "Environment and Nature" 
-    "Politics and Society" 
-    "Arts and Entertainment" 
-    "History and Traditions" 
-    "Science and Innovation" 
-    "Holidays and Celebrations" 
-    "Emergency Situations"
+    # "Asking Directions" 
+    # "Daily Life" 
+    # "Travel" 
+    # "Work" 
+    # "Culture" 
+    # "Shopping" 
+    # "Food and Dining" 
+    # "Health and Wellness" 
+    # "Sports and Leisure" 
+    # "Family and Relationships" 
+    # "Education and Learning" 
+    # "Technology and Media" 
+    # "Environment and Nature" 
+    # "Politics and Society" 
+    # "Arts and Entertainment" 
+    # "History and Traditions" 
+    # "Science and Innovation" 
+    # "Holidays and Celebrations" 
+    # "Emergency Situations"
 )
 
 # Define an array of language proficiency levels
@@ -29,8 +29,8 @@ levels=(
     "beginner"  
     "intermediate" 
     "advanced" 
-    "proficient" 
-    "near-native"
+    # "proficient" 
+    # "near-native"
 )
 
 # Create folders for each language proficiency level and generate prompts
@@ -44,10 +44,9 @@ do
     do
         # Create a prompt for each topic and level
         prompt=$(cat <<EOF
+[INST]
 Task: Generate a JSON file containing a series of French sentences with their English translations, tailored for a $level learner. The sentences should focus on the theme of '$topic'. Each entry should be a single sentence. Do not repeat a sentence or ones too similar to it.
-
-Format Example:
-
+[/INST]
 [
   {
     "French": "Example French sentence.",
@@ -55,8 +54,10 @@ Format Example:
   },
   // More sentences here
 ]
-
+[INST]
 Please provide 5 such sentences in JSON format only.
+[/INST]
+
 EOF
         )
 
