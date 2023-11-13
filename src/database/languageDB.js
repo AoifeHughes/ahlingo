@@ -2,7 +2,7 @@ const sqlite3 = require("sqlite3").verbose();
 const path = require("path");
 
 class LanguageDB {
-  constructor(dbPath = "./languageLearningDatabase.db"){
+  constructor(dbPath = "./languageLearningDatabase.db") {
     this.db = new sqlite3.Database(
       dbPath,
       sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE,
@@ -29,7 +29,9 @@ class LanguageDB {
           type TEXT NOT NULL,
           difficulty_level TEXT NOT NULL,
           language_1 TEXT NOT NULL,
-          language_2 TEXT NOT NULL
+          language_2 TEXT NOT NULL,
+          language_1_content TEXT NOT NULL,
+          language_2_content TEXT NOT NULL
         )`,
         `CREATE TABLE IF NOT EXISTS user_exercises (
           id INTEGER PRIMARY KEY,
@@ -65,10 +67,10 @@ class LanguageDB {
     });
   }
 
-  addExercise(topic, type, difficultyLevel, language1, language2, callback) {
+  addExercise(topic, type, difficultyLevel, language1, language2, language1Content, language2Content, callback) {
     this.db.run(
-      "INSERT INTO exercises (topic, type, difficulty_level, language_1, language_2) VALUES (?, ?, ?, ?, ?)",
-      [topic, type, difficultyLevel, language1, language2],
+      "INSERT INTO exercises (topic, type, difficulty_level, language_1, language_2, language_1_content, language_2_content) VALUES (?, ?, ?, ?, ?, ?, ?)",
+      [topic, type, difficultyLevel, language1, language2, language1Content, language2Content],
       function (err) {
         if (typeof callback === "function") {
           callback(err, this.lastID); // this.lastID will return the ID of the newly inserted exercise

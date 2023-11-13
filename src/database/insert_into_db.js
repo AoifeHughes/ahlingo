@@ -35,6 +35,8 @@ async function insertExercisesFromFile(filePath, db) {
         topic,
         'Translation', // Assuming the type is 'Translation'
         level,
+        "French", // Assuming the first language is 'French'
+        "English", // Assuming the second language is 'English
         exercise.French,
         exercise.English,
         (err, lastID) => {
