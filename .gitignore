@@ -24,4 +24,4 @@ yarn-error.log*
 /dist
 /llama
 *.log
-*.txt
+*prompt*.txt
