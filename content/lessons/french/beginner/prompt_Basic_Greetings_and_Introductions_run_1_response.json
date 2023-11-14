@@ -1,0 +1,38 @@
+[
+  {
+    "French": "Bonjour, comment vous appelez-vous?",
+    "English": "Hello, what's your name?"
+  },
+  {
+    "French": "Salut, je m'appelle Marine.",
+    "English": "Hi, my name is Marine."
+  },
+  {
+    "French": "Bonjour, comment allez-vous?",
+    "English": "Hello, how are you?"
+  },
+  {
+    "French": "Je vais bien, merci. Et toi?",
+    "English": "I'm fine, thank you. And you?"
+  },
+  {
+    "French": "Je m'appelle Mathieu.",
+    "English": "My name is Mathieu."
+  },
+  {
+    "French": "Bonne journée!",
+    "English": "Have a good day!"
+  },
+  {
+    "French": "A bientôt!",
+    "English": "See you soon!"
+  },
+  {
+    "French": "Salut, je suis ravi de faire ta connaissance.",
+    "English": "Hi, I'm thrilled to meet you."
+  },
+  {
+    "French": "Je suis Marie.",
+    "English": "My name is Marie."
+  }
+]

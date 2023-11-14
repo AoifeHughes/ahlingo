@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define the number of runs for each prompt
-number_of_runs=2
+number_of_runs=1
 
 # Server startup configurations
 MODEL_PATH="/Users/ahughes/git/LLMs/llama-2-13b-chat.Q4_K_M.gguf"
@@ -11,8 +11,8 @@ SERVER_PORT="8080"
 SERVER_CMD="/Users/ahughes/git/llama.cpp/server"
 SERVER_ARGS="-m $MODEL_PATH -c $CONTEXT_SIZE --host $SERVER_HOST --port $SERVER_PORT"
 
-PROMPTS_DIR="./French_English/"
-OUTPUT_DIR="./French_English/"
+PROMPTS_DIRS=("./French_English/comprehension/" "./French_English/translations/")
+OUTPUT_DIRS=("./French_English/comprehension/" "./French_English/translations/")
 
 # Start the llama.cpp server
 echo "Starting llama.cpp server..."
@@ -50,33 +50,41 @@ process_prompt() {
     done
 }
 
-./make_prompts_topics.sh
+./make_prompts_comprehension.sh
+./make_prompts_translations.sh
 
-# Count the total number of .txt files
-total_files=$(find "$PROMPTS_DIR" -type f -name "*.txt" | wc -l)
-counter=0
+# Loop over PROMPTS_DIRS and OUTPUT_DIRS
+for i in "${!PROMPTS_DIRS[@]}"; do
+    PROMPTS_DIR=${PROMPTS_DIRS[$i]}
+    OUTPUT_DIR=${OUTPUT_DIRS[$i]}
 
-# Iterate over all .txt files in the PROMPTS_DIR and process each one
-find "$PROMPTS_DIR" -type f -name "*.txt" | while read FILE; do
-    process_prompt "$FILE"
+    # Count the total number of .txt files
+    total_files=$(find "$PROMPTS_DIR" -type f -name "*.txt" | wc -l)
+    counter=0
 
-    # Update and display the progress
-    ((counter++))
-    percent=$((counter * 100 / total_files))
-    printf "Processing: %d%% (%d/%d)\r" $percent $counter $total_files
-done
+    # Iterate over all .txt files in the PROMPTS_DIR and process each one
+    find "$PROMPTS_DIR" -type f -name "*.txt" | while read FILE; do
+        process_prompt "$FILE"
 
-echo "Processing complete."
+        # Update and display the progress
+        ((counter++))
+        percent=$((counter * 100 / total_files))
+        printf "Processing: %d%% (%d/%d)\r" $percent $counter $total_files
+    done
 
-./clean_json.sh
-mkdir -p ../../lessons/french
+    echo "Processing complete."
 
-target_base="../../lessons/french"
+    ./clean_json.sh
+    mkdir -p ../../lessons/french
 
-for dir in */; do
-    mkdir -p "${target_base}/${dir}"
-    find "$dir" -name "*.json" -exec mv {} "${target_base}/${dir}" \;
-    rm -rf "$dir"
+    target_base="../../lessons/french"
+
+    for dir in "${OUTPUT_DIR}"/*/; do
+        dir_name=$(basename "$dir")
+        mkdir -p "${target_base}/${dir_name}"
+        find "$dir" -name "*.json" -exec mv {} "${target_base}/${dir_name}" \;
+        rm -rf "$dir"
+    done
 done
 
 # Stop the server

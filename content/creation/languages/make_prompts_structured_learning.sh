@@ -32,7 +32,7 @@ while IFS=';' read -r chapter topics; do
             # Create a prompt for each topic
             prompt=$(cat <<EOF
 [INST]
-Task: Generate a JSON file containing a series of ${Language1} sentences with their ${Language2} translations, tailored for learners studying the '$topic' topic under '$chapter'. 
+Task: Generate a JSON file containing a series of ${Language1} words with their ${Language2} translations, tailored for learners studying the '$topic' topic under '$chapter'. 
 [/INST]
 
 [

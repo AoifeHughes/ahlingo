@@ -1,38 +1,42 @@
 [
   {
-    "French": "Je voudrais acheter un sac de papier à partir de la marque de luxe, s'il vous plaît.",
-    "English": "I would like to buy a luxury paper bag, please."
+    "French": "Je voudrais acheter ce livre, s'il vous plaît.",
+    "English": "I would like to buy this book, please."
   },
   {
-    "French": "La facture est de 100 euros, paiement en espèces est préférable.",
-    "English": "The bill is 100 euros, payment in cash is preferred."
+    "French": "Le prix de ce produit est de 50 euros.",
+    "English": "The price of this product is 50 euros."
   },
   {
-    "French": "Je suis désolé, mais j'ai oublié mon carnet de crédit chez moi.",
-    "English": "I'm sorry, but I left my credit card at home."
+    "French": "Je préfère payer par carte de crédit.",
+    "English": "I prefer to pay by credit card."
   },
   {
-    "French": "Pouvez-vous accepter une carte de crédit américaine ?",
-    "English": "Can you accept an American Express card?"
+    "French": "Le commerçant a réduit le prix de l'article.",
+    "English": "The salesperson reduced the price of the item."
   },
   {
-    "French": "Je voudrais faire une retraction, s'il vous plaît.",
-    "English": "I would like to return this, please."
+    "French": "J'ai oublié mon sac de courses à la maison.",
+    "English": "I forgot my shopping bag at home."
   },
   {
-    "French": "C'est une erreur de la part du vendeur, je suis désolé.",
-    "English": "It was a mistake on the part of the seller, I'm sorry."
+    "French": "Pouvez-vous me remettre ce produit en stock?",
+    "English": "Can you put this product back in stock?"
   },
   {
-    "French": "Pouvez-vous me donner un rabais pour cette robe ?",
-    "English": "Can you give me a discount on this dress?"
+    "French": "Je voudrais faire une mise à jour de mon compte bancaire.",
+    "English": "I would like to update my bank account."
   },
   {
-    "French": "Je suis inquiet car j'ai vu une tache sur le manteau.",
-    "English": "I'm worried because I saw a stain on the coat."
+    "French": "Le système de paiement est en maintenance.",
+    "English": "The payment system is down for maintenance."
   },
   {
-    "French": "C'est une copieuse, s'il vous plaît.",
-    "English": "It's a copy, please."
+    "French": "J'ai besoin d'un reçu pour la fiscalité.",
+    "English": "I need a receipt for tax purposes."
+  },
+  {
+    "French": "Pouvez-vous me donner une réduction pour cet article?",
+    "English": "Can you give me a discount on this item?"
   }
 ]
