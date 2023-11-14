@@ -1,14 +1,13 @@
 #!/bin/bash
 
-# Function to extract JSON object and convert it into an array
-extract_json_object() {
+process_json_file() {
     local file=$1
     local temp_file=$(mktemp)
 
-    # Extract everything between the first '{' and the last '}'
-    sed -n '/{/,/}/p' "$file" > "$temp_file"
+    # Remove everything from '//' to the end of the line and extract JSON object
+    sed -e 's/\/\/.*$//' -e '/{/,/}/!d' "$file" > "$temp_file"
 
-    # Check if the extraction resulted in a non-empty file
+    # Check if the processing resulted in a non-empty file
     if [ -s "$temp_file" ]; then
         # Add square brackets to make it a valid JSON array
         echo '[' > "$file"
@@ -16,13 +15,13 @@ extract_json_object() {
         echo ']' >> "$file"
         rm "$temp_file"
     else
-        # Extraction failed, possibly no JSON object present
-        echo "No JSON object found in file: $file"
+        # Processing failed, possibly no JSON object present or file is empty after comment removal
+        echo "No valid JSON object found in file: $file"
         rm "$temp_file"
     fi
 }
 
 # Find all .json files and process them
 find . -name "*.json" -type f | while read file; do
-    extract_json_object "$file"
+    process_json_file "$file"
 done
