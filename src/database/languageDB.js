@@ -2,7 +2,7 @@ const sqlite3 = require("sqlite3").verbose();
 const path = require("path");
 
 class LanguageDB {
-  constructor(dbPath = "./languageLearningDatabase.db") {
+  constructor(dbPath = "./src/database/languageLearningDatabase.db") {
     this.db = new sqlite3.Database(
       dbPath,
       sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE,
@@ -64,6 +64,18 @@ class LanguageDB {
           }
         }
       );
+      this._printExercisesCount();
+
+    });
+  }
+
+  _printExercisesCount() {
+    this.db.get("SELECT COUNT(*) AS count FROM exercises", [], (err, row) => {
+      if (err) {
+        console.error("Error fetching exercise count:", err.message);
+      } else {
+        console.log(`Number of entries in 'exercises' table: ${row.count}`);
+      }
     });
   }
 
@@ -79,9 +91,30 @@ class LanguageDB {
     );
   }
   
+  getDifficultyLevels(callback) {
+    this.db.all("SELECT DISTINCT difficulty_level FROM exercises", [], callback);
+  }
+
+  getTopicsByDifficulty(difficultyLevel, callback) {
+    this.db.all(
+      "SELECT DISTINCT topic FROM exercises WHERE difficulty_level = ?",
+      [difficultyLevel],
+      callback
+    );
+  }
+
+  getLanguagesByTopicAndDifficulty(topic, difficultyLevel, callback) {
+    this.db.all(
+      "SELECT DISTINCT language_1, language_2 FROM exercises WHERE (language_1 = ? OR language_2 = ?) AND topic = ? AND difficulty_level = ?",
+      [topic, difficultyLevel],
+      callback
+    );
+  }
 
   getTopicsByLanguage(languageName, callback) {
     const query = `SELECT DISTINCT topic FROM exercises WHERE language_1 = ? OR language_2 = ?`;
+    console.log("Query:", query);
+    console.log("Language name:", languageName);
     this.db.all(query, [languageName, languageName], callback);
   }
   

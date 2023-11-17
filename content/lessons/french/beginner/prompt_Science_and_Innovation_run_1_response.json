@@ -1,26 +1,42 @@
 [
   {
-    "French": "La science est la poursuite de la vérité.",
-    "English": "Science is the pursuit of truth."
+    "French": "La science est très intéressante.",
+    "English": "Science is very interesting."
   },
-  
   {
-    "French": "L'innovation est la clé du succès.",
-    "English": "Innovation is the key to success."
+    "French": "Nous inventons des choses nouvelles chaque jour.",
+    "English": "We invent new things every day."
   },
-  
   {
-    "French": "Le progrès technique est la force motrice de l'humanité.",
-    "English": "Technical progress is the driving force of humanity."
+    "French": "La technologie change notre vie quotidienne.",
+    "English": "Technology changes our daily lives."
   },
-  
   {
-    "French": "La biologie est la science de la vie.",
-    "English": "Biology is the science of life."
+    "French": "Le progrès scientifique permet de résoudre des problèmes.",
+    "English": "Scientific progress allows us to solve problems."
   },
-  
   {
-    "French": "L'astronomie est la recherche de l'univers.",
-    "English": "Astronomy is the search for the universe."
+    "French": "La biologie est la études de la vie.",
+    "English": "Biology is the study of life."
+  },
+  {
+    "French": "Les inventions peuvent changer le monde.",
+    "English": "Inventions can change the world."
+  },
+  {
+    "French": "La physique est la études de la matière et de l'énergie.",
+    "English": "Physics is the study of matter and energy."
+  },
+  {
+    "French": "Le génie est la solution à un problème.",
+    "English": "Ingenuity is a solution to a problem."
+  },
+  {
+    "French": "La chimie est la études des matières et de leur transformation.",
+    "English": "Chemistry is the study of substances and their transformations."
+  },
+  {
+    "French": "Les scientifiques travaillent dur pour trouver des réponses.",
+    "English": "Scientists work hard to find answers."
   }
 ]

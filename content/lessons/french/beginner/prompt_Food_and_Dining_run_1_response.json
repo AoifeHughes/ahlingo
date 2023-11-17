@@ -1,22 +1,38 @@
 [
   {
-    "French": "Je vais manger un croissant pour le petit déjeuner.",
-    "English": "I will eat a croissant for breakfast."
+    "French": "Je vais manger un sandwich au jambon pour le déjeuner.",
+    "English": "I will have a ham sandwich for lunch."
   },
   {
-    "French": "J'aime bien manger du pain au chocolat.",
-    "English": "I like to eat bread with chocolate."
+    "French": "J'aime beaucoup la crème brûlée, c'est mon dessert préféré.",
+    "English": "I really love creme brulee, it's my favorite dessert."
   },
   {
-    "French": "Le café est une boisson délicieuse.",
-    "English": "Coffee is a delicious drink."
+    "French": "Pourquoi ne pas essayer un croissant chaud au petit déjeuner?",
+    "English": "Why not try a warm croissant for breakfast?"
   },
   {
-    "French": "Je suis allergique aux fruits de mer.",
-    "English": "I am allergic to seafood."
+    "French": "Je préfère manger du poisson plutôt que de la viande.",
+    "English": "I prefer to eat fish rather than meat."
   },
   {
-    "French": "J'adore manger des crepes au Nutella.",
-    "English": "I love eating Nutella crepes."
+    "French": "La tarte tatin est une spécialité de la région de Bretagne.",
+    "English": "The tart tatin is a specialty of the Brittany region."
+  },
+  {
+    "French": "J'adore manger des fruits frais dans la saison.",
+    "English": "I love eating fresh fruit in season."
+  },
+  {
+    "French": "Le fromage est un ingrédient important dans notre cuisine.",
+    "English": "Cheese is an important ingredient in our cooking."
+  },
+  {
+    "French": "La soupe est une collation qui remplit.",
+    "English": "Soup is a comforting meal that fills you up."
+  },
+  {
+    "French": "J'ai envie de manger une salade de fruits rouges.",
+    "English": "I want to eat a salad of red fruits."
   }
 ]
