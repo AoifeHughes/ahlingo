@@ -11,8 +11,14 @@ SERVER_PORT="8080"
 SERVER_CMD="/Users/ahughes/git/llama.cpp/server"
 SERVER_ARGS="-m $MODEL_PATH -c $CONTEXT_SIZE --host $SERVER_HOST --port $SERVER_PORT"
 
-PROMPTS_DIRS=("./French_English/comprehension/" "./French_English/translations/")
-OUTPUT_DIRS=("./French_English/comprehension/" "./French_English/translations/")
+PROMPTS_DIRS=(
+    "./French_English/comprehension/" 
+    "./French_English/translations/"
+    )
+OUTPUT_DIRS=(
+    "./French_English/comprehension/" 
+    "./French_English/translations/"
+    )
 
 # Start the llama.cpp server
 echo "Starting llama.cpp server..."
@@ -75,14 +81,13 @@ for i in "${!PROMPTS_DIRS[@]}"; do
     echo "Processing complete."
 
     ./clean_json.sh
-    mkdir -p ../../lessons/french
+    mkdir -p ../../lessons/
 
-    target_base="../../lessons/french"
+    target_base="../../lessons/"
 
     for dir in "${OUTPUT_DIR}"/*/; do
-        dir_name=$(basename "$dir")
-        mkdir -p "${target_base}/${dir_name}"
-        find "$dir" -name "*.json" -exec mv {} "${target_base}/${dir_name}" \;
+        mkdir -p "${target_base}/${OUTPUT_DIR}"
+        find "$dir" -name "*.json" -exec mv {} "${target_base}/${OUTPUT_DIR}" \;
         rm -rf "$dir"
     done
 done
