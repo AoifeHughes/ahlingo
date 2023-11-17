@@ -1,22 +1,42 @@
 [
   {
-    "French": "Je vais au restaurant pour déguster un repas délicieux.",
-    "English": "I'm going to the restaurant to enjoy a delicious meal."
+    "French": "Je voudrais une salade de poulet pour le déjeuner.",
+    "English": "I would like a chicken salad for lunch."
   },
   {
-    "French": "J'aime bien manger du poisson grillé avec une salade de tomates et de moutardes.",
-    "English": "I like grilled fish with a salad of tomatoes and mustard."
+    "French": "Pouvez-vous recommandez-moi un restaurant pour diner?",
+    "English": "Can you recommend a restaurant for dinner?"
   },
   {
-    "French": "Le restaurant propose une carte de fromages français et une sélection de vins.",
-    "English": "The restaurant offers a menu of French cheeses and a selection of wines."
+    "French": "J'aime manger du fromage avec une baguette.",
+    "English": "I like to eat cheese with a baguette."
   },
   {
-    "French": "Je préfère manger des légumes bio et des fruits frais pour une collation.",
-    "English": "I prefer to eat organic vegetables and fresh fruits for a snack."
+    "French": "Le vin rouge est plus préféré en France.",
+    "English": "Red wine is more popular in France."
   },
   {
-    "French": "Le dessert est toujours le moment le plus agréable de la repas.",
-    "English": "Dessert is always the most enjoyable part of the meal."
+    "French": "La crème brûlée est un dessert traditionnel français.",
+    "English": "Creme brulee is a traditional French dessert."
+  },
+  {
+    "French": "J'adore manger des crepes aux fruits rouges.",
+    "English": "I love to eat red fruit crepes."
+  },
+  {
+    "French": "Le foie gras est un mets délicieux en France.",
+    "English": "Foie gras is a delicious dish in France."
+  },
+  {
+    "French": "La soupe à la bisque de homard est excellente.",
+    "English": "The lobster bisque soup is excellent."
+  },
+  {
+    "French": "J'ai goûté une tartine de thon hier soir.",
+    "English": "I had a tuna sandwich last night."
+  },
+  {
+    "French": "La baguette est un pain traditionnel français.",
+    "English": "Baguette is a traditional French bread."
   }
 ]
