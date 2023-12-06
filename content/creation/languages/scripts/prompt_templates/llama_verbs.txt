@@ -4,13 +4,48 @@ Task: Create a JSON file containing pairs of single words in ${Language1} and th
 
 [
 {
-"${Language1}": "Word in ${Language1}",
-"${Language2}": "Translation in ${Language2}"
+    "English": "I do",
+    "French": "Je fais"
 },
-// More word pairs here
+{
+    "English": "you do (singular informal)",
+    "French": "tu fais"
+},
+{
+    "English": "he does",
+    "French": "il fait"
+},
+{
+    "English": "she does",
+    "French": "elle fait"
+},
+{
+    "English": "we do",
+    "French": "nous faisons"
+},
+{
+    "English": "you do (plural or formal)",
+    "French": "vous faites"
+},
+{
+    "English": "they do (masculine or mixed)",
+    "French": "ils font"
+},
+{
+    "English": "they do (feminine)",
+    "French": "elles font"
+},
+{
+    "English": "I read",
+    "French": "je lis"
+},
+{
+    "English": "we speak",
+    "French": "nous parlons"
+}
 ]
 
 [INST]
-Please provide a list of 10 such word pairs.
+Please provide a list of 5 such word pairs in the same JSON format as above.
 
 [/INST]
