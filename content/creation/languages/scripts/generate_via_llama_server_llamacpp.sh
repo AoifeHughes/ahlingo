@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Define languages
+language1="French"
+language2="English"
+
 # Define the number of runs for each prompt
 number_of_runs=1
 
@@ -12,14 +16,9 @@ SERVER_PORT="8080"
 SERVER_CMD="/Users/ahughes/git/llama.cpp/server"
 SERVER_ARGS="-m $MODEL_PATH -c $CONTEXT_SIZE --host $SERVER_HOST --port $SERVER_PORT"
 
-PROMPTS_DIRS=(
-    "../French_English/comprehension/" 
-    "../French_English/translations/"
-    )
-OUTPUT_DIRS=(
-    "../French_English/comprehension/" 
-    "../French_English/translations/"
-    )
+# Generate directory paths
+PROMPTS_DIRS=($(find "../${language1}_${language2}" -type d))
+OUTPUT_DIRS=($(find "../${language1}_${language2}" -type d))
 
 # Start the llama.cpp server
 echo "Starting llama.cpp server..."
@@ -37,7 +36,7 @@ process_prompt() {
     local BASENAME=$(basename "$PROMPTS_FILE" .txt)
     
     # Ensure level-specific output directory exists
-    mkdir -p "${OUTPUT_DIR}${LEVEL}"
+    mkdir -p "${OUTPUT_DIR}/${LEVEL}"
 
     for run in $(seq 1 $number_of_runs); do
         # Set output file name with run number
