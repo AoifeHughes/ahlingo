@@ -1,0 +1,1346 @@
+<s>
+[INST]
+Task: Generate a JSON file containing a series of French sentences with their English translations, tailored to what you would expect in a beginner level text book. The sentences should focus on the theme of 'Shopping and Transactions'. Sentences should be varied.
+
+Please provide 10 such sentences.
+
+[/INST]
+
+[
+  {
+    "French": "Je vais acheter un pain au supermarché.",
+    "English": "I'm going to buy a loaf of bread at the supermarket."
+  },
+  {
+    "French": "Pouvez-vous m'aider à trouver la section des fruits ?",
+    "English": "Can you help me find the fruit section?"
+  },
+  {
+    "French": "J'ai acheté un t-shirt bleu hier.",
+    "English": "I bought a blue t-shirt yesterday."
+  },
+  {
+    "French": "Le prix de ce produit est de 20 euros.",
+    "English": "The price of this product is 20 euros."
+  },
+  {
+    "French": "Je suis venu payer mon compte à la caisse.",
+    "English": "I came to pay my bill at the checkout."
+  },
+  {
+    "French": "J'ai récupéré mes courses hier après-midi.",
+    "English": "I picked up my groceries yesterday afternoon."
+  },
+  {
+    "French": "Je ne suis pas sûr de ce que j'ai acheté.",
+    "English": "I'm not sure what I bought."
+  },
+  {
+    "French": "Pouvez-vous me donner une facture pour cela ?",
+    "English": "Can you give me a receipt for that?"
+  },
+  {
+    "French": "J'ai oublié de payer ma carte de crédit.",
+    "English": "I forgot to pay my credit card."
+  }
+]
+<s>
+[INST]
+Task: Generate a JSON file containing a series of French sentences with their English translations, tailored to what you would expect in a beginner level text book. The sentences should focus on the theme of 'Technology and Communication'. Sentences should be varied.
+
+Please provide 10 such sentences.
+
+[/INST]
+
+[
+  {
+    "French": "Je suis perdu(e) dans le web.",
+    "English": "I am lost on the internet."
+  },
+  {
+    "French": "J'adore utiliser mon smartphone pour communiquer avec mes amis.",
+    "English": "I love using my smartphone to communicate with my friends."
+  },
+  {
+    "French": "Le courriel est une méthode rapide de communication.",
+    "English": "Email is a quick method of communication."
+  },
+  {
+    "French": "Je préfère utiliser les réseaux sociaux pour rester en contact avec mes proches.",
+    "English": "I prefer to use social networks to stay in touch with my close friends and family."
+  },
+  {
+    "French": "La technologie permet de communiquer avec des personnes à travers le monde.",
+    "English": "Technology allows us to communicate with people around the world."
+  },
+  {
+    "French": "J'ai besoin d'un ordinateur pour faire mes devoirs.",
+    "English": "I need a computer to do my homework."
+  },
+  {
+    "French": "Les appareils mobiles ont révolutionné la façon dont nous communiquons.",
+    "English": "Mobile devices have revolutionized the way we communicate."
+  },
+  {
+    "French": "Je suis tombé(e) sur un site web intéressant hier.",
+    "English": "I came across an interesting website yesterday."
+  },
+  {
+    "French": "J'aime utiliser des applications pour rester organisé(e).",
+    "English": "I like to use apps to stay organized."
+  }
+]
+<s>
+[INST]
+Task: Generate a JSON file containing a series of French sentences with their English translations, tailored to what you would expect in a beginner level text book. The sentences should focus on the theme of 'Local Traditions and Practices'. Sentences should be varied.
+
+Please provide 10 such sentences.
+
+[/INST]
+
+
+[
+  {
+    "French": "La fête des lanternes a lieu chaque année en octobre.",
+    "English": "The Lantern Festival takes place every year in October."
+  },
+  {
+    "French": "Les enfants de la ville ont des traditions pour Noël.",
+    "English": "Children in the city have Christmas traditions."
+  },
+  {
+    "French": "La sainte-barbe est célébrée le 5 décembre.",
+    "English": "St. Barbara is celebrated on December 5th."
+  },
+  {
+    "French": "Le carnaval de Dunkerque est renommé dans la région.",
+    "English": "The Dunkirk Carnival is famous in the region."
+  },
+  {
+    "French": "La chasse à courre est une tradition en France.",
+    "English": "Hunting with hounds is a tradition in France."
+  },
+  {
+    "French": "Le pain briqué est un plat traditionnel de la province de Quebec.",
+    "English": "Quebec's traditional pastry is the sugar pie."
+  },
+  {
+    "French": "Les québécois ont une forte identité culturelle.",
+    "English": "The people of Quebec have a strong cultural identity."
+  },
+  {
+    "French": "La fête de la Saint-Jean est célébrée en été.",
+    "English": "The Feast of St. John is celebrated in the summer."
+  },
+  {
+    "French": "Les traditions populaires au Canada vary selon les provinces.",
+    "English": "Canadian popular traditions vary by province."
+  }
+]
+<s>
+[INST]
+Task: Generate a JSON file containing a series of French sentences with their English translations, tailored to what you would expect in a beginner level text book. The sentences should focus on the theme of 'Food and Dining'. Sentences should be varied.
+
+Please provide 10 such sentences.
+
+[/INST]
+
+
+[
+  {
+    "French": "Je voudrais une salade de poulet, s'il vous plaît.",
+    "English": "I would like a chicken salad, please."
+  },
+  {
+    "French": "Le café est servi chaud ou froid ?",
+    "English": "Is the coffee served hot or cold?"
+  },
+  {
+    "French": "Je préfère une bière blanche à une bière brune.",
+    "English": "I prefer a white beer to a brown beer."
+  },
+  {
+    "French": "J'aimerais une portion de frites, s'il vous plaît.",
+    "English": "I would like a serving of fries, please."
+  },
+  {
+    "French": "Pouvez-vous recommander un restaurant pour le dîner ?",
+    "English": "Can you recommend a restaurant for dinner?"
+  },
+  {
+    "French": "Je voudrais une portion de fromage pour accompagner mon vin.",
+    "English": "I would like a serving of cheese to go with my wine."
+  },
+  {
+    "French": "Le menu du jour est-il disponible en anglais ?",
+    "English": "Is the menu of the day available in English?"
+  },
+  {
+    "French": "J'aimerais une glace à la vanille, s'il vous plaît.",
+    "English": "I would like a vanilla ice cream, please."
+  },
+  {
+    "French": "Le vin est-il servi dans un verre ou dans un tailleur ?",
+    "English": "Is the wine served in a glass or a decanter?"
+  }
+]
+<s>
+[INST]
+Task: Generate a JSON file containing a series of French sentences with their English translations, tailored to what you would expect in a beginner level text book. The sentences should focus on the theme of 'Family and Relationships'. Sentences should be varied.
+
+Please provide 10 such sentences.
+
+[/INST]
+
+
+[
+  {
+    "French": "Je suis heureux de passer du temps avec ma famille.",
+    "English": "I am happy to spend time with my family."
+  },
+  {
+    "French": "Ma mère est une femme très gentille.",
+    "English": "My mother is a very kind woman."
+  },
+  {
+    "French": "Mon père adore faire du camping avec nous.",
+    "English": "My dad loves to go camping with us."
+  },
+  {
+    "French": "J'ai une petite sœur qui est très espièglette.",
+    "English": "I have a little sister who is very playful."
+  },
+  {
+    "French": "Nous avons des vacances avec nos cousins ​​tous les ans.",
+    "English": "We take vacations with our cousins every year."
+  },
+  {
+    "French": "Ma tante est une grande cuisinière.",
+    "English": "My aunt is a great cook."
+  },
+  {
+    "French": "Mon oncle est un grand amateur de musique.",
+    "English": "My uncle is a big music lover."
+  },
+  {
+    "French": "J'ai des amis qui sont comme une famille pour moi.",
+    "English": "I have friends who are like family to me."
+  },
+  {
+    "French": "Mon grand-père m'a raconté des histoires de son enfance.",
+    "English": "My grandfather told me stories about his childhood."
+  },
+  {
+    "French": "Nous avons une petite nièce qui est très intelligente.",
+    "English": "We have a little niece who is very smart."
+  }
+]
+<s>
+[INST]
+Task: Generate a JSON file containing a series of French sentences with their English translations, tailored to what you would expect in a beginner level text book. The sentences should focus on the theme of 'Politics and Government'. Sentences should be varied.
+
+Please provide 10 such sentences.
+
+[/INST]
+
+
+[
+  {
+    "French": "Le Président de la République française est le chef d'État de la France.",
+    "English": "The President of the French Republic is the head of state of France."
+  },
+  {
+    "French": "La Assemblée Nationale est la chambre basse du Parlement français.",
+    "English": "The National Assembly is the lower house of the French Parliament."
+  },
+  {
+    "French": "Le Sénat est la chambre haute du Parlement français.",
+    "English": "The Senate is the upper house of the French Parliament."
+  },
+  {
+    "French": "Le Premier Ministre est le chef du gouvernement français.",
+    "English": "The Prime Minister is the head of government of France."
+  },
+  {
+    "French": "La Constitution de la France définit les droits et les devoirs des citoyens français.",
+    "English": "The French Constitution defines the rights and duties of French citizens."
+  },
+  {
+    "French": "Le suffrage universel est un principe fondamental de la démocratie française.",
+    "English": "Universal suffrage is a fundamental principle of French democracy."
+  },
+  {
+    "French": "Les élus sont responsables перед le peuple français.",
+    "English": "Elected officials are responsible to the French people."
+  },
+  {
+    "French": "Le Gouvernement est responsable перед l'Assemblée Nationale.",
+    "English": "The government is responsible to the National Assembly."
+  },
+  {
+    "French": "La France est une république laïque et democratique.",
+    "English": "France is a secular and democratic republic."
+  }
+]
+<s>
+[INST]
+Task: Generate a JSON file containing a series of French sentences with their English translations, tailored to what you would expect in a beginner level text book. The sentences should focus on the theme of 'Economy and Business'. Sentences should be varied.
+
+Please provide 10 such sentences.
+
+[/INST]
+
+[
+  {
+    "French": "La France est célèbre pour sa cuisine et son vin.",
+    "English": "France is famous for its cuisine and wine."
+  },
+  {
+    "French": "Le tourisme est une industrie en plein essor en France.",
+    "English": "Tourism is a booming industry in France."
+  },
+  {
+    "French": "La région Parisienne est un important centre économique.",
+    "English": "The Paris region is an important economic center."
+  },
+  {
+    "French": "Les entrepreneurs français ont créé de nombreuses startups réussies.",
+    "English": "French entrepreneurs have founded many successful startups."
+  },
+  {
+    "French": "La France est le premier producteur de vin en Europe.",
+    "English": "France is the leading wine producer in Europe."
+  },
+  {
+    "French": "Le commerce international est essentiel pour l'économie française.",
+    "English": "International trade is crucial to the French economy."
+  },
+  {
+    "French": "Les petites entreprises sont une composante importante de l'économie française.",
+    "English": "Small businesses are a key component of the French economy."
+  },
+  {
+    "French": "Le secteur financier est réglementé strictement en France.",
+    "English": "The financial sector is strictly regulated in France."
+  },
+  {
+    "French": "La France a une forte tradition de l'innovation économique.",
+    "English": "France has a strong tradition of economic innovation."
+  }
+]
+<s>
+[INST]
+Task: Generate a JSON file containing a series of French sentences with their English translations, tailored to what you would expect in a beginner level text book. The sentences should focus on the theme of 'Personal Care and Grooming'. Sentences should be varied.
+
+Please provide 10 such sentences.
+
+[/INST]
+
+
+[
+  {
+    "French": "Je me peigne les cheveux tous les matins.",
+    "English": "I brush my hair every morning."
+  },
+  {
+    "French": "J'utilise une crème hydratante pour mes mains.",
+    "English": "I use a moisturizing cream for my hands."
+  },
+  {
+    "French": "Je me lave les dents deux fois par jour.",
+    "English": "I brush my teeth twice a day."
+  },
+  {
+    "French": "J'ai des ongles courts et soignés.",
+    "English": "I have short and well-groomed nails."
+  },
+  {
+    "French": "Je me maquille rarement, préfère une apparence naturelle.",
+    "English": "I rarely wear makeup, preferring a natural look."
+  },
+  {
+    "French": "J'utilise un déodorant pour éviter l'odeur corporelle.",
+    "English": "I use deodorant to avoid body odor."
+  },
+  {
+    "French": "Je me peigne les cheveux avec une brosse douce.",
+    "English": "I brush my hair with a soft-bristled brush."
+  },
+  {
+    "French": "J'ai une skincare routine quotidienne pour mantenir ma peau saine.",
+    "English": "I have a daily skincare routine to keep my skin healthy."
+  },
+  {
+    "French": "Je me nettoie les dents avec une floss after every meal.",
+    "English": "I floss my teeth after every meal."
+  }
+]
+<s>
+[INST]
+Task: Generate a JSON file containing a series of French sentences with their English translations, tailored to what you would expect in a beginner level text book. The sentences should focus on the theme of 'Art and Music'. Sentences should be varied.
+
+Please provide 10 such sentences.
+
+[/INST]
+
+[
+  {
+    "French": "La musique est une forme d'art qui parle à notre âme.",
+    "English": "Music is a form of art that speaks to our soul."
+  },
+  {
+    "French": "Le peintre créait des tableaux colorés et vivants.",
+    "English": "The painter created vibrant and lively paintings."
+  },
+  {
+    "French": "La symphonie était si belle que j'ai pleuré.",
+    "English": "The symphony was so beautiful that I cried."
+  },
+  {
+    "French": "Le violoniste jouait avec tant d'émotion.",
+    "English": "The violinist played with so much emotion."
+  },
+  {
+    "French": "La danseuse exécutait une chorégraphie poétique.",
+    "English": "The dancer performed a poetic choreography."
+  },
+  {
+    "French": "Le sculpteur avait créé une sculpture émouvante.",
+    "English": "The sculptor had created an emotional sculpture."
+  },
+  {
+    "French": "La peinture de Monet était si picturale.",
+    "English": "Monet's painting was so picturesque."
+  },
+  {
+    "French": "Le jazz est une musique improvisée et spontanée.",
+    "English": "Jazz is an improvised and spontaneous music."
+  },
+  {
+    "French": "L'opéra était si passionnant que je suis resté ébahi.",
+    "English": "The opera was so passionate that I was left in awe."
+  },
+  {
+    "French": "Le guitariste jouait des airs folkloriques.",
+    "English": "The guitarist played traditional folk tunes."
+  }
+]
+<s>
+[INST]
+Task: Generate a JSON file containing a series of French sentences with their English translations, tailored to what you would expect in a beginner level text book. The sentences should focus on the theme of 'Health and Emergency Situations'. Sentences should be varied.
+
+Please provide 10 such sentences.
+
+[/INST]
+
+[
+  {
+    "French": "Je suis malade. Je suis allergique au poisson.",
+    "English": "I am sick. I have an allergy to fish."
+  },
+  {
+    "French": "J'ai une blessure à la jambe.",
+    "English": "I have a leg injury."
+  },
+  {
+    "French": "Je suis tombé et je me suis cassé la jambe.",
+    "English": "I fell and broke my leg."
+  },
+  {
+    "French": "J'ai une fièvre depuis hier soir.",
+    "English": "I have had a fever since last night."
+  },
+  {
+    "French": "Je suis victime d'un accident de la route.",
+    "English": "I was involved in a car accident."
+  },
+  {
+    "French": "J'ai été blessé dans un accident de la route.",
+    "English": "I was injured in a car accident."
+  },
+  {
+    "French": "Je suis allergique aux produits laitiers.",
+    "English": "I am allergic to dairy products."
+  },
+  {
+    "French": "J'ai des symptômes d'une infection respiratoire.",
+    "English": "I have symptoms of a respiratory infection."
+  },
+  {
+    "French": "Je suis hospitalisé pour une opération.",
+    "English": "I am hospitalized for surgery."
+  }
+]
+<s>
+[INST]
+Task: Generate a JSON file containing a series of French sentences with their English translations, tailored to what you would expect in a beginner level text book. The sentences should focus on the theme of 'Society and Social Issues'. Sentences should be varied.
+
+Please provide 10 such sentences.
+
+[/INST]
+
+
+[
+  {
+    "French": "La communauté locale s'est rassemblée pour discuter des problèmes de la rue.",
+    "English": "The local community gathered to discuss street problems."
+  },
+  {
+    "French": "Les jeunes ont du mal à trouver des emplois en raison de la crise économique.",
+    "English": "Young people are having a hard time finding jobs due to the economic crisis."
+  },
+  {
+    "French": "Le changement climatique affecte les régions rurales de manière importante.",
+    "English": "Climate change is affecting rural areas significantly."
+  },
+  {
+    "French": "La diversité culturelle est une force pour notre société.",
+    "English": "Cultural diversity is a strength for our society."
+  },
+  {
+    "French": "Les droits des femmes sont souvent ignorés dans de nombreux pays.",
+    "English": "Women's rights are often ignored in many countries."
+  },
+  {
+    "French": "Le développement durable est une priorité pour notre communauté.",
+    "English": "Sustainable development is a priority for our community."
+  },
+  {
+    "French": "Les personnes âgées ont besoin de soutien et d'attention speciale.",
+    "English": "Elderly people need special support and attention."
+  },
+  {
+    "French": "Les immigrants rencontrent souvent des difficultés pour s'intégrer dans la société.",
+    "English": "Immigrants often face difficulties integrating into society."
+  },
+  {
+    "French": "La discrimination basée sur l'origine ethnique est un problème important dans notre société.",
+    "English": "Ethnicity-based discrimination is an important issue in our society."
+  },
+  {
+    "French": "Les handicapés ont le droit d'être traités avec dignité et respect.",
+    "English": "People with disabilities have the right to be treated with dignity and respect."
+  }
+]
+<s>
+[INST]
+Task: Generate a JSON file containing a series of French sentences with their English translations, tailored to what you would expect in a beginner level text book. The sentences should focus on the theme of 'Safety and Security'. Sentences should be varied.
+
+Please provide 10 such sentences.
+
+[/INST]
+
+[
+  {
+    "French": "Je suis en sécurité lorsque je porte mon ceinturon de sécurité.",
+    "English": "I am safe when I wear my seatbelt."
+  },
+  {
+    "French": "Il est important de fermer les portes et les fenêtres lorsqu'on laisse un enfant seul à la maison.",
+    "English": "It is important to lock the doors and windows when leaving a child alone at home."
+  },
+  {
+    "French": "Assurez-vous que vos feux de route soient allumés lorsque vous conductez en nocturne.",
+    "English": "Make sure your headlights are turned on when driving at night."
+  },
+  {
+    "French": "Never play with matches or lighters near flammable materials.",
+    "English": "Never play with matches or lighters near flammable materials."
+  },
+  {
+    "French": "Les escaliers peuvent être dangereux, assurez-vous de descendre avec prudence.",
+    "English": "Stairs can be dangerous, make sure to go down carefully."
+  },
+  {
+    "French": "Vous devez savoir comment sortir d'un immeuble en cas d'incendie.",
+    "English": "You should know how to exit a building in case of a fire."
+  },
+  {
+    "French": "Il est important de respecter les signes de danger et les consignes de sécurité dans les lieux publics.",
+    "English": "It is important to respect warning signs and safety instructions in public places."
+  },
+  {
+    "French": "Never talk to strangers or accept rides from people you don't know.",
+    "English": "Never talk to strangers or accept rides from people you don't know."
+  },
+  {
+    "French": "Assurez-vous que votre maison est équipée de fauchaises et de portes de sécurité.",
+    "English": "Make sure your home is equipped with smoke detectors and security doors."
+  }
+]
+<s>
+[INST]
+Task: Generate a JSON file containing a series of French sentences with their English translations, tailored to what you would expect in a beginner level text book. The sentences should focus on the theme of 'Media and Entertainment'. Sentences should be varied.
+
+Please provide 10 such sentences.
+
+[/INST]
+
+
+[
+  {
+    "French": "Le film était très amusant.",
+    "English": "The movie was really funny."
+  },
+  {
+    "French": "J'ai vu un concert de musique rock hier soir.",
+    "English": "I saw a rock music concert last night."
+  },
+  {
+    "French": "Je suis tombé en amour avec une série TV comedy.",
+    "English": "I fell in love with a comedy TV series."
+  },
+  {
+    "French": "Le livre de mon enfance est devenu un film.",
+    "English": "The book of my childhood has been made into a movie."
+  },
+  {
+    "French": "J'aime écouter de la musique während que je travaille.",
+    "English": "I like to listen to music while I work."
+  },
+  {
+    "French": "Le jeu vidéo est devenu une partie intégrante de ma vie.",
+    "English": "The video game has become an integral part of my life."
+  },
+  {
+    "French": "La publicité est un moyen important pour les marques à se faire connaître.",
+    "English": "Advertising is an important way for brands to get known."
+  },
+  {
+    "French": "Le sport est une source de divertissement pour de nombreuses personnes.",
+    "English": "Sports are a source of entertainment for many people."
+  },
+  {
+    "French": "J'aime regarder des vidéos de danse sur YouTube.",
+    "English": "I like to watch dance videos on YouTube."
+  }
+]
+<s>
+[INST]
+Task: Generate a JSON file containing a series of French sentences with their English translations, tailored to what you would expect in a beginner level text book. The sentences should focus on the theme of 'Religion and Spirituality'. Sentences should be varied.
+
+Please provide 10 such sentences.
+
+[/INST]
+
+
+[
+  {
+    "French": "La religion est une source de paix et de sérénité.",
+    "English": "Religion is a source of peace and serenity."
+  },
+  {
+    "French": "Le spirituel est plus important que le matériel.",
+    "English": "The spiritual is more important than the material."
+  },
+  {
+    "French": "La prière est une communication avec Dieu.",
+    "English": "Prayer is a communication with God."
+  },
+  {
+    "French": "Le sacrifice est une nécessité pour atteindre la lumière divine.",
+    "English": "Sacrifice is necessary to reach divine light."
+  },
+  {
+    "French": "Les enseignements de la Bible sont des guides pour la vie.",
+    "English": "The teachings of the Bible are guides for life."
+  },
+  {
+    "French": "Le coran est un livre sacré pour les musulmans.",
+    "English": "The Quran is a sacred book for Muslims."
+  },
+  {
+    "French": "La méditation est une pratique spirituelle qui peut nous aider à trouver la paix intérieure.",
+    "English": "Meditation is a spiritual practice that can help us find inner peace."
+  },
+  {
+    "French": "Le yoga est une discipline spirituelle qui nous aide à nous détendre et à nous connecter avec notre soi profond.",
+    "English": "Yoga is a spiritual discipline that helps us relax and connect with our inner self."
+  },
+  {
+    "French": "Les religions sont des voies différentes pour atteindre la même destination.",
+    "English": "Religions are different paths to reach the same destination."
+  }
+]
+<s>
+[INST]
+Task: Generate a JSON file containing a series of French sentences with their English translations, tailored to what you would expect in a beginner level text book. The sentences should focus on the theme of 'Work and Education'. Sentences should be varied.
+
+Please provide 10 such sentences.
+
+[/INST]
+
+
+[
+  {
+    "French": "Je suis étudiant en informatique.",
+    "English": "I am a computer science student."
+  },
+  {
+    "French": "J'aime travailler en équipe.",
+    "English": "I like to work in a team."
+  },
+  {
+    "French": "Je suis professeur de mathématiques.",
+    "English": "I am a math teacher."
+  },
+  {
+    "French": "Le travail est important pour moi.",
+    "English": "Work is important to me."
+  },
+  {
+    "French": "Je suis passionné par l'éducation.",
+    "English": "I am passionate about education."
+  },
+  {
+    "French": "Je vais à l'université tous les matins.",
+    "English": "I go to university every morning."
+  },
+  {
+    "French": "J'ai des devoirs à faire ce soir.",
+    "English": "I have homework to do tonight."
+  },
+  {
+    "French": "Je suis fatigué après une journée de travail.",
+    "English": "I am tired after a day of work."
+  },
+  {
+    "French": "La formation professionnelle est nécessaire pour réussir.",
+    "English": "Professional training is necessary to succeed."
+  },
+  {
+    "French": "Je suis motivé par la réussite de mes étudiants.",
+    "English": "I am motivated by the success of my students."
+  }
+]
+<s>
+[INST]
+Task: Generate a JSON file containing a series of French sentences with their English translations, tailored to what you would expect in a beginner level text book. The sentences should focus on the theme of 'Daily Activities and Hobbies'. Sentences should be varied.
+
+Please provide 10 such sentences.
+
+[/INST]
+
+
+[
+  {
+    "French": "Je m' lever tôt le matin pour aller à l'école.",
+    "English": "I wake up early in the morning to go to school."
+  },
+  {
+    "French": "J'aime faire du vélo le week-end.",
+    "English": "I like to ride my bike on the weekends."
+  },
+  {
+    "French": "Je suis amateur de musique et je joue de la guitare.",
+    "English": "I enjoy music and play the guitar."
+  },
+  {
+    "French": "Mon père est cuisinier et il fait des déjeuners délicieux.",
+    "English": "My dad is a chef and he makes delicious meals."
+  },
+  {
+    "French": "Je suis étudiante et je suis toujours très occupée.",
+    "English": "I am a student and I am always very busy."
+  },
+  {
+    "French": "J'adore faire du shopping avec mes amis.",
+    "English": "I love going shopping with my friends."
+  },
+  {
+    "French": "Mon frère est fan de foot et il joue dans son école.",
+    "English": "My brother is a soccer fan and he plays on his school team."
+  },
+  {
+    "French": "Je suis une étudiante très diligente et je suis toujours concentrée.",
+    "English": "I am a very diligent student and I am always focused."
+  },
+  {
+    "French": "J'aime beaucoup lire des livres de fiction.",
+    "English": "I love reading fiction books."
+  },
+  {
+    "French": "Mon meilleur ami est un passionné d'informatique et il enseigne à l'école.",
+    "English": "My best friend is a computer enthusiast and he teaches at school."
+  }
+]
+<s>
+[INST]
+Task: Generate a JSON file containing a series of French sentences with their English translations, tailored to what you would expect in a beginner level text book. The sentences should focus on the theme of 'Festivals and Celebrations'. Sentences should be varied.
+
+Please provide 10 such sentences.
+
+[/INST]
+
+
+[
+  {
+    "French": "La fête des Rois est une tradition populaire en France.",
+    "English": "The Feast of the Kings is a popular tradition in France."
+  },
+  {
+    "French": "Le Carnaval de Dunkerque est l'un des plus beaux festivals de France.",
+    "English": "The Carnival of Dunkirk is one of the most beautiful festivals in France."
+  },
+  {
+    "French": "La Fête des Mères est une journée spéciale pour les mères.",
+    "English": "Mother's Day is a special day for mothers."
+  },
+  {
+    "French": "Le festival de jazz à Bourges attire des musiciens de tout le monde.",
+    "English": "The jazz festival in Bourges attracts musicians from all over the world."
+  },
+  {
+    "French": "La Chandeleur est une fête religieuse pour les catholiques.",
+    "English": "Candlemas is a religious holiday for Catholics."
+  },
+  {
+    "French": "Le Printemps des Cites est un festival de musique qui a lieu à Reims.",
+    "English": "The Spring of the Cities is a music festival held in Reims."
+  },
+  {
+    "French": "La Fête des Vendanges est une tradition provençale.",
+    "English": "The Grape Harvest Festival is a Provençal tradition."
+  },
+  {
+    "French": "Le festival de rock à Nantes attire des fans de tout le pays.",
+    "English": "The rock festival in Nantes attracts fans from all over the country."
+  },
+  {
+    "French": "La Fête de la Musique est une fête nationale en France.",
+    "English": "Music Day is a national holiday in France."
+  }
+]
+<s>
+[INST]
+Task: Generate a JSON file containing a series of French sentences with their English translations, tailored to what you would expect in a beginner level text book. The sentences should focus on the theme of 'Nature and Environment'. Sentences should be varied.
+
+Please provide 10 such sentences.
+
+[/INST]
+
+
+[
+  {
+    "French": "La terre est riche en eau.",
+    "English": "The earth is rich in water."
+  },
+  {
+    "French": "Le soleil se lève au levant.",
+    "English": "The sun rises in the east."
+  },
+  {
+    "French": "La pluie fait croître les plantes.",
+    "English": "Rain makes plants grow."
+  },
+  {
+    "French": "Les oiseaux chantent dans les arbres.",
+    "English": "Birds sing in the trees."
+  },
+  {
+    "French": "La lune est une belle chose à voir.",
+    "English": "The moon is a beautiful sight to behold."
+  },
+  {
+    "French": "Les océans sont vastes et profonds.",
+    "English": "The oceans are vast and deep."
+  },
+  {
+    "French": "Le vent souffle doux et chaud en été.",
+    "English": "The wind blows soft and warm in the summer."
+  },
+  {
+    "French": "Les arbres perdent leurs feuilles en automne.",
+    "English": "Trees lose their leaves in the fall."
+  },
+  {
+    "French": "La neige est blanche et lisse.",
+    "English": "Snow is white and smooth."
+  }
+]
+<s>
+[INST]
+Task: Generate a JSON file containing a series of French sentences with their English translations, tailored to what you would expect in a beginner level text book. The sentences should focus on the theme of 'Numbers and Time'. Sentences should be varied.
+
+Please provide 10 such sentences.
+
+[/INST]
+
+
+[
+  {
+    "French": "J'ai 5 ans.",
+    "English": "I am 5 years old."
+  },
+  {
+    "French": "Je suis allé(e) à l'école depuis 6 heures.",
+    "English": "I have been at school for 6 hours."
+  },
+  {
+    "French": "J'ai 10 frères et sœurs.",
+    "English": "I have 10 brothers and sisters."
+  },
+  {
+    "French": "Nous avons 20 jours à faire nos devoirs.",
+    "English": "We have 20 days to do our homework."
+  },
+  {
+    "French": "J'ai commencé à apprendre l'anglais il y a 3 mois.",
+    "English": "I started learning English three months ago."
+  },
+  {
+    "French": "Il y a 5 minutes que j'attends.",
+    "English": "I have been waiting for 5 minutes."
+  },
+  {
+    "French": "J'ai une sœur qui a 12 ans.",
+    "English": "I have a sister who is 12 years old."
+  },
+  {
+    "French": "Nous allons à l'école tous les jours depuis 8 heures.",
+    "English": "We go to school every day from 8am."
+  },
+  {
+    "French": "J'ai pris 10 photographes aujourd'hui.",
+    "English": "I took 10 photographs today."
+  },
+  {
+    "French": "Il y a 4 heures que j'ai fini mon travail.",
+    "English": "I finished my work 4 hours ago."
+  }
+]
+<s>
+[INST]
+Task: Generate a JSON file containing a series of French sentences with their English translations, tailored to what you would expect in a beginner level text book. The sentences should focus on the theme of 'Directions and Locations'. Sentences should be varied.
+
+Please provide 10 such sentences.
+
+[/INST]
+
+
+[
+  {
+    "French": "Je vais à la bibliothèque.",
+    "English": "I am going to the library."
+  },
+  {
+    "French": "La bibliothèque est near the park.",
+    "English": "The library is near the park."
+  },
+  {
+    "French": "Le supermarché est à gauche.",
+    "English": "The supermarket is on the left."
+  },
+  {
+    "French": "J'ai besoin d'une carte de Paris.",
+    "English": "I need a map of Paris."
+  },
+  {
+    "French": "La tour Eiffel est à Paris.",
+    "English": "The Eiffel Tower is in Paris."
+  },
+  {
+    "French": "Je suis perdu(e) dans la ville.",
+    "English": "I am lost in the city."
+  },
+  {
+    "French": "Pouvez-vous m'aider à trouver l'adresse de mon hôtel?",
+    "English": "Can you help me find the address of my hotel?"
+  },
+  {
+    "French": "L'hôtel est located near the river.",
+    "English": "The hotel is located near the river."
+  },
+  {
+    "French": "Je vais à la plage demain.",
+    "English": "I am going to the beach tomorrow."
+  },
+  {
+    "French": "La plage est à une heure de voiture de là.",
+    "English": "The beach is an hour's drive away."
+  }
+]
+<s>
+[INST]
+Task: Generate a JSON file containing a series of French sentences with their English translations, tailored to what you would expect in a beginner level text book. The sentences should focus on the theme of 'Weather and Seasons'. Sentences should be varied.
+
+Please provide 10 such sentences.
+
+[/INST]
+
+
+[
+  {
+    "French": "Il fait beau temps aujourd'hui.",
+    "English": "It's a beautiful day today."
+  },
+  {
+    "French": "La pluie rend la terre humide.",
+    "English": "The rain makes the ground wet."
+  },
+  {
+    "French": "Le soleil brille dans le ciel.",
+    "English": "The sun shines in the sky."
+  },
+  {
+    "French": "Les arbres ont des feuilles jaunes en automne.",
+    "English": "The trees have yellow leaves in the fall."
+  },
+  {
+    "French": "La neige est blanche et froide.",
+    "English": "The snow is white and cold."
+  },
+  {
+    "French": "Le vent souffle fort aujourd'hui.",
+    "English": "The wind is blowing strongly today."
+  },
+  {
+    "French": "La température est très chaude en été.",
+    "English": "The temperature is very hot in the summer."
+  },
+  {
+    "French": "Les oiseaux chantent dans les arbres en printemps.",
+    "English": "The birds sing in the trees in the spring."
+  },
+  {
+    "French": "La météo annonce une tempête pour demain.",
+    "English": "The weather forecast says a storm for tomorrow."
+  },
+  {
+    "French": "Les fleurs sont en train de fleurir.",
+    "English": "The flowers are blooming."
+  }
+]
+<s>
+[INST]
+Task: Generate a JSON file containing a series of French sentences with their English translations, tailored to what you would expect in a beginner level text book. The sentences should focus on the theme of 'Culture and Customs'. Sentences should be varied.
+
+Please provide 10 such sentences.
+
+[/INST]
+
+
+[
+  {
+    "French": "La France est connue pour sa cuisine délicieuse et ses vignes renommées.",
+    "English": "France is known for its delicious food and famous wines."
+  },
+  {
+    "French": "Les français aiment beaucoup la musique et le dance.",
+    "English": "The French love music and dancing very much."
+  },
+  {
+    "French": "La Bastille Day est une fête nationale française qui célèbre la révolution française.",
+    "English": "Bastille Day is a French national holiday that celebrates the French Revolution."
+  },
+  {
+    "French": "Les français ont une grande culture de la mode et du design.",
+    "English": "The French have a great culture of fashion and design."
+  },
+  {
+    "French": "Le chocolat est un délice français fameux dans le monde.",
+    "English": "Famous French delicacy: chocolate."
+  },
+  {
+    "French": "La vie quotidienne en France est très différente de celle des États-Unis.",
+    "English": "Everyday life in France is very different from that of the United States."
+  },
+  {
+    "French": "Les français ont une grande passion pour la lecture et les livres.",
+    "English": "The French have a great passion for reading and books."
+  },
+  {
+    "French": "Le sport très populaire en France est le football (soccer).",
+    "English": "Soccer (football) is a very popular sport in France."
+  },
+  {
+    "French": "Les français ont une grande culture de la gastronomie et du vin.",
+    "English": "The French have a great culture of cuisine and wine."
+  }
+]
+<s>
+[INST]
+Task: Generate a JSON file containing a series of French sentences with their English translations, tailored to what you would expect in a beginner level text book. The sentences should focus on the theme of 'Legal and Law-Related Topics'. Sentences should be varied.
+
+Please provide 10 such sentences.
+
+[/INST]
+
+
+[
+  {
+    "French": "La propriété intellectuelle est protégée par le droit d'auteur.",
+    "English": "Intellectual property is protected by copyright law."
+  },
+  {
+    "French": "Un contrat est une promesse réciproque entre deux parties.",
+    "English": "A contract is a reciprocal promise between two parties."
+  },
+  {
+    "French": "Le fonctionnaire de justice est responsable de l'application de la loi.",
+    "English": "The judicial officer is responsible for the application of the law."
+  },
+  {
+    "French": "La peine de prison peut être remplacée par une amende ou des travaux d'intérêt général.",
+    "English": "The prison sentence can be replaced by a fine or community service."
+  },
+  {
+    "French": "Le témoignage d'un enfant peut êtrereceived under oath in court.",
+    "English": "The testimony of a child can be received under oath in court."
+  },
+  {
+    "French": "La preuve par écrit est considérée comme suffisante dans de nombreux cas judiciaires.",
+    "English": "Written proof is considered sufficient in many legal cases."
+  },
+  {
+    "French": "Le juge peut ordonner une expertise pour élucider les faits d'un procès.",
+    "English": "The judge can order an investigation to clarify the facts of a case."
+  },
+  {
+    "French": "La procédure de médiation est utilisée pour résoudre les disputes extrajudiciaires.",
+    "English": "The mediation process is used to resolve extrajudicial disputes."
+  },
+  {
+    "French": "Le droit d'asile est garanti par la Constitution et les lois du pays.",
+    "English": "The right of asylum is guaranteed by the Constitution and laws of the country."
+  }
+]
+<s>
+[INST]
+Task: Generate a JSON file containing a series of French sentences with their English translations, tailored to what you would expect in a beginner level text book. The sentences should focus on the theme of 'Science and Innovation'. Sentences should be varied.
+
+Please provide 10 such sentences.
+
+[/INST]
+
+
+[
+  {
+    "French": "La science est une source d'innovation.",
+    "English": "Science is a source of innovation."
+  },
+  {
+    "French": "Les scientifiques ont créé une nouvelle technologie pour étudier les océans.",
+    "English": "Scientists have created a new technology to study the oceans."
+  },
+  {
+    "French": "L'innovation est essential pour améliorer la qualité de vie des gens.",
+    "English": "Innovation is essential to improve people's quality of life."
+  },
+  {
+    "French": "La recherche scientifique permet de trouver des solutions aux défis de notre temps.",
+    "English": "Scientific research allows us to find solutions to the challenges of our time."
+  },
+  {
+    "French": "Les avancées technologiques ont changé la façon dont nous vivons.",
+    "English": "Technological advances have changed the way we live."
+  },
+  {
+    "French": "La science et l'innovation sont les clefs de l'avenir.",
+    "English": "Science and innovation are the keys to the future."
+  },
+  {
+    "French": "Les scientifiques étudient la faune et la flore pour préserver la planète.",
+    "English": "Scientists study animals and plants to preserve the planet."
+  },
+  {
+    "French": "L'innovation peut aider à résoudre les problèmes de l'environnement.",
+    "English": "Innovation can help solve environmental problems."
+  },
+  {
+    "French": "La science et l'innovation sont essentielles pour améliorer la santé des gens.",
+    "English": "Science and innovation are essential to improve people's health."
+  }
+]
+<s>
+[INST]
+Task: Generate a JSON file containing a series of French sentences with their English translations, tailored to what you would expect in a beginner level text book. The sentences should focus on the theme of 'Travel and Transportation'. Sentences should be varied.
+
+Please provide 10 such sentences.
+
+[/INST]
+
+
+[
+  {
+    "French": "Je vais prendre l'avion pour aller à Paris.",
+    "English": "I am going to take the plane to go to Paris."
+  },
+  {
+    "French": "J'ai pris le train pour aller à la plage.",
+    "English": "I took the train to go to the beach."
+  },
+  {
+    "French": "Nous allons prendre un bateau pour explorer les îles.",
+    "English": "We are going to take a boat to explore the islands."
+  },
+  {
+    "French": "Je suis en train de prendre un taxi pour aller au centre-ville.",
+    "English": "I am taking a taxi to go to the city center."
+  },
+  {
+    "French": "J'ai pris un bus pour aller à l'aéroport.",
+    "English": "I took the bus to go to the airport."
+  },
+  {
+    "French": "Nous allons louer une voiture pour explorer la région.",
+    "English": "We are going to rent a car to explore the area."
+  },
+  {
+    "French": "Je vais prendre un vol pour rejoindre ma famille à l'étranger.",
+    "English": "I am going to take a flight to join my family abroad."
+  },
+  {
+    "French": "J'ai pris le métro pour aller au musée.",
+    "English": "I took the subway to go to the museum."
+  },
+  {
+    "French": "Nous allons prendre un bateau à vapeur pour explorer les canaux de Amsterdam.",
+    "English": "We are going to take a steamboat to explore the canals of Amsterdam."
+  }
+]
+<s>
+[INST]
+Task: Generate a JSON file containing a series of French sentences with their English translations, tailored to what you would expect in a beginner level text book. The sentences should focus on the theme of 'Basic Greetings and Introductions'. Sentences should be varied.
+
+Please provide 10 such sentences.
+
+[/INST]
+
+
+[
+  {
+    "French": "Bonjour, comment vas-tu?",
+    "English": "Hello, how are you?"
+  },
+  {
+    "French": "Salut, je m'appelle Marie.",
+    "English": "Hi, my name is Mary."
+  },
+  {
+    "French": "Je m'appelle Jacques et je viens des États-Unis.",
+    "English": "My name is Jack and I am from the United States."
+  },
+  {
+    "French": "Comment t'appelles-tu?",
+    "English": "What is your name?"
+  },
+  {
+    "French": "Je suis ravi de te rencontrer.",
+    "English": "Nice to meet you."
+  },
+  {
+    "French": "Bonne année! Comment allez-vous?",
+    "English": "Happy new year! How are you?"
+  },
+  {
+    "French": "Je suis désolé(e), je ne parle pas français.",
+    "English": "Sorry, I don't speak French."
+  },
+  {
+    "French": "Pouvez-vous m'aider? Je suis perdu(e).",
+    "English": "Can you help me? I am lost."
+  },
+  {
+    "French": "Je suis heureux(se) de vous rencontrer.",
+    "English": "Nice to meet you."
+  }
+]
+<s>
+[INST]
+Task: Generate a JSON file containing a series of French sentences with their English translations, tailored to what you would expect in a beginner level text book. The sentences should focus on the theme of 'History and Geography'. Sentences should be varied.
+
+Please provide 10 such sentences.
+
+[/INST]
+
+
+[
+  {
+    "French": "La France est un pays de la Europe.",
+    "English": "France is a country in Europe."
+  },
+  {
+    "French": "Le musée du Louvre est situé à Paris.",
+    "English": "The Louvre Museum is located in Paris."
+  },
+  {
+    "French": "La pyramide de Gizeh est une des merveilles du monde.",
+    "English": "The Pyramid of Giza is one of the wonders of the world."
+  },
+  {
+    "French": "Le Mont-Blanc est la plus haute montagne de France.",
+    "English": "Mount Blanc is the highest mountain in France."
+  },
+  {
+    "French": "La Rivière Nile coule au travers de l'Égypte.",
+    "English": "The Nile River flows through Egypt."
+  },
+  {
+    "French": "Le Roi Richelieu a construit le Château de Versailles.",
+    "English": "King Richelieu built the Palace of Versailles."
+  },
+  {
+    "French": "La Révolution française a eu lieu en 1789.",
+    "English": "The French Revolution took place in 1789."
+  },
+  {
+    "French": "Le Président Franklin Roosevelt a mené la Américaine durante la Seconde Guerre mondiale.",
+    "English": "President Franklin Roosevelt led the Americans during World War II."
+  },
+  {
+    "French": "La Déclaration des Droits de l'Homme et du Citoyen a été adoptée en 1789.",
+    "English": "The Declaration of the Rights of Man and Citizen was adopted in 1789."
+  },
+  {
+    "French": "Le Musée d'Orsay est consacré aux beaux-arts du XIXe siècle.",
+    "English": "The Orsay Museum is dedicated to 19th-century fine arts."
+  }
+]
+<s>
+[INST]
+Task: Generate a JSON file containing a series of French sentences with their English translations, tailored to what you would expect in a beginner level text book. The sentences should focus on the theme of 'Sports and Fitness'. Sentences should be varied.
+
+Please provide 10 such sentences.
+
+[/INST]
+
+
+[
+  {
+    "French": "Je suis fatigué après avoir couru 10 km.",
+    "English": "I am tired after running 10 km."
+  },
+  {
+    "French": "J'aime faire du foot dans le parc.",
+    "English": "I like to play soccer in the park."
+  },
+  {
+    "French": "Il fait froid aujourd'hui, je vais aller skier.",
+    "English": "It's cold today, I'm going skiing."
+  },
+  {
+    "French": "Je suis une femme active, j'aime faire du sport.",
+    "English": "I am an active woman, I like to do sports."
+  },
+  {
+    "French": "J'ai commencé à pratiquer le yoga il y a six mois.",
+    "English": "I started practicing yoga six months ago."
+  },
+  {
+    "French": "Je préfère faire du vélo que de courir.",
+    "English": "I prefer to ride a bike than to run."
+  },
+  {
+    "French": "Mon frère est un sportif, il fait du basketball.",
+    "English": "My brother is an athlete, he plays basketball."
+  },
+  {
+    "French": "Je suis allergique aux coups de soleil, donc je doit porter un chapeau et des gants pour faire du ski.",
+    "English": "I am allergic to sunburns, so I have to wear a hat and gloves when skiing."
+  },
+  {
+    "French": "J'adore nager dans la mer, c'est mon sport préféré.",
+    "English": "I love swimming in the sea, it's my favorite sport."
+  }
+]

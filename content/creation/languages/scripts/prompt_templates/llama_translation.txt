@@ -4,15 +4,32 @@ Task: Generate a JSON file containing a series of ${Language1} sentences with th
 
 [
   {
-    "${Language1}": "Example ${Language1} sentence.",
-    "${Language2}": "Full ${Language2} translation."
+    "English": "How are you today?",
+    "French": "Comment vas-tu aujourd'hui ?"
   },
-  // More sentences here
+  {
+    "English": "I am learning to speak French.",
+    "French": "J'apprends à parler français."
+  },
+  {
+    "English": "The weather is nice this afternoon.",
+    "French": "Le temps est agréable cet après-midi."
+  },
+  {
+    "English": "Can you help me with my homework?",
+    "French": "Peux-tu m'aider avec mes devoirs ?"
+  },
+  {
+    "English": "My family is going on vacation next week.",
+    "French": "Ma famille part en vacances la semaine prochaine."
+  },
+  {
+    "English": "This restaurant has delicious food.",
+    "French": "Ce restaurant a de la nourriture délicieuse."
+  }
 ]
 
 [INST]
-Please provide 10 such sentences.
+Please provide 5 such sentences in the same JSON format as above.
 
 [/INST]
-
-Sure, here you go:
