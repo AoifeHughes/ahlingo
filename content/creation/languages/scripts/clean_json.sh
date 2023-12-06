@@ -22,6 +22,6 @@ process_json_file() {
 }
 
 # Find all .json files and process them
-find . -name "*.json" -type f | while read file; do
+find ../ -name "*.json" -type f | while read file; do
     process_json_file "$file"
 done
