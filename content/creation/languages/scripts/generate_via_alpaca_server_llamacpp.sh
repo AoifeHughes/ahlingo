@@ -40,7 +40,7 @@ process_prompt() {
 
     for run in $(seq 1 $number_of_runs); do
         # Set output file name with run number
-        OUTPUT_FILE="${OUTPUT_DIR}${LEVEL}/${BASENAME}_run_${run}_response.json"
+        OUTPUT_FILE="${OUTPUT_DIR}${LEVEL}/${BASENAME}_run_${run}_response_mistral.json"
 
         # Prepare data for POST request
         local DATA=$(cat "$PROMPTS_FILE" | jq -Rs '{prompt: .}')
