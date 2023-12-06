@@ -58,8 +58,7 @@ process_prompt() {
     done
 }
 
-./make_prompts_alpaca_comprehension.sh
-./make_prompts_alpaca_translations.sh
+./make_prompts_alpaca.sh
 
 # Loop over PROMPTS_DIRS and OUTPUT_DIRS
 for i in "${!PROMPTS_DIRS[@]}"; do

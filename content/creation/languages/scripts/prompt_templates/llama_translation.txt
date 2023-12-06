@@ -1,0 +1,18 @@
+[INST]
+Task: Generate a JSON file containing a series of ${Language1} sentences with their ${Language2} translations, tailored to what you would expect in a $level level text book. The sentences should focus on the theme of '$topic'. Sentences should be varied.
+[/INST]
+
+[
+  {
+    "${Language1}": "Example ${Language1} sentence.",
+    "${Language2}": "Full ${Language2} translation."
+  },
+  // More sentences here
+]
+
+[INST]
+Please provide 10 such sentences.
+
+[/INST]
+
+Sure, here you go:
