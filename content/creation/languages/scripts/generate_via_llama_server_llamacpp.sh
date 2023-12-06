@@ -4,9 +4,9 @@
 number_of_runs=1
 
 # Server startup configurations
-#MODEL_PATH="/Users/ahughes/git/LLMs/llama-2-13b-chat.Q4_K_M.gguf"
+MODEL_PATH="/Users/ahughes/git/LLMs/llama-2-13b-chat.Q4_K_M.gguf"
 #MODEL_PATH="/Users/ahughes/git/LLMs/yi-34b.Q4_K_M.gguf"
-MODEL_PATH="/Users/ahughes/git/LLMs/hermes-trismegistus-mistral-7b.Q5_K_M.gguf"
+#MODEL_PATH="/Users/ahughes/git/LLMs/hermes-trismegistus-mistral-7b.Q5_K_M.gguf"
 CONTEXT_SIZE=1024
 SERVER_HOST="127.0.0.1"
 SERVER_PORT="8080"
@@ -42,7 +42,7 @@ process_prompt() {
 
     for run in $(seq 1 $number_of_runs); do
         # Set output file name with run number
-        OUTPUT_FILE="${OUTPUT_DIR}${LEVEL}/${BASENAME}_run_${run}_response.json"
+        OUTPUT_FILE="${OUTPUT_DIR}${LEVEL}/${BASENAME}_run_${run}_response_llama.json"
 
         # Prepare data for POST request
         local DATA=$(cat "$PROMPTS_FILE" | jq -Rs '{prompt: .}')
@@ -53,7 +53,6 @@ process_prompt() {
                                        --header "Content-Type: application/json" \
                                        --data "$DATA")
 
-        echo "$FULL_RESPONSE" 
         # Save the response
         echo "$FULL_RESPONSE" | jq -r '.content' > "$OUTPUT_FILE"
     done
