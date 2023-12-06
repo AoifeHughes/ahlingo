@@ -28,10 +28,10 @@ do
     do
         # Create a prompt for each topic and level
         prompt=$(cat <<EOF
-### Instruction: 
-Generate a JSON file containing a series of ${Language1} sentences tailored to what you would expect in a $level level text book. The sentences should be conversation about '$topic' and be 2-5 exchanges long. Do not enter comments of any kind as this is not valid JSON.
+[INST]
+Task: Generate a JSON file containing a series of ${Language1} sentences tailored to what you would expect in a $level level text book. The sentences should be conversation about '$topic' and be 2-5 exchanges long. Do not enter comments of any kind as this is not valid JSON.
+[/INST]
 
-### Response:
 [
   {
     "conversation": [
@@ -51,18 +51,18 @@ Generate a JSON file containing a series of ${Language1} sentences tailored to w
     ],
     "conversation_summary": "Summary of exchange in ${Language2}"
   }
-  // More conversations here
 ]
 
+[INST]
+Please provide 3 more conversations
 
+[/INST]
 
-###  Instruction: 
-Please provide 5 such conversations with varied amount of exchanges. 
-
+Sure, here you go:
 EOF
         )
 
         # Write the prompt to a file in the respective level directory
-        echo "$prompt" > "${Language1}_${Language2}/comprehension/${level}/prompt_alpaca_${topic// /_}.txt"
+        echo "$prompt" > "../${Language1}_${Language2}/comprehension/${level}/prompt_${topic// /_}.txt"
     done
 done

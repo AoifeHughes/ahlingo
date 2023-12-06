@@ -40,11 +40,10 @@ Task: Generate a JSON file containing a series of ${Language1} words with their 
     "${Language1}": "Example ${Language1} sentence.",
     "${Language2}": "Full ${Language2} translation."
   },
-  // More sentences here
 ]
 
 [INST]
-Please provide 25 such sentences in JSON format only.
+Please provide 10 such sentences in JSON format only.
 
 [/INST]
 
@@ -53,7 +52,7 @@ EOF
             )
 
             # Write the prompt to a file in the respective chapter directory
-            echo "$prompt" > "${Language1}_${Language2}/By_Chapter/${chapter_counter}_${chapter}/prompt_${topic// /_}.txt"
+            echo "$prompt" > "../${Language1}_${Language2}/By_Chapter/${chapter_counter}_${chapter}/prompt_${topic// /_}.txt"
         done
 
         # Increment the chapter counter

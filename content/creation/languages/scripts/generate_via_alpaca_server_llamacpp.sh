@@ -4,20 +4,20 @@
 number_of_runs=1
 
 # Server startup configurations
-MODEL_PATH="/Users/ahughes/git/LLMs/llama-2-13b-chat.Q4_K_M.gguf"
-CONTEXT_SIZE=2048
+MODEL_PATH="/Users/ahughes/git/LLMs/hermes-trismegistus-mistral-7b.Q5_K_M.gguf"
+CONTEXT_SIZE=1024
 SERVER_HOST="127.0.0.1"
 SERVER_PORT="8080"
 SERVER_CMD="/Users/ahughes/git/llama.cpp/server"
 SERVER_ARGS="-m $MODEL_PATH -c $CONTEXT_SIZE --host $SERVER_HOST --port $SERVER_PORT"
 
 PROMPTS_DIRS=(
-    "./French_English/comprehension/" 
+    "../French_English/comprehension/" 
     "./French_English/translations/"
     )
 OUTPUT_DIRS=(
-    "./French_English/comprehension/" 
-    "./French_English/translations/"
+    "../French_English/comprehension/" 
+    "../French_English/translations/"
     )
 
 # Start the llama.cpp server
@@ -51,13 +51,14 @@ process_prompt() {
                                        --header "Content-Type: application/json" \
                                        --data "$DATA")
 
+        echo "$FULL_RESPONSE" 
         # Save the response
         echo "$FULL_RESPONSE" | jq -r '.content' > "$OUTPUT_FILE"
     done
 }
 
-./make_prompts_comprehension.sh
-./make_prompts_translations.sh
+./make_prompts_alpaca_comprehension.sh
+./make_prompts_alpaca_translations.sh
 
 # Loop over PROMPTS_DIRS and OUTPUT_DIRS
 for i in "${!PROMPTS_DIRS[@]}"; do
@@ -80,16 +81,8 @@ for i in "${!PROMPTS_DIRS[@]}"; do
 
     echo "Processing complete."
 
-    ./clean_json.sh
-    mkdir -p ../../lessons/
+    #./clean_json.sh
 
-    target_base="../../lessons/"
-
-    for dir in "${OUTPUT_DIR}"/*/; do
-        mkdir -p "${target_base}/${OUTPUT_DIR}"
-        find "$dir" -name "*.json" -exec mv {} "${target_base}/${OUTPUT_DIR}" \;
-        rm -rf "$dir"
-    done
 done
 
 # Stop the server
