@@ -13,7 +13,7 @@ SERVER_ARGS="-m $MODEL_PATH -c $CONTEXT_SIZE --host $SERVER_HOST --port $SERVER_
 
 PROMPTS_DIRS=(
     "../French_English/comprehension/" 
-    "./French_English/translations/"
+    "../French_English/translations/"
     )
 OUTPUT_DIRS=(
     "../French_English/comprehension/" 
@@ -51,9 +51,10 @@ process_prompt() {
                                        --header "Content-Type: application/json" \
                                        --data "$DATA")
 
-        echo "$FULL_RESPONSE" 
         # Save the response
         echo "$FULL_RESPONSE" | jq -r '.content' > "$OUTPUT_FILE"
+        rm -f "$OUTPUT_FILE"
+
     done
 }
 
@@ -81,9 +82,9 @@ for i in "${!PROMPTS_DIRS[@]}"; do
 
     echo "Processing complete."
 
-    #./clean_json.sh
-
+    ./clean_json.sh
 done
+
 
 # Stop the server
 echo "Stopping llama.cpp server..."

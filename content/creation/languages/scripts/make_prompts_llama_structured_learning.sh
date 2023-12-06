@@ -14,7 +14,7 @@ chapter_counter=1
 while IFS=';' read -r chapter topics; do
     if [[ "$chapter" != "Chapter" ]]; then # Skip the header
         # Create a directory for the chapter, with numbering, if it doesn't exist
-        mkdir -p "${Language1}_${Language2}/By_Chapter/${chapter_counter}_${chapter}"
+        mkdir -p "../${Language1}_${Language2}/By_Chapter/${chapter_counter}_${chapter}"
 
         # Remove leading and trailing quotes from topics, if present
         topics=${topics%\"}
