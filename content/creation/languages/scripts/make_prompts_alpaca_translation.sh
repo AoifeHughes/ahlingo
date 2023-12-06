@@ -28,10 +28,10 @@ do
     do
         # Create a prompt for each topic and level
         prompt=$(cat <<EOF
-[INST]
+### Instruction: 
 Task: Generate a JSON file containing a series of ${Language1} sentences with their ${Language2} translations, tailored to what you would expect in a $level level text book. The sentences should focus on the theme of '$topic'. Sentences should be varied.
-[/INST]
 
+### Response:
 [
   {
     "${Language1}": "Example ${Language1} sentence.",
@@ -40,16 +40,12 @@ Task: Generate a JSON file containing a series of ${Language1} sentences with th
   // More sentences here
 ]
 
-[INST]
+###  Instruction: 
 Please provide 10 such sentences.
-
-[/INST]
-
-Sure, here you go:
 EOF
         )
 
         # Write the prompt to a file in the respective level directory
-        echo "$prompt" > "${Language1}_${Language2}/translations/${level}/prompt_${topic// /_}.txt"
+        echo "$prompt" > "../${Language1}_${Language2}/translations/${level}/prompt_${topic// /_}.txt"
     done
 done
