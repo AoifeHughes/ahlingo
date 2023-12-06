@@ -55,6 +55,7 @@ process_prompt() {
 
         # Save the response
         echo "$FULL_RESPONSE" | jq -r '.content' > "$OUTPUT_FILE"
+        rm -f "$OUTPUT_FILE"
     done
 }
 
@@ -82,7 +83,7 @@ for i in "${!PROMPTS_DIRS[@]}"; do
 
     echo "Processing complete."
 
-    #./clean_json.sh
+    ./clean_json.sh
 
 done
 

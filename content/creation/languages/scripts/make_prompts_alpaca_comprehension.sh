@@ -21,7 +21,7 @@ done < topics.txt
 for level in "${levels[@]}"
 do
     # Create a directory for the level if it doesn't exist
-    mkdir -p "${Language1}_${Language2}/comprehension/${level}"
+    mkdir -p "../${Language1}_${Language2}/comprehension/${level}"
 
     # Loop through each topic
     for topic in "${topics[@]}"
