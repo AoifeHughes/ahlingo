@@ -58,8 +58,7 @@ process_prompt() {
     done
 }
 
-./make_prompts_llama_comprehension.sh
-./make_prompts_llama_translations.sh
+./make_prompts_llama.sh
 
 # Loop over PROMPTS_DIRS and OUTPUT_DIRS
 for i in "${!PROMPTS_DIRS[@]}"; do
@@ -83,7 +82,7 @@ for i in "${!PROMPTS_DIRS[@]}"; do
     echo "Processing complete."
 
     ./clean_json.sh
-
+    mv $OUTPUT_DIR ../$OUTPUT_DIR"_llama"
 done
 
 # Stop the server

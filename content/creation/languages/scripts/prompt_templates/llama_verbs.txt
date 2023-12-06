@@ -1,0 +1,16 @@
+[INST]
+Task: Create a JSON file containing pairs of single words in ${Language1} and their corresponding translations in ${Language2}. The words should be relevant to the theme of '$topic' and suitable for learners at the $level level. Ensure the words are diverse and commonly used in daily conversation or academic context related to '$topic'.
+[/INST]
+
+[
+{
+"${Language1}": "Word in ${Language1}",
+"${Language2}": "Translation in ${Language2}"
+},
+// More word pairs here
+]
+
+[INST]
+Please provide a list of 10 such word pairs.
+
+[/INST]
