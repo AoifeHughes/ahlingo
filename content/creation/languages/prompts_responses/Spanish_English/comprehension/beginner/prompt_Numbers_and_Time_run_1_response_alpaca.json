@@ -6,6 +6,9 @@
       {"speaker": "person1", "message": "¡Qué joven eres ! ¿Y tú ?"},
       {"speaker": "person2", "message": "Tengo 30 años."},
       {"speaker": "person1", "message": "¡Eres un hombre maduro ! ¿Y tu nombre ?"}
+    ],
+    "conversation_summary": "A conversation about ages, with basic greetings and questions."
+  },
   {
     "conversation": [
       {"speaker": "person1", "message": "¿Cuál es tu nombre ?"},

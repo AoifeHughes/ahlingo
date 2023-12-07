@@ -6,11 +6,15 @@
       {"speaker": "person1", "message": "Très bien, merci. Et toi ?"},
       {"speaker": "person2", "message": "Je vais bien aussi. Est-ce que tu es prêt à me parler de l'heure actuelle ?"},
       {"speaker": "person1", "message": "Certainement, il est quatre heures du soir."}
+    ]
+  },
   {
     "conversation": [
       {"speaker": "person1", "message": "Comment est-ce que tu as terminé la tâche ?"},
       {"speaker": "person2", "message": "Bien, cela a pris plus de temps que prévu, mais nous sommes maintenant en mesure de lancer le projet."},
       {"speaker": "person1", "message": "C'est bon, mais comment tu as calculé la durée de ce travail ?"},
       {"speaker": "person2", "message": "Nous avons estimé deux heures et demie, mais nous sommes arrivés un peu plus tard."},
-      {"speaker": "person1", "message": "Ah, je vois. Et comment tu as réparti tes tâches ?"}
+      {"speaker": "person1", "message": "Ah, je vois. Et comment tu as réparti tes tâches ?"}]}
+
 ]
+    
