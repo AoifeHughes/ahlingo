@@ -10,7 +10,8 @@ language2="English"
 number_of_runs=1
 
 # Server startup configurations
-MODEL_PATH="/Users/ahughes/git/LLMs/llama-2-13b-chat.Q4_K_M.gguf"
+#MODEL_PATH="/Users/ahughes/git/LLMs/llama-2-13b-chat.Q4_K_M.gguf"
+MODEL_PATH="/Users/ahughes/git/LLMs/llama-2-13b.Q5_K_S.gguf"
 
 CONTEXT_SIZE=1024
 SERVER_HOST="127.0.0.1"

@@ -1,24 +1,25 @@
 #!/bin/bash
 
+# Define languages
+language1="French"
+language2="English"
+
+./make_prompts_alpaca.sh $language1 $language2
+
 # Define the number of runs for each prompt
 number_of_runs=1
 
 # Server startup configurations
-MODEL_PATH="/Users/ahughes/git/LLMs/hermes-trismegistus-mistral-7b.Q5_K_M.gguf"
+MODEL_PATH="/Users/ahughes/git/LLMs/mistral-7b-instruct-v0.1.Q5_K_S.gguf"
 CONTEXT_SIZE=1024
 SERVER_HOST="127.0.0.1"
 SERVER_PORT="8080"
 SERVER_CMD="/Users/ahughes/git/llama.cpp/server"
 SERVER_ARGS="-m $MODEL_PATH -c $CONTEXT_SIZE --host $SERVER_HOST --port $SERVER_PORT"
 
-PROMPTS_DIRS=(
-    "../French_English/comprehension/" 
-    "../French_English/translations/"
-    )
-OUTPUT_DIRS=(
-    "../French_English/comprehension/" 
-    "../French_English/translations/"
-    )
+# Generate directory paths for prompts and outputs
+PROMPTS_DIRS=($(find "../${language1}_${language2}" -type d))
+OUTPUT_DIRS=($(find "../${language1}_${language2}" -type d))
 
 # Start the llama.cpp server
 echo "Starting llama.cpp server..."
@@ -32,15 +33,16 @@ sleep 10  # Adjust this sleep time as necessary
 # Function to send prompts to the llama.cpp server and capture the output
 process_prompt() {
     local PROMPTS_FILE="$1"
+    local TASK_TYPE=$(dirname "$(dirname "$PROMPTS_FILE")" | xargs basename)
     local LEVEL=$(dirname "$PROMPTS_FILE" | xargs basename)
     local BASENAME=$(basename "$PROMPTS_FILE" .txt)
-    
-    # Ensure level-specific output directory exists
-    mkdir -p "${OUTPUT_DIR}${LEVEL}"
+
+    # Ensure task-specific and level-specific output directory exists
+    mkdir -p "${OUTPUT_DIR}/${TASK_TYPE}/${LEVEL}"
 
     for run in $(seq 1 $number_of_runs); do
         # Set output file name with run number
-        OUTPUT_FILE="${OUTPUT_DIR}${LEVEL}/${BASENAME}_run_${run}_response_mistral.json"
+        OUTPUT_FILE="${OUTPUT_DIR}/${TASK_TYPE}/${LEVEL}/${BASENAME}_run_${run}_response_alpaca.json"
 
         # Prepare data for POST request
         local DATA=$(cat "$PROMPTS_FILE" | jq -Rs '{prompt: .}')
@@ -53,12 +55,9 @@ process_prompt() {
 
         # Save the response
         echo "$FULL_RESPONSE" | jq -r '.content' > "$OUTPUT_FILE"
-        rm -f "$OUTPUT_FILE"
-
+        #rm -f "$PROMPTS_FILE"
     done
 }
-
-./make_prompts_alpaca.sh
 
 # Loop over PROMPTS_DIRS and OUTPUT_DIRS
 for i in "${!PROMPTS_DIRS[@]}"; do
@@ -82,8 +81,8 @@ for i in "${!PROMPTS_DIRS[@]}"; do
     echo "Processing complete."
 
     ./clean_json.sh
+    #mv $OUTPUT_DIR ../../$OUTPUT_DIR"_llama"
 done
-
 
 # Stop the server
 echo "Stopping llama.cpp server..."

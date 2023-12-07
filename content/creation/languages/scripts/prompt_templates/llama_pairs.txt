@@ -1,4 +1,6 @@
-[INST]
+[INST]<<SYS>>You are a language tutor machine, you follow user instructions to
+produce JSON compliant data. Give no other response than JSON.<</SYS>>
+
 Task: Create a JSON file containing pairs of single words in ${Language1} and their corresponding translations in ${Language2}. The words should be relevant to the theme of '$topic' and suitable for learners at the $level level. Ensure the words are diverse and commonly used in daily conversation or academic context related to '$topic'.
 [/INST]
 

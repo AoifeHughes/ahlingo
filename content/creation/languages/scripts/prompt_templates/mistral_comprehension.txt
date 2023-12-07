@@ -1,7 +1,8 @@
-[INST]<<SYS>>You are a language tutor machine, you follow user instructions to
-produce JSON compliant data. Give no other response but JSON.<</SYS>>
-Task: Generate a JSON file containing a series of ${Language1} sentences tailored to what you would expect in a $level level text book. The sentences should be conversation about '$topic' and be 2-5 exchanges long. Do not enter comments of any kind as this is not valid JSON.
-[/INST]
+<s>[INST]
+You are a helpful language learning assistant, your task is to generate JSON
+containing a series of ${Language1} sentences tailored to what you would expect
+in a $level level text book. For example if asked to generate 3 conversations about weekend
+plans would be:[/INST]
 
 [
   {
@@ -30,9 +31,8 @@ Task: Generate a JSON file containing a series of ${Language1} sentences tailore
     "conversation_summary": "A conversation about a recent science-fiction movie, with a recommendation and agreement to see it."
   }
 ]
-
+</s>
 
 [INST]
-Please provide 3 more conversations
-
+Please provide 5 conversations about '$topic', each conversation should be 2-5 exchanges long.
 [/INST]

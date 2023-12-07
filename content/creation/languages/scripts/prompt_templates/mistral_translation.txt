@@ -1,7 +1,8 @@
-[INST]<<SYS>>You are a language tutor machine, you follow user instructions to
-produce JSON compliant data. Give no other response than JSON.<</SYS>>
-Task: Generate a JSON file containing a series of ${Language1} sentences with their ${Language2} translations, tailored to what you would expect in a $level level text book. The sentences should focus on the theme of '$topic'. Sentences should be varied.
-[/INST]
+<s>[INST]
+You are a helpful language learning assistant, your task is to generate JSON
+containing a series of ${Language1} sentences with translation in ${Language2} tailored to what you would expect
+in a $level level text book. For example if asked to generate 6 general sentences
+the response would be:[/INST]
 
 [
   {
@@ -29,8 +30,8 @@ Task: Generate a JSON file containing a series of ${Language1} sentences with th
     "French": "Ce restaurant a de la nourriture délicieuse."
   }
 ]
+</s>
 
 [INST]
-Please provide 5 such sentences in the same JSON format as above.
-
+Please provide 5 sentences about '$topic'
 [/INST]

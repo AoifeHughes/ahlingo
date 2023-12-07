@@ -2,29 +2,34 @@
 Generate a JSON file containing a series of ${Language1} sentences tailored to what you would expect in a $level level text book. The sentences should be conversation about '$topic' and be 2-5 exchanges long. Do not enter comments of any kind as this is not valid JSON.
 
 ### Response:
+
 [
   {
     "conversation": [
-      {"speaker": "person1", "message": "Sentence in ${Language1}."},
-      {"speaker": "person2", "message": "Response in ${Language1}."},
-      {"speaker": "person1", "message": "Response in ${Language1}."}
+      {"speaker": "person1", "message": "Comment vas-tu aujourd'hui ?"},
+      {"speaker": "person2", "message": "Je vais bien, merci! Et toi ?"},
+      {"speaker": "person1", "message": "Moi aussi, je vais bien."}
     ],
-    "conversation_summary": "Summary of exchange in ${Language2}"
+    "conversation_summary": "A conversation about how each person is doing, with polite responses."
   },
   {
     "conversation": [
-      {"speaker": "person1", "message": "Sentence in ${Language1}."},
-      {"speaker": "person2", "message": "Response in ${Language1}."},
-      {"speaker": "person1", "message": "Response in ${Language1}."},
-      {"speaker": "person2", "message": "Response in ${Language1}."},
-      {"speaker": "person1", "message": "Response in ${Language1}."}
+      {"speaker": "person1", "message": "Qu'est-ce que tu fais ce week-end ?"},
+      {"speaker": "person2", "message": "Je vais faire de la randonnée. Tu veux venir ?"},
+      {"speaker": "person1", "message": "Oui, j'aimerais beaucoup ça. Merci !"}
     ],
-    "conversation_summary": "Summary of exchange in ${Language2}"
+    "conversation_summary": "Discussing weekend plans, with an invitation to go hiking and a positive response."
+  },
+  {
+    "conversation": [
+      {"speaker": "person1", "message": "Tu as vu le dernier film de science-fiction ?"},
+      {"speaker": "person2", "message": "Non, pas encore. Est-ce qu'il est bon ?"},
+      {"speaker": "person1", "message": "Oui, c'est un excellent film. Tu devrais le voir."},
+      {"speaker": "person2", "message": "D'accord, j'irai ce week-end."}
+    ],
+    "conversation_summary": "A conversation about a recent science-fiction movie, with a recommendation and agreement to see it."
   }
-  // More conversations here
 ]
-
-
 
 ###  Instruction: 
 Please provide 5 such conversations with varied amount of exchanges. 
