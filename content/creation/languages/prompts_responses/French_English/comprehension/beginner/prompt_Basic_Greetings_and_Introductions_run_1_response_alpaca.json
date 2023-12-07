@@ -1,0 +1,20 @@
+[
+  {
+    "conversation": [
+      {"speaker": "person1", "message": "Salut!"},
+      {"speaker": "person2", "message": "Bonjour! Comment allez-vous ?"},
+      {"speaker": "person1", "message": "Je vais bien, merci. Et toi ?"},
+      {"speaker": "person2", "message": "J'ai bien aussi, grâce. Comment tu ça ?"}
+    ],
+    "conversation_summary": "A conversation between two people, with basic greetings and introductions."
+  },
+  {
+    "conversation": [
+      {"speaker": "person1", "message": "Enchanté de rencontrer toi. Comment t'appelles-tu ?"},
+      {"speaker": "person2", "message": "Je suis appelé Pierre, et tu ?"},
+      {"speaker": "person1", "message": "Je suis appelée Claire. Bonne rencontre !"},
+      {"speaker": "person2", "message": "De rien, le plaisir est tout à toi."}
+    ],
+    "conversation_summary": "A conversation between two people, with introductions and basic greetings."
+  }
+]

@@ -1,0 +1,16 @@
+[
+  {
+    "conversation": [
+      {"speaker": "person1", "message": "Combien d'heures sont il entre 9 et 12 ?"},
+      {"speaker": "person2", "message": "Il y a trois heures."},
+      {"speaker": "person1", "message": "Merci. Et comment on appelle ce temps-là ?"},
+      {"speaker": "person2", "message": "C'est le matin."},
+      {"speaker": "person1", "message": "Ah, c'est bon. Et quand commence la journée ?"}
+  {
+    "conversation": [
+      {"speaker": "person1", "message": "Combien d'années est il entre 20 et 30 ?"},
+      {"speaker": "person2", "message": "Il y a dix ans."},
+      {"speaker": "person1", "message": "Merci. Et comment on appelle ce temps-là ?"},
+      {"speaker": "person2", "message": "C'est l'âge adulte."},
+      {"speaker": "person1", "message": "Ah, c'est bon. Et quand commence l'enfance ?"}
+]

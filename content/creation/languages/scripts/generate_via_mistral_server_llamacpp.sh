@@ -20,7 +20,6 @@ OUTPUT_DIRS=($(find "../prompts_responses/" -type d -maxdepth 1 -mindepth 1))
 echo "PROMPTS_DIRS: ${PROMPTS_DIRS[@]}"
 echo "OUTPUT_DIRS: ${OUTPUT_DIRS[@]}"
 
-sleep 10
 
 # Start the llama.cpp server
 echo "Starting llama.cpp server..."
@@ -34,11 +33,12 @@ sleep 10  # Adjust this sleep time as necessary
 # Function to send prompts to the llama.cpp server and capture the output
 process_prompt() {
     local PROMPTS_FILE="$1"
+    local DIR_PATH=$(dirname "$PROMPTS_FILE")
     local BASENAME=$(basename "$PROMPTS_FILE" .txt)
 
     for run in $(seq 1 $number_of_runs); do
-        # Set output file name with run number
-        OUTPUT_FILE="${BASENAME}_run_${run}_response_alpaca.json"
+        # Set output file name with run number, in the same directory as PROMPTS_FILE
+        OUTPUT_FILE="${DIR_PATH}/${BASENAME}_run_${run}_response_alpaca.json"
 
         # Prepare data for POST request
         # Added temperature setting here
@@ -52,9 +52,11 @@ process_prompt() {
 
         # Save the response
         echo "$FULL_RESPONSE" | jq -r '.content' > "$OUTPUT_FILE"
+        # Optionally remove the original prompts file
         #rm -f "$PROMPTS_FILE"
     done
 }
+
 
 
 # Loop over PROMPTS_DIRS and OUTPUT_DIRS

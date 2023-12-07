@@ -1,0 +1,20 @@
+[
+  {
+    "conversation": [
+      {"speaker": "person1", "message": "Quelques minutes avant la fin de l'heure, nous sommes prêts à partir."},
+      {"speaker": "person2", "message": "Merci d'avoir pris en compte notre retard. Cela a été très utile."},
+      {"speaker": "person1", "message": "De rien, c'est normal de tarder parfois."},
+      {"speaker": "person2", "message": "Oui, mais il est important d'arriver à temps pour les réunions."}
+    ],
+    "conversation_summary": "A conversation about being on time for a meeting, with consideration of delays and importance of punctuality."
+  },
+  {
+    "conversation": [
+      {"speaker": "person1", "message": "Ce jour nous avons terminé notre travail à 16 heures."},
+      {"speaker": "person2", "message": "C'est un peu tard, mais nous sommes en mesure de terminer les tâches à temps."},
+      {"speaker": "person1", "message": "Oui, cela a été une journée très productive. Nous avons fait beaucoup de progression."},
+      {"speaker": "person2", "message": "Je suis ravi d'entendre ça. Cela nous permettra de continuer à faire des progrès dans notre travail."}
+    ],
+    "conversation_summary": "A conversation about finishing work at 4:00 pm, with a positive evaluation of productivity and progress."
+  }
+]
