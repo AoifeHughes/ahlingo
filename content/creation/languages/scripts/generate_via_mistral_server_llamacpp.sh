@@ -1,25 +1,26 @@
 #!/bin/bash
 
-# Define languages
-language1="French"
-language2="English"
-
-./make_prompts_alpaca.sh $language1 $language2
+./make_prompts_mistral.sh 
 
 # Define the number of runs for each prompt
 number_of_runs=1
 
 # Server startup configurations
 MODEL_PATH="/Users/ahughes/git/LLMs/mistral-7b-instruct-v0.1.Q5_K_S.gguf"
-CONTEXT_SIZE=1024
+CONTEXT_SIZE=2048
 SERVER_HOST="127.0.0.1"
 SERVER_PORT="8080"
 SERVER_CMD="/Users/ahughes/git/llama.cpp/server"
 SERVER_ARGS="-m $MODEL_PATH -c $CONTEXT_SIZE --host $SERVER_HOST --port $SERVER_PORT"
 
 # Generate directory paths for prompts and outputs
-PROMPTS_DIRS=($(find "../${language1}_${language2}" -type d))
-OUTPUT_DIRS=($(find "../${language1}_${language2}" -type d))
+PROMPTS_DIRS=($(find "../prompts_responses/" -type d -maxdepth 1 -mindepth 1))
+OUTPUT_DIRS=($(find "../prompts_responses/" -type d -maxdepth 1 -mindepth 1))
+
+echo "PROMPTS_DIRS: ${PROMPTS_DIRS[@]}"
+echo "OUTPUT_DIRS: ${OUTPUT_DIRS[@]}"
+
+sleep 10
 
 # Start the llama.cpp server
 echo "Starting llama.cpp server..."
@@ -33,19 +34,15 @@ sleep 10  # Adjust this sleep time as necessary
 # Function to send prompts to the llama.cpp server and capture the output
 process_prompt() {
     local PROMPTS_FILE="$1"
-    local TASK_TYPE=$(dirname "$(dirname "$PROMPTS_FILE")" | xargs basename)
-    local LEVEL=$(dirname "$PROMPTS_FILE" | xargs basename)
     local BASENAME=$(basename "$PROMPTS_FILE" .txt)
-
-    # Ensure task-specific and level-specific output directory exists
-    mkdir -p "${OUTPUT_DIR}/${TASK_TYPE}/${LEVEL}"
 
     for run in $(seq 1 $number_of_runs); do
         # Set output file name with run number
-        OUTPUT_FILE="${OUTPUT_DIR}/${TASK_TYPE}/${LEVEL}/${BASENAME}_run_${run}_response_alpaca.json"
+        OUTPUT_FILE="${BASENAME}_run_${run}_response_alpaca.json"
 
         # Prepare data for POST request
-        local DATA=$(cat "$PROMPTS_FILE" | jq -Rs '{prompt: .}')
+        # Added temperature setting here
+        local DATA=$(cat "$PROMPTS_FILE" | jq -Rs --arg temp "0.5" '{prompt: ., temperature: ($temp | tonumber)}')
 
         # Send prompt to llama.cpp server and capture the entire output
         local FULL_RESPONSE=$(curl --silent --request POST \
@@ -59,11 +56,11 @@ process_prompt() {
     done
 }
 
+
 # Loop over PROMPTS_DIRS and OUTPUT_DIRS
 for i in "${!PROMPTS_DIRS[@]}"; do
     PROMPTS_DIR=${PROMPTS_DIRS[$i]}
     OUTPUT_DIR=${OUTPUT_DIRS[$i]}
-
     # Count the total number of .txt files
     total_files=$(find "$PROMPTS_DIR" -type f -name "*.txt" | wc -l)
     counter=0
@@ -71,17 +68,11 @@ for i in "${!PROMPTS_DIRS[@]}"; do
     # Iterate over all .txt files in the PROMPTS_DIR and process each one
     find "$PROMPTS_DIR" -type f -name "*.txt" | while read FILE; do
         process_prompt "$FILE"
-
-        # Update and display the progress
-        ((counter++))
-        percent=$((counter * 100 / total_files))
-        printf "Processing: %d%% (%d/%d)\r" $percent $counter $total_files
     done
 
     echo "Processing complete."
 
     ./clean_json.sh
-    #mv $OUTPUT_DIR ../../$OUTPUT_DIR"_llama"
 done
 
 # Stop the server
