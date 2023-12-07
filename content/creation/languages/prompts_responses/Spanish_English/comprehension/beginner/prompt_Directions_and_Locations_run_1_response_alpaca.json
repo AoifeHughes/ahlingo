@@ -16,3 +16,6 @@
       {"speaker": "person2", "message": "Le parc se trouve à côté du magasin de mode. Il est un jardin public avec des voies vertes et des places pour reposer."},
       {"speaker": "person1", "message": "C'est magnifique ! Grâce beaucoup !"}
 ]
+, "conversation_summary": "A conversation about shopping"
+  }
+]

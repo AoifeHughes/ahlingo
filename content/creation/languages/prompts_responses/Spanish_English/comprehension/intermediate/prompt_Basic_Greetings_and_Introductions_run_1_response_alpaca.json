@@ -4,6 +4,8 @@
       {"speaker": "person1", "message": "Hola, ¿cómo estás?"},
       {"speaker": "person2", "message": "Bien gracias. ¿Y tú ?"},
       {"speaker": "person1", "message": "Muy bien, gracias."}
+    ],
+    "conversation_summary": "A casual greeting and response, using basic phrases and common expressions."},
   {
     "conversation": [
       {"speaker": "person1", "message": "¿Qué tal ?"},

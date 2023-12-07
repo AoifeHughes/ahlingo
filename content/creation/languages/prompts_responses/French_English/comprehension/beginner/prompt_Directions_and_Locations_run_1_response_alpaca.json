@@ -6,6 +6,8 @@
       {"speaker": "person1", "message": "Comment ça se passe ?"},
       {"speaker": "person2", "message": "J'étais dans une rue différente de celle que je devais prendre. Mais j'ai trouvé le chemin enfin."},
       {"speaker": "person1", "message": "C'est bien, mais tu dois être plus attentif à l'avenir."}
+    ]
+  },
   {
     "conversation": [
       {"speaker": "person1", "message": "Comment allez-vous à la plage aujourd'hui ?"},
@@ -13,4 +15,6 @@
       {"speaker": "person1", "message": "Oui, j'aimerais ça. Mais où est-elle exactement ?"},
       {"speaker": "person2", "message": "Elle est sur le bord de la mer entre les promenades. Tu peux prendre la route nationale 7 et suivre les panneaux."},
       {"speaker": "person1", "message": "Merci, je sais maintenant où tu es. On aime bien la plage à Nice !"}
+]
+  }
 ]

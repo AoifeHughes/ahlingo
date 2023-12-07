@@ -6,6 +6,9 @@
       {"speaker": "person1", "message": "Muy bien, gracias."},
       {"speaker": "person2", "message": "¡Qué tal! ¿Quién eres ?"},
       {"speaker": "person1", "message": "Soy Ana, y tú ?"}
+    ],
+    "conversation_summary": "A simple conversation between two people."
+  },
   {
     "conversation": [
       {"speaker": "person1", "message": "¿Qué tal, amigo ?"},
@@ -13,4 +16,7 @@
       {"speaker": "person1", "message": "Muy bien gracias. ¿Y tu ?"},
       {"speaker": "person2", "message": "Bien también, gracias."},
       {"speaker": "person1", "message": "¡Qué pasa esta tarde ?"}
+],
+    "conversation_summary": "A simple conversation between two friends."}
+  
 ]
