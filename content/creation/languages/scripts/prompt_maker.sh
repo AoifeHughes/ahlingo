@@ -24,7 +24,7 @@ prompt_template=$(<"$prompt_file")
 for level in "${levels[@]}"
 do
     # Create a directory for the level if it doesn't exist
-    mkdir -p "../${Language1}_${Language2}/${exercise_type}/${level}"
+    mkdir -p "../prompts_responses/${Language1}_${Language2}/${exercise_type}/${level}"
 
     # Loop through each topic
     for topic in "${topics[@]}"
@@ -33,6 +33,6 @@ do
         prompt=$(echo "$prompt_template" | sed "s/\${Language1}/${Language1}/g" | sed "s/\${Language2}/${Language2}/g" | sed "s/\$level/${level}/g" | sed "s/\$topic/${topic}/g")
 
         # Write the prompt to a file in the respective level directory
-        echo "$prompt" > "../${Language1}_${Language2}/${exercise_type}/${level}/prompt_${topic// /_}.txt"
+        echo "$prompt" > "../prompts_responses/${Language1}_${Language2}/${exercise_type}/${level}/prompt_${topic// /_}.txt"
     done
 done
