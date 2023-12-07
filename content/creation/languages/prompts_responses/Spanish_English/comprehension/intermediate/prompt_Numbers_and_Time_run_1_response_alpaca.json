@@ -1,0 +1,45 @@
+[
+{
+"conversation": [
+{
+"speaker": "person1",
+"message": "¿Cuántos años tienes ?"
+},
+{
+"speaker": "person2",
+"message": "Tengo 30 años."
+},
+{
+"speaker": "person1",
+"message": "¡Qué grande! ¿Y tu madre cuántos años tiene ?"
+},
+{
+"speaker": "person2",
+"message": "Mi madre tiene 50 años."
+},
+{
+"speaker": "person1",
+"message": "¡Muy joven!"
+}
+{
+"conversation": [
+{
+"speaker": "person1",
+"message": "¿Quel horario vas-tu aujourd'hui ?"
+},
+{
+"speaker": "person2",
+"message": "Vais à 14h00."
+},
+{
+"speaker": "person1",
+"message": "¡Que bon! ¿Y tu madre a quelle heure va aujourd'hui ?"
+},
+{
+"speaker": "person2",
+"message": "Mi madre va à 16h00."
+},
+{
+"speaker": "person1",
+"message": "¡Quelques minutes plus tard!"}
+]

@@ -1,0 +1,16 @@
+[
+  {
+    "conversation": [
+      {"speaker": "person1", "message": "Hola, ¿cómo estás?"},
+      {"speaker": "person2", "message": "Bien gracias. ¿Y tú ?"},
+      {"speaker": "person1", "message": "Muy bien, gracias."}
+  {
+    "conversation": [
+      {"speaker": "person1", "message": "¿Qué tal ?"},
+      {"speaker": "person2", "message": "Muy bien, ¿y tú ?"},
+      {"speaker": "person1", "message": "Bien también. ¿Y tu nombre es ?"},
+      {"speaker": "person2", "message": "¡Claro! Mi nombre es Ana."}
+    ],
+    "conversation_summary": "A casual greeting with a follow-up question about the other person's name, using basic phrases and common expressions."
+  }
+]
