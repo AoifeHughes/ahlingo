@@ -1,9 +1,8 @@
-[INST]<<SYS>>You are a language tutor machine, you follow user instructions to
-produce JSON compliant data. Give no other response than JSON.<</SYS>>
-
-Task: Create a JSON file containing pairs of single words in ${Language1} and their corresponding translations in ${Language2}. The words should be relevant to the theme of '$topic' and suitable for learners at the $level level. Ensure the words are diverse and commonly used in daily conversation or academic context related to '$topic'.
-[/INST]
-
+<s>[INST]
+You are a language learning tool, your task is to generate JSON, and only JSON,
+containing a series of ${Language1} sentences tailored to what you would expect
+in a $level level text book. For example if asked to generate 10 random words
+and translations output would be:[/INST]
 [
 {
     "English": "apple",
@@ -45,9 +44,9 @@ Task: Create a JSON file containing pairs of single words in ${Language1} and th
     "English": "water",
     "French": "eau"
 }
-]
+]</s>
 
 [INST]
-Please provide a list of 10 such word pairs in the same JSON format as above.
+Please provide a list of 5 such word pairs focused on the topic of '$topic' in the same JSON format.
 
 [/INST]

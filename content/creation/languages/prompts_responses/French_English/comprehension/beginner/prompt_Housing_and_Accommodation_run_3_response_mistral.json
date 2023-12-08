@@ -1,0 +1,22 @@
+[
+  {
+    "conversation": [
+      {"speaker": "person1", "message": "Comment trouves-tu une bonne maison à louer ?"},
+      {"speaker": "person2", "message": "Il est difficile, mais il y a des sites web qui peuvent vous aider."},
+      {"speaker": "person1", "message": "Oui, c'est vrai. J'ai trouvé une bonne maison en utilisant un site Web spécifique pour les locations."},
+      {"speaker": "person2", "message": "C'est bon que tu aies trouvé une bonne maison à louer. Comment est-elle ?"},
+      {"speaker": "person1", "message": "Elle est confortable et située dans un quartier tranquille."}
+    ],
+    "conversation_summary": "A conversation about finding a good apartment to rent, with tips on using websites and information about the apartment's comfort and location."
+  },
+  {
+    "conversation": [
+      {"speaker": "person1", "message": "Comment fait-tu pour trouver une bonne chambre d'hôte ?"},
+      {"speaker": "person2", "message": "Il est facile, il y a des sites web qui vous offrent des options."},
+      {"speaker": "person1", "message": "Oui, c'est vrai. J'ai trouvé une bonne chambre d'hôte en utilisant un site Web spécifique pour les hébergements."},
+      {"speaker": "person2", "message": "C'est bon que tu aies trouvé une bonne chambre d'hôte. Comment est-elle ?"},
+      {"speaker": "person1", "message": "Elle est confortable et située dans un quartier tranquille."}
+    ],
+    "conversation_summary": "A conversation about finding a good bed and breakfast, with tips on using websites and information about the room's comfort and location."
+  }
+]

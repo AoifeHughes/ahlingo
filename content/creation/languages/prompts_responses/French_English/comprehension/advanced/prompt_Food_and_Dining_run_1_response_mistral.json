@@ -1,0 +1,18 @@
+[
+  {
+    "conversation": [
+      {"speaker": "person1", "message": "Qu'est-ce que tu aimes manger pour la déjeuner ?"},
+      {"speaker": "person2", "message": "Je préfère les œufs boulés avec du pain tosté. Et toi ?"},
+      {"speaker": "person1", "message": "Moi aussi, j'aime les œufs boulés. Mais je préfère les crêpes au week-end."}
+    ],
+    "conversation_summary": "A conversation about breakfast preferences, with a comparison of eggs and crepes."
+  },
+  {
+    "conversation": [
+      {"speaker": "person1", "message": "Qu'est-ce que tu préfères manger pour la dîner ?"},
+      {"speaker": "person2", "message": "Je préfère les steaks grillés avec des pommes frites. Et toi ?"},
+      {"speaker": "person1", "message": "Moi aussi, j'aime les steaks grillés. Mais je préfère les risottos au week-end."}
+    ],
+    "conversation_summary": "A conversation about dinner preferences, with a comparison of steak and risotto."
+  }
+]

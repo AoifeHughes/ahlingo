@@ -3,7 +3,7 @@
 ./make_prompts_mistral.sh 
 
 # Define the number of runs for each prompt
-number_of_runs=1
+number_of_runs=3
 
 # Server startup configurations
 MODEL_PATH="/Users/ahughes/git/LLMs/mistral-7b-instruct-v0.1.Q5_K_S.gguf"
@@ -38,11 +38,11 @@ process_prompt() {
 
     for run in $(seq 1 $number_of_runs); do
         # Set output file name with run number, in the same directory as PROMPTS_FILE
-        OUTPUT_FILE="${DIR_PATH}/${BASENAME}_run_${run}_response_alpaca.json"
+        OUTPUT_FILE="${DIR_PATH}/${BASENAME}_run_${run}_response_mistral.json"
 
         # Prepare data for POST request
         # Added temperature setting here
-        local DATA=$(cat "$PROMPTS_FILE" | jq -Rs --arg temp "0.5" '{prompt: ., temperature: ($temp | tonumber)}')
+        local DATA=$(cat "$PROMPTS_FILE" | jq -Rs --arg temp "0.4" '{prompt: ., temperature: ($temp | tonumber)}')
 
         # Send prompt to llama.cpp server and capture the entire output
         local FULL_RESPONSE=$(curl --silent --request POST \

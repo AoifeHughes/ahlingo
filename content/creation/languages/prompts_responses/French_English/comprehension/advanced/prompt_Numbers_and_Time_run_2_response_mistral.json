@@ -1,0 +1,22 @@
+[
+  {
+    "conversation": [
+      {"speaker": "person1", "message": "Comment t'appelles ce nombre ?"},
+      {"speaker": "person2", "message": "Ceci est un nombre entier."},
+      {"speaker": "person1", "message": "Ah, c'est bien. Et comment tu appelles ce temps ?"},
+      {"speaker": "person2", "message": "Ceci est une durée. Il y a 3 heures."},
+      {"speaker": "person1", "message": "Merci! Et comment tu calcules la moyenne d'un ensemble de nombres ?"}
+    ],
+    "conversation_summary": "A conversation about numbers and time, with basic vocabulary and calculation of average."
+  },
+  {
+    "conversation": [
+      {"speaker": "person1", "message": "Tu sais comment calculer la différence entre deux nombres ?"},
+      {"speaker": "person2", "message": "Oui, il faut soustraire le nombre plus petit du nombre plus grand."},
+      {"speaker": "person1", "message": "Ah, c'est bien. Et comment tu calcules l'addition d'un ensemble de nombres ?"},
+      {"speaker": "person2", "message": "Il faut ajouter tous les nombres de l'ensemble."},
+      {"speaker": "person1", "message": "Merci! Et comment tu calcules le produit d'un ensemble de nombres ?"}
+    ],
+    "conversation_summary": "A conversation about basic arithmetic operations, with calculation of difference, addition and product."
+  }
+]

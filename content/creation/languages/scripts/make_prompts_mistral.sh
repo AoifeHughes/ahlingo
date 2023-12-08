@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Define the language pairs
-language1="French,Spanish"
-language2="English,English"
+language1="French"
+language2="English"
 levels="beginner,intermediate,advanced"
 
 # Directory containing the template files

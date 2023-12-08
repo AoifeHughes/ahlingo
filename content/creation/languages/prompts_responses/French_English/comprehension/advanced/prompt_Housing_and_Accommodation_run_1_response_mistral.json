@@ -1,0 +1,22 @@
+[
+  {
+    "conversation": [
+      {"speaker": "person1", "message": "Comment trouves-tu une bonne loge à Paris ?"},
+      {"speaker": "person2", "message": "Il y a beaucoup de loges disponibles, mais il faut être prêt à payer cher."},
+      {"speaker": "person1", "message": "Oui, je sais. Mais j'ai besoin d'une loge dans un quartier calme et proche du centre-ville."},
+      {"speaker": "person2", "message": "J'ai entendu qu'il y a des loges à la Maison de l'Océanie. Ils sont situés dans le 7e arrondissement, près de la Tour Eiffel et du Musée d'Orsay."},
+      {"speaker": "person1", "message": "C'est intéressant. J'ai besoin de plus d'informations sur les loges disponibles à l'Maison de l'Océanie. Peut-je les obtenir ?"}
+    ],
+    "conversation_summary": "A conversation about finding a good apartment in Paris, with a recommendation for the Maison de l'Océanie and a request for more information."
+  },
+  {
+    "conversation": [
+      {"speaker": "person1", "message": "Comment trouves-tu une bonne loge à Londres ?"},
+      {"speaker": "person2", "message": "Il y a beaucoup de loges disponibles, mais il faut être prêt à payer cher."},
+      {"speaker": "person1", "message": "Oui, je sais. Mais j'ai besoin d'une loge dans un quartier calme et proche du centre-ville."},
+      {"speaker": "person2", "message": "J'ai entendu qu'il y a des loges à la Maison de l'Océanie. Ils sont situés dans le 7e arrondissement, près de la Tour Eiffel et du Musée d'Orsay."},
+      {"speaker": "person1", "message": "C'est intéressant. J'ai besoin de plus d'informations sur les loges disponibles à l'Maison de l'Océanie. Peut-je les obtenir ?"}
+    ],
+    "conversation_summary": "A conversation about finding a good apartment in London, with a recommendation for the Maison de l'Océanie and a request for more information."
+  }
+]

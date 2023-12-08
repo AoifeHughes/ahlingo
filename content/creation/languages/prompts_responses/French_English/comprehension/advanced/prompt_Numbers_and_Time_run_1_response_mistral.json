@@ -1,0 +1,22 @@
+[
+  {
+    "conversation": [
+      {"speaker": "person1", "message": "Comment t'as fait aujourd'hui ?"},
+      {"speaker": "person2", "message": "Je suis arrivé à l'heure. Comment toi ?"},
+      {"speaker": "person1", "message": "Moi aussi, j'ai été à temps."},
+      {"speaker": "person2", "message": "Bonne journée ?"},
+      {"speaker": "person1", "message": "Oui, c'était une bonne journée. Comment tu tes ?"}
+    ],
+    "conversation_summary": "A conversation about arriving on time, with positive responses and a question about the other person's day."
+  },
+  {
+    "conversation": [
+      {"speaker": "person1", "message": "Quel temps est-il maintenant ?"},
+      {"speaker": "person2", "message": "Il est une heure du matin."},
+      {"speaker": "person1", "message": "C'est bon. Je devrais partir bientôt."},
+      {"speaker": "person2", "message": "Quel temps devrais-tu partir ?"},
+      {"speaker": "person1", "message": "Je partirai à midi. Comment tu tes ?"}
+    ],
+    "conversation_summary": "A conversation about the current time and departure plans, with a request for information on when to leave."
+  }
+]

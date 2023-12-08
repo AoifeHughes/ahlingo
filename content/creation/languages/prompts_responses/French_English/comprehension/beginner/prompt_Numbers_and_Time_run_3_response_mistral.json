@@ -1,0 +1,20 @@
+[
+  {
+    "conversation": [
+      {"speaker": "person1", "message": "Comment passe-t'il ce matin ?"},
+      {"speaker": "person2", "message": "Il est bonjour. Comment puis-je vous aider ?"},
+      {"speaker": "person1", "message": "Je vais bien, merci beaucoup ! Et toi ?"},
+      {"speaker": "person2", "message": "Je vais bien aussi. Il est 9h30 aujourd'hui."},
+      {"speaker": "person1", "message": "Ah, c'est très tard. Comment tu peux être si tôt ?"}
+    ],
+    "conversation_summary": "A conversation about time and the time of day, with a question about how early the speaker is."
+  },
+  {
+    "conversation": [
+      {"speaker": "person1", "message": "Quel temps est-il aujourd'hui ?"},
+      {"speaker": "person2", "message": "Il est 9h30. Comment puis-je vous aider ?"},
+      {"speaker": "person1", "message": "Je vais au travail à 10h00. Combien de temps sera-t'il tard pour toi ?"},
+      {"speaker": "person2", "message": "Il sera très tard pour moi, mais je peux passer le temps avec mes amis avant de partir."},
+      {"speaker": "person1", "message": "Ah, c'est bon. Comment tu peux passer le temps avec tes amis ?"}
+    ],
+    "conversation_summary": "A conversation about time and the time of day, with a question about when the speaker has to go to work and how early they will be."

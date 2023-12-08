@@ -1,0 +1,44 @@
+[
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Ce qu'ai-je pour dîner ce soir ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je vais à la plage. Tu as une suggestion ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Non, je préfère manger à la maison. J'ai des pommes de terre frites et du poulet grillé en plan."
+      },
+      {
+        "speaker": "person2",
+        "message": "Cela sonne très bon. Tu veux inviter quelqu'un ?"
+      }
+    ],
+    "conversation_summary": "A conversation about dinner plans, with a preference for cooking at home and an invitation to have dinner together."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Ce qu'ai-je pour dîner ce soir ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je vais à la plage. Tu as une suggestion ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Non, je préfère manger à la maison. J'ai des pommes de terre frites et du poulet grillé en plan."
+      },
+      {
+        "speaker": "person2",
+        "message": "Cela sonne très bon. Tu veux inviter quelqu'un ?"
+      }
+    ],
+    "conversation_summary": "A conversation about dinner plans, with a preference for cooking at home and an invitation to have dinner together."
+  }
+]

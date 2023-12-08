@@ -1,0 +1,26 @@
+[
+  {
+    "conversation": [
+      {"speaker": "person1", "message": "Comment t'appelles-tu ?"},
+      {"speaker": "person2", "message": "Je m'appelle Pierre. Et toi ?"},
+      {"speaker": "person1", "message": "Je m'appelle Sarah. Comment tu tes ?"},
+      {"speaker": "person2", "message": "Je vais bien, merci! Comment tu es ?"},
+      {"speaker": "person1", "message": "Moi aussi, je vais bien. Comment tu prends soin de toi ?"},
+      {"speaker": "person2", "message": "Je prenne des douches, je peigne mes cheveux et je mets du maquillage."},
+      {"speaker": "person1", "message": "C'est bien. Je fais aussi des douches et je peigne mes cheveux tous les jours. Mais j'ai besoin d'aider mon père à se raser."}
+    ],
+    "conversation_summary": "A conversation about personal care, including bathing, hair brushing and makeup, with a mention of helping someone shave."
+  },
+  {
+    "conversation": [
+      {"speaker": "person1", "message": "Comment t'appelles-tu ?"},
+      {"speaker": "person2", "message": "Je m'appelle Marie. Et toi ?"},
+      {"speaker": "person1", "message": "Je m'appelle David. Comment tu prends soin de toi ?"},
+      {"speaker": "person2", "message": "Je prenne des douches, je peigne mes cheveux et je mets du maquillage."},
+      {"speaker": "person1", "message": "C'est bien. Je prends aussi des douches et je peigne mes cheveux tous les jours. Mais j'ai besoin d'aider mon père à se raser."},
+      {"speaker": "person2", "message": "Moi aussi, j'aide mon père à se raser. Et tu prends soin de ta barbe ?"},
+      {"speaker": "person1", "message": "Oui, je la rasade tous les jours avec un rasoir électrique."}
+    ],
+    "conversation_summary": "A conversation about personal care, including bathing, hair brushing and makeup, with a mention of shaving and helping someone shave, and also about taking care of facial hair."
+  }
+]
