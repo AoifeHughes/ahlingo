@@ -1,22 +1,32 @@
+
+Instruction: Please generate a conversation about numbers and time, each exchange should be 2-5 words long. The conversation should include basic vocabulary related to numbers and time, such as "un", "deux", "trois", "quatre", "cinq", "six", "septembre", "octobre", "novembre", "décembre", "matin", "après-midi", "soir", "jour", "semaine", and "année".
+
+JSON response:
+```json
 [
   {
     "conversation": [
-      {"speaker": "person1", "message": "Combien d'heures sont il ?"},
-      {"speaker": "person2", "message": "Il est une heure."},
-      {"speaker": "person1", "message": "Quatre-vingt-dix minutes ?"},
-      {"speaker": "person2", "message": "Quarante-vingt-dix minutes. Comment ça va ?"},
-      {"speaker": "person1", "message": "Bien, merci !"}
+      {"speaker": "person1", "message": "Un jour, deux heures."},
+      {"speaker": "person2", "message": "Quatre heures, cinq minutes."},
+      {"speaker": "person1", "message": "Septembre, quatre-vingt-dix-neuf."}
     ],
-    "conversation_summary": "A conversation about the time and the duration of an event, with polite responses."
+    "conversation_summary": "A conversation about numbers and time, with basic vocabulary related to days of the month and time of day."
   },
   {
     "conversation": [
-      {"speaker": "person1", "message": "Combien d'années m'ont-il fait ?"},
-      {"speaker": "person2", "message": "Tu es âgé de trente ans."},
-      {"speaker": "person1", "message": "Quarante-deux ans ?"},
-      {"speaker": "person2", "message": "Quatre-deux ans. Comment ça va ?"},
-      {"speaker": "person1", "message": "Bien, merci !"}
+      {"speaker": "person1", "message": "Quatre heures après-midi."},
+      {"speaker": "person2", "message": "Dix heures matin."},
+      {"speaker": "person1", "message": "Soir, deux heures."}
     ],
-    "conversation_summary": "A conversation about age and the duration of a person's life, with polite responses."
+    "conversation_summary": "A conversation about time of day, with basic vocabulary related to morning and evening."
+  },
+  {
+    "conversation": [
+      {"speaker": "person1", "message": "Dix ans."},
+      {"speaker": "person2", "message": "Quatre mois."},
+      {"speaker": "person1", "message": "Septembre, deux mille quatre-vingt-dix-neuf."}
+    ],
+    "conversation_summary": "A conversation about numbers and time, with basic vocabulary related to years and months."
   }
 ]
+```
