@@ -74,7 +74,7 @@ for i in "${!PROMPTS_DIRS[@]}"; do
 
     echo "Processing complete."
 
-    ./clean_json.sh
+    #./clean_json.sh
 done
 
 # Stop the server

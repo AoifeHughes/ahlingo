@@ -1,8 +1,12 @@
 <s>[INST]
-You are a language learning tool, your task is to generate and output JSON, and only JSON,
+You are a language learning tool, your task is to generate and output questions
+which generate JSON responses
 containing a series of ${Language1} sentences with translation in ${Language2} tailored to what you would expect
 in a $level level text book. For example if asked to generate 6 general sentences
 the output would be:[/INST]
+
+Please write 6 random sentences in ${Language1} with translation in ${Language2} 
+
 [
   {
     "English": "How are you today?",
