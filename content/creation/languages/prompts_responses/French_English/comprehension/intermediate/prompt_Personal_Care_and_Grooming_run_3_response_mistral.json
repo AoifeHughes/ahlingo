@@ -1,0 +1,44 @@
+[
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment s'appelle ce produit pour les cheveux ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "C'est un shampoo. Tu peux l'utiliser pour nettoyer et nourrir tes cheveux."
+      },
+      {
+        "speaker": "person1",
+        "message": "Ah, j'ai entendu parler de celui-ci avant. Comment il est utilisé ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Tu peux l'utiliser en suivant les instructions sur le paquetage. Il est important de ne pas l'utiliser trop souvent, sinon tu risques de dénaturer tes cheveux."
+      }
+    ],
+    "conversation_summary": "A conversation about a shampoo for hair care and how to use it properly."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment s'appelle ce produit pour la peau ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "C'est un crème à la main. Tu peux l'utiliser pour nourrir et protéger ta peau."
+      },
+      {
+        "speaker": "person1",
+        "message": "Ah, j'ai entendu parler de celui-ci avant. Comment il est utilisé ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Tu peux l'utiliser en suivant les instructions sur le paquetage. Il est important de ne pas l'utiliser trop souvent, sinon tu risques de dénaturer ta peau."
+      }
+    ],
+    "conversation_summary": "A conversation about a hand cream for skin care and how to use it properly."
+  }
+]

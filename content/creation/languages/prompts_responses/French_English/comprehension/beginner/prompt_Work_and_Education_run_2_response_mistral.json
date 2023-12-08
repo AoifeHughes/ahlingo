@@ -1,0 +1,22 @@
+[
+  {
+    "conversation": [
+      {"speaker": "person1", "message": "Comment va-tu aujourd'hui ?"},
+      {"speaker": "person2", "message": "Je vais bien, merci! Et toi ?"},
+      {"speaker": "person1", "message": "Moi aussi, je vais bien."},
+      {"speaker": "person2", "message": "Qu'est-ce que tu fais aujourd'hui ?"},
+      {"speaker": "person1", "message": "Je suis allé au travail hier. C'était une journée normale, mais j'ai eu beaucoup de tâches à accomplir."}
+    ],
+    "conversation_summary": "A conversation about how each person is doing and their workday yesterday."
+  },
+  {
+    "conversation": [
+      {"speaker": "person1", "message": "Comment va-tu aujourd'hui ?"},
+      {"speaker": "person2", "message": "Je vais bien, merci! Et toi ?"},
+      {"speaker": "person1", "message": "Moi aussi, je vais bien."},
+      {"speaker": "person2", "message": "Qu'est-ce que tu fais aujourd'hui ?"},
+      {"speaker": "person1", "message": "Je suis allé à l'école hier. C'était une journée intéressante, nous avons eu un cours sur les langues."}
+    ],
+    "conversation_summary": "A conversation about how each person is doing and their educational day yesterday."
+  }
+]

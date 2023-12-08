@@ -1,0 +1,22 @@
+[
+  {
+    "conversation": [
+      {"speaker": "person1", "message": "Combien d'heures est-il ?"},
+      {"speaker": "person2", "message": "Il est une heure et vingt minutes."},
+      {"speaker": "person1", "message": "Merci, c'est bon. Et toi ?"},
+      {"speaker": "person2", "message": "Moi aussi, il est une heure et vingt minutes. Comment allez-vous aujourd'hui ?"},
+      {"speaker": "person1", "message": "Je vais bien, merci ! Et toi ?"}
+    ],
+    "conversation_summary": "A conversation about the time, with a response indicating that it is quarter past one and a discussion about how each person is doing."
+  },
+  {
+    "conversation": [
+      {"speaker": "person1", "message": "Quelques minutes avant la fin de l'heure ?"},
+      {"speaker": "person2", "message": "Oui, il reste cinq minutes."},
+      {"speaker": "person1", "message": "Merci, c'est bon. Et toi ?"},
+      {"speaker": "person2", "message": "Moi aussi, il reste cinq minutes. Comment allez-vous aujourd'hui ?"},
+      {"speaker": "person1", "message": "Je vais bien, merci ! Et toi ?"}
+    ],
+    "conversation_summary": "A conversation about the time, with a response indicating that it is almost five o'clock and a discussion about how each person is doing."
+  }
+]

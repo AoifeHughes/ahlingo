@@ -1,0 +1,22 @@
+[
+  {
+    "conversation": [
+      {"speaker": "person1", "message": "Combien d'heures sont il ?"},
+      {"speaker": "person2", "message": "Il est une heure."},
+      {"speaker": "person1", "message": "Quatre-vingt-dix minutes ?"},
+      {"speaker": "person2", "message": "Quarante-vingt-dix minutes. Comment ça va ?"},
+      {"speaker": "person1", "message": "Bien, merci !"}
+    ],
+    "conversation_summary": "A conversation about the time and the duration of an event, with polite responses."
+  },
+  {
+    "conversation": [
+      {"speaker": "person1", "message": "Combien d'années m'ont-il fait ?"},
+      {"speaker": "person2", "message": "Tu es âgé de trente ans."},
+      {"speaker": "person1", "message": "Quarante-deux ans ?"},
+      {"speaker": "person2", "message": "Quatre-deux ans. Comment ça va ?"},
+      {"speaker": "person1", "message": "Bien, merci !"}
+    ],
+    "conversation_summary": "A conversation about age and the duration of a person's life, with polite responses."
+  }
+]

@@ -1,0 +1,60 @@
+[
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment trouves-tu une bonne loge à Paris ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Il y a beaucoup d'options disponibles. Tu veux une chambre dans un hôtel ou une maison ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "J'aime mieux une chambre dans une maison, si possible."
+      },
+      {
+        "speaker": "person2",
+        "message": "Comme je suis également à la recherche d'une bonne loge, tu peux m'aider à trouver des options ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Bien sûr! Il y a beaucoup de sites web qui offrent des recommandations pour les loges à Paris. Tu peux aussi essayer d'aller au centre-ville et voir ce qu'il y a."
+      },
+      {
+        "speaker": "person2",
+        "message": "Merci beaucoup! J'ai trouvé une bonne chambre dans une maison en plein cœur de Paris. C'est un endroit magnifique!"
+      }
+    ],
+    "conversation_summary": "A conversation about finding a good place to stay in Paris, with options for hotels or houses and recommendations for websites and visiting the city center."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment trouves-tu une bonne loge à Londres ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Il y a beaucoup d'options disponibles. Tu veux une chambre dans un hôtel ou une maison ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "J'aime mieux une chambre dans une maison, si possible."
+      },
+      {
+        "speaker": "person2",
+        "message": "Comme je suis également à la recherche d'une bonne loge, tu peux m'aider à trouver des options ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Bien sûr! Il y a beaucoup de sites web qui offrent des recommandations pour les loges à Londres. Tu peux aussi essayer d'aller au centre-ville et voir ce qu'il y a."
+      },
+      {
+        "speaker": "person2",
+        "message": "Merci beaucoup! J'ai trouvé une bonne chambre dans une maison en plein cœur de Londres. C'est un endroit magnifique!"
+      }
+    ],
+    "conversation_summary": "A conversation about finding a good place to stay in London, with options for hotels or houses and recommendations for websites and visiting the city center."
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "conversation": [
+      {"speaker": "person1", "message": "Comment allez-vous à l'école ce jour ?"},
+      {"speaker": "person2", "message": "Je vais bien, merci! Et toi ?"},
+      {"speaker": "person1", "message": "Moi aussi, j'ai une classe intéressante aujourd'hui."},
+      {"speaker": "person2", "message": "Quelle matière ?"},
+      {"speaker": "person1", "message": "Ce sont les maths. Tu es bon en maths ?"}
+    ],
+    "conversation_summary": "A conversation about how each person is doing in school, with polite responses and a question about their performance in math."
+  },
+  {
+    "conversation": [
+      {"speaker": "person1", "message": "Comment allez-vous au travail ce jour ?"},
+      {"speaker": "person2", "message": "Je vais bien, merci! Et toi ?"},
+      {"speaker": "person1", "message": "Moi aussi, j'ai un travail intéressant aujourd'hui."},
+      {"speaker": "person2", "message": "Quelle tâche ?"},
+      {"speaker": "person1", "message": "Ce sont des réunions avec les clients. Tu es bon en réunions ?"}
+    ],
+    "conversation_summary": "A conversation about how each person is doing at work, with polite responses and a question about their performance in meetings with clients."
+  }
+]

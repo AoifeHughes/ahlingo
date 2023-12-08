@@ -1,0 +1,22 @@
+[
+  {
+    "conversation": [
+      {"speaker": "person1", "message": "Comment est-ce que tu es à l'exercice ce jour ?"},
+      {"speaker": "person2", "message": "Je vais au gym. Tu veux venir ?"},
+      {"speaker": "person1", "message": "Non, je préfère faire du jogging dans le parc. Comment ça va pour toi ?"},
+      {"speaker": "person2", "message": "C'est bien, j'ai fait une bonne séance de musculation hier."},
+      {"speaker": "person1", "message": "Ah, c'est magnifique ! Tu es fort ?"}
+    ],
+    "conversation_summary": "A conversation about exercise plans, with suggestions for different activities and positive feedback on strength training."
+  },
+  {
+    "conversation": [
+      {"speaker": "person1", "message": "Comment tu es à l'entraînement de football ce jour ?"},
+      {"speaker": "person2", "message": "Je vais au stade. Tu veux venir ?"},
+      {"speaker": "person1", "message": "Non, je préfère faire du tennis. Comment ça va pour toi ?"},
+      {"speaker": "person2", "message": "C'est bien, j'ai fait une bonne séance d'entraînement hier."},
+      {"speaker": "person1", "message": "Ah, c'est magnifique ! Tu es fort ?"}
+    ],
+    "conversation_summary": "A conversation about football training plans, with suggestions for different activities and positive feedback on strength training."
+  }
+]

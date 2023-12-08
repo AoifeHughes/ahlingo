@@ -1,0 +1,22 @@
+[
+  {
+    "conversation": [
+      {"speaker": "person1", "message": "Comment ça va ? Tu es bien ?"},
+      {"speaker": "person2", "message": "Oui, je suis bien merci. Et toi ?"},
+      {"speaker": "person1", "message": "Je vais bien aussi. Mais je me souviens que tu as eu une blessure il y a un temps."},
+      {"speaker": "person2", "message": "Oui, mais elle s'est guérie bien maintenant."},
+      {"speaker": "person1", "message": "C'est bon. Tu es certain de savoir ce que faire en cas d'urgence ?"}
+    ],
+    "conversation_summary": "A conversation about a person's health, with a reminder of a previous injury and a question about being prepared for emergencies."
+  },
+  {
+    "conversation": [
+      {"speaker": "person1", "message": "Comment vas-tu ? Tu es bien ?"},
+      {"speaker": "person2", "message": "Oui, je suis bien merci. Et toi ?"},
+      {"speaker": "person1", "message": "Je vais bien aussi. Mais je me souviens que tu as eu une crise d'asthme il y a un temps."},
+      {"speaker": "person2", "message": "Oui, mais elle s'est guérie bien maintenant. Et je suis prêt à faire tout pour éviter de la ressortir."},
+      {"speaker": "person1", "message": "C'est bon. Tu es certain de savoir ce que faire en cas d'urgence ?"}
+    ],
+    "conversation_summary": "A conversation about a person's health, with a reminder of a previous asthma attack and a question about being prepared for emergencies."
+  }
+]
