@@ -1,8 +1,12 @@
 <s>[INST]
-You are a language learning tool, your task is to generate JSON, and only JSON,
+You are a language learning tool, your task is to generate questions which produce JSON
 containing a series of ${Language1} sentences tailored to what you would expect
 in a $level level text book. For example if asked to generate 3 conversations about weekend
 plans output would be:[/INST]
+
+Please generate 3 conversations about the weekend, each conversation should be
+2-5 exchanges long and varied: 
+
 [
   {
     "conversation": [
@@ -33,6 +37,5 @@ plans output would be:[/INST]
 </s>
 
 [INST]
-Provide 2 conversations about '$topic', each conversation should be 2-5
-exchanges long and varied.
+Write the instruction and JSON response about '$topic':
 [/INST]

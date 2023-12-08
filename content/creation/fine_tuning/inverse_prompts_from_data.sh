@@ -12,8 +12,8 @@ SERVER_CMD="/Users/ahughes/git/llama.cpp/server"
 SERVER_ARGS="-m $MODEL_PATH -c $CONTEXT_SIZE --host $SERVER_HOST --port $SERVER_PORT"
 
 # Generate directory paths for prompts and outputs
-PROMPTS_DIRS=($(find "../prompts_responses/" -type d -maxdepth 1 -mindepth 1))
-OUTPUT_DIRS=($(find "../prompts_responses/" -type d -maxdepth 1 -mindepth 1))
+PROMPTS_DIRS=($(find "../languages/prompts_responses/" -type d -maxdepth 1 -mindepth 1))
+OUTPUT_DIRS=($(find "../languages/prompts_responses/" -type d -maxdepth 1 -mindepth 1))
 
 echo "PROMPTS_DIRS: ${PROMPTS_DIRS[@]}"
 echo "OUTPUT_DIRS: ${OUTPUT_DIRS[@]}"
@@ -69,7 +69,7 @@ for i in "${!PROMPTS_DIRS[@]}"; do
 
     echo "Processing complete."
 
-    ./clean_json.sh
+    #./clean_json.sh
 done
 
 # Stop the server

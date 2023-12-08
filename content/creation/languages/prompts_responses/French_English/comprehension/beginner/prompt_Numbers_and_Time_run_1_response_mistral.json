@@ -1,22 +1,35 @@
-[
-  {
-    "conversation": [
-      {"speaker": "person1", "message": "Combien d'heures est-il ?"},
-      {"speaker": "person2", "message": "Il est une heure et vingt minutes."},
-      {"speaker": "person1", "message": "Merci, c'est bon. Et toi ?"},
-      {"speaker": "person2", "message": "Moi aussi, il est une heure et vingt minutes. Comment allez-vous aujourd'hui ?"},
-      {"speaker": "person1", "message": "Je vais bien, merci ! Et toi ?"}
-    ],
-    "conversation_summary": "A conversation about the time, with a response indicating that it is quarter past one and a discussion about how each person is doing."
-  },
-  {
-    "conversation": [
-      {"speaker": "person1", "message": "Quelques minutes avant la fin de l'heure ?"},
-      {"speaker": "person2", "message": "Oui, il reste cinq minutes."},
-      {"speaker": "person1", "message": "Merci, c'est bon. Et toi ?"},
-      {"speaker": "person2", "message": "Moi aussi, il reste cinq minutes. Comment allez-vous aujourd'hui ?"},
-      {"speaker": "person1", "message": "Je vais bien, merci ! Et toi ?"}
-    ],
-    "conversation_summary": "A conversation about the time, with a response indicating that it is almost five o'clock and a discussion about how each person is doing."
-  }
-]
+
+Instruction: Generate a JSON response about numbers and time, tailored for a beginner level text book. The response should include 3-5 exchanges in the conversation section, with questions that cover basic number concepts and time expressions.
+
+JSON Response:
+```json
+{
+  "conversation": [
+    {
+      "speaker": "person1",
+      "message": "Comment many children are there in your class?"
+    },
+    {
+      "speaker": "person2",
+      "message": "There are 25 children in my class."
+    },
+    {
+      "speaker": "person1",
+      "message": "How old are you?"
+    },
+    {
+      "speaker": "person2",
+      "message": "I am 18 years old."
+    },
+    {
+      "speaker": "person1",
+      "message": "What time is it now?"
+    },
+    {
+      "speaker": "person2",
+      "message": "It's 3:00 in the afternoon."
+    }
+  ],
+  "conversation_summary": "A conversation about basic number concepts and time expressions, with simple questions and responses."
+}
+```
