@@ -3,7 +3,7 @@
 # Define the language pairs
 language1="French"
 language2="English"
-levels="beginner"
+levels="beginner,advanced"
 
 # Directory containing the template files
 template_dir="./prompt_templates"
@@ -21,7 +21,7 @@ fi
 # Iterate over language pairs
 for i in "${!languages1[@]}"; do
     # Iterate over files in the directory matching the pattern 'mistral*'
-    for file_path in "$template_dir/mistral_comp"*; do
+    for file_path in "$template_dir/mistral"*; do
         # Check if the file_path is a regular file
         if [ -f "$file_path" ]; then
             # Extract the last parameter by splitting the base name on '_'
