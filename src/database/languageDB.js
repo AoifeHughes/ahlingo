@@ -12,7 +12,7 @@ class LanguageDB {
         } else {
           this._initialize();
         }
-      }
+      },
     );
   }
 
@@ -62,10 +62,9 @@ class LanguageDB {
           if (err) {
             console.error("Error creating default user:", err.message);
           }
-        }
+        },
       );
       this._printExercisesCount();
-
     });
   }
 
@@ -79,27 +78,48 @@ class LanguageDB {
     });
   }
 
-  addExercise(topic, type, difficultyLevel, language1, language2, language1Content, language2Content, callback) {
+  addExercise(
+    topic,
+    type,
+    difficultyLevel,
+    language1,
+    language2,
+    language1Content,
+    language2Content,
+    callback,
+  ) {
     this.db.run(
       "INSERT INTO exercises (topic, type, difficulty_level, language_1, language_2, language_1_content, language_2_content) VALUES (?, ?, ?, ?, ?, ?, ?)",
-      [topic, type, difficultyLevel, language1, language2, language1Content, language2Content],
+      [
+        topic,
+        type,
+        difficultyLevel,
+        language1,
+        language2,
+        language1Content,
+        language2Content,
+      ],
       function (err) {
         if (typeof callback === "function") {
           callback(err, this.lastID); // this.lastID will return the ID of the newly inserted exercise
         }
-      }
+      },
     );
   }
-  
+
   getDifficultyLevels(callback) {
-    this.db.all("SELECT DISTINCT difficulty_level FROM exercises", [], callback);
+    this.db.all(
+      "SELECT DISTINCT difficulty_level FROM exercises",
+      [],
+      callback,
+    );
   }
 
   getTopicsByDifficulty(difficultyLevel, callback) {
     this.db.all(
       "SELECT DISTINCT topic FROM exercises WHERE difficulty_level = ?",
       [difficultyLevel],
-      callback
+      callback,
     );
   }
 
@@ -107,7 +127,7 @@ class LanguageDB {
     this.db.all(
       "SELECT DISTINCT language_1, language_2 FROM exercises WHERE (language_1 = ? OR language_2 = ?) AND topic = ? AND difficulty_level = ?",
       [topic, difficultyLevel],
-      callback
+      callback,
     );
   }
 
@@ -117,7 +137,7 @@ class LanguageDB {
     console.log("Language name:", languageName);
     this.db.all(query, [languageName, languageName], callback);
   }
-  
+
   close() {
     this.db.close((err) => {
       if (err) {
