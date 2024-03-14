@@ -1,40 +1,39 @@
 #!/bin/bash
 
-# Define the directory to search in
-DIRECTORY="../languages/prompts_responses/"
+# Directory to search for JSON files
+search_dir="./training_data"
 
-# Define the output file
-OUTPUT_FILE="training_data.txt"
+# Output file
+output_file="combined.json"
 
-# Empty the output file if it already exists
-> "$OUTPUT_FILE"
+# Start the output file with an empty array
+echo "[]" > "$output_file"
 
-# Find all .txt files in the directory and its subdirectories
-find "$DIRECTORY" -name "prompt_*.txt" | while read -r txt_file; do
-    # Extract the directory of the txt file
-    txt_dir=$(dirname "$txt_file")
+# Function to add a new entry to the output file
+add_entry() {
+    local instruction="$1"
+    local response="$2"
+    jq --arg instruction "$instruction" --arg response "$response" '. += [{"instruction": $instruction, "output": $response, "input": ""}]' "$output_file" > tmpfile && mv tmpfile "$output_file"
+}
 
-    # Extract the base name without the extension
-    base_name=$(basename "$txt_file" .txt)
+# Find all JSON files and process them
+find "$search_dir" -type f -name '*.json' | while read -r file; do
+    # Extract the text before the JSON part and remove specific strings
+    instruction=$(awk '/\[/ {exit} {print}' "$file" | sed 's/```json//g' | sed 's/Response://g' | tr -d '\n')
 
-    # Find the corresponding .json file in the same directory as the txt file
-    json_file=$(find "$txt_dir" -name "${base_name}_run_*_response_*.json" -print -quit)
+    # Extract the JSON part
+    json_content=$(awk '/\[/,EOF' "$file")
 
-    # Check if the .json file exists
-    if [ -f "$json_file" ]; then
-        # Validate JSON file
-        if jq empty "$json_file" > /dev/null 2>&1; then
-            # Append <s> at the beginning of each entry, replace tags and concatenate
-            echo "<s>" >> "$OUTPUT_FILE"
-            sed 's/\[INST\]/### Instruction:\n/g; s/\[\\INST\]/### Response:\n/g; s/<\/s>/\n/g; s/<s>/\n<s>/g' "$txt_file" >> "$OUTPUT_FILE"
-            echo "<s>" >> "$OUTPUT_FILE"
-            cat "$json_file" >> "$OUTPUT_FILE"
-        else
-            echo "Invalid JSON: $json_file"
-        fi
+    # Validate JSON content
+    if jq empty <<< "$json_content" 2>/dev/null; then
+        # Convert JSON content to a string
+        json_string=$(jq -c . <<< "$json_content")
+
+        # Add entry to the output file
+        add_entry "$instruction" "$json_string"
     else
-        echo "No matching .json file for $txt_file"
+        echo "Invalid JSON in file: $file"
     fi
 done
 
-echo "Concatenation complete. Output written to $OUTPUT_FILE"
+echo "Combined JSON created at $output_file"

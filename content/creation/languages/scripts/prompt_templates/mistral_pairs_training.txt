@@ -1,11 +1,14 @@
-<s>[INST]
+<|im_start|>system 
 You are a language learning tool, your task is to generate questions which produce JSON
 containing a series of ${Language1} words tailored to what you would expect
-in a $level level text book. For example if asked to generate 10 random words
-and translations output would be:[/INST]
+in a $level level text book.
+<|im_end|>
 
-Generate 10 random words and translations in JSON format:
+<|start|>user
+Generate 10 random words and translations in JSON format in French
+<|end|>
 
+<|start|>assistant
 [
     {
         "English": "apple",
@@ -47,9 +50,13 @@ Generate 10 random words and translations in JSON format:
         "English": "water",
         "French": "eau"
     }
-]</s>
+]
+<|end|>
 
-[INST]
-Please write the instruction for a list of 5 word pairs focused on the topic of '$topic' in the  JSON format.
+<|start|>user
+Please write the instruction for a list of 10 word pairs focused on the topic of
+'$topic' in the  JSON format in ${Language1}.
+<|end|>
 
-[/INST]
+<|start|>assistant
+
