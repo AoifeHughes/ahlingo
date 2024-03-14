@@ -4,11 +4,11 @@ containing a series of ${Language1} words tailored to what you would expect
 in a $level level text book.
 <|im_end|>
 
-<|start|>user
+<|im_start|>user
 Generate 10 random words and translations in JSON format in French
-<|end|>
+<|im_end|>
 
-<|start|>assistant
+<|im_start|>assistant
 [
     {
         "English": "apple",
@@ -50,13 +50,12 @@ Generate 10 random words and translations in JSON format in French
         "English": "water",
         "French": "eau"
     }
-]
-<|end|>
+]<|im_end|>
 
-<|start|>user
+<|im_start|>user
 Please write the instruction for a list of 10 word pairs focused on the topic of
 '$topic' in the  JSON format in ${Language1}.
-<|end|>
+<|im_end|>
 
-<|start|>assistant
+<|im_start|>assistant
 

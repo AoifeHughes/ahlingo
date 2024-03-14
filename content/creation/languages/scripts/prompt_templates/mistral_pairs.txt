@@ -50,8 +50,7 @@ generate 10 random words pairs
     "English": "water",
     "French": "eau"
 }
-]
-<|im_end|>
+]<|im_end|>
 
 <|im_start|>user
 Please provide a 10 word pairs focused on the topic of '$topic' in the same JSON format.
