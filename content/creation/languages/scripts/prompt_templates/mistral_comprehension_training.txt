@@ -6,10 +6,8 @@ in a $level level text book.
 
 
 <|im_start|>user 
-
 Please generate 3 conversations about the weekend, each conversation should be
 2-5 exchanges long and varied
-
 <|im_end|>
 
 <|im_start|>assistant
@@ -24,14 +22,6 @@ Please generate 3 conversations about the weekend, each conversation should be
   },
   {
     "conversation": [
-      {"speaker": "person1", "message": "Qu'est-ce que tu fais ce week-end ?"},
-      {"speaker": "person2", "message": "Je vais faire de la randonnée. Tu veux venir ?"},
-      {"speaker": "person1", "message": "Oui, j'aimerais beaucoup ça. Merci !"}
-    ],
-    "conversation_summary": "Discussing weekend plans, with an invitation to go hiking and a positive response."
-  },
-  {
-    "conversation": [
       {"speaker": "person1", "message": "Tu as vu le dernier film de science-fiction ?"},
       {"speaker": "person2", "message": "Non, pas encore. Est-ce qu'il est bon ?"},
       {"speaker": "person1", "message": "Oui, c'est un excellent film. Tu devrais le voir."},
@@ -39,11 +29,10 @@ Please generate 3 conversations about the weekend, each conversation should be
     ],
     "conversation_summary": "A conversation about a recent science-fiction movie, with a recommendation and agreement to see it."
   }
-]
-<|im_end|>
+]<|im_end|>
 
 <|im_start|>user
-Provide 3 conversations on '$topic' in ${Language1} at $level level.
+Provide 2 conversations on '$topic' in ${Language1} at $level level.
 <|im_end|>
 
 <|im_start|>assistant
