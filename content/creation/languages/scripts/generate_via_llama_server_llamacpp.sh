@@ -6,8 +6,8 @@
 number_of_runs=1
 
 # Server startup configurations
-MODEL_PATH="/Users/ahughes/git/LLMs/llama2-7b-translatejson-q5_0.gguf"
-CONTEXT_SIZE=2048
+MODEL_PATH="/Users/ahughes/git/LLMs/llama2-13b-Q4-translatejson-ft.gguf"
+CONTEXT_SIZE=600
 SERVER_HOST="127.0.0.1"
 SERVER_PORT="8080"
 SERVER_CMD="/Users/ahughes/git/llama.cpp/server"
@@ -28,7 +28,7 @@ SERVER_PID=$!
 
 # Wait for the server to start and become ready
 echo "Waiting for server to become ready..."
-sleep 10  # Adjust this sleep time as necessary
+sleep 20  # Adjust this sleep time as necessary
 
 # Function to send prompts to the llama.cpp server and capture the output
 process_prompt() {
@@ -39,18 +39,20 @@ process_prompt() {
     for run in $(seq 1 $number_of_runs); do
         # Set output file name with run number, in the same directory as PROMPTS_FILE
         OUTPUT_FILE="${DIR_PATH}/${BASENAME}_run_${run}_response_llama.json"
-
+        echo "Processing $PROMPTS_FILE, run $run of $number_of_runs..."
         # Prepare data for POST request
         # Added temperature setting here
         local DATA=$(cat "$PROMPTS_FILE" | jq -Rs --arg temp "0.4" '{prompt: ., temperature: ($temp | tonumber)}')
 
         # Send prompt to llama.cpp server and capture the entire output
-        local FULL_RESPONSE=$(curl --silent --request POST \
+        local FULL_RESPONSE=$(curl --request POST \
                                        --url http://${SERVER_HOST}:${SERVER_PORT}/completion \
                                        --header "Content-Type: application/json" \
                                        --data "$DATA")
 
+
         # Save the response
+        echo "$FULL_RESPONSE" 
         echo "$FULL_RESPONSE" | jq -r '.content' > "$OUTPUT_FILE"
         # Optionally remove the original prompts file
         #rm -f "$PROMPTS_FILE"
@@ -78,5 +80,5 @@ for i in "${!PROMPTS_DIRS[@]}"; do
 done
 
 # Stop the server
-echo "Stopping llama.cpp server..."
-kill $SERVER_PID
+#echo "Stopping llama.cpp server..."
+#kill $SERVER_PID

@@ -1,12 +1,18 @@
-<s>[INST]
+<|im_start|>system 
 You are a language learning tool, your task is to generate questions which produce JSON
 containing a series of ${Language1} conversations tailored to what you would expect
-in a $level level text book. Do not deviate from the JSON structure. For example if asked to generate 3 conversations about weekend
-plans output would be:[/INST]
+in a $level level text book.
+<|im_end|>
+
+
+<|im_start|>user 
 
 Please generate 3 conversations about the weekend, each conversation should be
-2-5 exchanges long and varied: 
+2-5 exchanges long and varied
 
+<|im_end|>
+
+<|im_start|>assistant
 [
   {
     "conversation": [
@@ -34,8 +40,10 @@ Please generate 3 conversations about the weekend, each conversation should be
     "conversation_summary": "A conversation about a recent science-fiction movie, with a recommendation and agreement to see it."
   }
 ]
-</s>
+<|im_end|>
 
-[INST]
-Write the instruction and JSON response about '$topic':
-[/INST]
+<|im_start|>user
+Provide 3 conversations on '$topic' in ${Language1} at $level level.
+<|im_end|>
+
+<|im_start|>assistant

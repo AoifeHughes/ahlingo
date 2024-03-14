@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Define the language pairs
-language1="French"
-language2="English"
-levels="beginner,advanced"
+language1="German,French,Spanish,Japanese"
+language2="English,English,English,English"
+levels="beginner,intermediate,advanced"
 
 # Directory containing the template files
 template_dir="./prompt_templates"
