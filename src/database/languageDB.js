@@ -69,7 +69,8 @@ class LanguageDB {
           exercise_id INTEGER NOT NULL,
           language_1 TEXT NOT NULL,
           language_2 TEXT NOT NULL,
-          translation TEXT NOT NULL,
+          language_1_content TEXT NOT NULL,
+          language_2_content TEXT NOT NULL,
           FOREIGN KEY (exercise_id) REFERENCES exercises_info (id)
         )`,
       ];
@@ -182,8 +183,6 @@ class LanguageDB {
     }
     
     
-    
-
     addConversationExerciseFromJSON(exerciseName, language, topic, difficultyLevel, jsonInput, callback) {
       const conversations = jsonInput.conversation;
       const summary = jsonInput.conversation_summary;
@@ -191,6 +190,82 @@ class LanguageDB {
       this.addConversationExercise(exerciseName, language, topic, difficultyLevel, conversations, summary, callback);
     }
   
+    addPairExercise(exerciseName, language, topic, difficultyLevel, language1, language2, language1Content, language2Content, callback) {
+      const db = this.db; // Capture a reference to the db property of LanguageDB instance
+      // log all the params 
+      console.log(`Adding pair exercise: ${exerciseName}, ${language}, ${topic}, ${difficultyLevel}, ${language1}, ${language2}, ${language1Content}, ${language2Content}`);
+      db.serialize(() => {
+        this._getOrCreateLanguage(language, (err, languageId) => {
+          if (err) return callback(err);
+          this._getOrCreateTopic(topic, (err, topicId) => {
+            if (err) return callback(err);
+            this._getOrCreateDifficulty(difficultyLevel, (err, difficultyId) => {
+              if (err) return callback(err);
+    
+              const queryInsertExercise = `INSERT INTO exercises_info (exercise_name, language_id, topic_id, difficulty_id) VALUES (?, ?, ?, ?)`;
+              db.run(queryInsertExercise, [exerciseName, languageId, topicId, difficultyId], function(err) {
+                if (err) return callback(err);
+                const exerciseId = this.lastID;
+    
+                const insertPairQuery = `INSERT INTO pair_exercises (exercise_id, language_1, language_2, language_1_content, language_2_content) VALUES (?, ?, ?, ?, ?)`;
+                db.run(insertPairQuery, [exerciseId, language1, language2, language1Content, language2Content], (err) => {
+                  callback(err, exerciseId);
+                });
+              });
+            });
+          });
+        });
+      });
+    }
+    
+    
+    addPairExerciseFromJSON(exerciseName, language, topic, difficultyLevel, jsonInput, callback) {
+      const language_1 = 'English';
+      const language_2 = language;
+      const language_1_content = jsonInput[language_1];
+      const language_2_content = jsonInput[language_2];
+    
+      this.addPairExercise(exerciseName, language, topic, difficultyLevel, language_1, language_2, language_1_content, language_2_content, callback);
+    }
+
+    addTranslationExercise(exerciseName, language, topic, difficultyLevel, language1, language2, language1Content, language2Content, callback) {
+      const db = this.db; // Capture a reference to the db property of LanguageDB instance
+    
+      db.serialize(() => {
+        this._getOrCreateLanguage(language, (err, languageId) => {
+          if (err) return callback(err);
+          this._getOrCreateTopic(topic, (err, topicId) => {
+            if (err) return callback(err);
+            this._getOrCreateDifficulty(difficultyLevel, (err, difficultyId) => {
+              if (err) return callback(err);
+    
+              const queryInsertExercise = `INSERT INTO exercises_info (exercise_name, language_id, topic_id, difficulty_id) VALUES (?, ?, ?, ?)`;
+              db.run(queryInsertExercise, [exerciseName, languageId, topicId, difficultyId], function(err) {
+                if (err) return callback(err);
+                const exerciseId = this.lastID;
+    
+                const insertTranslationQuery = `INSERT INTO translation_exercises (exercise_id, language_1, language_2, language_1_content, language_2_content) VALUES (?, ?, ?, ?, ?)`;
+                db.run(insertTranslationQuery, [exerciseId, language1, language2, language1Content, language2Content], (err) => {
+                  callback(err, exerciseId);
+                });
+              });
+            });
+          });
+        });
+      });
+    }
+    
+    
+    addTranslationExerciseFromJSON(exerciseName, language, topic, difficultyLevel, jsonInput, callback) {
+      const language_1 = 'English';
+      const language_2 = language;
+      const language_1_content = jsonInput[language_1];
+      const language_2_content = jsonInput[language_2];
+    
+      this.addTranslationExercise(exerciseName, language, topic, difficultyLevel, language_1, language_2, language_1_content, language_2_content, callback);
+    }
+    
+
 
   close() {
     this.db.close((err) => {

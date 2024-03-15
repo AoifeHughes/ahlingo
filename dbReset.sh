@@ -13,7 +13,7 @@ rm -f "$DB_FILE"
 
 # Step 2: Find all JSON files (excluding files containing "broken") and populate the database
 echo "Populating the database with JSON files..."
-find "$JSON_DIRECTORY" -name "*.json" -path "*conversations*" ! -name "*broken*" | while read json_file; do
+find "$JSON_DIRECTORY" -name "*.json"  ! -name "*broken*" | while read json_file; do
   node "$POPULATE_SCRIPT" "$json_file"
 done
 
