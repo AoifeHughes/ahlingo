@@ -1,0 +1,3 @@
+[
+{"conversation": [{"speaker": "person1", "message": "Comment ça va ?"}, {"speaker": "person2", "message": "Ça va bien, merci. Et toi ?"}, {"speaker": "person1", "message": "Je vais bien aussi."}], "conversation_summary": "A conversation asking how each person is doing."},
+{"conversation": [{"speaker": "person1", "message": "Qu'est-ce que tu aimes faire en t
