@@ -11,10 +11,9 @@ CONTEXT_SIZE=1024
 SERVER_HOST="127.0.0.1"
 SERVER_PORT="8080"
 SERVER_CMD="/Users/ahughes/git/llama.cpp/server"
-GPU_LAYERS=32
+GPU_LAYERS=34
 PROMPT_FILE="./prompt_file.json"
 SERVER_ARGS="-m $MODEL_PATH -c $CONTEXT_SIZE --host $SERVER_HOST --port $SERVER_PORT --n-gpu-layers $GPU_LAYERS --system-prompt-file $PROMPT_FILE"
-
 
 # Generate directory paths for prompts and outputs
 PROMPTS_DIRS=($(find "../prompts_responses/" -type d -maxdepth 1 -mindepth 1))
