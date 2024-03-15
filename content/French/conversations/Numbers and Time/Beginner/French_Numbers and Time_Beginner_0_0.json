@@ -1,0 +1,87 @@
+[
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "Combien de temps faut-il pour faire une promenade ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "En général, cela prend environ une heure."
+            },
+            {
+                "speaker": "person1",
+                "message": "Et comment dit-on 'une promenade' en français ?"
+            }
+        ],
+        "conversation_summary": "A conversation about how long a walk usually takes and how to say 'a walk' in French."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "Quel est le mois de l'année que tu préfères ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "J'aime le mois de mai. Il fait beau et il y a beaucoup de fêtes."
+            },
+            {
+                "speaker": "person1",
+                "message": "Moi, je préfère le mois de septembre. Les feuilles des arbres sont rougees et il y a un vent agréable."
+            }
+        ],
+        "conversation_summary": "A conversation about favorite months of the year and the reasons for them."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "Combien de temps prend la préparation d'un repas ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "En général, cela prend environ une heure."
+            },
+            {
+                "speaker": "person1",
+                "message": "Et comment dit-on 'a meal preparation' en français ?"
+            }
+        ],
+        "conversation_summary": "A conversation about how long it usually takes to prepare a meal and how to say 'meal preparation' in French."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "Quel est le jour de la semaine que tu préfères ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "J'aime le lundi. J'ai des cours et je rencontre mes amis."
+            },
+            {
+                "speaker": "person1",
+                "message": "Moi, je préfère le vendredi. C'est la fin de la semaine et j'ai tout juste temps pour manger du bonbon."
+            }
+        ],
+        "conversation_summary": "A conversation about favorite days of the week and the reasons for them."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "Combien de temps passe-t-il entre les repas ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "En général, il passe trois heures entre chaque repas."
+            },
+            {
+                "speaker": "person1",
+                "message": "Et comment dit-on 'a meal' en français ?"
+            }
+        ],
+        "conversation_summary": "A conversation about how long it usually takes between meals and how to say 'a meal' in French."
+    }
+]
