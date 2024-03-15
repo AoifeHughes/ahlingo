@@ -101,16 +101,17 @@ with open('levels.txt', 'r') as file:
     levels = [line.strip() for line in file]
 
 print("Running with the following parameters:")
-print("Languages:", ", ".join(languages))
-print("Levels:", ", ".join(levels))
-print("Topics:", ", ".join(topics))
+print("Languages: ", "\n".join(languages))
+print("Levels: ", "\n".join(levels))
+print("Topics: ", "\n".join(topics))
 
 
 for language in tqdm(languages, desc="Languages"):
     for level in tqdm(levels, desc="Levels"):
         for topic in tqdm(topics, desc="Topics"):
-            run = 0
-            for idx, response in enumerate(generate_lessons_data(language, level, topic, N_runs=3)):
-                output_folder = f"../../{language}/{topic}/{level}/"
-                dump_response(response, language, topic, level, idx, run, output_folder)
-                run += 1
+            for lesson_kind in ['conversations', 'pairs', 'translations']:
+                run = 0
+                for idx, response in enumerate(generate_lessons_data(language, level, topic, N_runs=3, lesson_kinds=[lesson_kind])):
+                    output_folder = f"../../{language}/{lesson_kind}/{topic}/{level}/"
+                    dump_response(response, language, topic, level, idx, run, output_folder)
+                    run += 1
