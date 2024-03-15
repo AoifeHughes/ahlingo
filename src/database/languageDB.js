@@ -265,6 +265,58 @@ class LanguageDB {
       this.addTranslationExercise(exerciseName, language, topic, difficultyLevel, language_1, language_2, language_1_content, language_2_content, callback);
     }
     
+    addUser(userName, callback) {
+      const query = `INSERT INTO users (name) VALUES (?)`;
+      this.db.run(query, [userName], function(err) {
+        callback(err);
+      });
+    }
+
+    getDifficultyLevels(callback) {
+      const query = `SELECT difficulty_level FROM difficulties`;
+      this.db.all(query, [], (err, rows) => {
+        if (err) {
+          return callback(err);
+        }
+        const levels = rows.map((row) => row.difficulty_level);
+        callback(null, levels);
+      });
+    }
+
+    getTopicsByDifficulty(difficultyLevel, callback) {
+      const query = `SELECT topic FROM topics WHERE id IN (SELECT topic_id FROM exercises_info WHERE difficulty_id = (SELECT id FROM difficulties WHERE difficulty_level = ?))`;
+      this.db.all(query, [difficultyLevel], (err, rows) => {
+        if (err) {
+          return callback(err);
+        }
+        const topics = rows.map((row) => row.topic);
+        callback(null, topics);
+      });
+    }
+
+    getLanguagesByTopicAndDifficulty(topic, difficultyLevel, callback) {
+      const query = `SELECT language FROM languages WHERE id IN (SELECT language_id FROM exercises_info WHERE topic_id = (SELECT id FROM topics WHERE topic = ?) AND difficulty_id = (SELECT id FROM difficulties WHERE difficulty_level = ?))`;
+      this.db.all(query, [topic, difficultyLevel], (err, rows) => {
+        if (err) {
+          return callback(err);
+        }
+        const languages = rows.map((row) => row.language);
+        callback(null, languages);
+      });
+    }
+
+    getTopicsByLanguage(languageName, callback) {
+      const query = `SELECT topic FROM topics WHERE id IN (SELECT topic_id FROM exercises_info WHERE language_id = (SELECT id FROM languages WHERE language = ?))`;
+      this.db.all(query, [languageName], (err, rows) => {
+        if (err) {
+          return callback(err);
+        }
+        const topics = rows.map((row) => row.topic);
+        callback(null, topics);
+      });
+    }
+
+    
 
 
   close() {
