@@ -29,13 +29,31 @@ function addContentFromFile(filename) {
       const exerciseId = uuidv4(); // Generate a random unique ID
       const exerciseName = `${topic} Conversation ${index + 1} - ID: ${exerciseId}`;
 
-      db.addConversationExerciseFromJSON(exerciseName, language, topic, difficulty, conversationExercise, (err, exerciseId) => {
-        if (err) {
-          console.error(`Error adding conversation exercise ${index + 1}:`, err);
-        } else {
-          console.log(`Added conversation exercise ${index + 1} with ID: ${exerciseId}`);
-        }
-      });
+      if (exerciseType === 'pairs') {
+        db.addPairExerciseFromJSON(exerciseName, language, topic, difficulty, conversationExercise, (err, exerciseId) => {
+          if (err) {
+            console.error(`Error adding pairs exercise ${index + 1}:`, err);
+          } else {
+            console.log(`Added pairs exercise ${index + 1} with ID: ${exerciseId}`);
+          }
+        });
+      } else if (exerciseType === 'translations') {
+        db.addTranslationExerciseFromJSON(exerciseName, language, topic, difficulty, conversationExercise, (err, exerciseId) => {
+          if (err) {
+            console.error(`Error adding translations exercise ${index + 1}:`, err);
+          } else {
+            console.log(`Added translations exercise ${index + 1} with ID: ${exerciseId}`);
+          }
+        });
+      } else {
+        db.addConversationExerciseFromJSON(exerciseName, language, topic, difficulty, conversationExercise, (err, exerciseId) => {
+          if (err) {
+            console.error(`Error adding conversation exercise ${index + 1}:`, err);
+          } else {
+            console.log(`Added conversation exercise ${index + 1} with ID: ${exerciseId}`);
+          }
+        });
+      }
     });
   });
 }
