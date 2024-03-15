@@ -1,0 +1,38 @@
+[
+    {
+        "English": "bus",
+        "French": "autobus"
+    },
+    {
+        "English": "train",
+        "French": "train"
+    },
+    {
+        "English": "plane",
+        "French": "avion"
+    },
+    {
+        "English": "hotel",
+        "French": "hôtel"
+    },
+    {
+        "English": "rental car",
+        "French": "location de voiture"
+    },
+    {
+        "English": "tourist destination",
+        "French": "destination touristique"
+    },
+    {
+        "English": "sightseeing",
+        "French": "visite guidée"
+    },
+    {
+        "English": "traffic",
+        "French": "circulation"
+    },
+    {
+        "English": "gas station",
+        "French": "station service"
+    }
+]

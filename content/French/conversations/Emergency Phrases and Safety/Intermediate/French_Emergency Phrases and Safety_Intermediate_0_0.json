@@ -1,0 +1,87 @@
+[
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "Comment allez-vous ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "Je vais bien, merci. Et toi ?"
+            },
+            {
+                "speaker": "person1",
+                "message": "Je vais bien aussi."
+            }
+        ],
+        "conversation_summary": "A conversation asking how each person is doing."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "Quel est ton film préféré ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "J'aime beaucoup le film d'animation Coco."
+            },
+            {
+                "speaker": "person1",
+                "message": "Coco est un film très bon. J'ai aimé le voyage dans les royaumes des morts."
+            }
+        ],
+        "conversation_summary": "A conversation about a favorite movie, Coco."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "Tu as déjà voyagé en avion ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "Oui, j'ai déjà fait un voyage en avion."
+            },
+            {
+                "speaker": "person1",
+                "message": "Comment a-t-il été ?"
+            }
+        ],
+        "conversation_summary": "A conversation about traveling by airplane."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "Quel est ton sport préféré ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "J'aime faire de la randonnée."
+            },
+            {
+                "speaker": "person1",
+                "message": "La randonnée est un sport très agréable. J'aime marcher dans la nature."
+            }
+        ],
+        "conversation_summary": "A conversation about a favorite sport, hiking."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "Quel est ton livre préféré ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "J'aime beaucoup le livre de Victor Hugo, Les Misérables."
+            },
+            {
+                "speaker": "person1",
+                "message": "Les Misérables est un livre très intéressant. J'ai aimé l'histoire de Jean Valjean."
+            }
+        ],
+        "conversation_summary": "A conversation about a favorite book, Les Misérables."
+    }
+]
