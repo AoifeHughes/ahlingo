@@ -1,12 +1,12 @@
 
 
 
-MODEL_PATH="/Users/aoife/.cache/lm-studio/models/TheBloke/OpenHermes-2.5-Mistral-7B-GGUF/openhermes-2.5-mistral-7b.Q4_K_S.gguf"
-CONTEXT_SIZE=512
+MODEL_PATH="/Users/ahughes/git/LLMs/LMStudio/TheBloke/WizardLM-1.0-Uncensored-Llama2-13B-GGUF/wizardlm-1.0-uncensored-llama2-13b.Q8_0.gguf"
+CONTEXT_SIZE=4096
 SERVER_HOST="127.0.0.1"
 SERVER_PORT="8080"
-SERVER_CMD="/Users/aoife/git/llama.cpp/server"
-GPU_LAYERS=33
+SERVER_CMD="/Users/ahughes/git/llama.cpp/server"
+GPU_LAYERS=41
 PROMPT_FILE="./prompt_file.json"
 SERVER_ARGS="-m $MODEL_PATH -c $CONTEXT_SIZE --host $SERVER_HOST --port $SERVER_PORT --n-gpu-layers $GPU_LAYERS --system-prompt-file $PROMPT_FILE"
 
