@@ -84,9 +84,10 @@ def dump_response(response, language, topic, level, idx, run, folder):
             json.dump(response, f, indent=4, ensure_ascii=False)
     except json.JSONDecodeError:
         # create folder and subfolders if they don't exist
-        os.makedirs(folder, exist_ok=True)
+        bkn_folder = folder+"/broken/"
+        os.makedirs(bkn_folder, exist_ok=True)
         # write as text
-        with open(os.path.join(folder, f"{language}_{topic}_{level}_{idx}_broken_{run}.json"), "w") as f:
+        with open(os.path.join(bkn_folder, f"{language}_{topic}_{level}_{idx}_broken_{run}.json"), "w") as f:
             f.write(response)
 
 
