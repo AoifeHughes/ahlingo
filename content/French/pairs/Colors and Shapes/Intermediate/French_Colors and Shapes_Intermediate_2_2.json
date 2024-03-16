@@ -1,0 +1,38 @@
+[
+    {
+        "English": "red",
+        "French": "rouge"
+    },
+    {
+        "English": "blue",
+        "French": "bleu"
+    },
+    {
+        "English": "yellow",
+        "French": "jaune"
+    },
+    {
+        "English": "green",
+        "French": "vert"
+    },
+    {
+        "English": "purple",
+        "French": "violet"
+    },
+    {
+        "English": "circle",
+        "French": "cercle"
+    },
+    {
+        "English": "square",
+        "French": "carré"
+    },
+    {
+        "English": "triangle",
+        "French": "triangle"
+    },
+    {
+        "English": "rectangle",
+        "French": "rectangle"
+    }
+]

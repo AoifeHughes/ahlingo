@@ -1,0 +1,91 @@
+[
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "¿Cuál es tu trabajo ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "Soy abogado. Y tú ?"
+            },
+            {
+                "speaker": "person1",
+                "message": "Estoy estudiando derecho."
+            }
+        ],
+        "conversation_summary": "A conversation about each person's job/career."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "¿Has oído hablar de los derechos humanos ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "Sí, son una serie de principios básicos que todos deben respetar.",
+                "message_type": "explicit"
+            },
+            {
+                "speaker": "person1",
+                "message": "¿Qué tipo de problemas dejan de respetar estos derechos ?"
+            }
+        ],
+        "conversation_summary": "A conversation about human rights and the problems that arise when they are not respected."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "¿Has firmado un contrato reciente ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "Sí, hoy firmé uno para comprar una casa.",
+                "message_type": "explicit"
+            },
+            {
+                "speaker": "person1",
+                "message": "¿Qué tipo de contrato es ese ?"
+            }
+        ],
+        "conversation_summary": "A conversation about signing contracts, specifically for buying a house."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "¿Cómo se llama la ley que protege a los inmigrantes ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "La ley más importante para proteger a los inmigrantes es el DACA.",
+                "message_type": "explicit"
+            },
+            {
+                "speaker": "person1",
+                "message": "¿Qué significa DACA ?"
+            }
+        ],
+        "conversation_summary": "A conversation about the law that protects immigrants and the specific program called DACA."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "¿Has tenido algún problema con la ley antes ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "Sí, una vez tuve un problema con el tráfico.",
+                "message_type": "explicit"
+            },
+            {
+                "speaker": "person1",
+                "message": "¿Qué tipo de problema fue ese ?"
+            }
+        ],
+        "conversation_summary": "A conversation about having legal problems, specifically with traffic."
+    }
+]

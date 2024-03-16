@@ -1,0 +1,87 @@
+[
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "¿Cuál es tu fiesta favorite ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "La mía es el Día de los Muertos. ¿Y tú ?"
+            },
+            {
+                "speaker": "person1",
+                "message": "A mí me gusta el Carnaval. Es muy divertido."
+            }
+        ],
+        "conversation_summary": "A conversation discussing each person's favorite holiday or festival."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "¿Has ido alguna vez a la playa ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "Sí, me encanta la playa. ¿Qué tal si hoy fuemos ?"
+            },
+            {
+                "speaker": "person1",
+                "message": "Me gusta mucho la playa, pero hoy no podemos. Maybe another day."
+            }
+        ],
+        "conversation_summary": "A conversation about going to the beach."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "¿Qué te gusta más de la Navidad ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "A mí me encanta el ambiente de la Navidad. ¿Y tú ?"
+            },
+            {
+                "speaker": "person1",
+                "message": "Mi preferida es la comida de Navidad. Hay tantos platos deliciosos."
+            }
+        ],
+        "conversation_summary": "A conversation about what each person likes best about Christmas."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "¿Has oído hablar del Día de los Reyes Magos ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "Sí, es un día muy importante en muchos países. ¿Qué te gusta más sobre él ?"
+            },
+            {
+                "speaker": "person1",
+                "message": "Mi favorito es cuando los Reyes Magos dejan regalos debajo del árbol de Navidad."
+            }
+        ],
+        "conversation_summary": "A conversation about the Epiphany and what each person likes best about it."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "¿Qué es el Cinco de Mayo ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "Es una fiesta mexicana que celebra la victoria de los mexicanos sobre los franceses en la Batalla de Puebla. ¿Has oído hablar de ella ?"
+            },
+            {
+                "speaker": "person1",
+                "message": "No, no había oído hablar de esa fiesta. Me interesa mucho la historia detrás de las fiestas."
+            }
+        ],
+        "conversation_summary": "A conversation about the history and significance of Cinco de Mayo."
+    }
+]

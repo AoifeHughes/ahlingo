@@ -1,0 +1,3 @@
+[
+{"conversation": [{"speaker": "person1", "message": "Quel est ton film préféré ?"}, {"speaker": "person2", "message": "J'aime bien les films d'amour."}, {"speaker": "person1", "message": "Moi, je préfère les films d'action."}], "conversation_summary": "A conversation discussing each person's favorite movie genre."},
+{"conversation": [{"speaker": "person1", "message": "Tu aimes la musique ?"}, {"speaker": "person2", "message": "Oui, j'adore écout

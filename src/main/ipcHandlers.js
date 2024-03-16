@@ -1,8 +1,15 @@
 const { ipcMain } = require("electron");
-const LanguageDB = require('../database/languageDB');
+const LanguageDB = require('../database/LanguageDB');
 
 function setupIPC() {
-  const db = new LanguageDB();
+  const db = new LanguageDB("../database/languageLearningDatabase.db", function(err) {
+    if (err) {
+      console.log("Failed to initialize database", err);
+    } else {
+      console.log("Database initialized successfully");
+    }
+  });
+  
   ipcMain.on("add-user", (event, arg) => {
     const userName = arg.name;
     db.addUser(userName, (err) => {

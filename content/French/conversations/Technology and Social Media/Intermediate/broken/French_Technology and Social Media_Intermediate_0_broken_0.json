@@ -1,0 +1,44 @@
+[{"conversation": [{"speaker": "person1", "message": "Comment t'avais-tu passé ta journée ?"}, {"speaker": "person2", "message": "J'ai travaillé toute la journée. Maintenant, je suis fatigué."}, {"speaker": "person1", "message": "Moi aussi. J'ai essayé de faire du sport ce matin, mais j'ai été trop fatigué."}], "conversation_summary": "A conversation about how each person spent their day and feeling tired."}, {"conversation": [{"speaker": "person1", "message": "Quel est ton film préféré ?"}, {"speaker": "person2", "message": "J'aime beaucoup Les Aventures de Sherlock Holmes.", "person1": {"message": "Ah, c'est un excellent choix. J'aime aussi Le Seigneur des anneaux."}}, {"speaker": "person2", "message": "Oui, c'est une série de films très bonne. Mais je préfère Le Hobbit."}], "conversation_summary": "A conversation about favorite movies and discussing different film series."}, {"conversation": [{"speaker": "person1", "message": "Tu as déjà visité l'étranger ?"}, {"speaker": "person2", "message": "Oui, j'ai été en Italie il y a un an. J'ai adoré la nourriture et la culture.", "person1": {"message": "J'ai également visité l'Espagne. J'ai aimé la musique et les flamencos."}}], "conversation_summary": "A conversation about traveling abroad and favorite experiences."}, {"conversation": [{"speaker": "person1", "message": "Quel est ton livre préféré ?"}, {"speaker": "person2", "message": "J'aime beaucoup Le Grand Meaulnes d'Alain-Fournier.", "person1": {"message": "Ah, c'est un excellent choix. J'aime également Les Chants de Maldoror de Comte de Lautréamont."}}, {"speaker": "person2", "message": "Oui, c'est une grande oeuvre littéraire. Mais je préfère L'Étranger d'Albert Camus."}], "conversation_summary": "A conversation about favorite books and discussing different literary works."}, {"conversation": [{"speaker": "person1", "message": "Tu aimes la musique ?"}, {"speaker": "person2", "message": "Oui, j'adore la musique. J'aime écouter de la pop et du rock.", "person1": {"message": "Moi aussi. J'ai remarqué que tu portes souvent des oreilles de musique. Quel genre de musique préfères-tu ?"}}], "conversation_summary": "A conversation about music preferences and wearing headphones."}]
+
+conversation_summaries = []
+for conversation in conversations:
+    if len(conversation) > 2:
+        last_message = conversation[-1]
+        last_message["type"] = "summary"
+        conversation_summaries.append(last_message)
+        conversation = conversation[:-1]
+    conversation_summaries.extend([{"speaker": speaker, "message": message} for speaker, message in conversation])
+    
+    if len(conversation) > 2:
+        last_message = conversation[-1]
+        last_message["type"] = "summary"
+        conversation_summaries.append(last_message)
+        conversation_summaries.extend([{"speaker": speaker, "message": message} for speaker, message in conversation])
+        
+    conversation_summaries.sort(key=lambda x: x["speaker"])
+    
+    print("Conversation Summaries:")
+    for summary in conversation_summaries:
+        print("Speaker:", summary["speaker"])
+        print("Message:", summary["message"])
+        
+print("\n\nRandom Conversations:")
+for i in range(10):
+    conversations.append(random.sample(range(4), 3))
+    
+    conversation_summaries = []
+    for conversation in conversations:
+        if len(conversation) > 2:
+            last_message = conversation[-1]
+            last_message["type"] = "summary"
+            conversation_summaries.append(last_message)
+            conversation_summaries.extend([{"speaker": speaker, "message": message} for speaker, message in conversation])
+        if len(conversation) > 2:
+            last_message = conversation[-1]
+            last_message["type"] = "summary"
+            conversation_summaries.append(last_message)
+        for summary in conversation_summaries:
+            print("Speaker:", summary["speaker"])
+            print("Message:", summary["message"])
+        
+    conversations.extend(len(conversations))
