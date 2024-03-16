@@ -1,38 +1,38 @@
 [
-    {
-        "English": "penalty",
-        "French": "amende"
-    },
-    {
-        "English": "contract",
-        "French": "contrat"
-    },
-    {
-        "English": "injury",
-        "French": "blessure"
-    },
-    {
-        "English": "evidence",
-        "French": "preuve"
-    },
-    {
-        "English": "witness",
-        "French": "témoin"
-    },
-    {
-        "English": "crime",
-        "French": "délit"
-    },
-    {
-        "English": "punishment",
-        "French": "punition"
-    },
-    {
-        "English": "lawyer",
-        "French": "avocat"
-    },
-    {
-        "English": "judge",
-        "French": "juge"
-    }
+  {
+    "English": "penalty",
+    "French": "amende"
+  },
+  {
+    "English": "contract",
+    "French": "contrat"
+  },
+  {
+    "English": "injury",
+    "French": "blessure"
+  },
+  {
+    "English": "evidence",
+    "French": "preuve"
+  },
+  {
+    "English": "witness",
+    "French": "témoin"
+  },
+  {
+    "English": "crime",
+    "French": "délit"
+  },
+  {
+    "English": "punishment",
+    "French": "punition"
+  },
+  {
+    "English": "lawyer",
+    "French": "avocat"
+  },
+  {
+    "English": "judge",
+    "French": "juge"
+  }
 ]

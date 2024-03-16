@@ -1,87 +1,87 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment allez-vous ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je vais bien, merci. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je vais bien aussi."
-            }
-        ],
-        "conversation_summary": "A conversation asking how each person is doing."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Que fais-tu ce weekend ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je vais à la plage. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "J'ai des courses à faire."
-            }
-        ],
-        "conversation_summary": "A conversation about weekend plans."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Pourquoi tu es venu ?"
-            },
-            {
-                "speaker": "person3",
-                "message": "Et moi, j'ai été invité par mon ami."
-            },
-            {
-                "speaker": "person1",
-                "message": "Ah, c'est génial."
-            }
-        ],
-        "conversation_summary": "A conversation about why each person has come to the gathering."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton frère ?"
-            },
-            {
-                "speaker": "person3",
-                "message": "Le mien s'appelle Thomas."
-            },
-            {
-                "speaker": "person1",
-                "message": "Cool, ils ont des noms sympa."
-            }
-        ],
-        "conversation_summary": "A conversation about each person's siblings."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Que fais-tu pour t'amuser ?"
-            },
-            {
-                "speaker": "person3",
-                "message": "Et moi, j'aime faire de la musique."
-            },
-            {
-                "speaker": "person1",
-                "message": "C'est génial, j'adore la musique !"
-            }
-        ],
-        "conversation_summary": "A conversation about how each person entertains themselves."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment allez-vous ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je vais bien, merci. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je vais bien aussi."
+      }
+    ],
+    "conversation_summary": "A conversation asking how each person is doing."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Que fais-tu ce weekend ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je vais à la plage. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "J'ai des courses à faire."
+      }
+    ],
+    "conversation_summary": "A conversation about weekend plans."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Pourquoi tu es venu ?"
+      },
+      {
+        "speaker": "person3",
+        "message": "Et moi, j'ai été invité par mon ami."
+      },
+      {
+        "speaker": "person1",
+        "message": "Ah, c'est génial."
+      }
+    ],
+    "conversation_summary": "A conversation about why each person has come to the gathering."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton frère ?"
+      },
+      {
+        "speaker": "person3",
+        "message": "Le mien s'appelle Thomas."
+      },
+      {
+        "speaker": "person1",
+        "message": "Cool, ils ont des noms sympa."
+      }
+    ],
+    "conversation_summary": "A conversation about each person's siblings."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Que fais-tu pour t'amuser ?"
+      },
+      {
+        "speaker": "person3",
+        "message": "Et moi, j'aime faire de la musique."
+      },
+      {
+        "speaker": "person1",
+        "message": "C'est génial, j'adore la musique !"
+      }
+    ],
+    "conversation_summary": "A conversation about how each person entertains themselves."
+  }
 ]

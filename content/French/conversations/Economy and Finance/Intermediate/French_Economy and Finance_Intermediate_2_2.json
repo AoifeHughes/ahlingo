@@ -1,87 +1,87 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment ça va ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je vais bien, merci. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je vais bien aussi."
-            }
-        ],
-        "conversation_summary": "A conversation asking how each person is doing."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton film préféré ?"
-            },
-            {
-                "speaker": "person3",
-                "message": "Moi, je préfère La Grande Illusion."
-            },
-            {
-                "speaker": "person1",
-                "message": "J'ai vu Le Godfather l'autre jour. C'est un vrai chef-d'œuvre."
-            }
-        ],
-        "conversation_summary": "A conversation discussing each person's favorite movie."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment t'aimes-tu ta nouvelle voiture ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'adore ma nouvelle voiture. Elle est très belle et confortable."
-            },
-            {
-                "speaker": "person3",
-                "message": "Moi, j'ai acheté une voiture électrique. Elle est très économique."
-            }
-        ],
-        "conversation_summary": "A conversation about each person's experience with their new car."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton sport préféré ?"
-            },
-            {
-                "speaker": "person3",
-                "message": "Moi, je préfère la course à pied."
-            },
-            {
-                "speaker": "person1",
-                "message": "J'ai joué au football quand j'étais jeune. C'était très amusant."
-            }
-        ],
-        "conversation_summary": "A conversation discussing each person's favorite sport."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment t'aimes-tu ton travail ?"
-            },
-            {
-                "speaker": "person3",
-                "message": "Moi, j'ai une petite entreprise. J'ai beau travailler dur, mais c'est très rémunérant."
-            },
-            {
-                "speaker": "person1",
-                "message": "J'aimerais avoir un tel poste un jour. Tu as des conseils pour moi ?"
-            }
-        ],
-        "conversation_summary": "A conversation discussing each person's job and offering advice on how to get a similar position."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment ça va ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je vais bien, merci. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je vais bien aussi."
+      }
+    ],
+    "conversation_summary": "A conversation asking how each person is doing."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton film préféré ?"
+      },
+      {
+        "speaker": "person3",
+        "message": "Moi, je préfère La Grande Illusion."
+      },
+      {
+        "speaker": "person1",
+        "message": "J'ai vu Le Godfather l'autre jour. C'est un vrai chef-d'œuvre."
+      }
+    ],
+    "conversation_summary": "A conversation discussing each person's favorite movie."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment t'aimes-tu ta nouvelle voiture ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'adore ma nouvelle voiture. Elle est très belle et confortable."
+      },
+      {
+        "speaker": "person3",
+        "message": "Moi, j'ai acheté une voiture électrique. Elle est très économique."
+      }
+    ],
+    "conversation_summary": "A conversation about each person's experience with their new car."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton sport préféré ?"
+      },
+      {
+        "speaker": "person3",
+        "message": "Moi, je préfère la course à pied."
+      },
+      {
+        "speaker": "person1",
+        "message": "J'ai joué au football quand j'étais jeune. C'était très amusant."
+      }
+    ],
+    "conversation_summary": "A conversation discussing each person's favorite sport."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment t'aimes-tu ton travail ?"
+      },
+      {
+        "speaker": "person3",
+        "message": "Moi, j'ai une petite entreprise. J'ai beau travailler dur, mais c'est très rémunérant."
+      },
+      {
+        "speaker": "person1",
+        "message": "J'aimerais avoir un tel poste un jour. Tu as des conseils pour moi ?"
+      }
+    ],
+    "conversation_summary": "A conversation discussing each person's job and offering advice on how to get a similar position."
+  }
 ]

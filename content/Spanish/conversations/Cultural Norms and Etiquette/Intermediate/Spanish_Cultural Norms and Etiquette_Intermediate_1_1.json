@@ -1,87 +1,87 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Cómo te llamas ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Me llamo María."
-            },
-            {
-                "speaker": "person1",
-                "message": "¡Encantado de conocerte, María ! ¿De dónde eres ?"
-            }
-        ],
-        "conversation_summary": "A conversation introducing oneself and asking about the other person's name and where they are from."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Qué te gusta hacer en tu tiempo libre ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Me gusta leer y ver películas."
-            },
-            {
-                "speaker": "person1",
-                "message": "Yo también. ¿Hay alguna película o libro que te haya gustado recientemente ?"
-            }
-        ],
-        "conversation_summary": "A conversation about free time activities, including reading and watching movies."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Cuál es tu comida favorita ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Mi comida favorita es el sushi."
-            },
-            {
-                "speaker": "person1",
-                "message": "¡Yo también! ¿Has probado alguna variedad de sushi?"
-            }
-        ],
-        "conversation_summary": "A conversation about favorite foods, including sushi."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿De qué color eres ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Soy rojo."
-            },
-            {
-                "speaker": "person1",
-                "message": "¡Genial! ¿Qué te parece el azul ?"
-            }
-        ],
-        "conversation_summary": "A conversation about colors, including the color red and blue."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Tienes un animal favorito ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Sí, mi animal favorito es el perro."
-            },
-            {
-                "speaker": "person1",
-                "message": "Yo también. ¿Qué tipo de perro te gusta ?"
-            }
-        ],
-        "conversation_summary": "A conversation about favorite animals, including dogs."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Cómo te llamas ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Me llamo María."
+      },
+      {
+        "speaker": "person1",
+        "message": "¡Encantado de conocerte, María ! ¿De dónde eres ?"
+      }
+    ],
+    "conversation_summary": "A conversation introducing oneself and asking about the other person's name and where they are from."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Qué te gusta hacer en tu tiempo libre ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Me gusta leer y ver películas."
+      },
+      {
+        "speaker": "person1",
+        "message": "Yo también. ¿Hay alguna película o libro que te haya gustado recientemente ?"
+      }
+    ],
+    "conversation_summary": "A conversation about free time activities, including reading and watching movies."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Cuál es tu comida favorita ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Mi comida favorita es el sushi."
+      },
+      {
+        "speaker": "person1",
+        "message": "¡Yo también! ¿Has probado alguna variedad de sushi?"
+      }
+    ],
+    "conversation_summary": "A conversation about favorite foods, including sushi."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿De qué color eres ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Soy rojo."
+      },
+      {
+        "speaker": "person1",
+        "message": "¡Genial! ¿Qué te parece el azul ?"
+      }
+    ],
+    "conversation_summary": "A conversation about colors, including the color red and blue."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Tienes un animal favorito ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Sí, mi animal favorito es el perro."
+      },
+      {
+        "speaker": "person1",
+        "message": "Yo también. ¿Qué tipo de perro te gusta ?"
+      }
+    ],
+    "conversation_summary": "A conversation about favorite animals, including dogs."
+  }
 ]

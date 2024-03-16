@@ -1,87 +1,87 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Combien de temps tu passes à cuisiner chaque semaine ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je suis étudiante, donc je n'ai pas beaucoup de temps pour cuisiner."
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi, j'aime préparer les repas pour ma famille. C'est très agréable."
-            }
-        ],
-        "conversation_summary": "A conversation about how much time each person spends cooking each week."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton plat préféré ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'adore manger des pâtes à la tomate. C'est délicieux."
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi, j'aime bien manger de la viande rouge avec une salade."
-            }
-        ],
-        "conversation_summary": "A conversation about each person's favorite dish."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Tu viens de retourner de voyage ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Oui, j'ai visité une ville magnifique en Italie."
-            },
-            {
-                "speaker": "person1",
-                "message": "Combien de temps tu y as resté ?"
-            }
-        ],
-        "conversation_summary": "A conversation about a recent trip to Italy."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton vin préféré ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime bien boire du rouge. C'est très bon avec une bonne cuisine française."
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi, j'aime manger de la viande blanche avec un vin blanc."
-            }
-        ],
-        "conversation_summary": "A conversation about each person's preferred wine."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment tu fais pour manger sain ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime bien cuisiner des aliments frais et naturels, ça me permet de rester en forme."
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi, j'aime manger des légumes avec une vinaigrette épicée."
-            }
-        ],
-        "conversation_summary": "A conversation about how each person maintains a healthy diet."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Combien de temps tu passes à cuisiner chaque semaine ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je suis étudiante, donc je n'ai pas beaucoup de temps pour cuisiner."
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi, j'aime préparer les repas pour ma famille. C'est très agréable."
+      }
+    ],
+    "conversation_summary": "A conversation about how much time each person spends cooking each week."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton plat préféré ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'adore manger des pâtes à la tomate. C'est délicieux."
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi, j'aime bien manger de la viande rouge avec une salade."
+      }
+    ],
+    "conversation_summary": "A conversation about each person's favorite dish."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Tu viens de retourner de voyage ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Oui, j'ai visité une ville magnifique en Italie."
+      },
+      {
+        "speaker": "person1",
+        "message": "Combien de temps tu y as resté ?"
+      }
+    ],
+    "conversation_summary": "A conversation about a recent trip to Italy."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton vin préféré ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime bien boire du rouge. C'est très bon avec une bonne cuisine française."
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi, j'aime manger de la viande blanche avec un vin blanc."
+      }
+    ],
+    "conversation_summary": "A conversation about each person's preferred wine."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment tu fais pour manger sain ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime bien cuisiner des aliments frais et naturels, ça me permet de rester en forme."
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi, j'aime manger des légumes avec une vinaigrette épicée."
+      }
+    ],
+    "conversation_summary": "A conversation about how each person maintains a healthy diet."
+  }
 ]

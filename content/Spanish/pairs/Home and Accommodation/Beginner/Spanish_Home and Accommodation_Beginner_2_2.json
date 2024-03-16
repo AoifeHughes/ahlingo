@@ -1,22 +1,22 @@
 [
-    {
-        "English": "computer",
-        "French": "ordinateur"
-    },
-    {
-        "English": "shoes",
-        "French": "chaussures"
-    },
-    {
-        "English": "pizza",
-        "French": "pizza"
-    },
-    {
-        "English": "television",
-        "French": "télévision"
-    },
-    {
-        "English": "bed",
-        "French": "lit"
-    }
+  {
+    "English": "computer",
+    "French": "ordinateur"
+  },
+  {
+    "English": "shoes",
+    "French": "chaussures"
+  },
+  {
+    "English": "pizza",
+    "French": "pizza"
+  },
+  {
+    "English": "television",
+    "French": "télévision"
+  },
+  {
+    "English": "bed",
+    "French": "lit"
+  }
 ]

@@ -1,22 +1,22 @@
 [
-    {
-        "English": "I love listening to music in my free time.",
-        "French": "J'adore écouter de la musique pendant mon temps libre."
-    },
-    {
-        "English": "The government is planning to build a new highway.",
-        "French": "Le gouvernement planifie de construire une nouvelle autoroute."
-    },
-    {
-        "English": "I have a meeting with my boss tomorrow morning.",
-        "French": "J'ai une réunion avec mon patron demain matin."
-    },
-    {
-        "English": "The president is going to give a speech next week.",
-        "French": "Le président va prononcer un discours la semaine prochaine."
-    },
-    {
-        "English": "The election results will be announced tomorrow night.",
-        "French": "Les résultats de l'élection seront annoncés demain soir."
-    }
+  {
+    "English": "I love listening to music in my free time.",
+    "French": "J'adore écouter de la musique pendant mon temps libre."
+  },
+  {
+    "English": "The government is planning to build a new highway.",
+    "French": "Le gouvernement planifie de construire une nouvelle autoroute."
+  },
+  {
+    "English": "I have a meeting with my boss tomorrow morning.",
+    "French": "J'ai une réunion avec mon patron demain matin."
+  },
+  {
+    "English": "The president is going to give a speech next week.",
+    "French": "Le président va prononcer un discours la semaine prochaine."
+  },
+  {
+    "English": "The election results will be announced tomorrow night.",
+    "French": "Les résultats de l'élection seront annoncés demain soir."
+  }
 ]

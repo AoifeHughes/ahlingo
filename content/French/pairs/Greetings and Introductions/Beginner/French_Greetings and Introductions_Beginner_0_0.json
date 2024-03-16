@@ -1,22 +1,22 @@
 [
-    {
-        "English": "good morning",
-        "French": "bonjour"
-    },
-    {
-        "English": "hello",
-        "French": "salut"
-    },
-    {
-        "English": "nice to meet you",
-        "French": "enchanté(e) de te rencontrer"
-    },
-    {
-        "English": "thank you",
-        "French": "merci"
-    },
-    {
-        "English": "goodbye",
-        "French": "au revoir"
-    }
+  {
+    "English": "good morning",
+    "French": "bonjour"
+  },
+  {
+    "English": "hello",
+    "French": "salut"
+  },
+  {
+    "English": "nice to meet you",
+    "French": "enchanté(e) de te rencontrer"
+  },
+  {
+    "English": "thank you",
+    "French": "merci"
+  },
+  {
+    "English": "goodbye",
+    "French": "au revoir"
+  }
 ]

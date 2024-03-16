@@ -1,87 +1,87 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment tu te sens aujourd'hui ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je me sens fatigué. J'ai travaillé toute la semaine."
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi aussi, j'ai été très occupé. Mais au moins, le week-end est arrivé !"
-            }
-        ],
-        "conversation_summary": "A conversation about how each person is feeling that day."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton métier ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'ai été ingénieur, mais maintenant je travaille dans le marketing."
-            },
-            {
-                "speaker": "person1",
-                "message": "Interessant. J'aimerais savoir comment tu as changé de voie ?"
-            }
-        ],
-        "conversation_summary": "A conversation about each person's profession and how they got into it."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Est-ce que tu as déjà visité une usine ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Oui, j'ai visité une usine de produits alimentaires. C'était très intéressant."
-            },
-            {
-                "speaker": "person1",
-                "message": "J'aimerais y aller aussi un jour. J'aime beaucoup cuisiner."
-            }
-        ],
-        "conversation_summary": "A conversation about visiting factories and being interested in food production."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton objectif professionnel ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je voudrais devenir un manager dans une entreprise internationale."
-            },
-            {
-                "speaker": "person1",
-                "message": "C'est une excellente ambition. Tu as déjà travaillé à l'étranger ?"
-            }
-        ],
-        "conversation_summary": "A conversation about each person's professional goals and their past experiences."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment tu te suis préparé pour ton entrevue d'embauche ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'ai fait des recherches sur l'entreprise et j'ai préparé des questions à poser au directeur."
-            },
-            {
-                "speaker": "person1",
-                "message": "C'est une bonne idée. J'espère que ça va bien se passer pour toi."
-            }
-        ],
-        "conversation_summary": "A conversation about preparing for a job interview."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment tu te sens aujourd'hui ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je me sens fatigué. J'ai travaillé toute la semaine."
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi aussi, j'ai été très occupé. Mais au moins, le week-end est arrivé !"
+      }
+    ],
+    "conversation_summary": "A conversation about how each person is feeling that day."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton métier ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'ai été ingénieur, mais maintenant je travaille dans le marketing."
+      },
+      {
+        "speaker": "person1",
+        "message": "Interessant. J'aimerais savoir comment tu as changé de voie ?"
+      }
+    ],
+    "conversation_summary": "A conversation about each person's profession and how they got into it."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Est-ce que tu as déjà visité une usine ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Oui, j'ai visité une usine de produits alimentaires. C'était très intéressant."
+      },
+      {
+        "speaker": "person1",
+        "message": "J'aimerais y aller aussi un jour. J'aime beaucoup cuisiner."
+      }
+    ],
+    "conversation_summary": "A conversation about visiting factories and being interested in food production."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton objectif professionnel ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je voudrais devenir un manager dans une entreprise internationale."
+      },
+      {
+        "speaker": "person1",
+        "message": "C'est une excellente ambition. Tu as déjà travaillé à l'étranger ?"
+      }
+    ],
+    "conversation_summary": "A conversation about each person's professional goals and their past experiences."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment tu te suis préparé pour ton entrevue d'embauche ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'ai fait des recherches sur l'entreprise et j'ai préparé des questions à poser au directeur."
+      },
+      {
+        "speaker": "person1",
+        "message": "C'est une bonne idée. J'espère que ça va bien se passer pour toi."
+      }
+    ],
+    "conversation_summary": "A conversation about preparing for a job interview."
+  }
 ]

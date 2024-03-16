@@ -1,87 +1,87 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment va ta semaine ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Elle va bien merci. J'ai travaillé beaucoup mais j'ai également pris quelques jours de congé."
-            },
-            {
-                "speaker": "person1",
-                "message": "Ah bon ? Qu'as-tu fait de spécial ces derniers jours ?"
-            }
-        ],
-        "conversation_summary": "A conversation about how someone's week is going and what they have been doing."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "J'ai besoin d'aller chez le dentiste."
-            },
-            {
-                "speaker": "person2",
-                "message": "Ensuite, tu devrais peut-être faire une promenade dans le parc pour soulager ton stress."
-            },
-            {
-                "speaker": "person1",
-                "message": "C'est une bonne idée. J'aimerais également acheter des fruits et légumes frais à la marché."
-            }
-        ],
-        "conversation_summary": "A conversation about going to the dentist and taking a walk in the park to relieve stress, as well as buying fresh fruits and vegetables from the market."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "J'aimerais manger un sandwich au jambon pour le déjeuner."
-            },
-            {
-                "speaker": "person2",
-                "message": "C'est une excellente idée. Tu devrais peut-être aller dans un restaurant pour manger des pâtes à la sauce tomate."
-            },
-            {
-                "speaker": "person1",
-                "message": "J'aime bien les pâtes, mais je préfère manger à la maison pour économiser de l'argent."
-            }
-        ],
-        "conversation_summary": "A conversation about having lunch and preferring to eat at home to save money."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "J'ai fini mon roman intéressant."
-            },
-            {
-                "speaker": "person2",
-                "message": "Quel est-il ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Il s'intitule 'Le Petit Prince'. C'est une histoire d'amour et de voyages."
-            }
-        ],
-        "conversation_summary": "A conversation about finishing a interesting book called 'The Little Prince', which is a love and travel story."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Pourquoi tu ne veux pas aller à la plage ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime bien la plage, mais je suis allergique aux échinodermes."
-            },
-            {
-                "speaker": "person1",
-                "message": "Ah bon ? Tu es le seul qui ait cette allergie dans notre groupe."
-            }
-        ],
-        "conversation_summary": "A conversation about going to the beach and being allergic to sea creatures."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment va ta semaine ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Elle va bien merci. J'ai travaillé beaucoup mais j'ai également pris quelques jours de congé."
+      },
+      {
+        "speaker": "person1",
+        "message": "Ah bon ? Qu'as-tu fait de spécial ces derniers jours ?"
+      }
+    ],
+    "conversation_summary": "A conversation about how someone's week is going and what they have been doing."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "J'ai besoin d'aller chez le dentiste."
+      },
+      {
+        "speaker": "person2",
+        "message": "Ensuite, tu devrais peut-être faire une promenade dans le parc pour soulager ton stress."
+      },
+      {
+        "speaker": "person1",
+        "message": "C'est une bonne idée. J'aimerais également acheter des fruits et légumes frais à la marché."
+      }
+    ],
+    "conversation_summary": "A conversation about going to the dentist and taking a walk in the park to relieve stress, as well as buying fresh fruits and vegetables from the market."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "J'aimerais manger un sandwich au jambon pour le déjeuner."
+      },
+      {
+        "speaker": "person2",
+        "message": "C'est une excellente idée. Tu devrais peut-être aller dans un restaurant pour manger des pâtes à la sauce tomate."
+      },
+      {
+        "speaker": "person1",
+        "message": "J'aime bien les pâtes, mais je préfère manger à la maison pour économiser de l'argent."
+      }
+    ],
+    "conversation_summary": "A conversation about having lunch and preferring to eat at home to save money."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "J'ai fini mon roman intéressant."
+      },
+      {
+        "speaker": "person2",
+        "message": "Quel est-il ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Il s'intitule 'Le Petit Prince'. C'est une histoire d'amour et de voyages."
+      }
+    ],
+    "conversation_summary": "A conversation about finishing a interesting book called 'The Little Prince', which is a love and travel story."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Pourquoi tu ne veux pas aller à la plage ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime bien la plage, mais je suis allergique aux échinodermes."
+      },
+      {
+        "speaker": "person1",
+        "message": "Ah bon ? Tu es le seul qui ait cette allergie dans notre groupe."
+      }
+    ],
+    "conversation_summary": "A conversation about going to the beach and being allergic to sea creatures."
+  }
 ]

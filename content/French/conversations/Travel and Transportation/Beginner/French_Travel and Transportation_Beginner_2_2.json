@@ -1,91 +1,91 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment vas-tu ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je vais bien, merci. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "J'ai une question pour toi."
-            },
-            {
-                "speaker": "person2",
-                "message": "Possiblement ?"
-            }
-        ],
-        "conversation_summary": "A conversation asking how each person is doing, and one person asking the other a question."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton pays préféré pour les vacances ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je préfère l'Italie. Les Italiens sont très gentils et la nourriture est délicieuse."
-            },
-            {
-                "speaker": "person1",
-                "message": "J'aime également l'Espagne. Les Espagnols sont très amusants et la musique est incroyable."
-            }
-        ],
-        "conversation_summary": "A conversation discussing favorite vacation countries, and the things each person likes about them."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment t'as appris le français ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'ai appris le français à l'école. C'était très intéressant."
-            },
-            {
-                "speaker": "person1",
-                "message": "J'aimerais apprendre une langue étrangère aussi, mais je ne suis pas sûr de laquelle."
-            }
-        ],
-        "conversation_summary": "A conversation about how each person learned French and expressing interest in learning another foreign language."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est le meilleur mode de transport pour se rendre chez soi ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime prendre le bus. C'est très confortable et il y a souvent des places libres."
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi, j'aime prendre le train. Il y a une vue magnifique et c'est très relaxant."
-            }
-        ],
-        "conversation_summary": "A conversation about different modes of transportation and which ones each person prefers to use."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton idéal de voyage ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime beaucoup voyager en avion. Ça permet de parcourir grande distance rapidement."
-            },
-            {
-                "speaker": "person1",
-                "message": "Je préfère voyager en train. Cela me permet d'admirer la nature et les petits villages."
-            }
-        ],
-        "conversation_summary": "A conversation about different types of travel and what each person likes about them."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment vas-tu ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je vais bien, merci. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "J'ai une question pour toi."
+      },
+      {
+        "speaker": "person2",
+        "message": "Possiblement ?"
+      }
+    ],
+    "conversation_summary": "A conversation asking how each person is doing, and one person asking the other a question."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton pays préféré pour les vacances ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je préfère l'Italie. Les Italiens sont très gentils et la nourriture est délicieuse."
+      },
+      {
+        "speaker": "person1",
+        "message": "J'aime également l'Espagne. Les Espagnols sont très amusants et la musique est incroyable."
+      }
+    ],
+    "conversation_summary": "A conversation discussing favorite vacation countries, and the things each person likes about them."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment t'as appris le français ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'ai appris le français à l'école. C'était très intéressant."
+      },
+      {
+        "speaker": "person1",
+        "message": "J'aimerais apprendre une langue étrangère aussi, mais je ne suis pas sûr de laquelle."
+      }
+    ],
+    "conversation_summary": "A conversation about how each person learned French and expressing interest in learning another foreign language."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est le meilleur mode de transport pour se rendre chez soi ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime prendre le bus. C'est très confortable et il y a souvent des places libres."
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi, j'aime prendre le train. Il y a une vue magnifique et c'est très relaxant."
+      }
+    ],
+    "conversation_summary": "A conversation about different modes of transportation and which ones each person prefers to use."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton idéal de voyage ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime beaucoup voyager en avion. Ça permet de parcourir grande distance rapidement."
+      },
+      {
+        "speaker": "person1",
+        "message": "Je préfère voyager en train. Cela me permet d'admirer la nature et les petits villages."
+      }
+    ],
+    "conversation_summary": "A conversation about different types of travel and what each person likes about them."
+  }
 ]

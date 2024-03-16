@@ -1,38 +1,38 @@
 [
-    {
-        "English": "economy",
-        "French": "économie"
-    },
-    {
-        "English": "finance",
-        "French": "finances"
-    },
-    {
-        "English": "money",
-        "French": "argent"
-    },
-    {
-        "English": "investment",
-        "French": "investissement"
-    },
-    {
-        "English": "banking",
-        "French": "banque"
-    },
-    {
-        "English": "stock market",
-        "French": "marché de l'action"
-    },
-    {
-        "English": "inflation",
-        "French": "inflation"
-    },
-    {
-        "English": "recession",
-        "French": "récession"
-    },
-    {
-        "English": "debt",
-        "French": "dette"
-    }
+  {
+    "English": "economy",
+    "French": "économie"
+  },
+  {
+    "English": "finance",
+    "French": "finances"
+  },
+  {
+    "English": "money",
+    "French": "argent"
+  },
+  {
+    "English": "investment",
+    "French": "investissement"
+  },
+  {
+    "English": "banking",
+    "French": "banque"
+  },
+  {
+    "English": "stock market",
+    "French": "marché de l'action"
+  },
+  {
+    "English": "inflation",
+    "French": "inflation"
+  },
+  {
+    "English": "recession",
+    "French": "récession"
+  },
+  {
+    "English": "debt",
+    "French": "dette"
+  }
 ]

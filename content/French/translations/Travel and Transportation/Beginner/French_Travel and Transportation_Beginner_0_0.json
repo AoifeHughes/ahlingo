@@ -1,22 +1,22 @@
 [
-    {
-        "English": "What time is the train to Paris leaving?",
-        "French": "À quelle heure le train pour Paris part-il ?"
-    },
-    {
-        "English": "I need to buy a bus ticket to go downtown.",
-        "French": "J'ai besoin d'acheter un billet de bus pour aller dans le centre-ville."
-    },
-    {
-        "English": "The plane is landing at the airport in an hour.",
-        "French": "L'avion arrive à l'aéroport dans une heure."
-    },
-    {
-        "English": "Can you tell me where the metro station is?",
-        "French": "Peux-tu me dire où est la station de métro ?"
-    },
-    {
-        "English": "I am going to rent a bike to explore the city.",
-        "French": "J'ai l'intention de louer un vélo pour explorer la ville."
-    }
+  {
+    "English": "What time is the train to Paris leaving?",
+    "French": "À quelle heure le train pour Paris part-il ?"
+  },
+  {
+    "English": "I need to buy a bus ticket to go downtown.",
+    "French": "J'ai besoin d'acheter un billet de bus pour aller dans le centre-ville."
+  },
+  {
+    "English": "The plane is landing at the airport in an hour.",
+    "French": "L'avion arrive à l'aéroport dans une heure."
+  },
+  {
+    "English": "Can you tell me where the metro station is?",
+    "French": "Peux-tu me dire où est la station de métro ?"
+  },
+  {
+    "English": "I am going to rent a bike to explore the city.",
+    "French": "J'ai l'intention de louer un vélo pour explorer la ville."
+  }
 ]

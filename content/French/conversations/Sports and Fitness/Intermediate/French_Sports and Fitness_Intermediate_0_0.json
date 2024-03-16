@@ -1,87 +1,87 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton sport préféré ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime faire du football. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je suis fan de basket-ball. Nous devrions aller à un match."
-            }
-        ],
-        "conversation_summary": "A conversation discussing each person's favorite sport."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Tu fais du jogging ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Oui, deux fois par semaine. C'est très bénéfique pour la santé."
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi aussi. J'aime me promener dans la nature et respirer l'air frais."
-            }
-        ],
-        "conversation_summary": "A conversation about the benefits of jogging and enjoying the outdoors."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton objectif sportif pour cette année ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aimerais perdre un peu de poids et m'améliorer en natation."
-            },
-            {
-                "speaker": "person1",
-                "message": "Je voudrais me muscler et pratiquer la boxe."
-            }
-        ],
-        "conversation_summary": "A conversation about personal sporting goals for the year."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Tu as fait une compétition de cyclisme ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Oui, l'année dernière. J'ai gagné une médaille d'argent."
-            },
-            {
-                "speaker": "person1",
-                "message": "C'est incroyable ! Moi, je préfère la course à pied."
-            }
-        ],
-        "conversation_summary": "A conversation about participating in competitions and preferences for different sports."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton sport favori pour te détendre ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime faire de la yoga. C'est très relaxant."
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi, je préfère lire un livre dans le parc."
-            }
-        ],
-        "conversation_summary": "A conversation about favorite ways to relax and unwind."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton sport préféré ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime faire du football. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je suis fan de basket-ball. Nous devrions aller à un match."
+      }
+    ],
+    "conversation_summary": "A conversation discussing each person's favorite sport."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Tu fais du jogging ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Oui, deux fois par semaine. C'est très bénéfique pour la santé."
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi aussi. J'aime me promener dans la nature et respirer l'air frais."
+      }
+    ],
+    "conversation_summary": "A conversation about the benefits of jogging and enjoying the outdoors."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton objectif sportif pour cette année ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aimerais perdre un peu de poids et m'améliorer en natation."
+      },
+      {
+        "speaker": "person1",
+        "message": "Je voudrais me muscler et pratiquer la boxe."
+      }
+    ],
+    "conversation_summary": "A conversation about personal sporting goals for the year."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Tu as fait une compétition de cyclisme ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Oui, l'année dernière. J'ai gagné une médaille d'argent."
+      },
+      {
+        "speaker": "person1",
+        "message": "C'est incroyable ! Moi, je préfère la course à pied."
+      }
+    ],
+    "conversation_summary": "A conversation about participating in competitions and preferences for different sports."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton sport favori pour te détendre ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime faire de la yoga. C'est très relaxant."
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi, je préfère lire un livre dans le parc."
+      }
+    ],
+    "conversation_summary": "A conversation about favorite ways to relax and unwind."
+  }
 ]

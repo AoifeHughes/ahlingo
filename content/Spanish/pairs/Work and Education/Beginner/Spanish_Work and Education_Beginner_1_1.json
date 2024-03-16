@@ -1,38 +1,38 @@
 [
-    {
-        "English": "computer",
-        "Spanish": "ordenador"
-    },
-    {
-        "English": "school",
-        "Spanish": "escuela"
-    },
-    {
-        "English": "teacher",
-        "Spanish": "maestro"
-    },
-    {
-        "English": "student",
-        "Spanish": "estudiante"
-    },
-    {
-        "English": "lecture",
-        "Spanish": "conferencia"
-    },
-    {
-        "English": "exam",
-        "Spanish": "ejemplo"
-    },
-    {
-        "English": "work",
-        "Spanish": "trabajo"
-    },
-    {
-        "English": "job",
-        "Spanish": "trabajo"
-    },
-    {
-        "English": "office",
-        "Spanish": "oficina"
-    }
+  {
+    "English": "computer",
+    "Spanish": "ordenador"
+  },
+  {
+    "English": "school",
+    "Spanish": "escuela"
+  },
+  {
+    "English": "teacher",
+    "Spanish": "maestro"
+  },
+  {
+    "English": "student",
+    "Spanish": "estudiante"
+  },
+  {
+    "English": "lecture",
+    "Spanish": "conferencia"
+  },
+  {
+    "English": "exam",
+    "Spanish": "ejemplo"
+  },
+  {
+    "English": "work",
+    "Spanish": "trabajo"
+  },
+  {
+    "English": "job",
+    "Spanish": "trabajo"
+  },
+  {
+    "English": "office",
+    "Spanish": "oficina"
+  }
 ]
