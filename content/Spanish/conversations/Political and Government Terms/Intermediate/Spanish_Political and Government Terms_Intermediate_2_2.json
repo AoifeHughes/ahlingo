@@ -1,87 +1,87 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿De qué país eres ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Soy de Estados Unidos."
-            },
-            {
-                "speaker": "person1",
-                "message": "¿Has estado en México antes?"
-            }
-        ],
-        "conversation_summary": "A conversation about someone's nationality and travel experiences."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Cuál es tu ideología política ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Soy de izquierdas."
-            },
-            {
-                "speaker": "person1",
-                "message": "¿Qué significa 'izquierdas' en español ?"
-            }
-        ],
-        "conversation_summary": "A conversation about political ideologies in Spanish."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Cuál es la función del Congreso en España ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "El Congreso es el órgano legislativo de España que aproba las leyes."
-            },
-            {
-                "speaker": "person1",
-                "message": "Gracias por la explicación. ¿Y qué pasa con el Senado ?"
-            }
-        ],
-        "conversation_summary": "A conversation about the role of the Congress and the Senate in Spain."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Cómo es la vida en una dictadura ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "La vida en una dictadura puede ser muy difícil. Hay control gubernamental severo y limitaciones a la libertad de expresión."
-            },
-            {
-                "speaker": "person1",
-                "message": "¡Pues no me gusta esa idea!"
-            }
-        ],
-        "conversation_summary": "A conversation about life in a dictatorship, and the importance of freedom."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Cuál es la diferencia entre un monarca y un presidente ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Un monarca es un líder que hereda su poder de una familia real, mientras que un presidente es elegido por el pueblo."
-            },
-            {
-                "speaker": "person1",
-                "message": "Ah, entiendo. ¿Y qué pasa con una república ?"
-            }
-        ],
-        "conversation_summary": "A conversation about the differences between a monarchy and a republic, and how leaders are chosen in each system."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿De qué país eres ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Soy de Estados Unidos."
+      },
+      {
+        "speaker": "person1",
+        "message": "¿Has estado en México antes?"
+      }
+    ],
+    "conversation_summary": "A conversation about someone's nationality and travel experiences."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Cuál es tu ideología política ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Soy de izquierdas."
+      },
+      {
+        "speaker": "person1",
+        "message": "¿Qué significa 'izquierdas' en español ?"
+      }
+    ],
+    "conversation_summary": "A conversation about political ideologies in Spanish."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Cuál es la función del Congreso en España ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "El Congreso es el órgano legislativo de España que aproba las leyes."
+      },
+      {
+        "speaker": "person1",
+        "message": "Gracias por la explicación. ¿Y qué pasa con el Senado ?"
+      }
+    ],
+    "conversation_summary": "A conversation about the role of the Congress and the Senate in Spain."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Cómo es la vida en una dictadura ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "La vida en una dictadura puede ser muy difícil. Hay control gubernamental severo y limitaciones a la libertad de expresión."
+      },
+      {
+        "speaker": "person1",
+        "message": "¡Pues no me gusta esa idea!"
+      }
+    ],
+    "conversation_summary": "A conversation about life in a dictatorship, and the importance of freedom."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Cuál es la diferencia entre un monarca y un presidente ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Un monarca es un líder que hereda su poder de una familia real, mientras que un presidente es elegido por el pueblo."
+      },
+      {
+        "speaker": "person1",
+        "message": "Ah, entiendo. ¿Y qué pasa con una república ?"
+      }
+    ],
+    "conversation_summary": "A conversation about the differences between a monarchy and a republic, and how leaders are chosen in each system."
+  }
 ]

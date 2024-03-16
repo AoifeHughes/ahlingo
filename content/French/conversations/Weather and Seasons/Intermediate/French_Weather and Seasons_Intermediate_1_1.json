@@ -1,87 +1,87 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment va ta famille ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Elles vont bien. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Ma famille est aussi bien. Nous allons passer l'été ensemble."
-            }
-        ],
-        "conversation_summary": "A conversation asking about each person's family and making plans for the summer."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Que fais-tu pour te détendre ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime faire de la lecture. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je suis un fan de la musique. J'adore écouter de la musique."
-            }
-        ],
-        "conversation_summary": "A conversation about relaxation techniques and hobbies, with a focus on reading and music."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton pays préféré ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime beaucoup voyager. J'ai visité plusieurs pays."
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi aussi. J'adore l'Italie et la France."
-            }
-        ],
-        "conversation_summary": "A conversation about favorite countries and travel experiences."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est le ton de ton livre préféré ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime beaucoup les romans policiers. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je suis un fan de la science-fiction. J'adore lire des livres de science-fiction."
-            }
-        ],
-        "conversation_summary": "A conversation about favorite book genres and reading preferences."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est le ton de ta musique préféré ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime beaucoup la musique pop. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je suis un fan de la rock. J'adore écouter de la musique rock."
-            }
-        ],
-        "conversation_summary": "A conversation about favorite music genres and musical preferences."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment va ta famille ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Elles vont bien. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Ma famille est aussi bien. Nous allons passer l'été ensemble."
+      }
+    ],
+    "conversation_summary": "A conversation asking about each person's family and making plans for the summer."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Que fais-tu pour te détendre ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime faire de la lecture. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je suis un fan de la musique. J'adore écouter de la musique."
+      }
+    ],
+    "conversation_summary": "A conversation about relaxation techniques and hobbies, with a focus on reading and music."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton pays préféré ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime beaucoup voyager. J'ai visité plusieurs pays."
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi aussi. J'adore l'Italie et la France."
+      }
+    ],
+    "conversation_summary": "A conversation about favorite countries and travel experiences."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est le ton de ton livre préféré ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime beaucoup les romans policiers. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je suis un fan de la science-fiction. J'adore lire des livres de science-fiction."
+      }
+    ],
+    "conversation_summary": "A conversation about favorite book genres and reading preferences."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est le ton de ta musique préféré ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime beaucoup la musique pop. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je suis un fan de la rock. J'adore écouter de la musique rock."
+      }
+    ],
+    "conversation_summary": "A conversation about favorite music genres and musical preferences."
+  }
 ]

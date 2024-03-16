@@ -1,42 +1,42 @@
 [
-    {
-        "English": "morning",
-        "French": "matin"
-    },
-    {
-        "English": "afternoon",
-        "French": "après-midi"
-    },
-    {
-        "English": "evening",
-        "French": "soir"
-    },
-    {
-        "English": "goodbye",
-        "French": "au revoir"
-    },
-    {
-        "English": "please",
-        "French": "s'il vous plaît"
-    },
-    {
-        "English": "thank you",
-        "French": "merci"
-    },
-    {
-        "English": "excuse me",
-        "French": "pardon"
-    },
-    {
-        "English": "I am sorry",
-        "French": "je suis désolé(e)"
-    },
-    {
-        "English": "yes",
-        "French": "oui"
-    },
-    {
-        "English": "no",
-        "French": "non"
-    }
+  {
+    "English": "morning",
+    "French": "matin"
+  },
+  {
+    "English": "afternoon",
+    "French": "après-midi"
+  },
+  {
+    "English": "evening",
+    "French": "soir"
+  },
+  {
+    "English": "goodbye",
+    "French": "au revoir"
+  },
+  {
+    "English": "please",
+    "French": "s'il vous plaît"
+  },
+  {
+    "English": "thank you",
+    "French": "merci"
+  },
+  {
+    "English": "excuse me",
+    "French": "pardon"
+  },
+  {
+    "English": "I am sorry",
+    "French": "je suis désolé(e)"
+  },
+  {
+    "English": "yes",
+    "French": "oui"
+  },
+  {
+    "English": "no",
+    "French": "non"
+  }
 ]

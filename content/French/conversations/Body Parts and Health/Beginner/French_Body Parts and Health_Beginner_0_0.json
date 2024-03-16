@@ -1,75 +1,75 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment ça va ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Ça va bien, merci. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je vais bien aussi."
-            }
-        ],
-        "conversation_summary": "A conversation asking how each person is doing."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quelle est ta chanson préférée ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je n'ai pas de chanson préférée, j'aime tout écouter."
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi, je préfère la musique classique."
-            }
-        ],
-        "conversation_summary": "A conversation about favorite songs and music preferences."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton film préféré ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi, j'adore les films d'action."
-            }
-        ],
-        "conversation_summary": "A conversation about favorite movies and film genres."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Est-ce que tu as fait des exercices aujourd'hui ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je devrais faire quelque chose pour ma santé aussi."
-            }
-        ],
-        "conversation_summary": "A conversation about exercise and health."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est le tonnerre ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Ah, je comprends."
-            }
-        ],
-        "conversation_summary": "A conversation about what thunder is."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment ça va ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Ça va bien, merci. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je vais bien aussi."
+      }
+    ],
+    "conversation_summary": "A conversation asking how each person is doing."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quelle est ta chanson préférée ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je n'ai pas de chanson préférée, j'aime tout écouter."
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi, je préfère la musique classique."
+      }
+    ],
+    "conversation_summary": "A conversation about favorite songs and music preferences."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton film préféré ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi, j'adore les films d'action."
+      }
+    ],
+    "conversation_summary": "A conversation about favorite movies and film genres."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Est-ce que tu as fait des exercices aujourd'hui ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je devrais faire quelque chose pour ma santé aussi."
+      }
+    ],
+    "conversation_summary": "A conversation about exercise and health."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est le tonnerre ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Ah, je comprends."
+      }
+    ],
+    "conversation_summary": "A conversation about what thunder is."
+  }
 ]

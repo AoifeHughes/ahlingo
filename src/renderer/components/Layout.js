@@ -3,10 +3,9 @@ import { useLocation, Route, Routes } from "react-router-dom";
 
 import MainAppBar from "./MainAppBar";
 import Menu from "./Menu";
-import Reading from "./Reading";
-import Writing from "./Writing";
-import Scenarios from "./Scenarios";
-import Chatbot from "./Chatbot";
+import Conversation from "./exercises/Conversation";
+import Translation from "./exercises/Translation";
+import Pairs from "./exercises/Pairs";
 import Settings from "./Settings";
 import UserInfo from "./UserInfo";
 
@@ -24,10 +23,9 @@ function Layout() {
       <Menu showMenu={showMenu} setShowMenu={setShowMenu} />
       <Routes>
         <Route path="/" element={<div>Welcome! Select a menu option.</div>} />
-        <Route path="/reading" element={<Reading />} />
-        <Route path="/writing" element={<Writing />} />
-        <Route path="/scenarios" element={<Scenarios />} />
-        <Route path="/chatbot" element={<Chatbot />} />
+        <Route path="/conversation" element={<Conversation />} />
+        <Route path="/pairs" element={<Pairs />} />
+        <Route path="/translations" element={<Translation />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/user-info" element={<UserInfo />} />
       </Routes>

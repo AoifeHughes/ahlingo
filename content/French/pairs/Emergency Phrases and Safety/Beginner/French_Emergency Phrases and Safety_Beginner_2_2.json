@@ -1,22 +1,22 @@
 [
-    {
-        "English": "key",
-        "French": "clé"
-    },
-    {
-        "English": "bread",
-        "French": "pain"
-    },
-    {
-        "English": "computer",
-        "French": "ordinateur"
-    },
-    {
-        "English": "computer mouse",
-        "French": "souris d' ordinateur"
-    },
-    {
-        "English": "chair",
-        "French": "chaise"
-    }
+  {
+    "English": "key",
+    "French": "clé"
+  },
+  {
+    "English": "bread",
+    "French": "pain"
+  },
+  {
+    "English": "computer",
+    "French": "ordinateur"
+  },
+  {
+    "English": "computer mouse",
+    "French": "souris d' ordinateur"
+  },
+  {
+    "English": "chair",
+    "French": "chaise"
+  }
 ]

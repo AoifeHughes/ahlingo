@@ -1,87 +1,87 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment allez-vous ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je vais bien, merci. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "J'ai un peu de mal à m'exprimer en français."
-            }
-        ],
-        "conversation_summary": "A conversation asking how each person is doing and expressing difficulty with speaking French."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Pourquoi tu es venu(e) dans cette école de français ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime beaucoup la langue française et sa culture."
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi aussi, j'adore la musique française."
-            }
-        ],
-        "conversation_summary": "A conversation discussing why each person is interested in learning French and their appreciation for French music and culture."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton pays préféré ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime bien les États-Unis, c'est un pays très grand et diversifié."
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi aussi, je suis intéressé(e) par l'Amérique."
-            }
-        ],
-        "conversation_summary": "A conversation discussing each person's favorite country and why they find it interesting."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton hobby préféré ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime beaucoup la lecture et l'écriture."
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi aussi, j'adore écrire des poèmes."
-            }
-        ],
-        "conversation_summary": "A conversation discussing each person's favorite hobby and their love of reading and writing."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment tu t'appelles ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je m'appelle Marie."
-            },
-            {
-                "speaker": "person1",
-                "message": "J'aime ce nom, c'est très joli."
-            }
-        ],
-        "conversation_summary": "A conversation asking and complimenting each person's name."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment allez-vous ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je vais bien, merci. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "J'ai un peu de mal à m'exprimer en français."
+      }
+    ],
+    "conversation_summary": "A conversation asking how each person is doing and expressing difficulty with speaking French."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Pourquoi tu es venu(e) dans cette école de français ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime beaucoup la langue française et sa culture."
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi aussi, j'adore la musique française."
+      }
+    ],
+    "conversation_summary": "A conversation discussing why each person is interested in learning French and their appreciation for French music and culture."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton pays préféré ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime bien les États-Unis, c'est un pays très grand et diversifié."
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi aussi, je suis intéressé(e) par l'Amérique."
+      }
+    ],
+    "conversation_summary": "A conversation discussing each person's favorite country and why they find it interesting."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton hobby préféré ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime beaucoup la lecture et l'écriture."
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi aussi, j'adore écrire des poèmes."
+      }
+    ],
+    "conversation_summary": "A conversation discussing each person's favorite hobby and their love of reading and writing."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment tu t'appelles ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je m'appelle Marie."
+      },
+      {
+        "speaker": "person1",
+        "message": "J'aime ce nom, c'est très joli."
+      }
+    ],
+    "conversation_summary": "A conversation asking and complimenting each person's name."
+  }
 ]

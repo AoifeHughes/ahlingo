@@ -1,22 +1,22 @@
 [
-    {
-        "English": "shoes",
-        "French": "chaussures"
-    },
-    {
-        "English": "computer",
-        "French": "ordinateur"
-    },
-    {
-        "English": "music",
-        "French": "musique"
-    },
-    {
-        "English": "movie",
-        "French": "film"
-    },
-    {
-        "English": "sport",
-        "French": "sport"
-    }
+  {
+    "English": "shoes",
+    "French": "chaussures"
+  },
+  {
+    "English": "computer",
+    "French": "ordinateur"
+  },
+  {
+    "English": "music",
+    "French": "musique"
+  },
+  {
+    "English": "movie",
+    "French": "film"
+  },
+  {
+    "English": "sport",
+    "French": "sport"
+  }
 ]

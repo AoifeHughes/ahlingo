@@ -1,87 +1,87 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment t'aimes-tu la musique ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'adore la musique classique. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je préfère la musique pop. Elle est plus dynamique."
-            }
-        ],
-        "conversation_summary": "A conversation about different music preferences."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Tu es allé au musée récentement ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Oui, j'ai visité le Louvre hier. C'était incroyable !"
-            },
-            {
-                "speaker": "person1",
-                "message": "J'aimerais y aller aussi, mais je n'ai pas le temps."
-            }
-        ],
-        "conversation_summary": "A conversation about visiting museums and art galleries."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton film préféré ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je suis fan de films d'horreur. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "J'aime les comédies. Elles sont plus légères."
-            }
-        ],
-        "conversation_summary": "A conversation about favorite movies and film genres."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Tu fais de la peinture ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Oui, j'adore peindre. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "J'ai essayé, mais je n'ai pas le talent."
-            }
-        ],
-        "conversation_summary": "A conversation about painting and artistic abilities."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment t'aimes-tu la danse ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'adore la danse moderne. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je préfère la danse classique. Elle est plus sophistiquée."
-            }
-        ],
-        "conversation_summary": "A conversation about different dance styles and preferences."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment t'aimes-tu la musique ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'adore la musique classique. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je préfère la musique pop. Elle est plus dynamique."
+      }
+    ],
+    "conversation_summary": "A conversation about different music preferences."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Tu es allé au musée récentement ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Oui, j'ai visité le Louvre hier. C'était incroyable !"
+      },
+      {
+        "speaker": "person1",
+        "message": "J'aimerais y aller aussi, mais je n'ai pas le temps."
+      }
+    ],
+    "conversation_summary": "A conversation about visiting museums and art galleries."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton film préféré ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je suis fan de films d'horreur. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "J'aime les comédies. Elles sont plus légères."
+      }
+    ],
+    "conversation_summary": "A conversation about favorite movies and film genres."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Tu fais de la peinture ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Oui, j'adore peindre. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "J'ai essayé, mais je n'ai pas le talent."
+      }
+    ],
+    "conversation_summary": "A conversation about painting and artistic abilities."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment t'aimes-tu la danse ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'adore la danse moderne. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je préfère la danse classique. Elle est plus sophistiquée."
+      }
+    ],
+    "conversation_summary": "A conversation about different dance styles and preferences."
+  }
 ]

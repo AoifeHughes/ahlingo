@@ -1,22 +1,22 @@
 [
-    {
-        "English": "computer",
-        "French": "ordinateur"
-    },
-    {
-        "English": "smartphone",
-        "French": "téléphone portable"
-    },
-    {
-        "English": "internet",
-        "French": "Internet"
-    },
-    {
-        "English": "social media",
-        "French": "medias sociaux"
-    },
-    {
-        "English": "camera",
-        "French": "appareil photo"
-    }
+  {
+    "English": "computer",
+    "French": "ordinateur"
+  },
+  {
+    "English": "smartphone",
+    "French": "téléphone portable"
+  },
+  {
+    "English": "internet",
+    "French": "Internet"
+  },
+  {
+    "English": "social media",
+    "French": "medias sociaux"
+  },
+  {
+    "English": "camera",
+    "French": "appareil photo"
+  }
 ]

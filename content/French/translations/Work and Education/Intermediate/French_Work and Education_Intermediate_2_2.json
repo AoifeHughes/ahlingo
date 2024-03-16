@@ -1,22 +1,22 @@
 [
-    {
-        "English": "What is your name?",
-        "French": "Comment t'appelles-tu ?"
-    },
-    {
-        "English": "How are you feeling today?",
-        "French": "Comment te sens-tu aujourd'hui ?"
-    },
-    {
-        "English": "What do you like to do in your free time?",
-        "French": "Que fais-tu quand tu as du temps libre ?"
-    },
-    {
-        "English": "Do you speak any other languages?",
-        "French": "Parles-tu d'autres langues ?"
-    },
-    {
-        "English": "How do you get to school/work?",
-        "French": "Comment tu arrives à l'école/au travail ?"
-    }
+  {
+    "English": "What is your name?",
+    "French": "Comment t'appelles-tu ?"
+  },
+  {
+    "English": "How are you feeling today?",
+    "French": "Comment te sens-tu aujourd'hui ?"
+  },
+  {
+    "English": "What do you like to do in your free time?",
+    "French": "Que fais-tu quand tu as du temps libre ?"
+  },
+  {
+    "English": "Do you speak any other languages?",
+    "French": "Parles-tu d'autres langues ?"
+  },
+  {
+    "English": "How do you get to school/work?",
+    "French": "Comment tu arrives à l'école/au travail ?"
+  }
 ]

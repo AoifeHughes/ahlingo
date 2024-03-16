@@ -1,22 +1,22 @@
 [
-    {
-        "English": "bread",
-        "French": "pain"
-    },
-    {
-        "English": "computer",
-        "French": "ordinateur"
-    },
-    {
-        "English": "friend",
-        "French": "ami"
-    },
-    {
-        "English": "girl",
-        "French": "fille"
-    },
-    {
-        "English": "home",
-        "French": "foyer"
-    }
+  {
+    "English": "bread",
+    "French": "pain"
+  },
+  {
+    "English": "computer",
+    "French": "ordinateur"
+  },
+  {
+    "English": "friend",
+    "French": "ami"
+  },
+  {
+    "English": "girl",
+    "French": "fille"
+  },
+  {
+    "English": "home",
+    "French": "foyer"
+  }
 ]

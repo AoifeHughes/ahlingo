@@ -1,22 +1,22 @@
 [
-    {
-        "English": "computer",
-        "French": "ordinateur"
-    },
-    {
-        "English": "computer mouse",
-        "French": "souris d'ordinateur"
-    },
-    {
-        "English": "keyboard",
-        "French": "claviers"
-    },
-    {
-        "English": "printer",
-        "French": "imprimante"
-    },
-    {
-        "English": "scanner",
-        "French": "numérisateur"
-    }
+  {
+    "English": "computer",
+    "French": "ordinateur"
+  },
+  {
+    "English": "computer mouse",
+    "French": "souris d'ordinateur"
+  },
+  {
+    "English": "keyboard",
+    "French": "claviers"
+  },
+  {
+    "English": "printer",
+    "French": "imprimante"
+  },
+  {
+    "English": "scanner",
+    "French": "numérisateur"
+  }
 ]

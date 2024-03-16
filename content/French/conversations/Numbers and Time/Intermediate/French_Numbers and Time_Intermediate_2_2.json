@@ -1,87 +1,87 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quelle est la différence entre un mardi et un lundi ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Un mardi est un jour de la semaine, tandis qu'un lundi est un jour férié."
-            },
-            {
-                "speaker": "person1",
-                "message": "Ah, d'accord. Et quels sont les autres jours de la semaine ?"
-            }
-        ],
-        "conversation_summary": "A conversation discussing the difference between Monday and Tuesday as days of the week and what other days of the week there are."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est le numéro de téléphone de la maison ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Le numéro de téléphone est 06.12.34.56.78."
-            },
-            {
-                "speaker": "person1",
-                "message": "Merci. J'ai besoin d'appeler pour discuter d'une commande."
-            }
-        ],
-        "conversation_summary": "A conversation about the phone number of a house and making a call to discuss an order."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est le temps ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Il est 14 heures et demi."
-            },
-            {
-                "speaker": "person1",
-                "message": "Ah, c'est très tard. J'ai failli manquer mon bus."
-            }
-        ],
-        "conversation_summary": "A conversation about the time being 2:30 PM and almost missing a bus."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Combien de temps mets-tu pour faire ta tâche ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je mets environ une heure et demie."
-            },
-            {
-                "speaker": "person1",
-                "message": "C'est long. Moi, j'ai fini en une heure."
-            }
-        ],
-        "conversation_summary": "A conversation about how much time each person takes to complete a task."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est le temps que tu te réserves pour faire ta cuisine ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je me réserve une heure et demie."
-            },
-            {
-                "speaker": "person1",
-                "message": "C'est long. Moi, j'ai besoin d'une heure maximum."
-            }
-        ],
-        "conversation_summary": "A conversation about the time each person sets aside to do the kitchen and how much time is needed."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quelle est la différence entre un mardi et un lundi ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Un mardi est un jour de la semaine, tandis qu'un lundi est un jour férié."
+      },
+      {
+        "speaker": "person1",
+        "message": "Ah, d'accord. Et quels sont les autres jours de la semaine ?"
+      }
+    ],
+    "conversation_summary": "A conversation discussing the difference between Monday and Tuesday as days of the week and what other days of the week there are."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est le numéro de téléphone de la maison ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Le numéro de téléphone est 06.12.34.56.78."
+      },
+      {
+        "speaker": "person1",
+        "message": "Merci. J'ai besoin d'appeler pour discuter d'une commande."
+      }
+    ],
+    "conversation_summary": "A conversation about the phone number of a house and making a call to discuss an order."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est le temps ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Il est 14 heures et demi."
+      },
+      {
+        "speaker": "person1",
+        "message": "Ah, c'est très tard. J'ai failli manquer mon bus."
+      }
+    ],
+    "conversation_summary": "A conversation about the time being 2:30 PM and almost missing a bus."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Combien de temps mets-tu pour faire ta tâche ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je mets environ une heure et demie."
+      },
+      {
+        "speaker": "person1",
+        "message": "C'est long. Moi, j'ai fini en une heure."
+      }
+    ],
+    "conversation_summary": "A conversation about how much time each person takes to complete a task."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est le temps que tu te réserves pour faire ta cuisine ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je me réserve une heure et demie."
+      },
+      {
+        "speaker": "person1",
+        "message": "C'est long. Moi, j'ai besoin d'une heure maximum."
+      }
+    ],
+    "conversation_summary": "A conversation about the time each person sets aside to do the kitchen and how much time is needed."
+  }
 ]

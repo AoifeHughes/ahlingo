@@ -1,38 +1,38 @@
 [
-    {
-        "English": "shirt",
-        "Spanish": "camisa"
-    },
-    {
-        "English": "pants",
-        "Spanish": "pantalones"
-    },
-    {
-        "English": "jacket",
-        "Spanish": "chaqueta"
-    },
-    {
-        "English": "shoes",
-        "Spanish": "zapatos"
-    },
-    {
-        "English": "hat",
-        "Spanish": "gorro"
-    },
-    {
-        "English": "dress",
-        "Spanish": "vestido"
-    },
-    {
-        "English": "skirt",
-        "Spanish": "falda"
-    },
-    {
-        "English": "socks",
-        "Spanish": "calcetas"
-    },
-    {
-        "English": "belt",
-        "Spanish": "cinturón"
-    }
+  {
+    "English": "shirt",
+    "Spanish": "camisa"
+  },
+  {
+    "English": "pants",
+    "Spanish": "pantalones"
+  },
+  {
+    "English": "jacket",
+    "Spanish": "chaqueta"
+  },
+  {
+    "English": "shoes",
+    "Spanish": "zapatos"
+  },
+  {
+    "English": "hat",
+    "Spanish": "gorro"
+  },
+  {
+    "English": "dress",
+    "Spanish": "vestido"
+  },
+  {
+    "English": "skirt",
+    "Spanish": "falda"
+  },
+  {
+    "English": "socks",
+    "Spanish": "calcetas"
+  },
+  {
+    "English": "belt",
+    "Spanish": "cinturón"
+  }
 ]

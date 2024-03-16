@@ -1,87 +1,87 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton style préféré de vêtement ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime porter des tenues casuales et confortables."
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi, je préfère des vêtements plus formels pour aller au bureau."
-            }
-        ],
-        "conversation_summary": "A conversation discussing each person's preferred style of clothing."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment choisis-tu tes chaussures ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je les choisis en fonction de leur confort et de leur design."
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi, j'aime porter des chaussures à talons hauts pour me sentir importante."
-            }
-        ],
-        "conversation_summary": "A conversation about choosing shoes based on comfort and design."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton point fort en matière de mode ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'ai une grande connaissance des tendances de la mode."
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi, je suis très bon pour choisir les couleurs."
-            }
-        ],
-        "conversation_summary": "A conversation about each person's strength in fashion."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment te sens-tu lorsque tu portes des vêtements de marque ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'ai l'impression d'être plus confiant."
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi, j'ai tendance à me sentir plus sophistiqué en portant des vêtements de marque."
-            }
-        ],
-        "conversation_summary": "A conversation about the impact of wearing branded clothes on confidence and sophistication."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment choisis-tu tes accessoires ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je les choisis en fonction de leur utilité et de leur design."
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi, j'aime porter des bijoux pour me faire plus belle."
-            }
-        ],
-        "conversation_summary": "A conversation about choosing accessories based on utility and design."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton style préféré de vêtement ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime porter des tenues casuales et confortables."
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi, je préfère des vêtements plus formels pour aller au bureau."
+      }
+    ],
+    "conversation_summary": "A conversation discussing each person's preferred style of clothing."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment choisis-tu tes chaussures ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je les choisis en fonction de leur confort et de leur design."
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi, j'aime porter des chaussures à talons hauts pour me sentir importante."
+      }
+    ],
+    "conversation_summary": "A conversation about choosing shoes based on comfort and design."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton point fort en matière de mode ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'ai une grande connaissance des tendances de la mode."
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi, je suis très bon pour choisir les couleurs."
+      }
+    ],
+    "conversation_summary": "A conversation about each person's strength in fashion."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment te sens-tu lorsque tu portes des vêtements de marque ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'ai l'impression d'être plus confiant."
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi, j'ai tendance à me sentir plus sophistiqué en portant des vêtements de marque."
+      }
+    ],
+    "conversation_summary": "A conversation about the impact of wearing branded clothes on confidence and sophistication."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment choisis-tu tes accessoires ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je les choisis en fonction de leur utilité et de leur design."
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi, j'aime porter des bijoux pour me faire plus belle."
+      }
+    ],
+    "conversation_summary": "A conversation about choosing accessories based on utility and design."
+  }
 ]

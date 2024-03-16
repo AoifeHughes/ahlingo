@@ -1,26 +1,26 @@
 [
-    {
-        "English": "bike",
-        "French": "vélomobile"
-    },
-    {
-        "English": "computer",
-        "French": "ordinateur"
-    },
-    {
-        "English": "gym",
-        "French": "gymnase"
-    },
-    {
-        "English": "movie",
-        "French": "film"
-    },
-    {
-        "English": "shopping",
-        "French": "achats"
-    },
-    {
-        "English": "swimming",
-        "French": "natation"
-    }
+  {
+    "English": "bike",
+    "French": "vélomobile"
+  },
+  {
+    "English": "computer",
+    "French": "ordinateur"
+  },
+  {
+    "English": "gym",
+    "French": "gymnase"
+  },
+  {
+    "English": "movie",
+    "French": "film"
+  },
+  {
+    "English": "shopping",
+    "French": "achats"
+  },
+  {
+    "English": "swimming",
+    "French": "natation"
+  }
 ]

@@ -1,22 +1,22 @@
 [
-    {
-        "English": "happy",
-        "Spanish": "feliz"
-    },
-    {
-        "English": "sad",
-        "Spanish": "triste"
-    },
-    {
-        "English": "angry",
-        "Spanish": "enojado"
-    },
-    {
-        "English": "excited",
-        "Spanish": "emocionado"
-    },
-    {
-        "English": "anxious",
-        "Spanish": "ansioso"
-    }
+  {
+    "English": "happy",
+    "Spanish": "feliz"
+  },
+  {
+    "English": "sad",
+    "Spanish": "triste"
+  },
+  {
+    "English": "angry",
+    "Spanish": "enojado"
+  },
+  {
+    "English": "excited",
+    "Spanish": "emocionado"
+  },
+  {
+    "English": "anxious",
+    "Spanish": "ansioso"
+  }
 ]

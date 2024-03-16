@@ -1,22 +1,22 @@
 [
-    {
-        "English": "happy",
-        "French": "heureux"
-    },
-    {
-        "English": "sad",
-        "French": "triste"
-    },
-    {
-        "English": "angry",
-        "French": "colérique"
-    },
-    {
-        "English": "excited",
-        "French": "enthousiaste"
-    },
-    {
-        "English": "anxious",
-        "French": "nervous"
-    }
+  {
+    "English": "happy",
+    "French": "heureux"
+  },
+  {
+    "English": "sad",
+    "French": "triste"
+  },
+  {
+    "English": "angry",
+    "French": "colérique"
+  },
+  {
+    "English": "excited",
+    "French": "enthousiaste"
+  },
+  {
+    "English": "anxious",
+    "French": "nervous"
+  }
 ]

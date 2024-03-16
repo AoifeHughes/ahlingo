@@ -1,79 +1,79 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment ça va ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Ça va bien, merci. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je vais bien aussi."
-            }
-        ],
-        "conversation_summary": "A conversation asking how each person is doing."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton pays préféré ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime l'Australie. Elle a une culture très interessante."
-            },
-            {
-                "speaker": "person1",
-                "message": "Je suis jamais allé en Australie, mais j'ai entendu dire qu'elle est très belle."
-            }
-        ],
-        "conversation_summary": "A conversation about favorite countries, with Australia being discussed."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton métier ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'suis ingénieur. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je travaille dans le marketing."
-            }
-        ],
-        "conversation_summary": "A conversation about each person's job."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton film préféré ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je l'aime aussi. C'est un classique."
-            }
-        ],
-        "conversation_summary": "A conversation about favorite movies, with La Grande Illusion being discussed."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton livre préféré ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je l'ai lu également. C'est un livre très intéressant."
-            }
-        ],
-        "conversation_summary": "A conversation about favorite books, with The Stranger being discussed."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment ça va ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Ça va bien, merci. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je vais bien aussi."
+      }
+    ],
+    "conversation_summary": "A conversation asking how each person is doing."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton pays préféré ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime l'Australie. Elle a une culture très interessante."
+      },
+      {
+        "speaker": "person1",
+        "message": "Je suis jamais allé en Australie, mais j'ai entendu dire qu'elle est très belle."
+      }
+    ],
+    "conversation_summary": "A conversation about favorite countries, with Australia being discussed."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton métier ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'suis ingénieur. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je travaille dans le marketing."
+      }
+    ],
+    "conversation_summary": "A conversation about each person's job."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton film préféré ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je l'aime aussi. C'est un classique."
+      }
+    ],
+    "conversation_summary": "A conversation about favorite movies, with La Grande Illusion being discussed."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton livre préféré ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je l'ai lu également. C'est un livre très intéressant."
+      }
+    ],
+    "conversation_summary": "A conversation about favorite books, with The Stranger being discussed."
+  }
 ]

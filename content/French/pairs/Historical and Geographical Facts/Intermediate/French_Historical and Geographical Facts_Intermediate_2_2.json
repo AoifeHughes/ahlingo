@@ -1,22 +1,22 @@
 [
-    {
-        "English": "castle",
-        "French": "château"
-    },
-    {
-        "English": "empire",
-        "French": "empire"
-    },
-    {
-        "English": "revolution",
-        "French": "révolution"
-    },
-    {
-        "English": "monument",
-        "French": "monument"
-    },
-    {
-        "English": "civilization",
-        "French": "civilisation"
-    }
+  {
+    "English": "castle",
+    "French": "château"
+  },
+  {
+    "English": "empire",
+    "French": "empire"
+  },
+  {
+    "English": "revolution",
+    "French": "révolution"
+  },
+  {
+    "English": "monument",
+    "French": "monument"
+  },
+  {
+    "English": "civilization",
+    "French": "civilisation"
+  }
 ]

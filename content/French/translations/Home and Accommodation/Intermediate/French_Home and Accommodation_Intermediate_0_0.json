@@ -1,22 +1,22 @@
 [
-    {
-        "English": "What is your favorite hobby?",
-        "French": "Quel est ton loisir préféré ?"
-    },
-    {
-        "English": "I live in a small house near the city center.",
-        "French": "J'habite dans une petite maison à proximité du centre-ville."
-    },
-    {
-        "English": "The apartment is located on the fifth floor.",
-        "French": "L'appartement se trouve au cinquième étage."
-    },
-    {
-        "English": "My roommate and I are going to watch a movie tonight.",
-        "French": "Mon colocataire et moi allons regarder un film ce soir."
-    },
-    {
-        "English": "Do you prefer living in the country or the city?",
-        "French": "Préfères-tu vivre à la campagne ou dans la ville ?"
-    }
+  {
+    "English": "What is your favorite hobby?",
+    "French": "Quel est ton loisir préféré ?"
+  },
+  {
+    "English": "I live in a small house near the city center.",
+    "French": "J'habite dans une petite maison à proximité du centre-ville."
+  },
+  {
+    "English": "The apartment is located on the fifth floor.",
+    "French": "L'appartement se trouve au cinquième étage."
+  },
+  {
+    "English": "My roommate and I are going to watch a movie tonight.",
+    "French": "Mon colocataire et moi allons regarder un film ce soir."
+  },
+  {
+    "English": "Do you prefer living in the country or the city?",
+    "French": "Préfères-tu vivre à la campagne ou dans la ville ?"
+  }
 ]

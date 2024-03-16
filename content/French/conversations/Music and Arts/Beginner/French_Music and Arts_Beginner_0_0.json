@@ -1,87 +1,87 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment ça va ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je vais bien, merci. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je vais bien aussi."
-            }
-        ],
-        "conversation_summary": "A conversation asking and responding to how each person is doing."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton film préféré ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime beaucoup les films d'animation. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je suis fan de films d'horreur."
-            }
-        ],
-        "conversation_summary": "A conversation discussing each person's favorite movie genre."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton livre préféré ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'ai lu un livre intéressant récemment. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "J'ai fini un roman policier très excitant."
-            }
-        ],
-        "conversation_summary": "A conversation discussing each person's favorite book."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton groupe de musique préféré ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'adore la musique classique. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je suis fan de rock."
-            }
-        ],
-        "conversation_summary": "A conversation discussing each person's favorite music genre."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment ça se passe pour ta famille ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Ma famille est très importante pour moi. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je suis très proche de ma famille aussi."
-            }
-        ],
-        "conversation_summary": "A conversation discussing the importance of family."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment ça va ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je vais bien, merci. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je vais bien aussi."
+      }
+    ],
+    "conversation_summary": "A conversation asking and responding to how each person is doing."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton film préféré ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime beaucoup les films d'animation. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je suis fan de films d'horreur."
+      }
+    ],
+    "conversation_summary": "A conversation discussing each person's favorite movie genre."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton livre préféré ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'ai lu un livre intéressant récemment. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "J'ai fini un roman policier très excitant."
+      }
+    ],
+    "conversation_summary": "A conversation discussing each person's favorite book."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton groupe de musique préféré ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'adore la musique classique. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je suis fan de rock."
+      }
+    ],
+    "conversation_summary": "A conversation discussing each person's favorite music genre."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment ça se passe pour ta famille ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Ma famille est très importante pour moi. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je suis très proche de ma famille aussi."
+      }
+    ],
+    "conversation_summary": "A conversation discussing the importance of family."
+  }
 ]

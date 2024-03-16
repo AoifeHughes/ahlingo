@@ -1,38 +1,38 @@
 [
-    {
-        "English": "family",
-        "Spanish": "familia"
-    },
-    {
-        "English": "mother",
-        "Spanish": "madre"
-    },
-    {
-        "English": "father",
-        "Spanish": "padre"
-    },
-    {
-        "English": "son",
-        "Spanish": "hijo"
-    },
-    {
-        "English": "daughter",
-        "Spanish": "hija"
-    },
-    {
-        "English": "brother",
-        "Spanish": "hermano"
-    },
-    {
-        "English": "sister",
-        "Spanish": " hermana"
-    },
-    {
-        "English": "grandfather",
-        "Spanish": "abuelo"
-    },
-    {
-        "English": "grandmother",
-        "Spanish": "abuela"
-    }
+  {
+    "English": "family",
+    "Spanish": "familia"
+  },
+  {
+    "English": "mother",
+    "Spanish": "madre"
+  },
+  {
+    "English": "father",
+    "Spanish": "padre"
+  },
+  {
+    "English": "son",
+    "Spanish": "hijo"
+  },
+  {
+    "English": "daughter",
+    "Spanish": "hija"
+  },
+  {
+    "English": "brother",
+    "Spanish": "hermano"
+  },
+  {
+    "English": "sister",
+    "Spanish": " hermana"
+  },
+  {
+    "English": "grandfather",
+    "Spanish": "abuelo"
+  },
+  {
+    "English": "grandmother",
+    "Spanish": "abuela"
+  }
 ]

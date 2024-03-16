@@ -1,38 +1,38 @@
 [
-    {
-        "English": "bread",
-        "French": "pain"
-    },
-    {
-        "English": "cake",
-        "French": "gâteau"
-    },
-    {
-        "English": "chair",
-        "French": "chaise"
-    },
-    {
-        "English": "computer",
-        "French": "ordinateur"
-    },
-    {
-        "English": "desk",
-        "French": "bureau"
-    },
-    {
-        "English": "elephant",
-        "French": "éléphant"
-    },
-    {
-        "English": "flower",
-        "French": "fleur"
-    },
-    {
-        "English": "guitar",
-        "French": "guitare"
-    },
-    {
-        "English": "household",
-        "French": "ménage"
-    }
+  {
+    "English": "bread",
+    "French": "pain"
+  },
+  {
+    "English": "cake",
+    "French": "gâteau"
+  },
+  {
+    "English": "chair",
+    "French": "chaise"
+  },
+  {
+    "English": "computer",
+    "French": "ordinateur"
+  },
+  {
+    "English": "desk",
+    "French": "bureau"
+  },
+  {
+    "English": "elephant",
+    "French": "éléphant"
+  },
+  {
+    "English": "flower",
+    "French": "fleur"
+  },
+  {
+    "English": "guitar",
+    "French": "guitare"
+  },
+  {
+    "English": "household",
+    "French": "ménage"
+  }
 ]

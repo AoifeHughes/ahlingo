@@ -1,22 +1,22 @@
 [
-    {
-        "English": "computer",
-        "Spanish": "ordenador"
-    },
-    {
-        "English": "smartphone",
-        "Spanish": "teléfono inteligente"
-    },
-    {
-        "English": "tablet",
-        "Spanish": "tabla"
-    },
-    {
-        "English": "internet",
-        "Spanish": "Internet"
-    },
-    {
-        "English": "social media",
-        "Spanish": "medios sociales"
-    }
+  {
+    "English": "computer",
+    "Spanish": "ordenador"
+  },
+  {
+    "English": "smartphone",
+    "Spanish": "teléfono inteligente"
+  },
+  {
+    "English": "tablet",
+    "Spanish": "tabla"
+  },
+  {
+    "English": "internet",
+    "Spanish": "Internet"
+  },
+  {
+    "English": "social media",
+    "Spanish": "medios sociales"
+  }
 ]
