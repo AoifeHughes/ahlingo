@@ -95,7 +95,7 @@ function Pairs({ onBack }) {
   };
 
   const renderExerciseTables = () => (
-    <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+    <div style={{ display: "flex", justifyContent: "space-around" }}>
       {renderExerciseTable("language_1_content")}
       {renderExerciseTable("language_2_content")}
     </div>
