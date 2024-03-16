@@ -283,20 +283,9 @@ class LanguageDB {
       });
     }
 
-    getTopicsByDifficulty(difficultyLevel, callback) {
-      const query = `SELECT topic FROM topics WHERE id IN (SELECT topic_id FROM exercises_info WHERE difficulty_id = (SELECT id FROM difficulties WHERE difficulty_level = ?))`;
-      this.db.all(query, [difficultyLevel], (err, rows) => {
-        if (err) {
-          return callback(err);
-        }
-        const topics = rows.map((row) => row.topic);
-        callback(null, topics);
-      });
-    }
-
-    getLanguagesByTopicAndDifficulty(topic, difficultyLevel, callback) {
-      const query = `SELECT language FROM languages WHERE id IN (SELECT language_id FROM exercises_info WHERE topic_id = (SELECT id FROM topics WHERE topic = ?) AND difficulty_id = (SELECT id FROM difficulties WHERE difficulty_level = ?))`;
-      this.db.all(query, [topic, difficultyLevel], (err, rows) => {
+    getLanguages(callback) {
+      const query = `SELECT language FROM languages`;
+      this.db.all(query, [], (err, rows) => {
         if (err) {
           return callback(err);
         }
@@ -305,9 +294,20 @@ class LanguageDB {
       });
     }
 
-    getTopicsByLanguage(languageName, callback) {
-      const query = `SELECT topic FROM topics WHERE id IN (SELECT topic_id FROM exercises_info WHERE language_id = (SELECT id FROM languages WHERE language = ?))`;
-      this.db.all(query, [languageName], (err, rows) => {
+    getDifficultyByLanguage(language, callback) {
+      const query = `SELECT difficulty_level FROM difficulties WHERE id IN (SELECT difficulty_id FROM exercises_info WHERE language_id IN (SELECT id FROM languages WHERE language = ?))`;
+      this.db.all(query, [language], (err, rows) => {
+        if (err) {
+          return callback(err);
+        }
+        const levels = rows.map((row) => row.difficulty_level);
+        callback(null, levels);
+      });
+    }
+
+    getTopicsByLanguageDifficulty(language, difficulty, callback) {
+      const query = `SELECT topic FROM topics WHERE id IN (SELECT topic_id FROM exercises_info WHERE language_id IN (SELECT id FROM languages WHERE language = ?) AND difficulty_id IN (SELECT id FROM difficulties WHERE difficulty_level = ?))`;
+      this.db.all(query, [language, difficulty], (err, rows) => {
         if (err) {
           return callback(err);
         }
@@ -316,7 +316,12 @@ class LanguageDB {
       });
     }
 
-    
+    getRandomPairExercise(language, difficulty, topic, callback) {
+      const query = `SELECT exercise_name, language_1, language_2, language_1_content, language_2_content FROM exercises_info INNER JOIN pair_exercises ON exercises_info.id = pair_exercises.exercise_id WHERE language_1 = ? AND language_2 = ? AND topic_id IN (SELECT id FROM topics WHERE topic = ?) AND difficulty_id IN (SELECT id FROM difficulties WHERE difficulty_level = ?) ORDER BY RANDOM() LIMIT 1`;
+      this.db.get(query, ['English', language, topic, difficulty], (err, row) => {
+        callback(err, row);
+      });
+    }
 
 
   close() {
