@@ -1,87 +1,87 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment t'as fait ta journée ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'ai travaillé puis j'ai pris un bain chaud. Ça a été une journée bien remplie."
-            },
-            {
-                "speaker": "person1",
-                "message": "C'est génial. Moi, j'ai fait la même chose."
-            }
-        ],
-        "conversation_summary": "A conversation about how each person's day was spent."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Tu as déjà visité l'Europe ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Oui, j'ai visité plusieurs pays comme l'Italie et l'Espagne."
-            },
-            {
-                "speaker": "person1",
-                "message": "J'aimerais beaucoup y aller. Quels sont tes endroits préférés ?"
-            }
-        ],
-        "conversation_summary": "A conversation about traveling to Europe and each person's favorite places they have visited."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est le livre que tu lis actuellement ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'ai fini mon dernier livre, donc je ne lis pas quelque chose pour le moment."
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi, j'ai lu un roman intéressant sur la Seconde Guerre mondiale."
-            }
-        ],
-        "conversation_summary": "A conversation about what books each person is currently reading or has recently finished."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Tu as déjà essayé de cuisiner une recette française ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Oui, j'ai essayé de faire un plat appelé 'coq au vin'. Ça a été délicieux."
-            },
-            {
-                "speaker": "person1",
-                "message": "C'est génial. J'aimerais essayer de cuisiner une recette française aussi."
-            }
-        ],
-        "conversation_summary": "A conversation about trying to cook French dishes and sharing successes and failures."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est le sport que tu préfères ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime faire de la natation. C'est très relaxant."
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi, j'ai joué au football dans ma jeunesse."
-            }
-        ],
-        "conversation_summary": "A conversation about favorite sports and past experiences playing them."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment t'as fait ta journée ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'ai travaillé puis j'ai pris un bain chaud. Ça a été une journée bien remplie."
+      },
+      {
+        "speaker": "person1",
+        "message": "C'est génial. Moi, j'ai fait la même chose."
+      }
+    ],
+    "conversation_summary": "A conversation about how each person's day was spent."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Tu as déjà visité l'Europe ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Oui, j'ai visité plusieurs pays comme l'Italie et l'Espagne."
+      },
+      {
+        "speaker": "person1",
+        "message": "J'aimerais beaucoup y aller. Quels sont tes endroits préférés ?"
+      }
+    ],
+    "conversation_summary": "A conversation about traveling to Europe and each person's favorite places they have visited."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est le livre que tu lis actuellement ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'ai fini mon dernier livre, donc je ne lis pas quelque chose pour le moment."
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi, j'ai lu un roman intéressant sur la Seconde Guerre mondiale."
+      }
+    ],
+    "conversation_summary": "A conversation about what books each person is currently reading or has recently finished."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Tu as déjà essayé de cuisiner une recette française ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Oui, j'ai essayé de faire un plat appelé 'coq au vin'. Ça a été délicieux."
+      },
+      {
+        "speaker": "person1",
+        "message": "C'est génial. J'aimerais essayer de cuisiner une recette française aussi."
+      }
+    ],
+    "conversation_summary": "A conversation about trying to cook French dishes and sharing successes and failures."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est le sport que tu préfères ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime faire de la natation. C'est très relaxant."
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi, j'ai joué au football dans ma jeunesse."
+      }
+    ],
+    "conversation_summary": "A conversation about favorite sports and past experiences playing them."
+  }
 ]

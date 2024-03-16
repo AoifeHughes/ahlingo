@@ -1,38 +1,38 @@
 [
-    {
-        "English": "chair",
-        "French": "chaise"
-    },
-    {
-        "English": "computer",
-        "French": "ordinateur"
-    },
-    {
-        "English": "desk",
-        "French": "bureau"
-    },
-    {
-        "English": "key",
-        "French": "clé"
-    },
-    {
-        "English": "pizza",
-        "French": "pizza"
-    },
-    {
-        "English": "shoe",
-        "French": "chaussure"
-    },
-    {
-        "English": "table",
-        "French": "table"
-    },
-    {
-        "English": "vacation",
-        "French": "vacances"
-    },
-    {
-        "English": "winter",
-        "French": "hiver"
-    }
+  {
+    "English": "chair",
+    "French": "chaise"
+  },
+  {
+    "English": "computer",
+    "French": "ordinateur"
+  },
+  {
+    "English": "desk",
+    "French": "bureau"
+  },
+  {
+    "English": "key",
+    "French": "clé"
+  },
+  {
+    "English": "pizza",
+    "French": "pizza"
+  },
+  {
+    "English": "shoe",
+    "French": "chaussure"
+  },
+  {
+    "English": "table",
+    "French": "table"
+  },
+  {
+    "English": "vacation",
+    "French": "vacances"
+  },
+  {
+    "English": "winter",
+    "French": "hiver"
+  }
 ]

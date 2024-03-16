@@ -1,22 +1,22 @@
 [
-    {
-        "English": "computer",
-        "French": "ordinateur"
-    },
-    {
-        "English": "shoes",
-        "French": "chaussures"
-    },
-    {
-        "English": "camera",
-        "French": "appareil photo"
-    },
-    {
-        "English": "television",
-        "French": "télévision"
-    },
-    {
-        "English": "phone",
-        "French": "portable"
-    }
+  {
+    "English": "computer",
+    "French": "ordinateur"
+  },
+  {
+    "English": "shoes",
+    "French": "chaussures"
+  },
+  {
+    "English": "camera",
+    "French": "appareil photo"
+  },
+  {
+    "English": "television",
+    "French": "télévision"
+  },
+  {
+    "English": "phone",
+    "French": "portable"
+  }
 ]

@@ -1,83 +1,83 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment t'appelles-tu ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je m'appelle Lucie."
-            },
-            {
-                "speaker": "person1",
-                "message": "J'aime ta robe. Elle est très jolie."
-            }
-        ],
-        "conversation_summary": "An introduction and a compliment about each other's clothing."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Que fais-tu aujourd'hui ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi aussi. J'ai passé mon enfance près de la mer."
-            }
-        ],
-        "conversation_summary": "A conversation about plans for the day and a shared appreciation of the beach and the sea."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton animal préféré ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime les chevaux. Ils sont très beaux et majestueux."
-            },
-            {
-                "speaker": "person1",
-                "message": "Moje aussi. J'ai passé mon enfance à cheval."
-            }
-        ],
-        "conversation_summary": "A conversation about favorite animals and personal experiences with them."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment ça va ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Ça va bien, merci. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je vais bien aussi. J'ai fini de travailler sur mon projet."
-            }
-        ],
-        "conversation_summary": "A conversation asking how each person is doing and sharing updates on their projects."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Qu'est-ce que tu aimes faire en ta temps libre ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime lire des livres. J'ai lu le dernier roman de Stephen King."
-            },
-            {
-                "speaker": "person1",
-                "message": "J'adore aussi les livres. J'ai fini de lire un livre intéressant sur l'histoire de la France."
-            }
-        ],
-        "conversation_summary": "A conversation about hobbies and recent book reads."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment t'appelles-tu ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je m'appelle Lucie."
+      },
+      {
+        "speaker": "person1",
+        "message": "J'aime ta robe. Elle est très jolie."
+      }
+    ],
+    "conversation_summary": "An introduction and a compliment about each other's clothing."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Que fais-tu aujourd'hui ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi aussi. J'ai passé mon enfance près de la mer."
+      }
+    ],
+    "conversation_summary": "A conversation about plans for the day and a shared appreciation of the beach and the sea."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton animal préféré ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime les chevaux. Ils sont très beaux et majestueux."
+      },
+      {
+        "speaker": "person1",
+        "message": "Moje aussi. J'ai passé mon enfance à cheval."
+      }
+    ],
+    "conversation_summary": "A conversation about favorite animals and personal experiences with them."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment ça va ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Ça va bien, merci. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je vais bien aussi. J'ai fini de travailler sur mon projet."
+      }
+    ],
+    "conversation_summary": "A conversation asking how each person is doing and sharing updates on their projects."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Qu'est-ce que tu aimes faire en ta temps libre ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime lire des livres. J'ai lu le dernier roman de Stephen King."
+      },
+      {
+        "speaker": "person1",
+        "message": "J'adore aussi les livres. J'ai fini de lire un livre intéressant sur l'histoire de la France."
+      }
+    ],
+    "conversation_summary": "A conversation about hobbies and recent book reads."
+  }
 ]

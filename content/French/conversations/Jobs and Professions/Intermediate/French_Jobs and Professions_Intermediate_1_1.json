@@ -1,87 +1,87 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment vas-tu ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je vais bien, merci. Comment va ta famille ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Ils vont bien aussi. Et toi, qu'est-ce que tu fais dans la vie ?"
-            }
-        ],
-        "conversation_summary": "A conversation asking how someone is doing and what they do for a living."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton film préféré ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Mon film préféré est La Grande Illusion. L'histoire est très intéressante."
-            },
-            {
-                "speaker": "person1",
-                "message": "J'aime aussi ce film. Les acteurs sont très bons."
-            }
-        ],
-        "conversation_summary": "A conversation about each person's favorite movie and why they like it."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment t'appelles-tu ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je m'appelle Marie. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je m'appelle Jacques. Nice à rencontrer, Marie."
-            }
-        ],
-        "conversation_summary": "A conversation introducing oneself and greeting someone."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton livre préféré ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Mon livre préféré est Les Misérables. J'adore la trame historique."
-            },
-            {
-                "speaker": "person1",
-                "message": "J'ai lu ce livre. C'est très intéressant."
-            }
-        ],
-        "conversation_summary": "A conversation about each person's favorite book and the historical context of the story."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton pays préféré ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Mon pays préféré est l'Italie. J'adore la cuisine et l'architecture."
-            },
-            {
-                "speaker": "person1",
-                "message": "J'ai visité l'Italie il y a l'année. C'est un endroit magnifique."
-            }
-        ],
-        "conversation_summary": "A conversation about each person's favorite country and why they like it."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment vas-tu ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je vais bien, merci. Comment va ta famille ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Ils vont bien aussi. Et toi, qu'est-ce que tu fais dans la vie ?"
+      }
+    ],
+    "conversation_summary": "A conversation asking how someone is doing and what they do for a living."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton film préféré ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Mon film préféré est La Grande Illusion. L'histoire est très intéressante."
+      },
+      {
+        "speaker": "person1",
+        "message": "J'aime aussi ce film. Les acteurs sont très bons."
+      }
+    ],
+    "conversation_summary": "A conversation about each person's favorite movie and why they like it."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment t'appelles-tu ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je m'appelle Marie. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je m'appelle Jacques. Nice à rencontrer, Marie."
+      }
+    ],
+    "conversation_summary": "A conversation introducing oneself and greeting someone."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton livre préféré ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Mon livre préféré est Les Misérables. J'adore la trame historique."
+      },
+      {
+        "speaker": "person1",
+        "message": "J'ai lu ce livre. C'est très intéressant."
+      }
+    ],
+    "conversation_summary": "A conversation about each person's favorite book and the historical context of the story."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton pays préféré ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Mon pays préféré est l'Italie. J'adore la cuisine et l'architecture."
+      },
+      {
+        "speaker": "person1",
+        "message": "J'ai visité l'Italie il y a l'année. C'est un endroit magnifique."
+      }
+    ],
+    "conversation_summary": "A conversation about each person's favorite country and why they like it."
+  }
 ]

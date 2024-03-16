@@ -1,87 +1,87 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment allez-vous ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je vais bien, merci. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je vais bien aussi."
-            }
-        ],
-        "conversation_summary": "A conversation asking how the other person is doing."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton film préféré ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime bien regarder des films d'horreur. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je suis plus fan de comédies."
-            }
-        ],
-        "conversation_summary": "A conversation discussing favorite movies, with one person liking horror films and the other preferring comedies."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton livre préféré ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je suis plus fan de science-fiction."
-            }
-        ],
-        "conversation_summary": "A conversation discussing favorite books, with one person liking historical novels and the other preferring science fiction."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton sport préféré ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je suis plus fan de basket-ball."
-            }
-        ],
-        "conversation_summary": "A conversation discussing favorite sports, with one person liking soccer and the other preferring basketball."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment t'aimes-tu ton travail ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je suis plutôt content de mon travail aussi."
-            }
-        ],
-        "conversation_summary": "A conversation discussing work, with both people expressing enjoyment of their jobs."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment allez-vous ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je vais bien, merci. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je vais bien aussi."
+      }
+    ],
+    "conversation_summary": "A conversation asking how the other person is doing."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton film préféré ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime bien regarder des films d'horreur. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je suis plus fan de comédies."
+      }
+    ],
+    "conversation_summary": "A conversation discussing favorite movies, with one person liking horror films and the other preferring comedies."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton livre préféré ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je suis plus fan de science-fiction."
+      }
+    ],
+    "conversation_summary": "A conversation discussing favorite books, with one person liking historical novels and the other preferring science fiction."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton sport préféré ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je suis plus fan de basket-ball."
+      }
+    ],
+    "conversation_summary": "A conversation discussing favorite sports, with one person liking soccer and the other preferring basketball."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment t'aimes-tu ton travail ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je suis plutôt content de mon travail aussi."
+      }
+    ],
+    "conversation_summary": "A conversation discussing work, with both people expressing enjoyment of their jobs."
+  }
 ]

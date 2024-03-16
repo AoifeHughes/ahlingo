@@ -1,22 +1,22 @@
 [
-    {
-        "English": "red",
-        "Spanish": "rojo"
-    },
-    {
-        "English": "square",
-        "Spanish": "cuadrado"
-    },
-    {
-        "English": "green",
-        "Spanish": "verde"
-    },
-    {
-        "English": "circle",
-        "Spanish": "círculo"
-    },
-    {
-        "English": "triangle",
-        "Spanish": "triángulo"
-    }
+  {
+    "English": "red",
+    "Spanish": "rojo"
+  },
+  {
+    "English": "square",
+    "Spanish": "cuadrado"
+  },
+  {
+    "English": "green",
+    "Spanish": "verde"
+  },
+  {
+    "English": "circle",
+    "Spanish": "círculo"
+  },
+  {
+    "English": "triangle",
+    "Spanish": "triángulo"
+  }
 ]

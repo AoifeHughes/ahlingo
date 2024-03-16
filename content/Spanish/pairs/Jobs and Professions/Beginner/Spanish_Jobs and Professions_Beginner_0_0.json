@@ -1,34 +1,34 @@
 [
-    {
-        "English": "computer",
-        "French": "ordinateur"
-    },
-    {
-        "English": "pen",
-        "French": "stylo"
-    },
-    {
-        "English": "television",
-        "French": "télévision"
-    },
-    {
-        "English": "camera",
-        "French": "appareil photo"
-    },
-    {
-        "English": "music",
-        "French": "musique"
-    },
-    {
-        "English": "work",
-        "French": "travail"
-    },
-    {
-        "English": "job",
-        "French": "emploi"
-    },
-    {
-        "English": "profession",
-        "French": "métier"
-    }
+  {
+    "English": "computer",
+    "French": "ordinateur"
+  },
+  {
+    "English": "pen",
+    "French": "stylo"
+  },
+  {
+    "English": "television",
+    "French": "télévision"
+  },
+  {
+    "English": "camera",
+    "French": "appareil photo"
+  },
+  {
+    "English": "music",
+    "French": "musique"
+  },
+  {
+    "English": "work",
+    "French": "travail"
+  },
+  {
+    "English": "job",
+    "French": "emploi"
+  },
+  {
+    "English": "profession",
+    "French": "métier"
+  }
 ]

@@ -1,22 +1,22 @@
 [
-    {
-        "English": "What is your name?",
-        "French": "Comment t'appelles-tu ?"
-    },
-    {
-        "English": "I am from America.",
-        "French": "Je viens d'Amérique."
-    },
-    {
-        "English": "Do you like to go hiking?",
-        "French": "Aimes-tu faire du randonnée ?"
-    },
-    {
-        "English": "Can I borrow your pen?",
-        "French": "Puedes-tu me prêter ta plume ?"
-    },
-    {
-        "English": "I need to find the nearest hospital.",
-        "French": "J'ai besoin de trouver l'hôpital le plus proche."
-    }
+  {
+    "English": "What is your name?",
+    "French": "Comment t'appelles-tu ?"
+  },
+  {
+    "English": "I am from America.",
+    "French": "Je viens d'Amérique."
+  },
+  {
+    "English": "Do you like to go hiking?",
+    "French": "Aimes-tu faire du randonnée ?"
+  },
+  {
+    "English": "Can I borrow your pen?",
+    "French": "Puedes-tu me prêter ta plume ?"
+  },
+  {
+    "English": "I need to find the nearest hospital.",
+    "French": "J'ai besoin de trouver l'hôpital le plus proche."
+  }
 ]

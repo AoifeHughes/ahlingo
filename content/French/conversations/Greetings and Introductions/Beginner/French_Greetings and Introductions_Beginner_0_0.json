@@ -1,87 +1,87 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment t'appelles-tu ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je m'appelle Marie."
-            },
-            {
-                "speaker": "person1",
-                "message": "Pleased to meet you, Marie."
-            }
-        ],
-        "conversation_summary": "A conversation introducing oneself and greeting someone."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Salut ! Comment vas-tu ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je vais bien, merci. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je vais bien aussi."
-            }
-        ],
-        "conversation_summary": "A conversation greeting someone and asking how they are doing."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Bonjour, comment ça va ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Ça va bien, merci. Comment avec toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je vais bien aussi."
-            }
-        ],
-        "conversation_summary": "A conversation greeting someone in the morning and asking how they are doing."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "C'est avec plaisir que je te rencontre."
-            },
-            {
-                "speaker": "person2",
-                "message": "De même pour moi. Comment t'appelles-tu ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je m'appelle David."
-            }
-        ],
-        "conversation_summary": "A conversation greeting someone and introducing oneself."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Bonjour, comment va ta famille ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Ma famille est bien merci. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi aussi."
-            }
-        ],
-        "conversation_summary": "A conversation greeting someone and asking about their family."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment t'appelles-tu ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je m'appelle Marie."
+      },
+      {
+        "speaker": "person1",
+        "message": "Pleased to meet you, Marie."
+      }
+    ],
+    "conversation_summary": "A conversation introducing oneself and greeting someone."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Salut ! Comment vas-tu ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je vais bien, merci. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je vais bien aussi."
+      }
+    ],
+    "conversation_summary": "A conversation greeting someone and asking how they are doing."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Bonjour, comment ça va ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Ça va bien, merci. Comment avec toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je vais bien aussi."
+      }
+    ],
+    "conversation_summary": "A conversation greeting someone in the morning and asking how they are doing."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "C'est avec plaisir que je te rencontre."
+      },
+      {
+        "speaker": "person2",
+        "message": "De même pour moi. Comment t'appelles-tu ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je m'appelle David."
+      }
+    ],
+    "conversation_summary": "A conversation greeting someone and introducing oneself."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Bonjour, comment va ta famille ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Ma famille est bien merci. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi aussi."
+      }
+    ],
+    "conversation_summary": "A conversation greeting someone and asking about their family."
+  }
 ]

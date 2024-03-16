@@ -1,87 +1,87 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est le métier que tu aimerais avoir ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aimerais être avocat. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je voudrais être enseignant. C'est un métier très important."
-            }
-        ],
-        "conversation_summary": "A conversation discussing dream careers."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Tu as fait des vacances récentes ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Oui, j'ai été en Italie. J'adore la cuisine italienne."
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi aussi ! J'aime manger des pizzas et des pastas."
-            }
-        ],
-        "conversation_summary": "A conversation about recent vacations and enjoying Italian cuisine."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Tu préfères faire des courses en ligne ou dans un magasin ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime faire des courses en ligne. C'est plus confortable."
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi, j'aime aller dans les magasins. J'aime regarder tous les produits."
-            }
-        ],
-        "conversation_summary": "A conversation about preferences for online or in-store shopping."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est le sport que tu aimes faire ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime faire la course. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je suis fan de football. J'aime regarder les matchs à la télévision."
-            }
-        ],
-        "conversation_summary": "A conversation about favorite sports."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Tu as une famille nombreuse ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Oui, j'ai deux frères et une sœur. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "J'ai un frère et une sœur. Nous sommes très unis."
-            }
-        ],
-        "conversation_summary": "A conversation about family size."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est le métier que tu aimerais avoir ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aimerais être avocat. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je voudrais être enseignant. C'est un métier très important."
+      }
+    ],
+    "conversation_summary": "A conversation discussing dream careers."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Tu as fait des vacances récentes ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Oui, j'ai été en Italie. J'adore la cuisine italienne."
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi aussi ! J'aime manger des pizzas et des pastas."
+      }
+    ],
+    "conversation_summary": "A conversation about recent vacations and enjoying Italian cuisine."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Tu préfères faire des courses en ligne ou dans un magasin ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime faire des courses en ligne. C'est plus confortable."
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi, j'aime aller dans les magasins. J'aime regarder tous les produits."
+      }
+    ],
+    "conversation_summary": "A conversation about preferences for online or in-store shopping."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est le sport que tu aimes faire ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime faire la course. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je suis fan de football. J'aime regarder les matchs à la télévision."
+      }
+    ],
+    "conversation_summary": "A conversation about favorite sports."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Tu as une famille nombreuse ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Oui, j'ai deux frères et une sœur. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "J'ai un frère et une sœur. Nous sommes très unis."
+      }
+    ],
+    "conversation_summary": "A conversation about family size."
+  }
 ]

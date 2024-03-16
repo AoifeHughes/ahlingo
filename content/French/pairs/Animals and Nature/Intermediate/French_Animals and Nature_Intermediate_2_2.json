@@ -1,22 +1,22 @@
 [
-    {
-        "English": "cat",
-        "French": "chat"
-    },
-    {
-        "English": "flower",
-        "French": "fleur"
-    },
-    {
-        "English": "forest",
-        "French": "forêt"
-    },
-    {
-        "English": "sea",
-        "French": "mer"
-    },
-    {
-        "English": "bird",
-        "French": "oiseau"
-    }
+  {
+    "English": "cat",
+    "French": "chat"
+  },
+  {
+    "English": "flower",
+    "French": "fleur"
+  },
+  {
+    "English": "forest",
+    "French": "forêt"
+  },
+  {
+    "English": "sea",
+    "French": "mer"
+  },
+  {
+    "English": "bird",
+    "French": "oiseau"
+  }
 ]

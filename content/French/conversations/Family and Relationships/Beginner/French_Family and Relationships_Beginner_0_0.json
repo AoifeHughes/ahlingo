@@ -1,75 +1,75 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment ça va ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je vais bien, merci. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je vais bien aussi."
-            }
-        ],
-        "conversation_summary": "A conversation asking how each person is doing."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton parent préféré ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi, j'aime mieux ma mère. Elle est très chaleureuse."
-            }
-        ],
-        "conversation_summary": "A conversation discussing each person's favorite parent."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quelle est ton meilleure amie ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi, je préfère Marie. Elle a un excellent sens de l'humour."
-            }
-        ],
-        "conversation_summary": "A conversation discussing each person's best friend."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Où aimes-tu passer les vacances ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime passer les vacances à la plage. Le soleil et l'océan sont très agréables."
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi, j'aime prendre des vacances dans les montagnes. J'adore la neige et les sports d'hiver."
-            }
-        ],
-        "conversation_summary": "A conversation about favorite vacation destinations."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Est-ce que tu aimes les fêtes ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi, j'aime les fêtes de l'été comme le 14 juillet et le jour de l'indépendance."
-            }
-        ],
-        "conversation_summary": "A conversation about favorite holidays and gifts."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment ça va ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je vais bien, merci. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je vais bien aussi."
+      }
+    ],
+    "conversation_summary": "A conversation asking how each person is doing."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton parent préféré ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi, j'aime mieux ma mère. Elle est très chaleureuse."
+      }
+    ],
+    "conversation_summary": "A conversation discussing each person's favorite parent."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quelle est ton meilleure amie ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi, je préfère Marie. Elle a un excellent sens de l'humour."
+      }
+    ],
+    "conversation_summary": "A conversation discussing each person's best friend."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Où aimes-tu passer les vacances ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime passer les vacances à la plage. Le soleil et l'océan sont très agréables."
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi, j'aime prendre des vacances dans les montagnes. J'adore la neige et les sports d'hiver."
+      }
+    ],
+    "conversation_summary": "A conversation about favorite vacation destinations."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Est-ce que tu aimes les fêtes ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi, j'aime les fêtes de l'été comme le 14 juillet et le jour de l'indépendance."
+      }
+    ],
+    "conversation_summary": "A conversation about favorite holidays and gifts."
+  }
 ]

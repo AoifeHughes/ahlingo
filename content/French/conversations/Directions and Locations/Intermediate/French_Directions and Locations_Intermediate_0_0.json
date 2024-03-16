@@ -1,79 +1,79 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment va ta semaine ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Elle est bien, merci. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je vais bien aussi. J'ai fini mon travail hier."
-            }
-        ],
-        "conversation_summary": "A conversation about how each person's week is going."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Qu'est ce que tu fais ce week-end ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je vais à la plage. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "J'ai décidé de rester chez moi et de faire des courses."
-            }
-        ],
-        "conversation_summary": "A conversation about weekend plans."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Pourquoi tu es venu dans cette ville ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Ah, c'est très intéressant. Comment vas-tu t'y prendre pour trouver un logement ?"
-            }
-        ],
-        "conversation_summary": "A conversation about why someone moved to a city and how they are going to find a place to live."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton meilleur ami ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Mon meilleur ami est Marie. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "J'ai plusieurs amis, mais je suis très proche de Thomas."
-            }
-        ],
-        "conversation_summary": "A conversation about each person's best friend."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment t'appelles-tu ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "J'aime ce nom. Est-ce que tu as des frères et sœurs ?"
-            }
-        ],
-        "conversation_summary": "A conversation about someone's name and whether they have siblings or not."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment va ta semaine ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Elle est bien, merci. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je vais bien aussi. J'ai fini mon travail hier."
+      }
+    ],
+    "conversation_summary": "A conversation about how each person's week is going."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Qu'est ce que tu fais ce week-end ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je vais à la plage. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "J'ai décidé de rester chez moi et de faire des courses."
+      }
+    ],
+    "conversation_summary": "A conversation about weekend plans."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Pourquoi tu es venu dans cette ville ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Ah, c'est très intéressant. Comment vas-tu t'y prendre pour trouver un logement ?"
+      }
+    ],
+    "conversation_summary": "A conversation about why someone moved to a city and how they are going to find a place to live."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton meilleur ami ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Mon meilleur ami est Marie. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "J'ai plusieurs amis, mais je suis très proche de Thomas."
+      }
+    ],
+    "conversation_summary": "A conversation about each person's best friend."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment t'appelles-tu ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "J'aime ce nom. Est-ce que tu as des frères et sœurs ?"
+      }
+    ],
+    "conversation_summary": "A conversation about someone's name and whether they have siblings or not."
+  }
 ]

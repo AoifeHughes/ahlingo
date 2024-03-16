@@ -1,87 +1,87 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment va ta famille ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Elle va bien, merci. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi aussi, tout est bien."
-            }
-        ],
-        "conversation_summary": "A conversation asking about each person's family and how they are doing."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton métier ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'ai un emploi dans une entreprise de logistique."
-            },
-            {
-                "speaker": "person1",
-                "message": "Interessant. Comment te plaît-il travailler là-bas ?"
-            }
-        ],
-        "conversation_summary": "A conversation about each person's job and their experiences in it."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton objectif professionnel ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je voudrais avoir une promotion dans mon entreprise dans les deux ans."
-            },
-            {
-                "speaker": "person1",
-                "message": "C'est une excellente ambition. Penses-y bien !"
-            }
-        ],
-        "conversation_summary": "A conversation about each person's professional goals and aspirations."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Tu aimes faire des achats ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Oui, j'adore me promener dans les magasins."
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi aussi, mais je déteste quand ils sont trop pleins."
-            }
-        ],
-        "conversation_summary": "A conversation about enjoying shopping and disliking when stores are too crowded."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment gérerais-tu ton budget si tu gagnais plus d'argent ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je crois que je le donnerais à des œuvres caritatives."
-            },
-            {
-                "speaker": "person1",
-                "message": "C'est une excellente idée. Il y a tant de besoins dans le monde."
-            }
-        ],
-        "conversation_summary": "A conversation about how each person would manage their budget if they made more money, and the importance of giving to charity."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment va ta famille ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Elle va bien, merci. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi aussi, tout est bien."
+      }
+    ],
+    "conversation_summary": "A conversation asking about each person's family and how they are doing."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton métier ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'ai un emploi dans une entreprise de logistique."
+      },
+      {
+        "speaker": "person1",
+        "message": "Interessant. Comment te plaît-il travailler là-bas ?"
+      }
+    ],
+    "conversation_summary": "A conversation about each person's job and their experiences in it."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton objectif professionnel ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je voudrais avoir une promotion dans mon entreprise dans les deux ans."
+      },
+      {
+        "speaker": "person1",
+        "message": "C'est une excellente ambition. Penses-y bien !"
+      }
+    ],
+    "conversation_summary": "A conversation about each person's professional goals and aspirations."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Tu aimes faire des achats ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Oui, j'adore me promener dans les magasins."
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi aussi, mais je déteste quand ils sont trop pleins."
+      }
+    ],
+    "conversation_summary": "A conversation about enjoying shopping and disliking when stores are too crowded."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment gérerais-tu ton budget si tu gagnais plus d'argent ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je crois que je le donnerais à des œuvres caritatives."
+      },
+      {
+        "speaker": "person1",
+        "message": "C'est une excellente idée. Il y a tant de besoins dans le monde."
+      }
+    ],
+    "conversation_summary": "A conversation about how each person would manage their budget if they made more money, and the importance of giving to charity."
+  }
 ]

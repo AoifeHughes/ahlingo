@@ -1,38 +1,38 @@
 [
-    {
-        "English": "red",
-        "French": "rouge"
-    },
-    {
-        "English": "yellow",
-        "French": "jaune"
-    },
-    {
-        "English": "green",
-        "French": "vert"
-    },
-    {
-        "English": "blue",
-        "French": "bleu"
-    },
-    {
-        "English": "purple",
-        "French": "violet"
-    },
-    {
-        "English": "square",
-        "French": "carré"
-    },
-    {
-        "English": "circle",
-        "French": "cercle"
-    },
-    {
-        "English": "triangle",
-        "French": "triangle"
-    },
-    {
-        "English": "rectangle",
-        "French": "rectangle"
-    }
+  {
+    "English": "red",
+    "French": "rouge"
+  },
+  {
+    "English": "yellow",
+    "French": "jaune"
+  },
+  {
+    "English": "green",
+    "French": "vert"
+  },
+  {
+    "English": "blue",
+    "French": "bleu"
+  },
+  {
+    "English": "purple",
+    "French": "violet"
+  },
+  {
+    "English": "square",
+    "French": "carré"
+  },
+  {
+    "English": "circle",
+    "French": "cercle"
+  },
+  {
+    "English": "triangle",
+    "French": "triangle"
+  },
+  {
+    "English": "rectangle",
+    "French": "rectangle"
+  }
 ]

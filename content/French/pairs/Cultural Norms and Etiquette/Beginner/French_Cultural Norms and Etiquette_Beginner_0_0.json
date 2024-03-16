@@ -1,22 +1,22 @@
 [
-    {
-        "English": "chair",
-        "French": "chaise"
-    },
-    {
-        "English": "computer",
-        "French": "ordinateur"
-    },
-    {
-        "English": "food",
-        "French": "alimentation"
-    },
-    {
-        "English": "music",
-        "French": "musique"
-    },
-    {
-        "English": "shoes",
-        "French": "chaussures"
-    }
+  {
+    "English": "chair",
+    "French": "chaise"
+  },
+  {
+    "English": "computer",
+    "French": "ordinateur"
+  },
+  {
+    "English": "food",
+    "French": "alimentation"
+  },
+  {
+    "English": "music",
+    "French": "musique"
+  },
+  {
+    "English": "shoes",
+    "French": "chaussures"
+  }
 ]

@@ -1,26 +1,26 @@
 [
-    {
-        "English": "computer",
-        "French": "ordinateur"
-    },
-    {
-        "English": "music",
-        "French": "musique"
-    },
-    {
-        "English": "movie",
-        "French": "film"
-    },
-    {
-        "English": "party",
-        "French": "fête"
-    },
-    {
-        "English": "sports",
-        "French": "sport"
-    },
-    {
-        "English": "vacation",
-        "French": "vacances"
-    }
+  {
+    "English": "computer",
+    "French": "ordinateur"
+  },
+  {
+    "English": "music",
+    "French": "musique"
+  },
+  {
+    "English": "movie",
+    "French": "film"
+  },
+  {
+    "English": "party",
+    "French": "fête"
+  },
+  {
+    "English": "sports",
+    "French": "sport"
+  },
+  {
+    "English": "vacation",
+    "French": "vacances"
+  }
 ]

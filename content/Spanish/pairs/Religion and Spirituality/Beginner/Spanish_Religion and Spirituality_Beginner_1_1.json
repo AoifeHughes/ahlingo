@@ -1,38 +1,38 @@
 [
-    {
-        "English": "chair",
-        "French": "chaise"
-    },
-    {
-        "English": "computer",
-        "French": "ordinateur"
-    },
-    {
-        "English": "desk",
-        "French": "bureau"
-    },
-    {
-        "English": "keyboard",
-        "French": "clavier"
-    },
-    {
-        "English": "television",
-        "French": "télévision"
-    },
-    {
-        "English": "pencil",
-        "French": "crayon"
-    },
-    {
-        "English": "notebook",
-        "French": "carnet de notes"
-    },
-    {
-        "English": "pen",
-        "French": "stylo"
-    },
-    {
-        "English": "window",
-        "French": "fenêtre"
-    }
+  {
+    "English": "chair",
+    "French": "chaise"
+  },
+  {
+    "English": "computer",
+    "French": "ordinateur"
+  },
+  {
+    "English": "desk",
+    "French": "bureau"
+  },
+  {
+    "English": "keyboard",
+    "French": "clavier"
+  },
+  {
+    "English": "television",
+    "French": "télévision"
+  },
+  {
+    "English": "pencil",
+    "French": "crayon"
+  },
+  {
+    "English": "notebook",
+    "French": "carnet de notes"
+  },
+  {
+    "English": "pen",
+    "French": "stylo"
+  },
+  {
+    "English": "window",
+    "French": "fenêtre"
+  }
 ]

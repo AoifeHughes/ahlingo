@@ -1,26 +1,26 @@
 [
-    {
-        "English": "left",
-        "French": "gauche"
-    },
-    {
-        "English": "right",
-        "French": "droite"
-    },
-    {
-        "English": "forward",
-        "French": "en avant"
-    },
-    {
-        "English": "backward",
-        "French": "en arrière"
-    },
-    {
-        "English": "up",
-        "French": "haut"
-    },
-    {
-        "English": "down",
-        "French": "bas"
-    }
+  {
+    "English": "left",
+    "French": "gauche"
+  },
+  {
+    "English": "right",
+    "French": "droite"
+  },
+  {
+    "English": "forward",
+    "French": "en avant"
+  },
+  {
+    "English": "backward",
+    "French": "en arrière"
+  },
+  {
+    "English": "up",
+    "French": "haut"
+  },
+  {
+    "English": "down",
+    "French": "bas"
+  }
 ]

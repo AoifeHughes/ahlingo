@@ -1,38 +1,38 @@
 [
-    {
-        "English": "eye",
-        "French": "oeil"
-    },
-    {
-        "English": "ear",
-        "French": "oreille"
-    },
-    {
-        "English": "nose",
-        "French": "nez"
-    },
-    {
-        "English": "mouth",
-        "French": "bouche"
-    },
-    {
-        "English": "hand",
-        "French": "main"
-    },
-    {
-        "English": "foot",
-        "French": "pied"
-    },
-    {
-        "English": "head",
-        "French": "tête"
-    },
-    {
-        "English": "shoulder",
-        "French": "épaule"
-    },
-    {
-        "English": "back",
-        "French": "dos"
-    }
+  {
+    "English": "eye",
+    "French": "oeil"
+  },
+  {
+    "English": "ear",
+    "French": "oreille"
+  },
+  {
+    "English": "nose",
+    "French": "nez"
+  },
+  {
+    "English": "mouth",
+    "French": "bouche"
+  },
+  {
+    "English": "hand",
+    "French": "main"
+  },
+  {
+    "English": "foot",
+    "French": "pied"
+  },
+  {
+    "English": "head",
+    "French": "tête"
+  },
+  {
+    "English": "shoulder",
+    "French": "épaule"
+  },
+  {
+    "English": "back",
+    "French": "dos"
+  }
 ]

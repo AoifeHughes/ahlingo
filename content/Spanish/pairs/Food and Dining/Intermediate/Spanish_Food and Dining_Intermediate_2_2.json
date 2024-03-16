@@ -1,22 +1,22 @@
 [
-    {
-        "English": "pizza",
-        "Spanish": "pizza"
-    },
-    {
-        "English": "hamburger",
-        "Spanish": "hamburguesa"
-    },
-    {
-        "English": "hotdog",
-        "Spanish": "perro caliente"
-    },
-    {
-        "English": "sandwich",
-        "Spanish": "sándwich"
-    },
-    {
-        "English": "salad",
-        "Spanish": "ensalada"
-    }
+  {
+    "English": "pizza",
+    "Spanish": "pizza"
+  },
+  {
+    "English": "hamburger",
+    "Spanish": "hamburguesa"
+  },
+  {
+    "English": "hotdog",
+    "Spanish": "perro caliente"
+  },
+  {
+    "English": "sandwich",
+    "Spanish": "sándwich"
+  },
+  {
+    "English": "salad",
+    "Spanish": "ensalada"
+  }
 ]

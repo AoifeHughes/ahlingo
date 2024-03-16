@@ -1,22 +1,22 @@
 [
-    {
-        "English": "What time is it?",
-        "French": "Quelle heure est-il ?"
-    },
-    {
-        "English": "How many people are in this room?",
-        "French": "Combien de personnes sont dans cette chambre ?"
-    },
-    {
-        "English": "I have to work tomorrow.",
-        "French": "J'ai travaillé demain."
-    },
-    {
-        "English": "The train leaves at 10:30 AM.",
-        "French": "Le train part à 10 h 30."
-    },
-    {
-        "English": "We will go to the movies tonight.",
-        "French": "Nous allons au cinéma ce soir."
-    }
+  {
+    "English": "What time is it?",
+    "French": "Quelle heure est-il ?"
+  },
+  {
+    "English": "How many people are in this room?",
+    "French": "Combien de personnes sont dans cette chambre ?"
+  },
+  {
+    "English": "I have to work tomorrow.",
+    "French": "J'ai travaillé demain."
+  },
+  {
+    "English": "The train leaves at 10:30 AM.",
+    "French": "Le train part à 10 h 30."
+  },
+  {
+    "English": "We will go to the movies tonight.",
+    "French": "Nous allons au cinéma ce soir."
+  }
 ]

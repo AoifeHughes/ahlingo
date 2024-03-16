@@ -1,22 +1,22 @@
 [
-    {
-        "English": "politics",
-        "French": "politique"
-    },
-    {
-        "English": "democracy",
-        "French": "démocratie"
-    },
-    {
-        "English": "republic",
-        "French": "république"
-    },
-    {
-        "English": "constitution",
-        "French": "constitution"
-    },
-    {
-        "English": "election",
-        "French": "élection"
-    }
+  {
+    "English": "politics",
+    "French": "politique"
+  },
+  {
+    "English": "democracy",
+    "French": "démocratie"
+  },
+  {
+    "English": "republic",
+    "French": "république"
+  },
+  {
+    "English": "constitution",
+    "French": "constitution"
+  },
+  {
+    "English": "election",
+    "French": "élection"
+  }
 ]

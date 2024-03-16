@@ -1,22 +1,22 @@
 [
-    {
-        "English": "city",
-        "French": "ville"
-    },
-    {
-        "English": "hotel",
-        "French": "hôtel"
-    },
-    {
-        "English": "airplane",
-        "French": "avion"
-    },
-    {
-        "English": "train",
-        "French": "train"
-    },
-    {
-        "English": "boat",
-        "French": "bateau"
-    }
+  {
+    "English": "city",
+    "French": "ville"
+  },
+  {
+    "English": "hotel",
+    "French": "hôtel"
+  },
+  {
+    "English": "airplane",
+    "French": "avion"
+  },
+  {
+    "English": "train",
+    "French": "train"
+  },
+  {
+    "English": "boat",
+    "French": "bateau"
+  }
 ]

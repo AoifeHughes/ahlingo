@@ -1,22 +1,22 @@
 [
-    {
-        "English": "breakfast",
-        "French": "petit déjeuner"
-    },
-    {
-        "English": "soccer",
-        "French": "football"
-    },
-    {
-        "English": "music",
-        "French": "musique"
-    },
-    {
-        "English": "computer",
-        "French": "ordinateur"
-    },
-    {
-        "English": "gardening",
-        "French": "jardinage"
-    }
+  {
+    "English": "breakfast",
+    "French": "petit déjeuner"
+  },
+  {
+    "English": "soccer",
+    "French": "football"
+  },
+  {
+    "English": "music",
+    "French": "musique"
+  },
+  {
+    "English": "computer",
+    "French": "ordinateur"
+  },
+  {
+    "English": "gardening",
+    "French": "jardinage"
+  }
 ]

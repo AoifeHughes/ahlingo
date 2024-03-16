@@ -1,34 +1,34 @@
 [
-    {
-        "English": "bread",
-        "Spanish": "pan"
-    },
-    {
-        "English": "penalty",
-        "Spanish": "sanción"
-    },
-    {
-        "English": "contract",
-        "Spanish": "contrato"
-    },
-    {
-        "English": "court",
-        "Spanish": "tribunal"
-    },
-    {
-        "English": "evidence",
-        "Spanish": "evidencia"
-    },
-    {
-        "English": "lawyer",
-        "Spanish": "abogado"
-    },
-    {
-        "English": "trial",
-        "Spanish": "juicio"
-    },
-    {
-        "English": "verdict",
-        "Spanish": "sentencia"
-    }
+  {
+    "English": "bread",
+    "Spanish": "pan"
+  },
+  {
+    "English": "penalty",
+    "Spanish": "sanción"
+  },
+  {
+    "English": "contract",
+    "Spanish": "contrato"
+  },
+  {
+    "English": "court",
+    "Spanish": "tribunal"
+  },
+  {
+    "English": "evidence",
+    "Spanish": "evidencia"
+  },
+  {
+    "English": "lawyer",
+    "Spanish": "abogado"
+  },
+  {
+    "English": "trial",
+    "Spanish": "juicio"
+  },
+  {
+    "English": "verdict",
+    "Spanish": "sentencia"
+  }
 ]

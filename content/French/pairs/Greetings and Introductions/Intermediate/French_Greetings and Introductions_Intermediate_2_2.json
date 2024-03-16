@@ -1,22 +1,22 @@
 [
-    {
-        "English": "hello",
-        "French": "bonjour"
-    },
-    {
-        "English": "goodbye",
-        "French": "au revoir"
-    },
-    {
-        "English": "please",
-        "French": "s'il vous plaît"
-    },
-    {
-        "English": "thank you",
-        "French": "merci"
-    },
-    {
-        "English": "excuse me",
-        "French": "pardonnez-moi"
-    }
+  {
+    "English": "hello",
+    "French": "bonjour"
+  },
+  {
+    "English": "goodbye",
+    "French": "au revoir"
+  },
+  {
+    "English": "please",
+    "French": "s'il vous plaît"
+  },
+  {
+    "English": "thank you",
+    "French": "merci"
+  },
+  {
+    "English": "excuse me",
+    "French": "pardonnez-moi"
+  }
 ]

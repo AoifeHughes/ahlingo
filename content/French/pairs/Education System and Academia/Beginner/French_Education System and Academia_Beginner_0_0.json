@@ -1,22 +1,22 @@
 [
-    {
-        "English": "pencil",
-        "French": "stylo"
-    },
-    {
-        "English": "notebook",
-        "French": "cahier"
-    },
-    {
-        "English": "chair",
-        "French": "chaise"
-    },
-    {
-        "English": "table",
-        "French": "table"
-    },
-    {
-        "English": "computer",
-        "French": "ordinateur"
-    }
+  {
+    "English": "pencil",
+    "French": "stylo"
+  },
+  {
+    "English": "notebook",
+    "French": "cahier"
+  },
+  {
+    "English": "chair",
+    "French": "chaise"
+  },
+  {
+    "English": "table",
+    "French": "table"
+  },
+  {
+    "English": "computer",
+    "French": "ordinateur"
+  }
 ]

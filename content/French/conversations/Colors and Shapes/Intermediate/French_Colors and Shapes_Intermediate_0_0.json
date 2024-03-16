@@ -1,36 +1,36 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton fruit préféré ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime les bananes. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je suis un fan des pommes."
-            }
-        ],
-        "conversation_summary": "A conversation discussing each person's favorite fruit."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Tu aimes la musique ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Oui, j'adore la musique classique."
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi aussi. J'aime particulièrement Mozart."
-            }
-        ],
-        "conversation_summary": "A conversation about enjoying music, particularly classical music."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton fruit préféré ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime les bananes. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je suis un fan des pommes."
+      }
+    ],
+    "conversation_summary": "A conversation discussing each person's favorite fruit."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Tu aimes la musique ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Oui, j'adore la musique classique."
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi aussi. J'aime particulièrement Mozart."
+      }
+    ],
+    "conversation_summary": "A conversation about enjoying music, particularly classical music."
+  }
 ]
