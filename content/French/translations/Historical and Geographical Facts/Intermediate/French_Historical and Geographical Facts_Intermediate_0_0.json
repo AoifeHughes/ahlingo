@@ -1,0 +1,22 @@
+[
+    {
+        "English": "What is your name?",
+        "French": "Comment t'appelles-tu ?"
+    },
+    {
+        "English": "Where are you from?",
+        "French": "D'où viens-tu ?"
+    },
+    {
+        "English": "What do you like to do in your free time?",
+        "French": "Qu'aimes-tu faire dans ton temps libre ?"
+    },
+    {
+        "English": "Do you speak any other languages?",
+        "French": "Parles-tu d'autres langues ?"
+    },
+    {
+        "English": "What is the capital of France?",
+        "French": "Quelle est la capitale de la France ?"
+    }
+]

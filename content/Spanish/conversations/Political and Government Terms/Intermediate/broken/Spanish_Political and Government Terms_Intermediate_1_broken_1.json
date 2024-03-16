@@ -1,0 +1,78 @@
+[
+{"conversation": [{"speaker": "person1", "message": "¿Qué significa el término 'derechos humanos' ?"}, {"speaker": "person2", "message": "Los derechos humanos son un conjunto de principios que buscan proteger y garantizar la dignidad e integridad humana."}, {"speaker": "person1", "message": "¿Qué tipo de derechos protege a los trabajadores ?"}, {"speaker": "person2", "message": "Los trabajadores tienen derechos como el salario mínimo, las vacaciones pagas y la seguridad laboral."}, {"speaker": "person1", "message": "¿Cuál es la función del Congreso en una democracia ?"}, {"speaker": "person2", "message": "El Congreso es el órgano legislativo de un gobierno democrático. Es responsable de hacer las leyes y supervisar el trabajo del Ejecutivo."}, {"speaker": "person1", "message": "¿Qué diferencia hay entre una monarquía y una república ?"}, {"speaker": "person2", "message": "En una monarquía, el gobierno está encabezado por un monarca o rey/reina. En una república, el gobierno está encabezado por un presidente o primer ministro."}], "conversation_summary": "A conversation discussing various political and government terms in Spanish."},
+{"conversation": [{"speaker": "person1", "message": "¿Cuál es la diferencia entre el socialismo y el capitalismo ?"}, {"speaker": "person2", "message": "El socialismo busca la igualdad y la cooperación en la distribución de los recursos, mientras que el capitalismo busca la libertad y la competencia para distribuir los recursos."}, {"speaker": "person1", "message": "¿Qué tipo de gobierno tiene México ?"}, {"speaker": "person2", "message": "Mexico tiene un sistema de democracia representativa, donde el presidente es both head of state and government."}], "conversation_summary": "A conversation discussing the differences between socialism and capitalism, as well as Mexico's form of government."},
+{"conversation": [{"speaker": "person1", "message": "¿Qué es un referéndum ?"}, {"speaker": "person2", "message": "Un referéndum es una votación en la que los ciudadanos deciden sobre una proposición o ley importante."}, {"speaker": "person1", "message": "¿Ha sido alguna vez a un referéndum ?"}, {"speaker": "person2", "message": "Yo he ido a varios. Los últimos fueron para elegir un nuevo estadio de fútbol y para aprobar una ley sobre el cambio climático."}], "conversation_summary": "A conversation discussing the definition and importance of referendums in a democratic society."},
+{"conversation": [{"speaker": "person1", "message": "¿Qué es el Derecho Humanitario Internacional?"}, {"speaker": "person2", "message": "El Derecho Humanitario Internacional es un conjunto de normas legales que buscan proteger los derechos humanos y garantizar la dignidad e integridad humana en situaciones de conflicto armado."}, {"speaker": "person1", "message": "¿Cuál es la función del Tribunal Penal Internacional?"}, {"speaker": "person2", "message": "El Tribunal Penal Internacional tiene como función principal juzgar los crímenes de guerra, crímenes contra la humanidad y crímenes de genocidio."}], "conversation_summary": "A conversation discussing the definition and importance of international humanitarian law and the International Criminal Court."}};
+
+// Define function to display conversation in UI
+function displayConversation(conversation) {
+  var html = '';
+  // Display conversation information
+  html += '<p>Conversation: ' + conversation.conversation_summary + '</p>';
+  // Display each message in the conversation
+  for (var i = 0; i < conversation.messages.length; i++) {
+    var message = conversation.messages[i];
+    html += '<p>' + message.speaker + ':' + message.message + '</p>';
+  }
+  // Display speaker information
+  html += '<p>Speakers: ' + conversation.speakers + '</p>';
+  
+  // Display UI element with conversation information and messages
+  document.getElementById('conversation_info').innerHTML = html;
+}
+
+// Define function to get random conversation from conversations object
+function getRandomConversation(conversations) {
+  var randomIndex = Math.floor(Math.random() * conversations.length);
+  return conversations[randomIndex];
+}
+
+// Display UI element with list of conversations
+document.getElementById('conversations_list').innerHTML = '';
+for (var i = 0; i < conversations.length; i++) {
+  var conversation = conversations[i];
+  var listItem = '<li><a href="#" onclick="displayConversation(conversation)">' + conversation.title</a></li>';
+  document.getElementById('conversations_list').innerHTML = listItem;
+}
+
+// Define function to display UI when user clicks on a link
+function displayConversation() {
+  var link = document.createElement("a");
+  link.setAttribute(link, "external css text", link);
+  link.coola = true;
+  link.innerHTMLhtml = '<font size="32" face="Verdana, Arial" > displayConversation: ' + link.getContent() + ' text/convo';
+}
+
+// Define function to initiate conversation between two speakers
+function converse(speaker1, speaker2) {
+  document.getElementById('speaker1').innerHTML = '';
+  document.getElementById('microphone').innerHTML = '<audio controls> ';
+  document.getElementById('mute').style.display = 'none';
+  document.getElementById('video_stream').style.display = 'block';
+  if (speaker1 == null) {
+    speaker2 = '';
+  } else {
+    speaker2 = speaker1;
+  }
+  var conversation = {
+    speakers: [speaker1, speaker2],
+    messages: [],
+    title: '',
+    isStream: false,
+    isPaused: false,
+    isPrivate: false,
+    allowedTagCalls: true,
+    titleChars: [''', '🗣️', '🎙', '📢', '📣', '🔥']
+  };
+  var stream = {
+    type: 'text',
+    id: 'conversation-' + (Math.random() * 1000000).toString(),
+    data: [],
+    info: {
+      'is': false,
+      'video': false
+    }
+  };
+  if (!stream.idiom) stream.idiom = 'data:image/png;base64,' + (Math.random() * 35971).toString(stream.set);
+  document.getElementById('chat').innerHTMLHtml = '<imated of the chat participants' messages';
+}

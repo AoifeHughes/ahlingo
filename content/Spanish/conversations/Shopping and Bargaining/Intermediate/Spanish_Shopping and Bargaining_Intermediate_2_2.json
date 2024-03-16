@@ -1,0 +1,87 @@
+[
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "¿Qué te gusta más de la comida china ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "Me gusta la pizza. ¿Y tú?"
+            },
+            {
+                "speaker": "person1",
+                "message": "A mí me encanta el arroz con pollo."
+            }
+        ],
+        "conversation_summary": "A conversation about Chinese food preferences."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "¿Has visto la última película de Marvel ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "No, pero he oído hablar mucho de ella. ¿Qué te parece ?"
+            },
+            {
+                "speaker": "person1",
+                "message": "Mi opinón es que es genial, el personaje de Iron Man es muy gracioso."
+            }
+        ],
+        "conversation_summary": "A conversation about a recent Marvel movie."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "¿Te gusta la lectura ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "Sí, me encanta leer. ¿Cuál es tu libro preferido ?"
+            },
+            {
+                "speaker": "person1",
+                "message": "Mi libro preferido es 'El Principito'. ¿Y tú ?"
+            }
+        ],
+        "conversation_summary": "A conversation about reading and favorite books."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "¿Has ido al gimnasio recientemente ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "Sí, he estado yendo dos veces a la semana. ¿Y tú ?"
+            },
+            {
+                "speaker": "person1",
+                "message": "No, no he tenido tiempo. Pero pienso empezar pronto."
+            }
+        ],
+        "conversation_summary": "A conversation about going to the gym."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "¿Qué te parece la música de Bruno Mars ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "Me encanta. ¿Vas a su concierto este verano ?"
+            },
+            {
+                "speaker": "person1",
+                "message": "Sí, estoy muy emocionado. ¿Y tú ?"
+            }
+        ],
+        "conversation_summary": "A conversation about the music of Bruno Mars and attending his concert."
+    }
+]
