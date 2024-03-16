@@ -163,15 +163,12 @@ class LanguageDB {
             if (err) return callback(err);
 
             const queryInsertExercise = `INSERT INTO exercises_info (exercise_name, language_id, topic_id, difficulty_id) VALUES (?, ?, ?, ?)`;
-            // Here we are inside the serialize() call, and 'this' refers correctly to the LanguageDB instance,
-            // but 'db' is used to ensure it's the same reference inside callbacks.
             db.run(
               queryInsertExercise,
               [exerciseName, languageId, topicId, difficultyId],
               function (err) {
                 if (err) return callback(err);
-                // The context here ('this') refers to the callback function's scope, not LanguageDB,
-                // but we don't need 'this' here anymore since we're using 'db'.
+
                 const exerciseId = this.lastID;
 
                 const insertConversationQuery = `INSERT INTO conversation_exercises (exercise_id, conversation_order, speaker, message) VALUES (?, ?, ?, ?)`;
@@ -182,14 +179,12 @@ class LanguageDB {
                     [exerciseId, index, conv.speaker, conv.message],
                     (err) => {
                       if (err) return callback(err);
-                      // Callback after the last conversation is inserted to ensure all operations are complete
                       if (index === conversations.length - 1) {
                         const insertSummaryQuery = `INSERT INTO conversation_summaries (exercise_id, summary) VALUES (?, ?)`;
                         db.run(
                           insertSummaryQuery,
                           [exerciseId, summary],
                           (err) => {
-                            // Only callback with the exercise ID after all inserts are done
                             callback(err, exerciseId);
                           }
                         );
@@ -238,48 +233,63 @@ class LanguageDB {
     language2Content,
     callback
   ) {
-    const db = this.db; // Capture a reference to the db property of LanguageDB instance
-    // log all the params
+    const db = this.db;
     console.log(
       `Adding pair exercise: ${exerciseName}, ${language}, ${topic}, ${difficultyLevel}, ${language1}, ${language2}, ${language1Content}, ${language2Content}`
     );
-    db.serialize(() => {
-      this._getOrCreateLanguage(language, (err, languageId) => {
-        if (err) return callback(err);
-        this._getOrCreateTopic(topic, (err, topicId) => {
-          if (err) return callback(err);
-          this._getOrCreateDifficulty(difficultyLevel, (err, difficultyId) => {
+  
+    // Check if the pair exercise already exists
+    const checkQuery = `SELECT COUNT(*) AS count FROM pair_exercises WHERE language_1_content = ? AND language_2_content = ?`;
+    db.get(checkQuery, [language1Content, language2Content], (err, row) => {
+      if (err) {
+        return callback(err);
+      } else if (row.count > 0) {
+        // Exercise already exists, so skip adding it
+        return callback(null, "Exercise already exists.");
+      } else {
+        // Proceed to add the exercise as it's unique
+        db.serialize(() => {
+          this._getOrCreateLanguage(language, (err, languageId) => {
             if (err) return callback(err);
-
-            const queryInsertExercise = `INSERT INTO exercises_info (exercise_name, language_id, topic_id, difficulty_id) VALUES (?, ?, ?, ?)`;
-            db.run(
-              queryInsertExercise,
-              [exerciseName, languageId, topicId, difficultyId],
-              function (err) {
+            this._getOrCreateTopic(topic, (err, topicId) => {
+              if (err) return callback(err);
+              this._getOrCreateDifficulty(difficultyLevel, (err, difficultyId) => {
                 if (err) return callback(err);
-                const exerciseId = this.lastID;
-
-                const insertPairQuery = `INSERT INTO pair_exercises (exercise_id, language_1, language_2, language_1_content, language_2_content) VALUES (?, ?, ?, ?, ?)`;
+  
+                const queryInsertExercise = `INSERT INTO exercises_info (exercise_name, language_id, topic_id, difficulty_id) VALUES (?, ?, ?, ?)`;
                 db.run(
-                  insertPairQuery,
-                  [
-                    exerciseId,
-                    language1,
-                    language2,
-                    language1Content,
-                    language2Content,
-                  ],
-                  (err) => {
-                    callback(err, exerciseId);
+                  queryInsertExercise,
+                  [exerciseName, languageId, topicId, difficultyId],
+                  function (err) {
+                    if (err) return callback(err);
+                    const exerciseId = this.lastID;
+  
+                    const insertPairQuery = `INSERT INTO pair_exercises (exercise_id, language_1, language_2, language_1_content, language_2_content) SELECT ?, ?, ?, ?, ? WHERE NOT EXISTS (SELECT 1 FROM pair_exercises WHERE language_1_content = ? AND language_2_content = ?)`;
+                    db.run(
+                      insertPairQuery,
+                      [
+                        exerciseId,
+                        language1,
+                        language2,
+                        language1Content,
+                        language2Content,
+                        language1Content,
+                        language2Content
+                      ],
+                      (err) => {
+                        callback(err, exerciseId);
+                      }
+                    );
                   }
                 );
-              }
-            );
+              });
+            });
           });
         });
-      });
+      }
     });
   }
+  
 
   addPairExerciseFromJSON(
     exerciseName,
@@ -436,11 +446,12 @@ class LanguageDB {
   }
 
   getRandomPairExercise(language, difficulty, topic, callback) {
-    const query = `SELECT exercise_name, language_1, language_2, language_1_content, language_2_content FROM exercises_info INNER JOIN pair_exercises ON exercises_info.id = pair_exercises.exercise_id WHERE language_1 = ? AND language_2 = ? AND topic_id IN (SELECT id FROM topics WHERE topic = ?) AND difficulty_id IN (SELECT id FROM difficulties WHERE difficulty_level = ?) ORDER BY RANDOM() LIMIT 1`;
-    this.db.get(query, ["English", language, topic, difficulty], (err, row) => {
-      callback(err, row);
+    const query = `SELECT exercise_name, language_1, language_2, language_1_content, language_2_content FROM exercises_info INNER JOIN pair_exercises ON exercises_info.id = pair_exercises.exercise_id WHERE language_1 = ? AND language_2 = ? AND topic_id IN (SELECT id FROM topics WHERE topic = ?) AND difficulty_id IN (SELECT id FROM difficulties WHERE difficulty_level = ?) ORDER BY RANDOM() LIMIT 10`;
+    this.db.all(query, ["English", language, topic, difficulty], (err, rows) => {
+      callback(err, rows);
     });
-  }
+}
+
 
   close() {
     this.db.close((err) => {
