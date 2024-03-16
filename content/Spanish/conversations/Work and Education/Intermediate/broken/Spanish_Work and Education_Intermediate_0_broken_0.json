@@ -1,0 +1,26 @@
+[
+{"conversation": [{"speaker": "person1", "message": "¿Qué te gusta más de la escuela ?", "person2": "A mí me gusta ir al laboratorio de ciencias."}, {"speaker": "person1", "message": "Yo también me gusta la clase de lengua porque nos permiten hablar sobre cualquier tema.", "person2": "Sí, y también la clase de matemáticas porque me gusta resolver problemas."}], "conversation_summary": "A conversation about what each person enjoys most in school: the science lab and language class."},
+{"conversation": [{"speaker": "person1", "message": "¿Qué te gustaría hacer en tu próxima vacanza ?", "person2": "Me gustaría viajar a un país desconocido y aprender sobre su cultura."}, {"speaker": "person1", "message": "Yo también me encantaría conocer un nuevo idioma, ¿qué tal si aprendemos juntos ?", "person2": "¡Eso sería genial!"}], "conversation_summary": "A conversation about what each person would like to do on their next vacation: travel to a new country and learn about its culture, and learn a new language together."},
+{"conversation": [{"speaker": "person1", "message": "¿Cuál es tu trabajo preferido ?", "person2": "Mi trabajo preferido es el periodismo porque me gusta informar sobre sucesos interesantes y conocer nuevas personas."}, {"speaker": "person1", "message": "Yo trabajo en una empresa de tecnología, pero a veces me gustaría hacer algo más creativo como la escritura.", "person2": "Sí, la escritura es muy emocionante. ¿Has escrito algún libro ?"}], "conversation_summary": "A conversation about each person's preferred job: journalism and creative writing."},
+{"conversation": [{"speaker": "person1", "message": "¿Cuál es tu objetivo profesional para el futuro ?", "person2": "Mi objetivo es convertirme en un experto en marketing y tener mi propia empresa de marketing."}, {"speaker": "person1", "message": "Yo quisiera avanzar en mi carrera y obtener una promoción a gerente de proyecto.", "person2": "¡Eso suena muy ambicioso! ¡Te deseo lo mejor!"}], "conversation_summary": "A conversation about each person's professional goals for the future: becoming an expert in marketing and starting their own company, and advancing in their career to become a project manager."},
+{"conversation": [{"speaker": "person1", "message": "¿Qué tipo de música te gusta ?", "person2": "Me gusta la música pop porque es divertida y tiene buen ritmo para bailar.", "person3": "Yo también me gusta la música pop, pero también me encanta la música clásica porque es muy emocionante."}, {"speaker": "person1", "message": "¿Has ido algún concierto de tus favoritos ?", "person2": "Sí, he ido a un concierto de una banda pop llamada One Direction y fue genial.", "person3": "Yo también fui a un concierto de una orquestra clásica y fue muy impresionante."}], "conversation_summary": "A conversation about music preferences: pop music for dancing, and classical music for its emotional appeal. The discussion includes attending concerts of favorite bands/musicians, with one person having gone to a One Direction concert and another going to a classical orchestra concert."}]
+
+let id = -1
+let last_element = arr.count
+
+for i in 0..<last_element {
+    let element = arr[i]
+    
+    if id == -1 || element == "conversation" {
+        print("\(d) \(element)")
+        id += 1
+    } else if element == "conversation_summary" {
+        print("\(d) \(element) with context: \(arr[i+1]")
+        id += 1
+    } else {
+        if id != -1 && arr[i-1] != "conversation" {
+            print("\(d) \(element)")
+            id += 1
+        }
+    }
+}

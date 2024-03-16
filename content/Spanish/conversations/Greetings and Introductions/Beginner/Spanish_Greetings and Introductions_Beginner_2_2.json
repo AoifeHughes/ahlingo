@@ -1,0 +1,71 @@
+[
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "¿De dónde eres ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "Soy de México. Y tú ?"
+            },
+            {
+                "speaker": "person1",
+                "message": "Yo soy de España."
+            }
+        ],
+        "conversation_summary": "A conversation asking each person where they are from."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "¿Qué te gusta hacer en tu tiempo libre ?"
+            },
+            {
+                "speaker": "person3",
+                "message": "Yo prefiero ir al gym y hacer deporte."
+            }
+        ],
+        "conversation_summary": "A conversation about hobbies and interests in free time."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "¿Qué te apasiona ?"
+            },
+            {
+                "speaker": "person3",
+                "message": "Yo me apasiona viajar y conocer nuevas culturas."
+            }
+        ],
+        "conversation_summary": "A conversation about what each person is passionate about."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "¿Cómo te llamas ?"
+            },
+            {
+                "speaker": "person3",
+                "message": "Yo me llamo Carlos."
+            }
+        ],
+        "conversation_summary": "A conversation asking and introducing each person's name."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "¿Cómo estás ?"
+            },
+            {
+                "speaker": "person3",
+                "message": "Yo también."
+            }
+        ],
+        "conversation_summary": "A conversation asking how everyone is doing."
+    }
+]

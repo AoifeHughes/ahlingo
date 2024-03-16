@@ -1,0 +1,38 @@
+[
+    {
+        "English": "hello",
+        "Spanish": "Hola"
+    },
+    {
+        "English": "goodbye",
+        "Spanish": "Adiós"
+    },
+    {
+        "English": "thank you",
+        "Spanish": "Gracias"
+    },
+    {
+        "English": "yes",
+        "Spanish": "Sí"
+    },
+    {
+        "English": "no",
+        "Spanish": "No"
+    },
+    {
+        "English": "please",
+        "Spanish": "Por favor"
+    },
+    {
+        "English": "sorry",
+        "Spanish": "Perdón"
+    },
+    {
+        "English": "help",
+        "Spanish": "Ayuda"
+    },
+    {
+        "English": "stop",
+        "Spanish": "Detente"
+    }
+]

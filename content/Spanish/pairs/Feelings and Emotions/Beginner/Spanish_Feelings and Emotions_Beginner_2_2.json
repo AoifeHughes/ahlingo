@@ -1,0 +1,38 @@
+[
+    {
+        "English": "happy",
+        "French": "heureux"
+    },
+    {
+        "English": "sad",
+        "French": "triste"
+    },
+    {
+        "English": "angry",
+        "French": "colereux"
+    },
+    {
+        "English": "excited",
+        "French": "enthousiaste"
+    },
+    {
+        "English": "tired",
+        "French": "essoufflé"
+    },
+    {
+        "English": "hungry",
+        "French": "faim"
+    },
+    {
+        "English": "thirsty",
+        "French": "soif"
+    },
+    {
+        "English": "cold",
+        "French": "froid"
+    },
+    {
+        "English": "hot",
+        "French": "chaud"
+    }
+]
