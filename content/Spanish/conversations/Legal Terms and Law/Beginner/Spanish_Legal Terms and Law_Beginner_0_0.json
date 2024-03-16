@@ -1,0 +1,87 @@
+[
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "¿Cómo te llamas ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "Me llamo María. ¿Y tú ?"
+            },
+            {
+                "speaker": "person1",
+                "message": "Mi nombre es Carlos."
+            }
+        ],
+        "conversation_summary": "A conversation introducing each person's name."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "¿Qué te gusta hacer en tu tiempo libre ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "Me gusta leer y ver películas. ¿Y tú ?"
+            },
+            {
+                "speaker": "person1",
+                "message": "Yo también. También me gusta practicar deportes."
+            }
+        ],
+        "conversation_summary": "A conversation about hobbies and interests in free time."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "¿Has visto la película 'La La Land' ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "No, pero me gustan las películas de baile. ¿Te gusta bailar ?"
+            },
+            {
+                "speaker": "person1",
+                "message": "Sí, me encanta bailar salsa."
+            }
+        ],
+        "conversation_summary": "A conversation about a movie and a shared interest in dancing."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "¿Por qué estudias español ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "Estoy estudiando español para mejorar mi trabajo en el extranjero. ¿Y tú ?"
+            },
+            {
+                "speaker": "person1",
+                "message": "Estoy aprendiendo español para poder viajar a España."
+            }
+        ],
+        "conversation_summary": "A conversation about the reasons for studying Spanish."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "¿Cuántos hermanos y hermanas tienes ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "Tengo dos hermanos y una hermana. ¿Y tú ?"
+            },
+            {
+                "speaker": "person1",
+                "message": "Tengo un hermano y una hermana."
+            }
+        ],
+        "conversation_summary": "A conversation about the number of siblings each person has."
+    }
+]

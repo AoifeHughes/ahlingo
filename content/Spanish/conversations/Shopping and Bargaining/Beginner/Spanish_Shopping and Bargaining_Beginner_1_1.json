@@ -1,0 +1,83 @@
+[
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "¿Cuál es tu comida preferida ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "Mi comida preferida son las tortillas de patatas y el chorizo."
+            },
+            {
+                "speaker": "person1",
+                "message": "Yo también me gusta mucho la paella."
+            }
+        ],
+        "conversation_summary": "A conversation discussing each person's favorite food."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "¿Te gusta ir al cine ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "Sí, me encanta. ¿Qué película te gustaría ver ?"
+            },
+            {
+                "speaker": "person1",
+                "message": "Me gusta la comedia. ¿Has visto esa película con Will Smith ?"
+            }
+        ],
+        "conversation_summary": "A conversation about going to the cinema and enjoying comedy films."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "¿Te gusta leer ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "Sí, me encanta. ¿Cuál es tu libro preferido ?"
+            },
+            {
+                "speaker": "person1",
+                "message": "Mi libro favorito es 'El Principito' de Antoine de Saint-Exupéry."
+            }
+        ],
+        "conversation_summary": "A conversation about reading and a favorite book."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "¿Cuál es tu deport preferido ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "Mi deporte favorito es el fútbol. Y tú ?"
+            },
+            {
+                "speaker": "person1",
+                "message": "Yo prefiero jugar baloncesto."
+            }
+        ],
+        "conversation_summary": "A conversation about favorite sports to play or watch."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "¿Te gusta bailar ?"
+            },
+            {
+                "speaker": "person1",
+                "message": "Mi baile favorito es la salsa."
+            }
+        ],
+        "conversation_summary": "A conversation about dancing and a favorite type of dance."
+    }
+]

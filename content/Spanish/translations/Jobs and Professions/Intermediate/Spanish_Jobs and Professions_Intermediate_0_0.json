@@ -1,0 +1,22 @@
+[
+    {
+        "English": "What is your name?",
+        "French": "Comment t'appelles-tu ?"
+    },
+    {
+        "English": "How old are you?",
+        "French": "Combien tu as de ans ?"
+    },
+    {
+        "English": "Where are you from?",
+        "French": "D'où viens-tu ?"
+    },
+    {
+        "English": "What do you like to do in your free time?",
+        "French": "Qu'aimes-tu faire en ton temps libre ?"
+    },
+    {
+        "English": "Do you have any siblings?",
+        "French": "As-tu des frères ou sœurs ?"
+    }
+]

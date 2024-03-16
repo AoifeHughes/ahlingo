@@ -1,0 +1,87 @@
+[
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "Comment t'habites-tu ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "J'habite dans un appartement."
+            },
+            {
+                "speaker": "person1",
+                "message": "C'est très agréable, je présume."
+            }
+        ],
+        "conversation_summary": "A conversation about how each person lives (apartment vs. other types of housing)."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "Quel est ton endroit préféré pour séjourner ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "J'aime bien séjourner à la montagne."
+            },
+            {
+                "speaker": "person1",
+                "message": "Moi aussi, j'adore la nature et le vent qui souffle."
+            }
+        ],
+        "conversation_summary": "A conversation about favorite places to stay (mountain vs. other locations)."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "Tu as une maison ou un appartement ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "J'ai une petite maison à la campagne."
+            },
+            {
+                "speaker": "person1",
+                "message": "Combien de pièces y a-t-il ?"
+            }
+        ],
+        "conversation_summary": "A conversation about living in a house or an apartment and how many rooms it has."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "Comment t'organises-tu ton logement ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "J'ai une chambre qui est pleine de livres et de notes."
+            },
+            {
+                "speaker": "person1",
+                "message": "Moi, j'aime avoir un salon spacieux pour recevoir des invités."
+            }
+        ],
+        "conversation_summary": "A conversation about how each person organizes their living space (books vs. a large living room)."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "Tu vis seul ou avec des copains ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "J'vis avec ma famille."
+            },
+            {
+                "speaker": "person1",
+                "message": "Ah, c'est très intéressant. Comment y a-t-il dans ta famille ?"
+            }
+        ],
+        "conversation_summary": "A conversation about living alone or with roommates/friends and family dynamics."
+    }
+]

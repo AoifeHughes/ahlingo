@@ -1,0 +1,87 @@
+[
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "¿Qué tipo de comida te gusta más ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "Me gusta el pescado y las frutas."
+            },
+            {
+                "speaker": "person1",
+                "message": "Yo también. Las fresas son mi fruta favorita."
+            }
+        ],
+        "conversation_summary": "A conversation about favorite foods."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "¿Has viajado a muchos países ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "No, solo he viajado a un par de países."
+            },
+            {
+                "speaker": "person1",
+                "message": "Yo he viajado a México y a España. Son muy diferentes."
+            }
+        ],
+        "conversation_summary": "A conversation about travel experience."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "¿Cómo te gusta viajar ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "Me gusta viajar en avión porque es rápido y cómodo."
+            },
+            {
+                "speaker": "person1",
+                "message": "Yo prefiero viajar en tren porque se puede ver el paisaje."
+            }
+        ],
+        "conversation_summary": "A conversation about preferred modes of transportation."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "¿Has ido en bicicleta recientemente ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "No, no he ido en bicicleta en años. ¿Y tú ?"
+            },
+            {
+                "speaker": "person1",
+                "message": "Sí, he ido hoy. Es muy saludable."
+            }
+        ],
+        "conversation_summary": "A conversation about bicycle riding as a form of exercise."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "¿Cuál es tu ciudad favorita ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "Mi ciudad favorita es Madrid porque hay muchas cosas interesantes para ver y hacer."
+            },
+            {
+                "speaker": "person1",
+                "message": "Yo también la quiero. Pero México D.F. es grande y tiene mucho movimiento."
+            }
+        ],
+        "conversation_summary": "A conversation about favorite cities."
+    }
+]

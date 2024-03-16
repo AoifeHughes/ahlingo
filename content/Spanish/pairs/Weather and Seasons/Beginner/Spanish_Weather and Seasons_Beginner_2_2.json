@@ -1,0 +1,38 @@
+[
+    {
+        "English": "cloud",
+        "French": "nuage"
+    },
+    {
+        "English": "rain",
+        "French": "pluie"
+    },
+    {
+        "English": "wind",
+        "French": "vent"
+    },
+    {
+        "English": "snow",
+        "French": "neige"
+    },
+    {
+        "English": "summer",
+        "French": "été"
+    },
+    {
+        "English": "winter",
+        "French": "hiver"
+    },
+    {
+        "English": "fall",
+        "French": "automne"
+    },
+    {
+        "English": "spring",
+        "French": "printemps"
+    },
+    {
+        "English": "temperature",
+        "French": "température"
+    }
+]

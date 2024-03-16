@@ -1,0 +1,87 @@
+[
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "¿Cuál es tu color preferido ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "Mi color preferido es el azul. ¿Y tú ?"
+            },
+            {
+                "speaker": "person1",
+                "message": "A mí me gusta el rojo. Es un color fuerte."
+            }
+        ],
+        "conversation_summary": "Una conversación sobre los colores preferidos."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "¿Cuál es tu comida preferida ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "Mi comida preferida es la pizza. ¿Y tú ?"
+            },
+            {
+                "speaker": "person1",
+                "message": "A mí me gusta el sushi. Es muy sabroso."
+            }
+        ],
+        "conversation_summary": "Una conversación sobre las comidas preferidas."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "¿Cuál es tu música favorita ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "Mi música favorita es la reggae. ¿Y tú ?"
+            },
+            {
+                "speaker": "person1",
+                "message": "A mí me gusta el jazz. Es muy suave."
+            }
+        ],
+        "conversation_summary": "Una conversación sobre la música preferida."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "¿Cuál es tu película favorita ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "Mi película favorita es 'La vida es un regalo, disfrútala'."
+            },
+            {
+                "speaker": "person1",
+                "message": "'El Señor de los Anillos' es mi película preferida. ¿Has visto alguna vez?"
+            }
+        ],
+        "conversation_summary": "Una conversación sobre las películas preferidas."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "¿Cuál es tu deporte favorito ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "Mi deporte favorito es el fútbol. ¿Y tú ?"
+            },
+            {
+                "speaker": "person1",
+                "message": "A mí me gusta jugar al baloncesto. Es muy emocionante."
+            }
+        ],
+        "conversation_summary": "Una conversación sobre los deportes preferidos."
+    }
+]

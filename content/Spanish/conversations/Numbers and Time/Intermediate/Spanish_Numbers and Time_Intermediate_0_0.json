@@ -1,0 +1,87 @@
+[
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "¿Cuánto tiempo tienes tu teléfono móvil ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "Mi teléfono es muy viejo, lo tengo desde hace tres años."
+            },
+            {
+                "speaker": "person1",
+                "message": "¡Vaya! ¡Yo tengo uno nuevo que acabo de comprar."
+            }
+        ],
+        "conversation_summary": "A conversation about how long each person has had their cell phone."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "¿Por qué no te gusta la cocina ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "No tengo habilidad para la cocina, siempre me sale mal."
+            },
+            {
+                "speaker": "person1",
+                "message": "Bueno, yo no soy muy bueno tampoco, pero me gusta intentarlo."
+            }
+        ],
+        "conversation_summary": "A conversation about cooking abilities and preferences."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "¿Qué te gusta hacer en tu tiempo libre ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "Me gusta leer libros y ver películas."
+            },
+            {
+                "speaker": "person1",
+                "message": "Yo prefiero salir con amigos y hacer actividades al aire libre."
+            }
+        ],
+        "conversation_summary": "A conversation about free time activities and preferences."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "¿Cuánto tiempo tienes tu laptop ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "Mi laptop es muy nuevo, lo compré hace tres semanas."
+            },
+            {
+                "speaker": "person1",
+                "message": "¡Muy bien! ¿Qué tipo de programas instales en ella?"
+            }
+        ],
+        "conversation_summary": "A conversation about how long each person has had their laptop and the type of programs they have installed on it."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "¿Cuántos huevos tienes en tu cesta ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "Tengo cinco huevos, pero solo cuatro son frescos."
+            },
+            {
+                "speaker": "person1",
+                "message": "¡Muy bien! ¿Qué vas a hacer con los otros dos ?"
+            }
+        ],
+        "conversation_summary": "A conversation about the number of eggs in each person's basket and what they plan to do with them."
+    }
+]

@@ -1,0 +1,87 @@
+[
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "¿Cuántos años tienes?"
+            },
+            {
+                "speaker": "person2",
+                "message": "Tengo veinticinco años."
+            },
+            {
+                "speaker": "person1",
+                "message": "Yo tengo treinta y cinco. ¿Cuál es tu número favorito?"
+            }
+        ],
+        "conversation_summary": "A conversation asking and answering questions about ages and favorite numbers."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "¿De qué color son tus ojos ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "Mis ojos son azules."
+            },
+            {
+                "speaker": "person1",
+                "message": "Mi mejor amigo tiene ojos verdes. ¿Quieres ser mi mejor amigo?"
+            }
+        ],
+        "conversation_summary": "A conversation about eye color and asking someone to be a best friend."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "¿Cuándo es tu cumpleaños ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "Mi cumpleaños es en septiembre."
+            },
+            {
+                "speaker": "person1",
+                "message": "Yo tengo un amigo cuyo cumpleaños es en mayo. ¿Cuánto tiempo hace que has cumplido ya ?"
+            }
+        ],
+        "conversation_summary": "A conversation asking and answering questions about birthdays and how long it's been since someone celebrated."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "¿Qué horas son ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "Son las tres."
+            },
+            {
+                "speaker": "person1",
+                "message": "Yo tengo que ir a una reunión a las cuatro. ¿Podrías venir conmigo en el autobús ?"
+            }
+        ],
+        "conversation_summary": "A conversation asking for the time and asking someone to come with you on the bus."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "¿Puedes hacer un favor para mí ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "Sí, por supuesto."
+            },
+            {
+                "speaker": "person1",
+                "message": "Quiero comprar una manzana pero solo tengo dos pesetas. ¿Podrías darme dos más ?"
+            }
+        ],
+        "conversation_summary": "A conversation asking for a favor and borrowing money to buy an apple."
+    }
+]

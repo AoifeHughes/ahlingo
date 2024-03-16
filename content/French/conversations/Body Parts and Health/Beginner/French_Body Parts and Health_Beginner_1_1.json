@@ -1,0 +1,87 @@
+[
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "Comment tu t'appelles ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "Je m'appelle Marie."
+            },
+            {
+                "speaker": "person1",
+                "message": "J'ai un ami qui s'appelle Marie aussi."
+            }
+        ],
+        "conversation_summary": "An introduction conversation, asking and telling names."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "Quel est ton pays préféré ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "Je préfère le Japon. Il y a beaucoup de culture intéressante là-bas."
+            },
+            {
+                "speaker": "person1",
+                "message": "J'ai visité l'année dernière, c'était vraiment magnifique."
+            }
+        ],
+        "conversation_summary": "A conversation about favorite countries and travel experiences."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "Quel est ton sport préféré ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "J'aime faire de l'escalade. C'est très exaltant."
+            },
+            {
+                "speaker": "person1",
+                "message": "Je fais du jogging tous les matins, ça me permet de rester en forme."
+            }
+        ],
+        "conversation_summary": "A conversation about favorite sports and physical activities."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "Quel est ton film préféré ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "J'adore les films d'horreur. L'autre jour, j'ai vu un film très effrayant."
+            },
+            {
+                "speaker": "person1",
+                "message": "Je préfère regarder des comédies. Elles m' font toujours du bien."
+            }
+        ],
+        "conversation_summary": "A conversation about favorite movies and genres."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "Quel est ton livre préféré ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "J'aime les romans historiques. L'autre jour, j'ai lu un livre très intéressant sur la Révolution française."
+            },
+            {
+                "speaker": "person1",
+                "message": "Je préfère lire des bandes dessinées. Elles sont vraiment passionnantes."
+            }
+        ],
+        "conversation_summary": "A conversation about favorite books and genres."
+    }
+]
