@@ -1,8 +1,20 @@
 import React, { useState, useEffect } from "react";
 import SubpageTemplate from "../templates/SubpageTemplate";
 import Button from "@mui/material/Button";
-import { Table, TableBody, TableCell, TableContainer, TableRow, Paper } from "@mui/material";
-import { getLanguages, getDifficultiesByLanguage, getTopicsByLanguageDifficulty, getRandomPairExercise } from './ipcUtilities'; // Adjust the import path as necessary
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+  Paper,
+} from "@mui/material";
+import {
+  getLanguages,
+  getDifficultiesByLanguage,
+  getTopicsByLanguageDifficulty,
+  getRandomPairExercise,
+} from "./ipcUtilities"; // Adjust the import path as necessary
 
 function Pairs({ onBack }) {
   const [languages, setLanguages] = useState([]);
@@ -27,7 +39,11 @@ function Pairs({ onBack }) {
 
   useEffect(() => {
     if (selectedLanguage && selectedDifficulty) {
-      getTopicsByLanguageDifficulty(selectedLanguage, selectedDifficulty, setTopics);
+      getTopicsByLanguageDifficulty(
+        selectedLanguage,
+        selectedDifficulty,
+        setTopics
+      );
     }
   }, [selectedLanguage, selectedDifficulty]);
 
@@ -55,7 +71,12 @@ function Pairs({ onBack }) {
   };
 
   const handleTopicClick = (topic) => {
-    getRandomPairExercise(selectedLanguage, selectedDifficulty, topic, setExercises);
+    getRandomPairExercise(
+      selectedLanguage,
+      selectedDifficulty,
+      topic,
+      setExercises
+    );
   };
 
   const shuffleExercises = (exercises) => {
@@ -73,7 +94,10 @@ function Pairs({ onBack }) {
               <TableCell
                 component="th"
                 scope="row"
-                style={{ background: matches[index] ? '#90ee90' : '', cursor: 'pointer' }}
+                style={{
+                  background: matches[index] ? "#90ee90" : "",
+                  cursor: "pointer",
+                }}
               >
                 {exercise[languageContentKey]}
               </TableCell>
@@ -107,21 +131,31 @@ function Pairs({ onBack }) {
         <Button onClick={handleResetClick}>Reset</Button>
       </div>
       <div>
-        {!selectedLanguage && languages.map((language, index) => (
-          <Button key={index} onClick={() => handleLanguageClick(language)}>
-            {language}
-          </Button>
-        ))}
-        {selectedLanguage && !selectedDifficulty && difficulties.map((difficulty, index) => (
-          <Button key={index} onClick={() => handleDifficultyClick(difficulty)}>
-            {difficulty}
-          </Button>
-        ))}
-        {exercises.length < 1 && selectedLanguage && selectedDifficulty && topics.length > 0 && topics.map((topic, index) => (
-          <Button key={index} onClick={() => handleTopicClick(topic)}>
-            {topic}
-          </Button>
-        ))}
+        {!selectedLanguage &&
+          languages.map((language, index) => (
+            <Button key={index} onClick={() => handleLanguageClick(language)}>
+              {language}
+            </Button>
+          ))}
+        {selectedLanguage &&
+          !selectedDifficulty &&
+          difficulties.map((difficulty, index) => (
+            <Button
+              key={index}
+              onClick={() => handleDifficultyClick(difficulty)}
+            >
+              {difficulty}
+            </Button>
+          ))}
+        {exercises.length < 1 &&
+          selectedLanguage &&
+          selectedDifficulty &&
+          topics.length > 0 &&
+          topics.map((topic, index) => (
+            <Button key={index} onClick={() => handleTopicClick(topic)}>
+              {topic}
+            </Button>
+          ))}
         {exercises.length > 0 && renderExerciseTables()}
       </div>
     </SubpageTemplate>
