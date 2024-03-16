@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import SubpageTemplate from "./SubpageTemplate";
+import SubpageTemplate from "../templates/SubpageTemplate"; // Update the path as necessary
 import Button from "@mui/material/Button";
 const { ipcRenderer } = window.require('electron');
 
-function Reading({ onBack }) {
+function Translation({ onBack }) {
   const [difficultyLevels, setDifficultyLevels] = useState([]);
   const [selectedDifficulty, setSelectedDifficulty] = useState('');
   const [topics, setTopics] = useState([]);
@@ -32,7 +32,6 @@ function Reading({ onBack }) {
   const handleDifficultyClick = (level) => {
     setSelectedDifficulty(level);
     ipcRenderer.send('get-topics', level);
-    // Listener for topics
     ipcRenderer.on('get-topics-reply', (event, { error, topics }) => {
       if (error) {
         console.error("Error fetching topics:", error);
@@ -45,7 +44,6 @@ function Reading({ onBack }) {
   const handleTopicClick = (topic) => {
     setSelectedTopic(topic);
     ipcRenderer.send('get-languages', { difficulty: selectedDifficulty, topic });
-    // Listener for languages
     ipcRenderer.on('get-languages-reply', (event, { error, languages }) => {
       if (error) {
         console.error("Error fetching languages:", error);
@@ -56,13 +54,13 @@ function Reading({ onBack }) {
   };
 
   return (
-    <SubpageTemplate title="Reading" onBack={onBack}>
+    <SubpageTemplate title="Translation">
       <div>
-        <h2>Reading Page Content</h2>
+        <h2>Translation Exercises</h2>
         {selectedTopic ? (
           <div>
             <Button onClick={() => setSelectedTopic('')}>Back to Topics</Button>
-            {/* Display languages here */}
+            {/* Here you could display translation exercises for the selected topic */}
           </div>
         ) : selectedDifficulty ? (
           <div>
@@ -83,7 +81,6 @@ function Reading({ onBack }) {
       </div>
     </SubpageTemplate>
   );
-  
 }
 
-export default Reading;
+export default Translation;
