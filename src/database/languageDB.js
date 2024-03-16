@@ -237,7 +237,7 @@ class LanguageDB {
     console.log(
       `Adding pair exercise: ${exerciseName}, ${language}, ${topic}, ${difficultyLevel}, ${language1}, ${language2}, ${language1Content}, ${language2Content}`
     );
-  
+
     // Check if the pair exercise already exists
     const checkQuery = `SELECT COUNT(*) AS count FROM pair_exercises WHERE language_1_content = ? AND language_2_content = ?`;
     db.get(checkQuery, [language1Content, language2Content], (err, row) => {
@@ -253,43 +253,45 @@ class LanguageDB {
             if (err) return callback(err);
             this._getOrCreateTopic(topic, (err, topicId) => {
               if (err) return callback(err);
-              this._getOrCreateDifficulty(difficultyLevel, (err, difficultyId) => {
-                if (err) return callback(err);
-  
-                const queryInsertExercise = `INSERT INTO exercises_info (exercise_name, language_id, topic_id, difficulty_id) VALUES (?, ?, ?, ?)`;
-                db.run(
-                  queryInsertExercise,
-                  [exerciseName, languageId, topicId, difficultyId],
-                  function (err) {
-                    if (err) return callback(err);
-                    const exerciseId = this.lastID;
-  
-                    const insertPairQuery = `INSERT INTO pair_exercises (exercise_id, language_1, language_2, language_1_content, language_2_content) SELECT ?, ?, ?, ?, ? WHERE NOT EXISTS (SELECT 1 FROM pair_exercises WHERE language_1_content = ? AND language_2_content = ?)`;
-                    db.run(
-                      insertPairQuery,
-                      [
-                        exerciseId,
-                        language1,
-                        language2,
-                        language1Content,
-                        language2Content,
-                        language1Content,
-                        language2Content
-                      ],
-                      (err) => {
-                        callback(err, exerciseId);
-                      }
-                    );
-                  }
-                );
-              });
+              this._getOrCreateDifficulty(
+                difficultyLevel,
+                (err, difficultyId) => {
+                  if (err) return callback(err);
+
+                  const queryInsertExercise = `INSERT INTO exercises_info (exercise_name, language_id, topic_id, difficulty_id) VALUES (?, ?, ?, ?)`;
+                  db.run(
+                    queryInsertExercise,
+                    [exerciseName, languageId, topicId, difficultyId],
+                    function (err) {
+                      if (err) return callback(err);
+                      const exerciseId = this.lastID;
+
+                      const insertPairQuery = `INSERT INTO pair_exercises (exercise_id, language_1, language_2, language_1_content, language_2_content) SELECT ?, ?, ?, ?, ? WHERE NOT EXISTS (SELECT 1 FROM pair_exercises WHERE language_1_content = ? AND language_2_content = ?)`;
+                      db.run(
+                        insertPairQuery,
+                        [
+                          exerciseId,
+                          language1,
+                          language2,
+                          language1Content,
+                          language2Content,
+                          language1Content,
+                          language2Content,
+                        ],
+                        (err) => {
+                          callback(err, exerciseId);
+                        }
+                      );
+                    }
+                  );
+                }
+              );
             });
           });
         });
       }
     });
   }
-  
 
   addPairExerciseFromJSON(
     exerciseName,
@@ -447,11 +449,14 @@ class LanguageDB {
 
   getRandomPairExercise(language, difficulty, topic, callback) {
     const query = `SELECT exercise_name, language_1, language_2, language_1_content, language_2_content FROM exercises_info INNER JOIN pair_exercises ON exercises_info.id = pair_exercises.exercise_id WHERE language_1 = ? AND language_2 = ? AND topic_id IN (SELECT id FROM topics WHERE topic = ?) AND difficulty_id IN (SELECT id FROM difficulties WHERE difficulty_level = ?) ORDER BY RANDOM() LIMIT 10`;
-    this.db.all(query, ["English", language, topic, difficulty], (err, rows) => {
-      callback(err, rows);
-    });
-}
-
+    this.db.all(
+      query,
+      ["English", language, topic, difficulty],
+      (err, rows) => {
+        callback(err, rows);
+      }
+    );
+  }
 
   close() {
     this.db.close((err) => {
