@@ -1,87 +1,87 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment t'appelles-tu ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je m'appelle Marie."
-            },
-            {
-                "speaker": "person1",
-                "message": "J'aime beaucoup ce nom. C'est un nom très gentil."
-            }
-        ],
-        "conversation_summary": "A conversation introducing oneself and expressing appreciation for the name."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Tu es allé(e) à la piscine aujourd'hui ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Non, je n'ai pas le temps. J'aimerais y aller demain si le temps est bien."
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi non plus, j'avais un rendez-vous."
-            }
-        ],
-        "conversation_summary": "A conversation about going to the pool today and making plans for tomorrow."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Tu as fait des vacances cette année ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Oui, j'ai été en Italie. J'adore ce pays."
-            },
-            {
-                "speaker": "person1",
-                "message": "J'aimerais y aller aussi. J'ai entendu dire que la nourriture est délicieuse."
-            }
-        ],
-        "conversation_summary": "A conversation about vacations and travel, with a focus on Italy."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton livre préféré ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je n'ai pas de livre préféré. J'aime tous les livres qui m'intéressent."
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi, j'adore les romans historiques."
-            }
-        ],
-        "conversation_summary": "A conversation about favorite books and genres."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Tu crois en Dieu ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Et toi ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je suis agnostique."
-            }
-        ],
-        "conversation_summary": "A conversation about religious beliefs and being agnostic."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment t'appelles-tu ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je m'appelle Marie."
+      },
+      {
+        "speaker": "person1",
+        "message": "J'aime beaucoup ce nom. C'est un nom très gentil."
+      }
+    ],
+    "conversation_summary": "A conversation introducing oneself and expressing appreciation for the name."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Tu es allé(e) à la piscine aujourd'hui ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Non, je n'ai pas le temps. J'aimerais y aller demain si le temps est bien."
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi non plus, j'avais un rendez-vous."
+      }
+    ],
+    "conversation_summary": "A conversation about going to the pool today and making plans for tomorrow."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Tu as fait des vacances cette année ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Oui, j'ai été en Italie. J'adore ce pays."
+      },
+      {
+        "speaker": "person1",
+        "message": "J'aimerais y aller aussi. J'ai entendu dire que la nourriture est délicieuse."
+      }
+    ],
+    "conversation_summary": "A conversation about vacations and travel, with a focus on Italy."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton livre préféré ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je n'ai pas de livre préféré. J'aime tous les livres qui m'intéressent."
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi, j'adore les romans historiques."
+      }
+    ],
+    "conversation_summary": "A conversation about favorite books and genres."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Tu crois en Dieu ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Et toi ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je suis agnostique."
+      }
+    ],
+    "conversation_summary": "A conversation about religious beliefs and being agnostic."
+  }
 ]

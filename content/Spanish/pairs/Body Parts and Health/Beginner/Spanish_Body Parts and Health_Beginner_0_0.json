@@ -1,34 +1,34 @@
 [
-    {
-        "English": "computer",
-        "French": "ordinateur"
-    },
-    {
-        "English": "shoes",
-        "French": "chaussures"
-    },
-    {
-        "English": "keyboard",
-        "French": "clavier"
-    },
-    {
-        "English": "mouse",
-        "French": "souris"
-    },
-    {
-        "English": "headache",
-        "French": "migraine"
-    },
-    {
-        "English": "earache",
-        "French": "douleur d'oreille"
-    },
-    {
-        "English": "toothache",
-        "French": "douleur de dent"
-    },
-    {
-        "English": "cold",
-        "French": "froid"
-    }
+  {
+    "English": "computer",
+    "French": "ordinateur"
+  },
+  {
+    "English": "shoes",
+    "French": "chaussures"
+  },
+  {
+    "English": "keyboard",
+    "French": "clavier"
+  },
+  {
+    "English": "mouse",
+    "French": "souris"
+  },
+  {
+    "English": "headache",
+    "French": "migraine"
+  },
+  {
+    "English": "earache",
+    "French": "douleur d'oreille"
+  },
+  {
+    "English": "toothache",
+    "French": "douleur de dent"
+  },
+  {
+    "English": "cold",
+    "French": "froid"
+  }
 ]

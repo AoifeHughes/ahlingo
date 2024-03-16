@@ -1,22 +1,22 @@
 [
-    {
-        "English": "banana",
-        "French": "banane"
-    },
-    {
-        "English": "computer",
-        "French": "ordinateur"
-    },
-    {
-        "English": "fire",
-        "French": "feu"
-    },
-    {
-        "English": "hospital",
-        "French": "hôpital"
-    },
-    {
-        "English": "police",
-        "French": "police"
-    }
+  {
+    "English": "banana",
+    "French": "banane"
+  },
+  {
+    "English": "computer",
+    "French": "ordinateur"
+  },
+  {
+    "English": "fire",
+    "French": "feu"
+  },
+  {
+    "English": "hospital",
+    "French": "hôpital"
+  },
+  {
+    "English": "police",
+    "French": "police"
+  }
 ]

@@ -1,113 +1,113 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Qué te gusta hacer en tu tiempo libre ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Me gusta leer y ver películas.",
-                "response": true
-            },
-            {
-                "speaker": "person1",
-                "message": "Yo también. ¿Has leído algún libro interesante últimamente ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Sí, he estado leyendo 'El barco de los locos' de Sebastian Brant.",
-                "response": true
-            }
-        ],
-        "conversation_summary": "A conversation discussing hobbies and recent book readings."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Te gusta viajar ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Sí, me encanta explorar nuevos lugares.",
-                "response": true
-            },
-            {
-                "speaker": "person1",
-                "message": "Yo también. Mi próximo destino es Sevilla. ¿Has ido alguna vez ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "No, nunca he estado allí. ¡Dime más sobre ella!"
-            }
-        ],
-        "conversation_summary": "A conversation about traveling and a discussion of the city of Seville."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Te gusta la música ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Sí, me encanta escucharla.",
-                "response": true
-            },
-            {
-                "speaker": "person1",
-                "message": "Mi banda favorita es Los Beatles. ¿Y tú ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Yo también los like mucho. ¿Por qué?"
-            }
-        ],
-        "conversation_summary": "A conversation about music, specifically discussing favorite bands."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Te gusta comer comida extranjera ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Sí, me encanta probar diferentes tipos de comida.",
-                "response": true
-            },
-            {
-                "speaker": "person1",
-                "message": "Mi plato preferido es el sushi. ¿Has probado alguna vez ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "No, nunca he ido a un restaurant japonés. Pero me encanta la comida china."
-            }
-        ],
-        "conversation_summary": "A conversation about foreign food and favorite dishes."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Te gusta ver los juegos olímpicos ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Sí, me emociona ver atletas de todo el mundo competir.",
-                "response": true
-            },
-            {
-                "speaker": "person1",
-                "message": "Mi deporte preferido es el béisbol. ¿Y tú ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "No, no soy fanático de algún deporto en particular."
-            }
-        ],
-        "conversation_summary": "A conversation about the Olympic games and favorite sports."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Qué te gusta hacer en tu tiempo libre ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Me gusta leer y ver películas.",
+        "response": true
+      },
+      {
+        "speaker": "person1",
+        "message": "Yo también. ¿Has leído algún libro interesante últimamente ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Sí, he estado leyendo 'El barco de los locos' de Sebastian Brant.",
+        "response": true
+      }
+    ],
+    "conversation_summary": "A conversation discussing hobbies and recent book readings."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Te gusta viajar ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Sí, me encanta explorar nuevos lugares.",
+        "response": true
+      },
+      {
+        "speaker": "person1",
+        "message": "Yo también. Mi próximo destino es Sevilla. ¿Has ido alguna vez ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "No, nunca he estado allí. ¡Dime más sobre ella!"
+      }
+    ],
+    "conversation_summary": "A conversation about traveling and a discussion of the city of Seville."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Te gusta la música ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Sí, me encanta escucharla.",
+        "response": true
+      },
+      {
+        "speaker": "person1",
+        "message": "Mi banda favorita es Los Beatles. ¿Y tú ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Yo también los like mucho. ¿Por qué?"
+      }
+    ],
+    "conversation_summary": "A conversation about music, specifically discussing favorite bands."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Te gusta comer comida extranjera ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Sí, me encanta probar diferentes tipos de comida.",
+        "response": true
+      },
+      {
+        "speaker": "person1",
+        "message": "Mi plato preferido es el sushi. ¿Has probado alguna vez ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "No, nunca he ido a un restaurant japonés. Pero me encanta la comida china."
+      }
+    ],
+    "conversation_summary": "A conversation about foreign food and favorite dishes."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Te gusta ver los juegos olímpicos ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Sí, me emociona ver atletas de todo el mundo competir.",
+        "response": true
+      },
+      {
+        "speaker": "person1",
+        "message": "Mi deporte preferido es el béisbol. ¿Y tú ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "No, no soy fanático de algún deporto en particular."
+      }
+    ],
+    "conversation_summary": "A conversation about the Olympic games and favorite sports."
+  }
 ]

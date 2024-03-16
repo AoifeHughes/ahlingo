@@ -1,38 +1,38 @@
 [
-    {
-        "English": "computer",
-        "French": "ordinateur"
-    },
-    {
-        "English": "smartphone",
-        "French": "smartphone"
-    },
-    {
-        "English": "tablet",
-        "French": "tablette"
-    },
-    {
-        "English": "laptop",
-        "French": "portable"
-    },
-    {
-        "English": "keyboard",
-        "French": "clavier"
-    },
-    {
-        "English": "mouse",
-        "French": "souris"
-    },
-    {
-        "English": "monitor",
-        "French": "écran"
-    },
-    {
-        "English": "screen",
-        "French": "écran"
-    },
-    {
-        "English": "camera",
-        "French": "appareil photo"
-    }
+  {
+    "English": "computer",
+    "French": "ordinateur"
+  },
+  {
+    "English": "smartphone",
+    "French": "smartphone"
+  },
+  {
+    "English": "tablet",
+    "French": "tablette"
+  },
+  {
+    "English": "laptop",
+    "French": "portable"
+  },
+  {
+    "English": "keyboard",
+    "French": "clavier"
+  },
+  {
+    "English": "mouse",
+    "French": "souris"
+  },
+  {
+    "English": "monitor",
+    "French": "écran"
+  },
+  {
+    "English": "screen",
+    "French": "écran"
+  },
+  {
+    "English": "camera",
+    "French": "appareil photo"
+  }
 ]

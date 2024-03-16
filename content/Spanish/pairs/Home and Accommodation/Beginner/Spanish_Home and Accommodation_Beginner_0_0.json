@@ -1,38 +1,38 @@
 [
-    {
-        "English": "bathroom",
-        "Spanish": "baño"
-    },
-    {
-        "English": "bed",
-        "Spanish": "cama"
-    },
-    {
-        "English": "chair",
-        "Spanish": "silla"
-    },
-    {
-        "English": "door",
-        "Spanish": "puerta"
-    },
-    {
-        "English": "fridge",
-        "Spanish": "nevera"
-    },
-    {
-        "English": "living room",
-        "Spanish": "salón"
-    },
-    {
-        "English": "oven",
-        "Spanish": "horno"
-    },
-    {
-        "English": "table",
-        "Spanish": "mesa"
-    },
-    {
-        "English": "window",
-        "Spanish": "ventana"
-    }
+  {
+    "English": "bathroom",
+    "Spanish": "baño"
+  },
+  {
+    "English": "bed",
+    "Spanish": "cama"
+  },
+  {
+    "English": "chair",
+    "Spanish": "silla"
+  },
+  {
+    "English": "door",
+    "Spanish": "puerta"
+  },
+  {
+    "English": "fridge",
+    "Spanish": "nevera"
+  },
+  {
+    "English": "living room",
+    "Spanish": "salón"
+  },
+  {
+    "English": "oven",
+    "Spanish": "horno"
+  },
+  {
+    "English": "table",
+    "Spanish": "mesa"
+  },
+  {
+    "English": "window",
+    "Spanish": "ventana"
+  }
 ]

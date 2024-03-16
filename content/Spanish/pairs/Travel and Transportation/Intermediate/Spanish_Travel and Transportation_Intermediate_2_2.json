@@ -1,38 +1,38 @@
 [
-    {
-        "English": "hotel",
-        "Spanish": "hotel"
-    },
-    {
-        "English": "flight",
-        "Spanish": "vuelo"
-    },
-    {
-        "English": "train",
-        "Spanish": "tren"
-    },
-    {
-        "English": "bus",
-        "Spanish": "autobús"
-    },
-    {
-        "English": "car rental",
-        "Spanish": "alquiler de coches"
-    },
-    {
-        "English": "airport",
-        "Spanish": "aeropuerto"
-    },
-    {
-        "English": "taxi",
-        "Spanish": "taxi"
-    },
-    {
-        "English": "cruise",
-        "Spanish": "crucero"
-    },
-    {
-        "English": "ferry",
-        "Spanish": "fragata"
-    }
+  {
+    "English": "hotel",
+    "Spanish": "hotel"
+  },
+  {
+    "English": "flight",
+    "Spanish": "vuelo"
+  },
+  {
+    "English": "train",
+    "Spanish": "tren"
+  },
+  {
+    "English": "bus",
+    "Spanish": "autobús"
+  },
+  {
+    "English": "car rental",
+    "Spanish": "alquiler de coches"
+  },
+  {
+    "English": "airport",
+    "Spanish": "aeropuerto"
+  },
+  {
+    "English": "taxi",
+    "Spanish": "taxi"
+  },
+  {
+    "English": "cruise",
+    "Spanish": "crucero"
+  },
+  {
+    "English": "ferry",
+    "Spanish": "fragata"
+  }
 ]

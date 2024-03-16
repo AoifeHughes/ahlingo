@@ -1,7 +1,7 @@
 [
-{"English": "God", "Spanish": "Dios"},
-{"English": "prayer", "Spanish": "oraci\'on"},
-{"English": "faith", "Spanish": "fe"},
-{"English": "hope", "Spanish": "esperanza"},
-{"English": "grace", "Spanish": "gracia"}
+  { "English": "God", "Spanish": "Dios" },
+  { "English": "prayer", "Spanish": "oraci'on" },
+  { "English": "faith", "Spanish": "fe" },
+  { "English": "hope", "Spanish": "esperanza" },
+  { "English": "grace", "Spanish": "gracia" }
 ]

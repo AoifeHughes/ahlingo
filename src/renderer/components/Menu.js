@@ -25,7 +25,10 @@ function Menu({ showMenu, setShowMenu }) {
     <Box sx={{ flexGrow: 1, display: showMenu ? "flex" : "none" }}>
       <Grid container spacing={2}>
         <Grid item xs={6}>
-          <Paper elevation={3} onClick={() => handleNavigation("/conversation")}>
+          <Paper
+            elevation={3}
+            onClick={() => handleNavigation("/conversation")}
+          >
             <IconButton>
               <ReadIcon />
             </IconButton>
@@ -41,7 +44,10 @@ function Menu({ showMenu, setShowMenu }) {
           </Paper>
         </Grid>
         <Grid item xs={6}>
-          <Paper elevation={3} onClick={() => handleNavigation("/translations")}>
+          <Paper
+            elevation={3}
+            onClick={() => handleNavigation("/translations")}
+          >
             <IconButton>
               <WriteIcon />
             </IconButton>

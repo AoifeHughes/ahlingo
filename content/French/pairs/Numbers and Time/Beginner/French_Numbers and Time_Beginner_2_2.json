@@ -1,38 +1,38 @@
 [
-    {
-        "English": "computer",
-        "French": "ordinateur"
-    },
-    {
-        "English": "phone",
-        "French": "téléphone"
-    },
-    {
-        "English": "camera",
-        "French": "caméra"
-    },
-    {
-        "English": "music",
-        "French": "musique"
-    },
-    {
-        "English": "film",
-        "French": "film"
-    },
-    {
-        "English": "game",
-        "French": "jeu"
-    },
-    {
-        "English": "sport",
-        "French": "sport"
-    },
-    {
-        "English": "food",
-        "French": "aliment"
-    },
-    {
-        "English": "drink",
-        "French": "boisson"
-    }
+  {
+    "English": "computer",
+    "French": "ordinateur"
+  },
+  {
+    "English": "phone",
+    "French": "téléphone"
+  },
+  {
+    "English": "camera",
+    "French": "caméra"
+  },
+  {
+    "English": "music",
+    "French": "musique"
+  },
+  {
+    "English": "film",
+    "French": "film"
+  },
+  {
+    "English": "game",
+    "French": "jeu"
+  },
+  {
+    "English": "sport",
+    "French": "sport"
+  },
+  {
+    "English": "food",
+    "French": "aliment"
+  },
+  {
+    "English": "drink",
+    "French": "boisson"
+  }
 ]

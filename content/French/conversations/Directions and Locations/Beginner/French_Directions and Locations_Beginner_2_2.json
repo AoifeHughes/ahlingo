@@ -1,87 +1,87 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment vas-tu ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je vais bien, merci. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je vais bien aussi. J'ai fait une promenade intéressante hier soir."
-            }
-        ],
-        "conversation_summary": "A conversation asking how each person is doing and sharing about a recent walk."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton métier ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'ai travaillé comme enseignant pendant plusieurs années."
-            },
-            {
-                "speaker": "person1",
-                "message": "C'est très intéressant. J'aime beaucoup les enfants."
-            }
-        ],
-        "conversation_summary": "A conversation about each person's occupation, with one person mentioning a liking for working with children."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Tu as déjà voyagé en avion ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Oui, plusieurs fois. J'adore voyager."
-            },
-            {
-                "speaker": "person1",
-                "message": "J'aimerais bien voyager aussi, mais j'ai peur de faire des erreurs."
-            }
-        ],
-        "conversation_summary": "A conversation about traveling by plane and experiencing different places."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton livre préféré ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime beaucoup les romans policiers. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je préfère les livres d'histoire."
-            }
-        ],
-        "conversation_summary": "A conversation about favorite books, with one person liking mystery novels and the other preferring historical books."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton groupe préféré de musique ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'adore les Beatles. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je suis fan de Queen."
-            }
-        ],
-        "conversation_summary": "A conversation about favorite music groups, with one person liking The Beatles and the other preferring Queen."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment vas-tu ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je vais bien, merci. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je vais bien aussi. J'ai fait une promenade intéressante hier soir."
+      }
+    ],
+    "conversation_summary": "A conversation asking how each person is doing and sharing about a recent walk."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton métier ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'ai travaillé comme enseignant pendant plusieurs années."
+      },
+      {
+        "speaker": "person1",
+        "message": "C'est très intéressant. J'aime beaucoup les enfants."
+      }
+    ],
+    "conversation_summary": "A conversation about each person's occupation, with one person mentioning a liking for working with children."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Tu as déjà voyagé en avion ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Oui, plusieurs fois. J'adore voyager."
+      },
+      {
+        "speaker": "person1",
+        "message": "J'aimerais bien voyager aussi, mais j'ai peur de faire des erreurs."
+      }
+    ],
+    "conversation_summary": "A conversation about traveling by plane and experiencing different places."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton livre préféré ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime beaucoup les romans policiers. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je préfère les livres d'histoire."
+      }
+    ],
+    "conversation_summary": "A conversation about favorite books, with one person liking mystery novels and the other preferring historical books."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton groupe préféré de musique ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'adore les Beatles. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je suis fan de Queen."
+      }
+    ],
+    "conversation_summary": "A conversation about favorite music groups, with one person liking The Beatles and the other preferring Queen."
+  }
 ]

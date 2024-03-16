@@ -35,9 +35,7 @@ function SubpageTemplate({ title, children }) {
           </Typography>
         </Toolbar>
       </AppBar>
-      <Container style={{ marginTop: 20 }}>
-        {children}
-      </Container>
+      <Container style={{ marginTop: 20 }}>{children}</Container>
     </>
   );
 }

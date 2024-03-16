@@ -11,7 +11,7 @@ function createWindow() {
       nodeIntegration: true,
       contextIsolation: false,
       enableRemoteModule: true,
-    },  
+    },
     icon: path.join(__dirname, "assets/logo.icns"),
   });
   win.webContents.openDevTools();
@@ -23,14 +23,13 @@ function createWindow() {
   }
 }
 
-
 app.on("ready", () => {
   console.log("App is ready");
   createWindow();
   console.log("Window created");
   setupIPC(); // Set up the IPC event handlers if needed
   console.log("IPC handlers set up");
-  
+
   // Set up the webRequest to modify headers if necessary
   session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
     callback({

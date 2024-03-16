@@ -1,87 +1,87 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Qué te gusta más de la comida?"
-            },
-            {
-                "speaker": "person2",
-                "message": "A mí me gusta mucho el pastel."
-            },
-            {
-                "speaker": "person1",
-                "message": "Yo también me gusta el pastel. ¿Has probado mi receta favorita?"
-            }
-        ],
-        "conversation_summary": "Conversación sobre los alimentos preferidos."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Qué te parece ir a restaurantes de comida rápida?"
-            },
-            {
-                "speaker": "person2",
-                "message": "A mí no me gusta mucho. Prefiero los restaurantes con menu más amplio."
-            },
-            {
-                "speaker": "person1",
-                "message": "Yo tampoco, pero a veces es conveniente para llevar la comida a casa."
-            }
-        ],
-        "conversation_summary": "Conversación sobre los restaurantes de comida rápida vs. tradicionales."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Cuál es tu bebida favorita?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Mi bebida favorita es el té."
-            },
-            {
-                "speaker": "person1",
-                "message": "Yo también me gusta el té. ¿Has probado mi receta de té verde?"
-            }
-        ],
-        "conversation_summary": "Conversación sobre las bebidas preferidas."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Qué te parece la comida vegetariana?"
-            },
-            {
-                "speaker": "person2",
-                "message": "A mí no me gusta mucho. Prefiero la carne."
-            },
-            {
-                "speaker": "person1",
-                "message": "Yo soy vegetariano y me encanta la comida vegetariana. ¿Has probado mi receta de lentejas?"
-            }
-        ],
-        "conversation_summary": "Conversación sobre los alimentos vegetarianos vs. no vegetarianos."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Qué te gusta más, la cena o el desayuno?"
-            },
-            {
-                "speaker": "person2",
-                "message": "A mí el desayuno. Me encanta tener una buena sopa o unas tostadas."
-            },
-            {
-                "speaker": "person1",
-                "message": "Yo también me gusta el desayuno, pero mi cena favorita es el pescado con vino blanco."
-            }
-        ],
-        "conversation_summary": "Conversación sobre las comidas favorite, la cena o el desayuno."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Qué te gusta más de la comida?"
+      },
+      {
+        "speaker": "person2",
+        "message": "A mí me gusta mucho el pastel."
+      },
+      {
+        "speaker": "person1",
+        "message": "Yo también me gusta el pastel. ¿Has probado mi receta favorita?"
+      }
+    ],
+    "conversation_summary": "Conversación sobre los alimentos preferidos."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Qué te parece ir a restaurantes de comida rápida?"
+      },
+      {
+        "speaker": "person2",
+        "message": "A mí no me gusta mucho. Prefiero los restaurantes con menu más amplio."
+      },
+      {
+        "speaker": "person1",
+        "message": "Yo tampoco, pero a veces es conveniente para llevar la comida a casa."
+      }
+    ],
+    "conversation_summary": "Conversación sobre los restaurantes de comida rápida vs. tradicionales."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Cuál es tu bebida favorita?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Mi bebida favorita es el té."
+      },
+      {
+        "speaker": "person1",
+        "message": "Yo también me gusta el té. ¿Has probado mi receta de té verde?"
+      }
+    ],
+    "conversation_summary": "Conversación sobre las bebidas preferidas."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Qué te parece la comida vegetariana?"
+      },
+      {
+        "speaker": "person2",
+        "message": "A mí no me gusta mucho. Prefiero la carne."
+      },
+      {
+        "speaker": "person1",
+        "message": "Yo soy vegetariano y me encanta la comida vegetariana. ¿Has probado mi receta de lentejas?"
+      }
+    ],
+    "conversation_summary": "Conversación sobre los alimentos vegetarianos vs. no vegetarianos."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Qué te gusta más, la cena o el desayuno?"
+      },
+      {
+        "speaker": "person2",
+        "message": "A mí el desayuno. Me encanta tener una buena sopa o unas tostadas."
+      },
+      {
+        "speaker": "person1",
+        "message": "Yo también me gusta el desayuno, pero mi cena favorita es el pescado con vino blanco."
+      }
+    ],
+    "conversation_summary": "Conversación sobre las comidas favorite, la cena o el desayuno."
+  }
 ]

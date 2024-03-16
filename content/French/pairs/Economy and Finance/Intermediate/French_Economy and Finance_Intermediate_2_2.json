@@ -1,22 +1,22 @@
 [
-    {
-        "English": "bank",
-        "French": "banque"
-    },
-    {
-        "English": "currency",
-        "French": "devise"
-    },
-    {
-        "English": "investment",
-        "French": "investissement"
-    },
-    {
-        "English": "stock market",
-        "French": "bourse"
-    },
-    {
-        "English": "inflation",
-        "French": "inflation"
-    }
+  {
+    "English": "bank",
+    "French": "banque"
+  },
+  {
+    "English": "currency",
+    "French": "devise"
+  },
+  {
+    "English": "investment",
+    "French": "investissement"
+  },
+  {
+    "English": "stock market",
+    "French": "bourse"
+  },
+  {
+    "English": "inflation",
+    "French": "inflation"
+  }
 ]

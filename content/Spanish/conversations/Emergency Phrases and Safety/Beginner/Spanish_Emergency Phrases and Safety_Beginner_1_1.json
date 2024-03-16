@@ -1,87 +1,87 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Qué te gusta hacer en tu tiempo libre?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Me gusta leer y escuchar música."
-            },
-            {
-                "speaker": "person1",
-                "message": "Yo también. ¿Has leído algún libro interesante recientemente?"
-            }
-        ],
-        "conversation_summary": "A conversation about hobbies and interests in free time."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Has ido al parque recientemente?"
-            },
-            {
-                "speaker": "person2",
-                "message": "No, pero me gustaría ir. ¿Qué tal si juntamos una picnic?"
-            },
-            {
-                "speaker": "person1",
-                "message": "¡Eso suena genial! ¿Cuál es tu comida preferida para la picnic?"
-            }
-        ],
-        "conversation_summary": "A conversation about going to the park and having a picnic."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Has visto la última película de animación ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "No, pero me gusta mucho el género. ¿Qué te parece de 'Los Increíbles'?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Yo también. Es mi película favorita de animación."
-            }
-        ],
-        "conversation_summary": "A conversation about favorite animated movies."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Qué te parece de viajar ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Me encanta. ¿Has ido a algún lugar interesante recientemente?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Sí, he estado en París. ¡Es precioso!"
-            }
-        ],
-        "conversation_summary": "A conversation about traveling and visiting interesting places."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Has oído hablar de los 'Rancheros' ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "No, ¿qué son?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Son una banda de música mexicana. ¡Su música es genial!"
-            }
-        ],
-        "conversation_summary": "A conversation about a musical band."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Qué te gusta hacer en tu tiempo libre?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Me gusta leer y escuchar música."
+      },
+      {
+        "speaker": "person1",
+        "message": "Yo también. ¿Has leído algún libro interesante recientemente?"
+      }
+    ],
+    "conversation_summary": "A conversation about hobbies and interests in free time."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Has ido al parque recientemente?"
+      },
+      {
+        "speaker": "person2",
+        "message": "No, pero me gustaría ir. ¿Qué tal si juntamos una picnic?"
+      },
+      {
+        "speaker": "person1",
+        "message": "¡Eso suena genial! ¿Cuál es tu comida preferida para la picnic?"
+      }
+    ],
+    "conversation_summary": "A conversation about going to the park and having a picnic."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Has visto la última película de animación ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "No, pero me gusta mucho el género. ¿Qué te parece de 'Los Increíbles'?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Yo también. Es mi película favorita de animación."
+      }
+    ],
+    "conversation_summary": "A conversation about favorite animated movies."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Qué te parece de viajar ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Me encanta. ¿Has ido a algún lugar interesante recientemente?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Sí, he estado en París. ¡Es precioso!"
+      }
+    ],
+    "conversation_summary": "A conversation about traveling and visiting interesting places."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Has oído hablar de los 'Rancheros' ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "No, ¿qué son?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Son una banda de música mexicana. ¡Su música es genial!"
+      }
+    ],
+    "conversation_summary": "A conversation about a musical band."
+  }
 ]

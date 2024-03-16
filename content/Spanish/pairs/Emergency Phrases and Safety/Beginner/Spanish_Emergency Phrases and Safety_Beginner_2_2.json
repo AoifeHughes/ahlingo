@@ -1,42 +1,42 @@
 [
-    {
-        "English": "hello",
-        "French": "bonjour"
-    },
-    {
-        "English": "goodbye",
-        "French": "au revoir"
-    },
-    {
-        "English": "thank you",
-        "French": "merci"
-    },
-    {
-        "English": "sorry",
-        "French": "excusez-moi"
-    },
-    {
-        "English": "yes",
-        "French": "oui"
-    },
-    {
-        "English": "no",
-        "French": "non"
-    },
-    {
-        "English": "please",
-        "French": "s'il vous plaît"
-    },
-    {
-        "English": "I love you",
-        "French": "je t'aime"
-    },
-    {
-        "English": "How are you?",
-        "French": "Comment allez-vous?"
-    },
-    {
-        "English": "Do you speak English?",
-        "French": "Parlez-vous anglais?"
-    }
+  {
+    "English": "hello",
+    "French": "bonjour"
+  },
+  {
+    "English": "goodbye",
+    "French": "au revoir"
+  },
+  {
+    "English": "thank you",
+    "French": "merci"
+  },
+  {
+    "English": "sorry",
+    "French": "excusez-moi"
+  },
+  {
+    "English": "yes",
+    "French": "oui"
+  },
+  {
+    "English": "no",
+    "French": "non"
+  },
+  {
+    "English": "please",
+    "French": "s'il vous plaît"
+  },
+  {
+    "English": "I love you",
+    "French": "je t'aime"
+  },
+  {
+    "English": "How are you?",
+    "French": "Comment allez-vous?"
+  },
+  {
+    "English": "Do you speak English?",
+    "French": "Parlez-vous anglais?"
+  }
 ]

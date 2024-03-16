@@ -1,38 +1,38 @@
 [
-    {
-        "English": "holy",
-        "Spanish": "santo"
-    },
-    {
-        "English": "prayer",
-        "Spanish": "oración"
-    },
-    {
-        "English": "faith",
-        "Spanish": "fe"
-    },
-    {
-        "English": "god",
-        "Spanish": "dios"
-    },
-    {
-        "English": "spirituality",
-        "Spanish": "espiritualidad"
-    },
-    {
-        "English": "religion",
-        "Spanish": "religión"
-    },
-    {
-        "English": "church",
-        "Spanish": "iglesia"
-    },
-    {
-        "English": "Bible",
-        "Spanish": "biblia"
-    },
-    {
-        "English": "soul",
-        "Spanish": "alma"
-    }
+  {
+    "English": "holy",
+    "Spanish": "santo"
+  },
+  {
+    "English": "prayer",
+    "Spanish": "oración"
+  },
+  {
+    "English": "faith",
+    "Spanish": "fe"
+  },
+  {
+    "English": "god",
+    "Spanish": "dios"
+  },
+  {
+    "English": "spirituality",
+    "Spanish": "espiritualidad"
+  },
+  {
+    "English": "religion",
+    "Spanish": "religión"
+  },
+  {
+    "English": "church",
+    "Spanish": "iglesia"
+  },
+  {
+    "English": "Bible",
+    "Spanish": "biblia"
+  },
+  {
+    "English": "soul",
+    "Spanish": "alma"
+  }
 ]

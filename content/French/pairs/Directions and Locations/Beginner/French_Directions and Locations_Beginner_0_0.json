@@ -1,38 +1,38 @@
 [
-    {
-        "English": "left",
-        "French": "gauche"
-    },
-    {
-        "English": "right",
-        "French": "droite"
-    },
-    {
-        "English": "straight ahead",
-        "French": "vers l'avant"
-    },
-    {
-        "English": "behind",
-        "French": "derrière"
-    },
-    {
-        "English": "in front of",
-        "French": "devant"
-    },
-    {
-        "English": "above",
-        "French": "au-dessus"
-    },
-    {
-        "English": "below",
-        "French": "en dessous"
-    },
-    {
-        "English": "to the left",
-        "French": "à gauche"
-    },
-    {
-        "English": "to the right",
-        "French": "à droite"
-    }
+  {
+    "English": "left",
+    "French": "gauche"
+  },
+  {
+    "English": "right",
+    "French": "droite"
+  },
+  {
+    "English": "straight ahead",
+    "French": "vers l'avant"
+  },
+  {
+    "English": "behind",
+    "French": "derrière"
+  },
+  {
+    "English": "in front of",
+    "French": "devant"
+  },
+  {
+    "English": "above",
+    "French": "au-dessus"
+  },
+  {
+    "English": "below",
+    "French": "en dessous"
+  },
+  {
+    "English": "to the left",
+    "French": "à gauche"
+  },
+  {
+    "English": "to the right",
+    "French": "à droite"
+  }
 ]

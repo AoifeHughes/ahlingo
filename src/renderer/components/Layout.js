@@ -25,7 +25,7 @@ function Layout() {
         <Route path="/" element={<div>Welcome! Select a menu option.</div>} />
         <Route path="/conversation" element={<Conversation />} />
         <Route path="/pairs" element={<Pairs />} />
-        <Route path="/translations" element={<Translation/>} />
+        <Route path="/translations" element={<Translation />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/user-info" element={<UserInfo />} />
       </Routes>

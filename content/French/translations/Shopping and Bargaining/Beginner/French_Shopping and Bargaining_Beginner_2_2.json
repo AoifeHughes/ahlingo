@@ -1,22 +1,22 @@
 [
-    {
-        "English": "What is your name?",
-        "French": "Comment t'appelles-tu ?"
-    },
-    {
-        "English": "I am looking for a new dress.",
-        "French": "Je cherche une robe nouvelle."
-    },
-    {
-        "English": "Do you speak English?",
-        "French": "Parles-tu anglais ?"
-    },
-    {
-        "English": "The store is closed today.",
-        "French": "La boutique est fermée aujourd'hui."
-    },
-    {
-        "English": "I want to buy this shirt, but it's too expensive.",
-        "French": "J'aimerais acheter cette chemise, mais elle est trop chère."
-    }
+  {
+    "English": "What is your name?",
+    "French": "Comment t'appelles-tu ?"
+  },
+  {
+    "English": "I am looking for a new dress.",
+    "French": "Je cherche une robe nouvelle."
+  },
+  {
+    "English": "Do you speak English?",
+    "French": "Parles-tu anglais ?"
+  },
+  {
+    "English": "The store is closed today.",
+    "French": "La boutique est fermée aujourd'hui."
+  },
+  {
+    "English": "I want to buy this shirt, but it's too expensive.",
+    "French": "J'aimerais acheter cette chemise, mais elle est trop chère."
+  }
 ]

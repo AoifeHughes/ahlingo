@@ -1,87 +1,87 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Qué te parece de la moda actual ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Mi opinión es que los colores brillantes están de moda este verano."
-            },
-            {
-                "speaker": "person1",
-                "message": "Yo prefiero los tonos suaves y naturales."
-            }
-        ],
-        "conversation_summary": "A conversation about current fashion trends and preferences."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Qué tipo de ropa llevas hoy ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Estoy usando un suéter y pantalones vaqueros."
-            },
-            {
-                "speaker": "person1",
-                "message": "Yo prefiero llevar un vestido para la oficina."
-            }
-        ],
-        "conversation_summary": "A conversation about what clothes each person is wearing today and their preferences for different occasions."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Cuál es tu pieza de ropa favorita ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Mi mejor pieza de ropa es mi abrigo de piel."
-            },
-            {
-                "speaker": "person1",
-                "message": "Yo tengo una chaqueta de cuero que me encanta."
-            }
-        ],
-        "conversation_summary": "A conversation about each person's favorite piece of clothing and why they like it."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Qué te parece de los complementos de ropa ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Me encanta usar gorras y bonetes."
-            },
-            {
-                "speaker": "person1",
-                "message": "Yo prefiero llevar un bolso de mano."
-            }
-        ],
-        "conversation_summary": "A conversation about accessories and the different items each person likes to wear."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Cuál es tu estilo de vida ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Mi estilo de vida es bastante casual, pero también me gusta llevar ropa elegante para eventos especiales."
-            },
-            {
-                "speaker": "person1",
-                "message": "Yo prefiero un estilo más informal, pero a veces me gusta ponerme un traje para la oficina."
-            }
-        ],
-        "conversation_summary": "A conversation about each person's lifestyle and clothing preferences for different occasions."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Qué te parece de la moda actual ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Mi opinión es que los colores brillantes están de moda este verano."
+      },
+      {
+        "speaker": "person1",
+        "message": "Yo prefiero los tonos suaves y naturales."
+      }
+    ],
+    "conversation_summary": "A conversation about current fashion trends and preferences."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Qué tipo de ropa llevas hoy ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Estoy usando un suéter y pantalones vaqueros."
+      },
+      {
+        "speaker": "person1",
+        "message": "Yo prefiero llevar un vestido para la oficina."
+      }
+    ],
+    "conversation_summary": "A conversation about what clothes each person is wearing today and their preferences for different occasions."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Cuál es tu pieza de ropa favorita ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Mi mejor pieza de ropa es mi abrigo de piel."
+      },
+      {
+        "speaker": "person1",
+        "message": "Yo tengo una chaqueta de cuero que me encanta."
+      }
+    ],
+    "conversation_summary": "A conversation about each person's favorite piece of clothing and why they like it."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Qué te parece de los complementos de ropa ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Me encanta usar gorras y bonetes."
+      },
+      {
+        "speaker": "person1",
+        "message": "Yo prefiero llevar un bolso de mano."
+      }
+    ],
+    "conversation_summary": "A conversation about accessories and the different items each person likes to wear."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Cuál es tu estilo de vida ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Mi estilo de vida es bastante casual, pero también me gusta llevar ropa elegante para eventos especiales."
+      },
+      {
+        "speaker": "person1",
+        "message": "Yo prefiero un estilo más informal, pero a veces me gusta ponerme un traje para la oficina."
+      }
+    ],
+    "conversation_summary": "A conversation about each person's lifestyle and clothing preferences for different occasions."
+  }
 ]
