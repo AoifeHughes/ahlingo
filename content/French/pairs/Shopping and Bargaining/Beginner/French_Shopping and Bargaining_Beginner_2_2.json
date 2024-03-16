@@ -1,38 +1,38 @@
 [
-    {
-        "English": "bread",
-        "French": "pain"
-    },
-    {
-        "English": "butcher",
-        "French": "boucher"
-    },
-    {
-        "English": "cheese",
-        "French": "fromage"
-    },
-    {
-        "English": "chicken",
-        "French": "poulet"
-    },
-    {
-        "English": "fish",
-        "French": "poisson"
-    },
-    {
-        "English": "market",
-        "French": "marché"
-    },
-    {
-        "English": "sale",
-        "French": "réduction"
-    },
-    {
-        "English": "shop",
-        "French": "boutique"
-    },
-    {
-        "English": "shopping bag",
-        "French": "sac à main"
-    }
+  {
+    "English": "bread",
+    "French": "pain"
+  },
+  {
+    "English": "butcher",
+    "French": "boucher"
+  },
+  {
+    "English": "cheese",
+    "French": "fromage"
+  },
+  {
+    "English": "chicken",
+    "French": "poulet"
+  },
+  {
+    "English": "fish",
+    "French": "poisson"
+  },
+  {
+    "English": "market",
+    "French": "marché"
+  },
+  {
+    "English": "sale",
+    "French": "réduction"
+  },
+  {
+    "English": "shop",
+    "French": "boutique"
+  },
+  {
+    "English": "shopping bag",
+    "French": "sac à main"
+  }
 ]

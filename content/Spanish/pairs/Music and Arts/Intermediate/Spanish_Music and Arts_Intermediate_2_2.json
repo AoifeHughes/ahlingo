@@ -1,38 +1,38 @@
 [
-    {
-        "English": "guitar",
-        "Spanish": "guitarra"
-    },
-    {
-        "English": "painting",
-        "Spanish": "pintura"
-    },
-    {
-        "English": "violin",
-        "Spanish": "violín"
-    },
-    {
-        "English": "drums",
-        "Spanish": "batería"
-    },
-    {
-        "English": "singing",
-        "Spanish": "cantar"
-    },
-    {
-        "English": "dancing",
-        "Spanish": "baile"
-    },
-    {
-        "English": "piano",
-        "Spanish": "piano"
-    },
-    {
-        "English": "cello",
-        "Spanish": "cello"
-    },
-    {
-        "English": "flute",
-        "Spanish": "flauta"
-    }
+  {
+    "English": "guitar",
+    "Spanish": "guitarra"
+  },
+  {
+    "English": "painting",
+    "Spanish": "pintura"
+  },
+  {
+    "English": "violin",
+    "Spanish": "violín"
+  },
+  {
+    "English": "drums",
+    "Spanish": "batería"
+  },
+  {
+    "English": "singing",
+    "Spanish": "cantar"
+  },
+  {
+    "English": "dancing",
+    "Spanish": "baile"
+  },
+  {
+    "English": "piano",
+    "Spanish": "piano"
+  },
+  {
+    "English": "cello",
+    "Spanish": "cello"
+  },
+  {
+    "English": "flute",
+    "Spanish": "flauta"
+  }
 ]

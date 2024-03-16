@@ -1,38 +1,38 @@
 [
-    {
-        "English": "computer",
-        "French": "ordinateur"
-    },
-    {
-        "English": "court",
-        "French": "tribunal"
-    },
-    {
-        "English": "evidence",
-        "French": "preuve"
-    },
-    {
-        "English": "jury",
-        "French": "juré"
-    },
-    {
-        "English": "lawyer",
-        "French": "avocat"
-    },
-    {
-        "English": "crime",
-        "French": "délit"
-    },
-    {
-        "English": "punishment",
-        "French": "punition"
-    },
-    {
-        "English": "witness",
-        "French": "témoin"
-    },
-    {
-        "English": "contract",
-        "French": "convention"
-    }
+  {
+    "English": "computer",
+    "French": "ordinateur"
+  },
+  {
+    "English": "court",
+    "French": "tribunal"
+  },
+  {
+    "English": "evidence",
+    "French": "preuve"
+  },
+  {
+    "English": "jury",
+    "French": "juré"
+  },
+  {
+    "English": "lawyer",
+    "French": "avocat"
+  },
+  {
+    "English": "crime",
+    "French": "délit"
+  },
+  {
+    "English": "punishment",
+    "French": "punition"
+  },
+  {
+    "English": "witness",
+    "French": "témoin"
+  },
+  {
+    "English": "contract",
+    "French": "convention"
+  }
 ]

@@ -1,22 +1,22 @@
 [
-    {
-        "English": "bread",
-        "French": "pain"
-    },
-    {
-        "English": "cheese",
-        "French": "fromage"
-    },
-    {
-        "English": "coffee",
-        "French": "café"
-    },
-    {
-        "English": "soup",
-        "French": "soupe"
-    },
-    {
-        "English": "salad",
-        "French": "salade"
-    }
+  {
+    "English": "bread",
+    "French": "pain"
+  },
+  {
+    "English": "cheese",
+    "French": "fromage"
+  },
+  {
+    "English": "coffee",
+    "French": "café"
+  },
+  {
+    "English": "soup",
+    "French": "soupe"
+  },
+  {
+    "English": "salad",
+    "French": "salade"
+  }
 ]

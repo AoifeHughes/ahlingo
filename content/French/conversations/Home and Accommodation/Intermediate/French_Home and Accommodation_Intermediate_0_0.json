@@ -1,87 +1,87 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment t'appelles-tu ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je m'appelle Marie."
-            },
-            {
-                "speaker": "person1",
-                "message": "Pleasure to meet you, Marie."
-            }
-        ],
-        "conversation_summary": "A conversation introducing yourself and meeting someone new."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Tu habites où ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'habite à Paris."
-            },
-            {
-                "speaker": "person1",
-                "message": "Ah, j'aimerais visiter Paris un jour."
-            }
-        ],
-        "conversation_summary": "A conversation about where someone lives and expressing interest in visiting a place."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Qu'est-ce que tu fais ce weekend ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je vais à la plage avec mes amis."
-            },
-            {
-                "speaker": "person1",
-                "message": "C'est une belle idée. J'aimerais y aller aussi un jour."
-            }
-        ],
-        "conversation_summary": "A conversation about weekend plans and expressing interest in doing something in the future."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Tu as déjà fait une randonnée ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Oui, j'aime beaucoup faire de la randonnée. C'est un excellent sport pour rester en forme."
-            },
-            {
-                "speaker": "person1",
-                "message": "Je veux essayer. J'ai entendu dire qu'il y a des sentiers magnifiques à proximité."
-            }
-        ],
-        "conversation_summary": "A conversation about hiking and expressing interest in trying it out."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton endroit préféré pour la lecture ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime beaucoup lire dans le parc. L'air frais et l'ombre sont très agréables."
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi aussi. J'y ai lu plusieurs livres intéressants."
-            }
-        ],
-        "conversation_summary": "A conversation about preferred places to read and discussing the enjoyment of reading in nature."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment t'appelles-tu ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je m'appelle Marie."
+      },
+      {
+        "speaker": "person1",
+        "message": "Pleasure to meet you, Marie."
+      }
+    ],
+    "conversation_summary": "A conversation introducing yourself and meeting someone new."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Tu habites où ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'habite à Paris."
+      },
+      {
+        "speaker": "person1",
+        "message": "Ah, j'aimerais visiter Paris un jour."
+      }
+    ],
+    "conversation_summary": "A conversation about where someone lives and expressing interest in visiting a place."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Qu'est-ce que tu fais ce weekend ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je vais à la plage avec mes amis."
+      },
+      {
+        "speaker": "person1",
+        "message": "C'est une belle idée. J'aimerais y aller aussi un jour."
+      }
+    ],
+    "conversation_summary": "A conversation about weekend plans and expressing interest in doing something in the future."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Tu as déjà fait une randonnée ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Oui, j'aime beaucoup faire de la randonnée. C'est un excellent sport pour rester en forme."
+      },
+      {
+        "speaker": "person1",
+        "message": "Je veux essayer. J'ai entendu dire qu'il y a des sentiers magnifiques à proximité."
+      }
+    ],
+    "conversation_summary": "A conversation about hiking and expressing interest in trying it out."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton endroit préféré pour la lecture ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime beaucoup lire dans le parc. L'air frais et l'ombre sont très agréables."
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi aussi. J'y ai lu plusieurs livres intéressants."
+      }
+    ],
+    "conversation_summary": "A conversation about preferred places to read and discussing the enjoyment of reading in nature."
+  }
 ]

@@ -1,22 +1,22 @@
 [
-    {
-        "English": "left",
-        "French": "gauche"
-    },
-    {
-        "English": "right",
-        "French": "droite"
-    },
-    {
-        "English": "straight ahead",
-        "French": "en avant"
-    },
-    {
-        "English": "behind",
-        "French": "derrière"
-    },
-    {
-        "English": "in front of",
-        "French": "devant"
-    }
+  {
+    "English": "left",
+    "French": "gauche"
+  },
+  {
+    "English": "right",
+    "French": "droite"
+  },
+  {
+    "English": "straight ahead",
+    "French": "en avant"
+  },
+  {
+    "English": "behind",
+    "French": "derrière"
+  },
+  {
+    "English": "in front of",
+    "French": "devant"
+  }
 ]

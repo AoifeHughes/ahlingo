@@ -1,42 +1,42 @@
 [
-    {
-        "English": "shirt",
-        "French": "chemise"
-    },
-    {
-        "English": "pants",
-        "French": "pantalons"
-    },
-    {
-        "English": "jacket",
-        "French": "veste"
-    },
-    {
-        "English": "hat",
-        "French": "chapeau"
-    },
-    {
-        "English": "shoes",
-        "French": "chaussures"
-    },
-    {
-        "English": "dress",
-        "French": "robe"
-    },
-    {
-        "English": "tie",
-        "French": "cravate"
-    },
-    {
-        "English": "belt",
-        "French": "ceinture"
-    },
-    {
-        "English": "sock",
-        "French": "chausson"
-    },
-    {
-        "English": "shorts",
-        "French": "culottes"
-    }
+  {
+    "English": "shirt",
+    "French": "chemise"
+  },
+  {
+    "English": "pants",
+    "French": "pantalons"
+  },
+  {
+    "English": "jacket",
+    "French": "veste"
+  },
+  {
+    "English": "hat",
+    "French": "chapeau"
+  },
+  {
+    "English": "shoes",
+    "French": "chaussures"
+  },
+  {
+    "English": "dress",
+    "French": "robe"
+  },
+  {
+    "English": "tie",
+    "French": "cravate"
+  },
+  {
+    "English": "belt",
+    "French": "ceinture"
+  },
+  {
+    "English": "sock",
+    "French": "chausson"
+  },
+  {
+    "English": "shorts",
+    "French": "culottes"
+  }
 ]

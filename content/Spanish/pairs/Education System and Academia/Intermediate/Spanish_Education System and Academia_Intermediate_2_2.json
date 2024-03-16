@@ -1,34 +1,34 @@
 [
-    {
-        "English": "computer",
-        "French": "ordinateur"
-    },
-    {
-        "English": "desk",
-        "French": "bureau"
-    },
-    {
-        "English": "pencil",
-        "French": "stylo"
-    },
-    {
-        "English": "chair",
-        "French": "chaise"
-    },
-    {
-        "English": "whiteboard",
-        "French": "tableau blanc"
-    },
-    {
-        "English": "blackboard",
-        "French": "tableau noir"
-    },
-    {
-        "English": "notebook",
-        "French": "cahier"
-    },
-    {
-        "English": "teacher",
-        "French": "professeur"
-    }
+  {
+    "English": "computer",
+    "French": "ordinateur"
+  },
+  {
+    "English": "desk",
+    "French": "bureau"
+  },
+  {
+    "English": "pencil",
+    "French": "stylo"
+  },
+  {
+    "English": "chair",
+    "French": "chaise"
+  },
+  {
+    "English": "whiteboard",
+    "French": "tableau blanc"
+  },
+  {
+    "English": "blackboard",
+    "French": "tableau noir"
+  },
+  {
+    "English": "notebook",
+    "French": "cahier"
+  },
+  {
+    "English": "teacher",
+    "French": "professeur"
+  }
 ]

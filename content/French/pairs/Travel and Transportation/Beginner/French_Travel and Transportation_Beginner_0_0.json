@@ -1,22 +1,22 @@
 [
-    {
-        "English": "airplane",
-        "French": "avion"
-    },
-    {
-        "English": "bicycle",
-        "French": "velo"
-    },
-    {
-        "English": "hotel",
-        "French": "hôtel"
-    },
-    {
-        "English": "beach",
-        "French": "plage"
-    },
-    {
-        "English": "train",
-        "French": "train"
-    }
+  {
+    "English": "airplane",
+    "French": "avion"
+  },
+  {
+    "English": "bicycle",
+    "French": "velo"
+  },
+  {
+    "English": "hotel",
+    "French": "hôtel"
+  },
+  {
+    "English": "beach",
+    "French": "plage"
+  },
+  {
+    "English": "train",
+    "French": "train"
+  }
 ]

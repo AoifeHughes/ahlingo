@@ -1,38 +1,38 @@
 [
-    {
-        "English": "cat",
-        "French": "chat"
-    },
-    {
-        "English": "city",
-        "French": "ville"
-    },
-    {
-        "English": "computer",
-        "French": "ordinateur"
-    },
-    {
-        "English": "flower",
-        "French": "fleur"
-    },
-    {
-        "English": "friend",
-        "French": "ami"
-    },
-    {
-        "English": "mountain",
-        "French": "montagne"
-    },
-    {
-        "English": "music",
-        "French": "musique"
-    },
-    {
-        "English": "ocean",
-        "French": "océan"
-    },
-    {
-        "English": "phone",
-        "French": "téléphone"
-    }
+  {
+    "English": "cat",
+    "French": "chat"
+  },
+  {
+    "English": "city",
+    "French": "ville"
+  },
+  {
+    "English": "computer",
+    "French": "ordinateur"
+  },
+  {
+    "English": "flower",
+    "French": "fleur"
+  },
+  {
+    "English": "friend",
+    "French": "ami"
+  },
+  {
+    "English": "mountain",
+    "French": "montagne"
+  },
+  {
+    "English": "music",
+    "French": "musique"
+  },
+  {
+    "English": "ocean",
+    "French": "océan"
+  },
+  {
+    "English": "phone",
+    "French": "téléphone"
+  }
 ]

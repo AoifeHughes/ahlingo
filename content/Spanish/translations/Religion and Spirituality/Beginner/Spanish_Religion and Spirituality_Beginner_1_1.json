@@ -1,22 +1,22 @@
 [
-    {
-        "English": "What is your name?",
-        "French": "Comment t'appelles-tu ?"
-    },
-    {
-        "English": "I like to read books in my free time.",
-        "French": "J'aime lire des livres à mes loisirs."
-    },
-    {
-        "English": "The sun is shining brightly today.",
-        "French": "Le soleil brille intensément aujourd'hui."
-    },
-    {
-        "English": "Can you give me a ride to the store?",
-        "French": "Peux-tu me donner un lift au magasin ?"
-    },
-    {
-        "English": "I have a cat and a dog at home.",
-        "French": "J'ai un chat et un chien chez moi."
-    }
+  {
+    "English": "What is your name?",
+    "French": "Comment t'appelles-tu ?"
+  },
+  {
+    "English": "I like to read books in my free time.",
+    "French": "J'aime lire des livres à mes loisirs."
+  },
+  {
+    "English": "The sun is shining brightly today.",
+    "French": "Le soleil brille intensément aujourd'hui."
+  },
+  {
+    "English": "Can you give me a ride to the store?",
+    "French": "Peux-tu me donner un lift au magasin ?"
+  },
+  {
+    "English": "I have a cat and a dog at home.",
+    "French": "J'ai un chat et un chien chez moi."
+  }
 ]

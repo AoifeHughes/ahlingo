@@ -1,87 +1,87 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Cuál es tu dios preferido?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Yo prefiero al dios del sol. ¿Y tú?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Yo creo en el dios de la luna. Los dos son muy importantes."
-            }
-        ],
-        "conversation_summary": "A conversation about each person's preferred god and the importance of different gods."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Has oído hablar del budismo?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Sí, es una religión muy popular en Asia. ¿Qué más sabes de él?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Puedo explicarte algunos conceptos básicos, como la iluminación y el ciclo de la vida."
-            }
-        ],
-        "conversation_summary": "A conversation about the basics of Buddhism and its key concepts."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Qué significa ser espiritual para ti?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Para mí, ser espiritual significa buscar significado y propósito en la vida. ¿Y tú?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Por mi parte, creo que es importante estar abiertos a las posibilidades de la vida y de la muerte."
-            }
-        ],
-        "conversation_summary": "A conversation about the meaning of being spiritual and the importance of being open to life's possibilities."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Has visitado alguna vez un templo?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Sí, he estado en un templo hinduista. ¿Has oído hablar de la reencarnación?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Sí, es una creencia importante en muchas religiones orientales. ¿Qué piensas de ella?"
-            }
-        ],
-        "conversation_summary": "A conversation about visiting temples and the concept of reincarnation."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Cómo te gusta la oración?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Yo prefiero hacerlo en privado, para mí mismo. ¿Y tú?"
-            },
-            {
-                "speaker": "person1",
-                "message": "También prefiero hacerla sola, pero también disfruto participar en reuniones de oración con otros."
-            }
-        ],
-        "conversation_summary": "A conversation about the preference for private or group prayer."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Cuál es tu dios preferido?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Yo prefiero al dios del sol. ¿Y tú?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Yo creo en el dios de la luna. Los dos son muy importantes."
+      }
+    ],
+    "conversation_summary": "A conversation about each person's preferred god and the importance of different gods."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Has oído hablar del budismo?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Sí, es una religión muy popular en Asia. ¿Qué más sabes de él?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Puedo explicarte algunos conceptos básicos, como la iluminación y el ciclo de la vida."
+      }
+    ],
+    "conversation_summary": "A conversation about the basics of Buddhism and its key concepts."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Qué significa ser espiritual para ti?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Para mí, ser espiritual significa buscar significado y propósito en la vida. ¿Y tú?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Por mi parte, creo que es importante estar abiertos a las posibilidades de la vida y de la muerte."
+      }
+    ],
+    "conversation_summary": "A conversation about the meaning of being spiritual and the importance of being open to life's possibilities."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Has visitado alguna vez un templo?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Sí, he estado en un templo hinduista. ¿Has oído hablar de la reencarnación?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Sí, es una creencia importante en muchas religiones orientales. ¿Qué piensas de ella?"
+      }
+    ],
+    "conversation_summary": "A conversation about visiting temples and the concept of reincarnation."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Cómo te gusta la oración?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Yo prefiero hacerlo en privado, para mí mismo. ¿Y tú?"
+      },
+      {
+        "speaker": "person1",
+        "message": "También prefiero hacerla sola, pero también disfruto participar en reuniones de oración con otros."
+      }
+    ],
+    "conversation_summary": "A conversation about the preference for private or group prayer."
+  }
 ]

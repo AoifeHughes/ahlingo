@@ -1,38 +1,38 @@
 [
-    {
-        "English": "hello",
-        "French": "bonjour"
-    },
-    {
-        "English": "goodbye",
-        "French": "au revoir"
-    },
-    {
-        "English": "thank you",
-        "French": "merci"
-    },
-    {
-        "English": "please",
-        "French": "s'il vous plaît"
-    },
-    {
-        "English": "excuse me",
-        "French": "pardon"
-    },
-    {
-        "English": "I'm sorry",
-        "French": "je suis désolé"
-    },
-    {
-        "English": "yes",
-        "French": "oui"
-    },
-    {
-        "English": "no",
-        "French": "non"
-    },
-    {
-        "English": "maybe",
-        "French": "peut-être"
-    }
+  {
+    "English": "hello",
+    "French": "bonjour"
+  },
+  {
+    "English": "goodbye",
+    "French": "au revoir"
+  },
+  {
+    "English": "thank you",
+    "French": "merci"
+  },
+  {
+    "English": "please",
+    "French": "s'il vous plaît"
+  },
+  {
+    "English": "excuse me",
+    "French": "pardon"
+  },
+  {
+    "English": "I'm sorry",
+    "French": "je suis désolé"
+  },
+  {
+    "English": "yes",
+    "French": "oui"
+  },
+  {
+    "English": "no",
+    "French": "non"
+  },
+  {
+    "English": "maybe",
+    "French": "peut-être"
+  }
 ]

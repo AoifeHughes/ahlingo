@@ -1,87 +1,87 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Cuál es tu deporte favorito?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Mi deporte favorito es el fútbol. Y tú?"
-            },
-            {
-                "speaker": "person1",
-                "message": "A mí me gusta jugar al baloncesto. ¿Has jugado alguna vez?"
-            }
-        ],
-        "conversation_summary": "A conversation discussing each person's favorite sport."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Cuántas veces te despertares en una semana para hacer ejercicio?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Despertaro una vez por la mañana para ir al gimnasio. ¿Y tú?"
-            },
-            {
-                "speaker": "person1",
-                "message": "También despertaré una vez a la semana para hacer ejercicio en casa."
-            }
-        ],
-        "conversation_summary": "A conversation about the frequency of exercising in a week."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Cuál es tu objetivo fitness más importante?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Mi objetivo principal es perder peso y mantenerme en forma."
-            },
-            {
-                "speaker": "person1",
-                "message": "Yo quiero aumentar mi fuerza y tonificar mis músculos."
-            }
-        ],
-        "conversation_summary": "A conversation about personal fitness goals."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Has probado alguna vez la natación en el mar?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Sí, me encanta. El agua es muy refrescante y la vista es preciosa."
-            },
-            {
-                "speaker": "person1",
-                "message": "Yo nunca he probado, pero me gustaría darle una oportunidad."
-            }
-        ],
-        "conversation_summary": "A conversation about trying sea swimming."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Qué tipo de comida es mejor para el cuerpo?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Las frutas y verduras son muy buenas para nuestro cuerpo."
-            },
-            {
-                "speaker": "person1",
-                "message": "Sí, y también los alimentos proteínicos como las carnes magras y los huevos."
-            }
-        ],
-        "conversation_summary": "A conversation about the best food for the body."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Cuál es tu deporte favorito?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Mi deporte favorito es el fútbol. Y tú?"
+      },
+      {
+        "speaker": "person1",
+        "message": "A mí me gusta jugar al baloncesto. ¿Has jugado alguna vez?"
+      }
+    ],
+    "conversation_summary": "A conversation discussing each person's favorite sport."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Cuántas veces te despertares en una semana para hacer ejercicio?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Despertaro una vez por la mañana para ir al gimnasio. ¿Y tú?"
+      },
+      {
+        "speaker": "person1",
+        "message": "También despertaré una vez a la semana para hacer ejercicio en casa."
+      }
+    ],
+    "conversation_summary": "A conversation about the frequency of exercising in a week."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Cuál es tu objetivo fitness más importante?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Mi objetivo principal es perder peso y mantenerme en forma."
+      },
+      {
+        "speaker": "person1",
+        "message": "Yo quiero aumentar mi fuerza y tonificar mis músculos."
+      }
+    ],
+    "conversation_summary": "A conversation about personal fitness goals."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Has probado alguna vez la natación en el mar?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Sí, me encanta. El agua es muy refrescante y la vista es preciosa."
+      },
+      {
+        "speaker": "person1",
+        "message": "Yo nunca he probado, pero me gustaría darle una oportunidad."
+      }
+    ],
+    "conversation_summary": "A conversation about trying sea swimming."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Qué tipo de comida es mejor para el cuerpo?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Las frutas y verduras son muy buenas para nuestro cuerpo."
+      },
+      {
+        "speaker": "person1",
+        "message": "Sí, y también los alimentos proteínicos como las carnes magras y los huevos."
+      }
+    ],
+    "conversation_summary": "A conversation about the best food for the body."
+  }
 ]

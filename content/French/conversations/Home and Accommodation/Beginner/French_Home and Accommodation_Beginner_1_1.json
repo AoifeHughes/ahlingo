@@ -1,91 +1,91 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment t'appelles-tu ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je m'appelle Marie."
-            },
-            {
-                "speaker": "person1",
-                "message": "Pourquoi tu viens d'Angleterre ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'ai étudié là-bas."
-            }
-        ],
-        "conversation_summary": "A conversation introducing oneself and discussing travel to England."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton pays préféré ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Le Canada, c'est très beau."
-            },
-            {
-                "speaker": "person1",
-                "message": "J'ai travaillé là-bas il y a longtemps."
-            }
-        ],
-        "conversation_summary": "A conversation about favorite countries and work experiences."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton hobby préféré ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime faire du cyclisme."
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi aussi, c'est très agréable."
-            }
-        ],
-        "conversation_summary": "A conversation about favorite hobbies, specifically cycling."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Tu viens d'où ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je viens de France."
-            },
-            {
-                "speaker": "person1",
-                "message": "Comment tu te sens aujourd'hui ?"
-            }
-        ],
-        "conversation_summary": "A conversation about origin and current feelings."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton animal préféré ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime les chiens."
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi aussi, ils sont très gentils."
-            }
-        ],
-        "conversation_summary": "A conversation about favorite animals, specifically dogs."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment t'appelles-tu ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je m'appelle Marie."
+      },
+      {
+        "speaker": "person1",
+        "message": "Pourquoi tu viens d'Angleterre ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'ai étudié là-bas."
+      }
+    ],
+    "conversation_summary": "A conversation introducing oneself and discussing travel to England."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton pays préféré ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Le Canada, c'est très beau."
+      },
+      {
+        "speaker": "person1",
+        "message": "J'ai travaillé là-bas il y a longtemps."
+      }
+    ],
+    "conversation_summary": "A conversation about favorite countries and work experiences."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton hobby préféré ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime faire du cyclisme."
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi aussi, c'est très agréable."
+      }
+    ],
+    "conversation_summary": "A conversation about favorite hobbies, specifically cycling."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Tu viens d'où ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je viens de France."
+      },
+      {
+        "speaker": "person1",
+        "message": "Comment tu te sens aujourd'hui ?"
+      }
+    ],
+    "conversation_summary": "A conversation about origin and current feelings."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton animal préféré ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime les chiens."
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi aussi, ils sont très gentils."
+      }
+    ],
+    "conversation_summary": "A conversation about favorite animals, specifically dogs."
+  }
 ]

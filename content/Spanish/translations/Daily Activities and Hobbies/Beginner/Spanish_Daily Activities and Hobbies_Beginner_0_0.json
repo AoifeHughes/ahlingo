@@ -1,22 +1,22 @@
 [
-    {
-        "English": "What is your name?",
-        "French": "Comment t'appelles-tu ?"
-    },
-    {
-        "English": "I like to read books in my free time.",
-        "French": "J'aime lire des livres dans mon temps libre."
-    },
-    {
-        "English": "The park is a great place for a picnic.",
-        "French": "Le parc est un excellent endroit pour un pique-nique."
-    },
-    {
-        "English": "What do you want to do this weekend?",
-        "French": "Que voulais-tu faire cet week-end ?"
-    },
-    {
-        "English": "My dog loves to play fetch.",
-        "French": "Mon chien adore jouer au cache-cache."
-    }
+  {
+    "English": "What is your name?",
+    "French": "Comment t'appelles-tu ?"
+  },
+  {
+    "English": "I like to read books in my free time.",
+    "French": "J'aime lire des livres dans mon temps libre."
+  },
+  {
+    "English": "The park is a great place for a picnic.",
+    "French": "Le parc est un excellent endroit pour un pique-nique."
+  },
+  {
+    "English": "What do you want to do this weekend?",
+    "French": "Que voulais-tu faire cet week-end ?"
+  },
+  {
+    "English": "My dog loves to play fetch.",
+    "French": "Mon chien adore jouer au cache-cache."
+  }
 ]

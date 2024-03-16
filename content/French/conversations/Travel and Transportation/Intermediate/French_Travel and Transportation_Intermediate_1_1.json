@@ -1,87 +1,87 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment tu t'appelles ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je m'appelle Marie."
-            },
-            {
-                "speaker": "person1",
-                "message": "J'aime ce nom. C'est très français."
-            }
-        ],
-        "conversation_summary": "A conversation introducing yourself and discussing names."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ta ville préférée ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime bien Paris, c'est une grande ville avec beaucoup de choses à faire."
-            },
-            {
-                "speaker": "person1",
-                "message": "Je préfère la Provence. J'adore la cuisine et les paysages."
-            }
-        ],
-        "conversation_summary": "A conversation about favorite cities and why they are liked."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment tu arrives à l'école ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'ai le bus."
-            },
-            {
-                "speaker": "person1",
-                "message": "C'est une bonne idée. J'aime prendre le bus, c'est très écologique."
-            }
-        ],
-        "conversation_summary": "A conversation about how someone gets to school and the benefits of taking the bus."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton avion préféré ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime l'A380, c'est très grand et confortable."
-            },
-            {
-                "speaker": "person1",
-                "message": "Je préfère le Boeing 747. J'aime les avions anciens."
-            }
-        ],
-        "conversation_summary": "A conversation about favorite airplanes and why they are liked."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment tu tiens ton vélo ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'ai un vélo de course, je le tiens avec une selle."
-            },
-            {
-                "speaker": "person1",
-                "message": "Je préfère les vélos de town, ils sont plus confortables pour se promener."
-            }
-        ],
-        "conversation_summary": "A conversation about how someone holds their bike and the different types of bikes."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment tu t'appelles ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je m'appelle Marie."
+      },
+      {
+        "speaker": "person1",
+        "message": "J'aime ce nom. C'est très français."
+      }
+    ],
+    "conversation_summary": "A conversation introducing yourself and discussing names."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ta ville préférée ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime bien Paris, c'est une grande ville avec beaucoup de choses à faire."
+      },
+      {
+        "speaker": "person1",
+        "message": "Je préfère la Provence. J'adore la cuisine et les paysages."
+      }
+    ],
+    "conversation_summary": "A conversation about favorite cities and why they are liked."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment tu arrives à l'école ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'ai le bus."
+      },
+      {
+        "speaker": "person1",
+        "message": "C'est une bonne idée. J'aime prendre le bus, c'est très écologique."
+      }
+    ],
+    "conversation_summary": "A conversation about how someone gets to school and the benefits of taking the bus."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton avion préféré ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime l'A380, c'est très grand et confortable."
+      },
+      {
+        "speaker": "person1",
+        "message": "Je préfère le Boeing 747. J'aime les avions anciens."
+      }
+    ],
+    "conversation_summary": "A conversation about favorite airplanes and why they are liked."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment tu tiens ton vélo ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'ai un vélo de course, je le tiens avec une selle."
+      },
+      {
+        "speaker": "person1",
+        "message": "Je préfère les vélos de town, ils sont plus confortables pour se promener."
+      }
+    ],
+    "conversation_summary": "A conversation about how someone holds their bike and the different types of bikes."
+  }
 ]

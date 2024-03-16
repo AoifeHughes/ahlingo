@@ -1,34 +1,34 @@
 [
-    {
-        "English": "bed",
-        "French": "lit"
-    },
-    {
-        "English": "chair",
-        "French": "chaise"
-    },
-    {
-        "English": "table",
-        "French": "table"
-    },
-    {
-        "English": "cupboard",
-        "French": "armoire"
-    },
-    {
-        "English": "shower",
-        "French": "douche"
-    },
-    {
-        "English": "toilet",
-        "French": "toilettes"
-    },
-    {
-        "English": "sink",
-        "French": "évier"
-    },
-    {
-        "English": "mirror",
-        "French": "miroir"
-    }
+  {
+    "English": "bed",
+    "French": "lit"
+  },
+  {
+    "English": "chair",
+    "French": "chaise"
+  },
+  {
+    "English": "table",
+    "French": "table"
+  },
+  {
+    "English": "cupboard",
+    "French": "armoire"
+  },
+  {
+    "English": "shower",
+    "French": "douche"
+  },
+  {
+    "English": "toilet",
+    "French": "toilettes"
+  },
+  {
+    "English": "sink",
+    "French": "évier"
+  },
+  {
+    "English": "mirror",
+    "French": "miroir"
+  }
 ]

@@ -1,83 +1,83 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment tu te sens aujourd'hui ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je me sens un peu fatigué. J'ai travaillé tard hier soir."
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi, j'ai dormi mal. J'ai rêvé de l'orage qui a eu lieu hier."
-            }
-        ],
-        "conversation_summary": "A conversation about how each person is feeling that day."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton pays préféré ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je suis français, donc je préfère la France. Mais j'aime également l'Italie."
-            }
-        ],
-        "conversation_summary": "A conversation about each person's favorite country."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton aliment préféré ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'adore manger des légumes. Les poivrons sont mes favoris."
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi, j'aime manger de la viande. Le steak est très bon."
-            }
-        ],
-        "conversation_summary": "A conversation about each person's favorite food."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment tu passerais ton temps si tu gagnais à la loterie ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je prendrais un voyage autour du monde. J'aimerais visiter les pays les plus exotiques."
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi, j'achèterais une maison sur la plage et passerais mes journées à lire."
-            }
-        ],
-        "conversation_summary": "A conversation about what each person would do if they won the lottery."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Tu as déjà visité l'étranger ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Oui, j'ai visité l'Espagne il y a l'année. J'aime beaucoup la culture espagnole."
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi, j'ai visité la France et j'ai adoré la nourriture et les musées."
-            }
-        ],
-        "conversation_summary": "A conversation about each person's travel experiences."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment tu te sens aujourd'hui ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je me sens un peu fatigué. J'ai travaillé tard hier soir."
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi, j'ai dormi mal. J'ai rêvé de l'orage qui a eu lieu hier."
+      }
+    ],
+    "conversation_summary": "A conversation about how each person is feeling that day."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton pays préféré ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je suis français, donc je préfère la France. Mais j'aime également l'Italie."
+      }
+    ],
+    "conversation_summary": "A conversation about each person's favorite country."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton aliment préféré ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'adore manger des légumes. Les poivrons sont mes favoris."
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi, j'aime manger de la viande. Le steak est très bon."
+      }
+    ],
+    "conversation_summary": "A conversation about each person's favorite food."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment tu passerais ton temps si tu gagnais à la loterie ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je prendrais un voyage autour du monde. J'aimerais visiter les pays les plus exotiques."
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi, j'achèterais une maison sur la plage et passerais mes journées à lire."
+      }
+    ],
+    "conversation_summary": "A conversation about what each person would do if they won the lottery."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Tu as déjà visité l'étranger ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Oui, j'ai visité l'Espagne il y a l'année. J'aime beaucoup la culture espagnole."
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi, j'ai visité la France et j'ai adoré la nourriture et les musées."
+      }
+    ],
+    "conversation_summary": "A conversation about each person's travel experiences."
+  }
 ]
