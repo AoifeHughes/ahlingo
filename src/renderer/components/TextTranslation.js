@@ -31,7 +31,7 @@ function TextTranslation() {
 
     const csvFilePath = join(
       process.env.HOME || process.env.USERPROFILE,
-      "translationEvaluations.csv"
+      "translationEvaluations.csv",
     );
 
     useEffect(() => {
@@ -79,7 +79,7 @@ function TextTranslation() {
           (e) =>
             `"${e.userInput.replace(/"/g, '""')}",
            "${e.challengeSentence.replace(/"/g, '""')}",
-           "${e.score}"`
+           "${e.score}"`,
         )
         .join("\n");
       return header + rows;

@@ -1,34 +1,34 @@
 [
-    {
-        "English": "computer",
-        "French": "ordinateur"
-    },
-    {
-        "English": "pencil",
-        "French": "stylo"
-    },
-    {
-        "English": "television",
-        "French": "télévision"
-    },
-    {
-        "English": "bathroom",
-        "French": "salle de bains"
-    },
-    {
-        "English": "kitchen",
-        "French": "cuisine"
-    },
-    {
-        "English": "bedroom",
-        "French": "chambre"
-    },
-    {
-        "English": "living room",
-        "French": "salon"
-    },
-    {
-        "English": "backpack",
-        "French": "sac à dos"
-    }
+  {
+    "English": "computer",
+    "French": "ordinateur"
+  },
+  {
+    "English": "pencil",
+    "French": "stylo"
+  },
+  {
+    "English": "television",
+    "French": "télévision"
+  },
+  {
+    "English": "bathroom",
+    "French": "salle de bains"
+  },
+  {
+    "English": "kitchen",
+    "French": "cuisine"
+  },
+  {
+    "English": "bedroom",
+    "French": "chambre"
+  },
+  {
+    "English": "living room",
+    "French": "salon"
+  },
+  {
+    "English": "backpack",
+    "French": "sac à dos"
+  }
 ]

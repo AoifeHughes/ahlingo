@@ -1,22 +1,22 @@
 [
-    {
-        "English": "computer",
-        "French": "ordinateur"
-    },
-    {
-        "English": "computer program",
-        "French": "programme informatique"
-    },
-    {
-        "English": "software",
-        "French": "logiciel"
-    },
-    {
-        "English": "hardware",
-        "French": "matériel informatique"
-    },
-    {
-        "English": "printer",
-        "French": "imprimante"
-    }
+  {
+    "English": "computer",
+    "French": "ordinateur"
+  },
+  {
+    "English": "computer program",
+    "French": "programme informatique"
+  },
+  {
+    "English": "software",
+    "French": "logiciel"
+  },
+  {
+    "English": "hardware",
+    "French": "matériel informatique"
+  },
+  {
+    "English": "printer",
+    "French": "imprimante"
+  }
 ]

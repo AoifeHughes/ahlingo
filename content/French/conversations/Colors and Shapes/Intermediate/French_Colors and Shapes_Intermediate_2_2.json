@@ -1,87 +1,87 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton livre préféré ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime beaucoup les livres de Bandes Dessinées."
-            },
-            {
-                "speaker": "person1",
-                "message": "Je suis d'accord. Les BD sont très divertissantes."
-            }
-        ],
-        "conversation_summary": "A conversation discussing each person's favorite book."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Est-ce que tu aimes la musique ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Oui, j'adore la musique. J'aime bien écouter de la musique française."
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi aussi. Mon groupe préféré est Téléphone."
-            }
-        ],
-        "conversation_summary": "A conversation about enjoying music, particularly French music."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton sport favori ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime faire du football. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je préfère la natation. C'est très relaxant."
-            }
-        ],
-        "conversation_summary": "A conversation about favorite sports, with person 1 preferring swimming and person 2 preferring soccer."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Est-ce que tu aimes manger des collations ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Oui, j'adore les collations. J'aime manger des fraises et des framboises."
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi aussi. J'aime manger des cerises et des kiwis."
-            }
-        ],
-        "conversation_summary": "A conversation about enjoying snacks, with person 2 preferring strawberries and raspberries and person 1 preferring cherries and kiwis."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton film préféré ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime beaucoup les films d'action. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je suis d'accord. J'aime regarder des films de science-fiction."
-            }
-        ],
-        "conversation_summary": "A conversation discussing each person's favorite movie genre, with person 2 preferring action movies and person 1 preferring science fiction movies."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton livre préféré ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime beaucoup les livres de Bandes Dessinées."
+      },
+      {
+        "speaker": "person1",
+        "message": "Je suis d'accord. Les BD sont très divertissantes."
+      }
+    ],
+    "conversation_summary": "A conversation discussing each person's favorite book."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Est-ce que tu aimes la musique ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Oui, j'adore la musique. J'aime bien écouter de la musique française."
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi aussi. Mon groupe préféré est Téléphone."
+      }
+    ],
+    "conversation_summary": "A conversation about enjoying music, particularly French music."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton sport favori ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime faire du football. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je préfère la natation. C'est très relaxant."
+      }
+    ],
+    "conversation_summary": "A conversation about favorite sports, with person 1 preferring swimming and person 2 preferring soccer."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Est-ce que tu aimes manger des collations ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Oui, j'adore les collations. J'aime manger des fraises et des framboises."
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi aussi. J'aime manger des cerises et des kiwis."
+      }
+    ],
+    "conversation_summary": "A conversation about enjoying snacks, with person 2 preferring strawberries and raspberries and person 1 preferring cherries and kiwis."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton film préféré ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime beaucoup les films d'action. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je suis d'accord. J'aime regarder des films de science-fiction."
+      }
+    ],
+    "conversation_summary": "A conversation discussing each person's favorite movie genre, with person 2 preferring action movies and person 1 preferring science fiction movies."
+  }
 ]

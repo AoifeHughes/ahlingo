@@ -1,22 +1,22 @@
 [
-    {
-        "English": "What is your name?",
-        "French": "Comment t'appelles-tu ?"
-    },
-    {
-        "English": "Where are you from?",
-        "French": "D'où viens-tu ?"
-    },
-    {
-        "English": "How do you feel today?",
-        "French": "Comment te sens-tu aujourd'hui ?"
-    },
-    {
-        "English": "Do you speak English?",
-        "French": "Parles-tu anglais ?"
-    },
-    {
-        "English": "Can you give me directions to the nearest coffee shop?",
-        "French": "Peux-tu me donner des instructions pour trouver le café le plus proche ?"
-    }
+  {
+    "English": "What is your name?",
+    "French": "Comment t'appelles-tu ?"
+  },
+  {
+    "English": "Where are you from?",
+    "French": "D'où viens-tu ?"
+  },
+  {
+    "English": "How do you feel today?",
+    "French": "Comment te sens-tu aujourd'hui ?"
+  },
+  {
+    "English": "Do you speak English?",
+    "French": "Parles-tu anglais ?"
+  },
+  {
+    "English": "Can you give me directions to the nearest coffee shop?",
+    "French": "Peux-tu me donner des instructions pour trouver le café le plus proche ?"
+  }
 ]

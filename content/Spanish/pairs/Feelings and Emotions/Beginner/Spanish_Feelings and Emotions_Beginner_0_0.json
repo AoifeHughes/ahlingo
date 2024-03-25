@@ -1,38 +1,38 @@
 [
-    {
-        "English": "happy",
-        "Spanish": "feliz"
-    },
-    {
-        "English": "sad",
-        "Spanish": "triste"
-    },
-    {
-        "English": "angry",
-        "Spanish": "enojado"
-    },
-    {
-        "English": "excited",
-        "Spanish": "emocionado"
-    },
-    {
-        "English": "nervous",
-        "Spanish": "nervioso"
-    },
-    {
-        "English": "hungry",
-        "Spanish": "hambriento"
-    },
-    {
-        "English": "thirsty",
-        "Spanish": "sediento"
-    },
-    {
-        "English": "tired",
-        "Spanish": "cansado"
-    },
-    {
-        "English": "happy",
-        "Spanish": "contento"
-    }
+  {
+    "English": "happy",
+    "Spanish": "feliz"
+  },
+  {
+    "English": "sad",
+    "Spanish": "triste"
+  },
+  {
+    "English": "angry",
+    "Spanish": "enojado"
+  },
+  {
+    "English": "excited",
+    "Spanish": "emocionado"
+  },
+  {
+    "English": "nervous",
+    "Spanish": "nervioso"
+  },
+  {
+    "English": "hungry",
+    "Spanish": "hambriento"
+  },
+  {
+    "English": "thirsty",
+    "Spanish": "sediento"
+  },
+  {
+    "English": "tired",
+    "Spanish": "cansado"
+  },
+  {
+    "English": "happy",
+    "Spanish": "contento"
+  }
 ]

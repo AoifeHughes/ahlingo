@@ -1,87 +1,87 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment tu t'appelles ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'me appelle Marie."
-            },
-            {
-                "speaker": "person1",
-                "message": "Je m'appelle Thomas."
-            }
-        ],
-        "conversation_summary": "A conversation introducing each person's name."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton meilleur ami ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Mono, il est très gentil."
-            },
-            {
-                "speaker": "person1",
-                "message": "J'aime aussi les lapins. Ils sont très sympathiques."
-            }
-        ],
-        "conversation_summary": "A conversation about best friends and liking rabbits."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Que fais-tu ce weekend ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'vas au parc avec mes amis."
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi, j'vas à la plage. C'est très agréable."
-            }
-        ],
-        "conversation_summary": "A conversation about weekend plans and going to the park or beach."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton favori des couleurs ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime le bleu. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je préfère le rouge. C'est une couleur vive."
-            }
-        ],
-        "conversation_summary": "A conversation about favorite colors."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment tu te sens aujourd'hui ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'me sens bien. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je me sens un peu fatigué. J'ai travaillé trop hier."
-            }
-        ],
-        "conversation_summary": "A conversation about how each person is feeling today."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment tu t'appelles ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'me appelle Marie."
+      },
+      {
+        "speaker": "person1",
+        "message": "Je m'appelle Thomas."
+      }
+    ],
+    "conversation_summary": "A conversation introducing each person's name."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton meilleur ami ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Mono, il est très gentil."
+      },
+      {
+        "speaker": "person1",
+        "message": "J'aime aussi les lapins. Ils sont très sympathiques."
+      }
+    ],
+    "conversation_summary": "A conversation about best friends and liking rabbits."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Que fais-tu ce weekend ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'vas au parc avec mes amis."
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi, j'vas à la plage. C'est très agréable."
+      }
+    ],
+    "conversation_summary": "A conversation about weekend plans and going to the park or beach."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton favori des couleurs ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime le bleu. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je préfère le rouge. C'est une couleur vive."
+      }
+    ],
+    "conversation_summary": "A conversation about favorite colors."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment tu te sens aujourd'hui ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'me sens bien. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je me sens un peu fatigué. J'ai travaillé trop hier."
+      }
+    ],
+    "conversation_summary": "A conversation about how each person is feeling today."
+  }
 ]

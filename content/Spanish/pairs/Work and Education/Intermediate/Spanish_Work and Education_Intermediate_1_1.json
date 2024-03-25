@@ -1,38 +1,38 @@
 [
-    {
-        "English": "computer",
-        "Spanish": "ordenador"
-    },
-    {
-        "English": "university",
-        "Spanish": "universidad"
-    },
-    {
-        "English": "lecture",
-        "Spanish": "conferencia"
-    },
-    {
-        "English": "exam",
-        "Spanish": "ejemplo"
-    },
-    {
-        "English": "thesis",
-        "Spanish": "tesis"
-    },
-    {
-        "English": "project",
-        "Spanish": "proyecto"
-    },
-    {
-        "English": "meeting",
-        "Spanish": "reunión"
-    },
-    {
-        "English": "presentation",
-        "Spanish": "presentación"
-    },
-    {
-        "English": "internship",
-        "Spanish": "práctica profesional"
-    }
+  {
+    "English": "computer",
+    "Spanish": "ordenador"
+  },
+  {
+    "English": "university",
+    "Spanish": "universidad"
+  },
+  {
+    "English": "lecture",
+    "Spanish": "conferencia"
+  },
+  {
+    "English": "exam",
+    "Spanish": "ejemplo"
+  },
+  {
+    "English": "thesis",
+    "Spanish": "tesis"
+  },
+  {
+    "English": "project",
+    "Spanish": "proyecto"
+  },
+  {
+    "English": "meeting",
+    "Spanish": "reunión"
+  },
+  {
+    "English": "presentation",
+    "Spanish": "presentación"
+  },
+  {
+    "English": "internship",
+    "Spanish": "práctica profesional"
+  }
 ]

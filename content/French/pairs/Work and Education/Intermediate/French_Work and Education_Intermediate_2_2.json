@@ -1,22 +1,22 @@
 [
-    {
-        "English": "school",
-        "French": "école"
-    },
-    {
-        "English": "teacher",
-        "French": "enseignant"
-    },
-    {
-        "English": "student",
-        "French": "étudiant"
-    },
-    {
-        "English": "lesson",
-        "French": "leçon"
-    },
-    {
-        "English": "homework",
-        "French": "travail à la maison"
-    }
+  {
+    "English": "school",
+    "French": "école"
+  },
+  {
+    "English": "teacher",
+    "French": "enseignant"
+  },
+  {
+    "English": "student",
+    "French": "étudiant"
+  },
+  {
+    "English": "lesson",
+    "French": "leçon"
+  },
+  {
+    "English": "homework",
+    "French": "travail à la maison"
+  }
 ]

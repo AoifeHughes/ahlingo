@@ -1,38 +1,38 @@
 [
-    {
-        "English": "cloud",
-        "French": "nuage"
-    },
-    {
-        "English": "rain",
-        "French": "pluie"
-    },
-    {
-        "English": "snow",
-        "French": "neige"
-    },
-    {
-        "English": "wind",
-        "French": "vent"
-    },
-    {
-        "English": "summer",
-        "French": "été"
-    },
-    {
-        "English": "winter",
-        "French": "hiver"
-    },
-    {
-        "English": "fall",
-        "French": "automne"
-    },
-    {
-        "English": "spring",
-        "French": "printemps"
-    },
-    {
-        "English": "thunderstorm",
-        "French": "tempête de tonnerre"
-    }
+  {
+    "English": "cloud",
+    "French": "nuage"
+  },
+  {
+    "English": "rain",
+    "French": "pluie"
+  },
+  {
+    "English": "snow",
+    "French": "neige"
+  },
+  {
+    "English": "wind",
+    "French": "vent"
+  },
+  {
+    "English": "summer",
+    "French": "été"
+  },
+  {
+    "English": "winter",
+    "French": "hiver"
+  },
+  {
+    "English": "fall",
+    "French": "automne"
+  },
+  {
+    "English": "spring",
+    "French": "printemps"
+  },
+  {
+    "English": "thunderstorm",
+    "French": "tempête de tonnerre"
+  }
 ]

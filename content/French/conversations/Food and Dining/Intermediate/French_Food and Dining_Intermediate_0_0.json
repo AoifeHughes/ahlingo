@@ -1,87 +1,87 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment t'aimes-tu manger les légumes ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime manger des légumes crus, comme des salades et des légumineuses."
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi, j'aime cuisiner des légumes en sauce. Ça donne une saveur différente."
-            }
-        ],
-        "conversation_summary": "A conversation about how to enjoy vegetables, either raw or cooked."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton plat préféré ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je préfère manger des poissons. Ils sont sains et délicieux."
-            },
-            {
-                "speaker": "person1",
-                "message": "J'aime également les steaks et les saumons grillés. Yum !"
-            }
-        ],
-        "conversation_summary": "A conversation about favorite dishes, focusing on fish and meat."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Tu veux boire du café ou du thé ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime boire du café au lait. C'est très français !"
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi, j'adore boire du thé. Il y a tant de variétés délicieuses."
-            }
-        ],
-        "conversation_summary": "A conversation about drinking coffee or tea, and the different flavors available."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Est-ce que tu aimerais essayer une recette française ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Oui, je suis curieux de découvrir de nouvelles recettes. Quelle est ta recommandation ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Essaie la tarte Tatin. Elle est délicieuse et facile à faire."
-            }
-        ],
-        "conversation_summary": "A conversation about trying French recipes, and a recommendation for the classic Tarte Tatin."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment t'aimes-tu manger les fruits ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'adore manger des fruits frais, surtout les bananes et les pommes."
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi, j'aime manger des fruits secs, tels que les noix et les amandes."
-            }
-        ],
-        "conversation_summary": "A conversation about eating fruit, either fresh or dried."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment t'aimes-tu manger les légumes ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime manger des légumes crus, comme des salades et des légumineuses."
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi, j'aime cuisiner des légumes en sauce. Ça donne une saveur différente."
+      }
+    ],
+    "conversation_summary": "A conversation about how to enjoy vegetables, either raw or cooked."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton plat préféré ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je préfère manger des poissons. Ils sont sains et délicieux."
+      },
+      {
+        "speaker": "person1",
+        "message": "J'aime également les steaks et les saumons grillés. Yum !"
+      }
+    ],
+    "conversation_summary": "A conversation about favorite dishes, focusing on fish and meat."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Tu veux boire du café ou du thé ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime boire du café au lait. C'est très français !"
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi, j'adore boire du thé. Il y a tant de variétés délicieuses."
+      }
+    ],
+    "conversation_summary": "A conversation about drinking coffee or tea, and the different flavors available."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Est-ce que tu aimerais essayer une recette française ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Oui, je suis curieux de découvrir de nouvelles recettes. Quelle est ta recommandation ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Essaie la tarte Tatin. Elle est délicieuse et facile à faire."
+      }
+    ],
+    "conversation_summary": "A conversation about trying French recipes, and a recommendation for the classic Tarte Tatin."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment t'aimes-tu manger les fruits ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'adore manger des fruits frais, surtout les bananes et les pommes."
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi, j'aime manger des fruits secs, tels que les noix et les amandes."
+      }
+    ],
+    "conversation_summary": "A conversation about eating fruit, either fresh or dried."
+  }
 ]

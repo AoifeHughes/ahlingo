@@ -1,22 +1,22 @@
 [
-    {
-        "English": "What is your name?",
-        "French": "Comment t'appelles-tu ?"
-    },
-    {
-        "English": "Where are you from?",
-        "French": "D'où viens-tu ?"
-    },
-    {
-        "English": "How do you like living here?",
-        "French": "Comment t'aimes-tu vivre ici ?"
-    },
-    {
-        "English": "What do you want to be when you grow up?",
-        "French": "Que veux-tu être quand tu seras grand ?"
-    },
-    {
-        "English": "I love playing soccer.",
-        "French": "J'adore jouer au football."
-    }
+  {
+    "English": "What is your name?",
+    "French": "Comment t'appelles-tu ?"
+  },
+  {
+    "English": "Where are you from?",
+    "French": "D'où viens-tu ?"
+  },
+  {
+    "English": "How do you like living here?",
+    "French": "Comment t'aimes-tu vivre ici ?"
+  },
+  {
+    "English": "What do you want to be when you grow up?",
+    "French": "Que veux-tu être quand tu seras grand ?"
+  },
+  {
+    "English": "I love playing soccer.",
+    "French": "J'adore jouer au football."
+  }
 ]

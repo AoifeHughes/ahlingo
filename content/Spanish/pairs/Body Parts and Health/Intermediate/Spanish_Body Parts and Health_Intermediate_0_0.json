@@ -1,22 +1,22 @@
 [
-    {
-        "English": "arm",
-        "French": "bras"
-    },
-    {
-        "English": "back",
-        "French": "dos"
-    },
-    {
-        "English": "belly",
-        "French": "ventre"
-    },
-    {
-        "English": "bone",
-        "French": "os"
-    },
-    {
-        "English": "cough",
-        "French": "toux"
-    }
+  {
+    "English": "arm",
+    "French": "bras"
+  },
+  {
+    "English": "back",
+    "French": "dos"
+  },
+  {
+    "English": "belly",
+    "French": "ventre"
+  },
+  {
+    "English": "bone",
+    "French": "os"
+  },
+  {
+    "English": "cough",
+    "French": "toux"
+  }
 ]

@@ -1,22 +1,22 @@
 [
-    {
-        "English": "emergency",
-        "French": "urgence"
-    },
-    {
-        "English": "help",
-        "French": "aide"
-    },
-    {
-        "English": "fire",
-        "French": "feu"
-    },
-    {
-        "English": "hospital",
-        "French": "hôpital"
-    },
-    {
-        "English": "police",
-        "French": "police"
-    }
+  {
+    "English": "emergency",
+    "French": "urgence"
+  },
+  {
+    "English": "help",
+    "French": "aide"
+  },
+  {
+    "English": "fire",
+    "French": "feu"
+  },
+  {
+    "English": "hospital",
+    "French": "hôpital"
+  },
+  {
+    "English": "police",
+    "French": "police"
+  }
 ]

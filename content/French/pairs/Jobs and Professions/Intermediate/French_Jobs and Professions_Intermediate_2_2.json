@@ -1,22 +1,22 @@
 [
-    {
-        "English": "computer",
-        "French": "ordinateur"
-    },
-    {
-        "English": "engineer",
-        "French": "ingénieur"
-    },
-    {
-        "English": "doctor",
-        "French": "médecin"
-    },
-    {
-        "English": "teacher",
-        "French": "enseignant"
-    },
-    {
-        "English": "lawyer",
-        "French": "avocat"
-    }
+  {
+    "English": "computer",
+    "French": "ordinateur"
+  },
+  {
+    "English": "engineer",
+    "French": "ingénieur"
+  },
+  {
+    "English": "doctor",
+    "French": "médecin"
+  },
+  {
+    "English": "teacher",
+    "French": "enseignant"
+  },
+  {
+    "English": "lawyer",
+    "French": "avocat"
+  }
 ]

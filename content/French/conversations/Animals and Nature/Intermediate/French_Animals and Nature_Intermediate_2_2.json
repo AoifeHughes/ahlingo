@@ -1,87 +1,87 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Combien de chats as-tu ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'ai deux chats. Ils sont très gentils."
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi, j'ai un chien et un chat. Ils s'aiment bien ensemble."
-            }
-        ],
-        "conversation_summary": "A conversation about the number and type of pets each person has."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est le plus grand mammifère dans la forêt ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "C'est l'ours. Mais il y a aussi le cerf et le sanglier."
-            },
-            {
-                "speaker": "person1",
-                "message": "J'aime beaucoup les ours. Ils sont très intelligents."
-            }
-        ],
-        "conversation_summary": "A conversation about the different types of large mammals that live in the forest."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Que fait le petit lapin ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Le petit lapin court et saute dans la forêt. Il est très rapide."
-            },
-            {
-                "speaker": "person1",
-                "message": "J'ai vu un lapin blanc hier. C'était magnifique."
-            }
-        ],
-        "conversation_summary": "A conversation about rabbits and their behavior in the forest."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment s'appelle ton oiseau préféré ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Mon oiseau préféré est le rossignol. Il a une voix magnifique."
-            },
-            {
-                "speaker": "person1",
-                "message": "J'ai entendu un rossignol l'autre soir. C'était très beau."
-            }
-        ],
-        "conversation_summary": "A conversation about each person's favorite bird and their singing abilities."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est le plus grand oiseau dans le ciel ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "C'est l'aigle. Il est très puissant et rapide."
-            },
-            {
-                "speaker": "person1",
-                "message": "J'ai vu un aigle voler l'autre jour. C'était impressionnant."
-            }
-        ],
-        "conversation_summary": "A conversation about the different types of birds that can be seen in the sky, with a focus on the largest ones."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Combien de chats as-tu ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'ai deux chats. Ils sont très gentils."
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi, j'ai un chien et un chat. Ils s'aiment bien ensemble."
+      }
+    ],
+    "conversation_summary": "A conversation about the number and type of pets each person has."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est le plus grand mammifère dans la forêt ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "C'est l'ours. Mais il y a aussi le cerf et le sanglier."
+      },
+      {
+        "speaker": "person1",
+        "message": "J'aime beaucoup les ours. Ils sont très intelligents."
+      }
+    ],
+    "conversation_summary": "A conversation about the different types of large mammals that live in the forest."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Que fait le petit lapin ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Le petit lapin court et saute dans la forêt. Il est très rapide."
+      },
+      {
+        "speaker": "person1",
+        "message": "J'ai vu un lapin blanc hier. C'était magnifique."
+      }
+    ],
+    "conversation_summary": "A conversation about rabbits and their behavior in the forest."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment s'appelle ton oiseau préféré ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Mon oiseau préféré est le rossignol. Il a une voix magnifique."
+      },
+      {
+        "speaker": "person1",
+        "message": "J'ai entendu un rossignol l'autre soir. C'était très beau."
+      }
+    ],
+    "conversation_summary": "A conversation about each person's favorite bird and their singing abilities."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est le plus grand oiseau dans le ciel ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "C'est l'aigle. Il est très puissant et rapide."
+      },
+      {
+        "speaker": "person1",
+        "message": "J'ai vu un aigle voler l'autre jour. C'était impressionnant."
+      }
+    ],
+    "conversation_summary": "A conversation about the different types of birds that can be seen in the sky, with a focus on the largest ones."
+  }
 ]

@@ -1,22 +1,22 @@
 [
-    {
-        "English": "What is your name?",
-        "French": "Comment t'appelles-tu ?"
-    },
-    {
-        "English": "Where are you from?",
-        "French": "D'où viens-tu ?"
-    },
-    {
-        "English": "I like to play soccer.",
-        "French": "J'aime jouer au football."
-    },
-    {
-        "English": "Can I have a glass of water, please?",
-        "French": "Pourrais-je avoir une verre d'eau, s'il te plaît ?"
-    },
-    {
-        "English": "I am studying for my exams.",
-        "French": "J'étudie pour mes examens."
-    }
+  {
+    "English": "What is your name?",
+    "French": "Comment t'appelles-tu ?"
+  },
+  {
+    "English": "Where are you from?",
+    "French": "D'où viens-tu ?"
+  },
+  {
+    "English": "I like to play soccer.",
+    "French": "J'aime jouer au football."
+  },
+  {
+    "English": "Can I have a glass of water, please?",
+    "French": "Pourrais-je avoir une verre d'eau, s'il te plaît ?"
+  },
+  {
+    "English": "I am studying for my exams.",
+    "French": "J'étudie pour mes examens."
+  }
 ]

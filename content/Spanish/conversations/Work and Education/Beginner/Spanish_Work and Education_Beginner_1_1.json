@@ -1,87 +1,87 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Qué te gusta hacer en tu tiempo libre ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Me gusta leer y escribir. ¿Y tú ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Yo también. Me encanta viajar y descubrir nuevas culturas."
-            }
-        ],
-        "conversation_summary": "A conversation discussing hobbies and interests in free time."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Cuál es tu trabajo favorito ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Mi trabajo favorito es diseñar sitios web. ¿Y tú ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "J'aime travailler comme professeur d'espagnol. C'est très réwardant."
-            }
-        ],
-        "conversation_summary": "A conversation discussing favorite jobs and careers."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Qué te parece la escuela ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Pensamos que la escuela es importante para aprender y hacer amigos. ¿Y tú ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je pense que c'est très important d'avoir une bonne éducation pour réussir dans la vie."
-            }
-        ],
-        "conversation_summary": "A conversation discussing thoughts and opinions on school and education."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Cuál es tu objetivo profesional para el futuro ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Mi objetivo es tener un travail réussi et une famille heureuse. ¿Y tú ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "J'espère trouver un emploi satisfaisant et continuer à apprendre l'espagnol."
-            }
-        ],
-        "conversation_summary": "A conversation discussing professional goals and aspirations for the future."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Cómo te gusta trabajar ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime travailler en équipe et avoir des projets à long terme. ¿Y tú ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Yo también. Me encanta trabajar con otros y tener proyectos ambiciosos."
-            }
-        ],
-        "conversation_summary": "A conversation discussing preferences in working and project management."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Qué te gusta hacer en tu tiempo libre ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Me gusta leer y escribir. ¿Y tú ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Yo también. Me encanta viajar y descubrir nuevas culturas."
+      }
+    ],
+    "conversation_summary": "A conversation discussing hobbies and interests in free time."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Cuál es tu trabajo favorito ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Mi trabajo favorito es diseñar sitios web. ¿Y tú ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "J'aime travailler comme professeur d'espagnol. C'est très réwardant."
+      }
+    ],
+    "conversation_summary": "A conversation discussing favorite jobs and careers."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Qué te parece la escuela ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Pensamos que la escuela es importante para aprender y hacer amigos. ¿Y tú ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je pense que c'est très important d'avoir une bonne éducation pour réussir dans la vie."
+      }
+    ],
+    "conversation_summary": "A conversation discussing thoughts and opinions on school and education."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Cuál es tu objetivo profesional para el futuro ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Mi objetivo es tener un travail réussi et une famille heureuse. ¿Y tú ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "J'espère trouver un emploi satisfaisant et continuer à apprendre l'espagnol."
+      }
+    ],
+    "conversation_summary": "A conversation discussing professional goals and aspirations for the future."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Cómo te gusta trabajar ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime travailler en équipe et avoir des projets à long terme. ¿Y tú ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Yo también. Me encanta trabajar con otros y tener proyectos ambiciosos."
+      }
+    ],
+    "conversation_summary": "A conversation discussing preferences in working and project management."
+  }
 ]

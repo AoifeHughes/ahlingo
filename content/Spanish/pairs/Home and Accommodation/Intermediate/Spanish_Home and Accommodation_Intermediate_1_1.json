@@ -1,38 +1,38 @@
 [
-    {
-        "English": "bathroom",
-        "Spanish": "baño"
-    },
-    {
-        "English": "bedroom",
-        "Spanish": "habitación de dormir"
-    },
-    {
-        "English": "couch",
-        "Spanish": "sofá"
-    },
-    {
-        "English": "fridge",
-        "Spanish": "nevera"
-    },
-    {
-        "English": "kitchen",
-        "Spanish": "cocina"
-    },
-    {
-        "English": "living room",
-        "Spanish": "sala de estar"
-    },
-    {
-        "English": "shower",
-        "Spanish": "ducha"
-    },
-    {
-        "English": "toilet",
-        "Spanish": "baño"
-    },
-    {
-        "English": "window",
-        "Spanish": "ventana"
-    }
+  {
+    "English": "bathroom",
+    "Spanish": "baño"
+  },
+  {
+    "English": "bedroom",
+    "Spanish": "habitación de dormir"
+  },
+  {
+    "English": "couch",
+    "Spanish": "sofá"
+  },
+  {
+    "English": "fridge",
+    "Spanish": "nevera"
+  },
+  {
+    "English": "kitchen",
+    "Spanish": "cocina"
+  },
+  {
+    "English": "living room",
+    "Spanish": "sala de estar"
+  },
+  {
+    "English": "shower",
+    "Spanish": "ducha"
+  },
+  {
+    "English": "toilet",
+    "Spanish": "baño"
+  },
+  {
+    "English": "window",
+    "Spanish": "ventana"
+  }
 ]

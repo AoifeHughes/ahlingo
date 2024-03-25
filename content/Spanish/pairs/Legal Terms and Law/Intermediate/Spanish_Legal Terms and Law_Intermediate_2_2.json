@@ -1,26 +1,26 @@
 [
-    {
-        "English": "computer",
-        "Spanish": "ordenador"
-    },
-    {
-        "English": "contract",
-        "Spanish": "contrato"
-    },
-    {
-        "English": "crime",
-        "Spanish": "delito"
-    },
-    {
-        "English": "judge",
-        "Spanish": "juez"
-    },
-    {
-        "English": "lawyer",
-        "Spanish": "abogado"
-    },
-    {
-        "English": "trial",
-        "Spanish": "juicio"
-    }
+  {
+    "English": "computer",
+    "Spanish": "ordenador"
+  },
+  {
+    "English": "contract",
+    "Spanish": "contrato"
+  },
+  {
+    "English": "crime",
+    "Spanish": "delito"
+  },
+  {
+    "English": "judge",
+    "Spanish": "juez"
+  },
+  {
+    "English": "lawyer",
+    "Spanish": "abogado"
+  },
+  {
+    "English": "trial",
+    "Spanish": "juicio"
+  }
 ]

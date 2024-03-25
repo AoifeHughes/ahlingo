@@ -1,22 +1,22 @@
 [
-    {
-        "English": "What is your name?",
-        "French": "Comment t'appelles-tu ?"
-    },
-    {
-        "English": "I am from the United States.",
-        "French": "Je viens des États-Unis."
-    },
-    {
-        "English": "Do you like to read books?",
-        "French": "Aimes-tu lire des livres ?"
-    },
-    {
-        "English": "The Eiffel Tower is a famous landmark in Paris.",
-        "French": "La tour Eiffel est un monument célèbre à Paris."
-    },
-    {
-        "English": "What is the capital of France?",
-        "French": "Quelle est la capitale de la France ?"
-    }
+  {
+    "English": "What is your name?",
+    "French": "Comment t'appelles-tu ?"
+  },
+  {
+    "English": "I am from the United States.",
+    "French": "Je viens des États-Unis."
+  },
+  {
+    "English": "Do you like to read books?",
+    "French": "Aimes-tu lire des livres ?"
+  },
+  {
+    "English": "The Eiffel Tower is a famous landmark in Paris.",
+    "French": "La tour Eiffel est un monument célèbre à Paris."
+  },
+  {
+    "English": "What is the capital of France?",
+    "French": "Quelle est la capitale de la France ?"
+  }
 ]

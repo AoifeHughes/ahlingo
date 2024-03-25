@@ -1,38 +1,38 @@
 [
-    {
-        "English": "cat",
-        "Spanish": "gato"
-    },
-    {
-        "English": "bird",
-        "Spanish": "pájaro"
-    },
-    {
-        "English": "fish",
-        "Spanish": "peixe"
-    },
-    {
-        "English": "lion",
-        "Spanish": "león"
-    },
-    {
-        "English": "tiger",
-        "Spanish": "tigre"
-    },
-    {
-        "English": "monkey",
-        "Spanish": "mono"
-    },
-    {
-        "English": "elephant",
-        "Spanish": "elefante"
-    },
-    {
-        "English": "horse",
-        "Spanish": "caballo"
-    },
-    {
-        "English": "deer",
-        "Spanish": "ciervo"
-    }
+  {
+    "English": "cat",
+    "Spanish": "gato"
+  },
+  {
+    "English": "bird",
+    "Spanish": "pájaro"
+  },
+  {
+    "English": "fish",
+    "Spanish": "peixe"
+  },
+  {
+    "English": "lion",
+    "Spanish": "león"
+  },
+  {
+    "English": "tiger",
+    "Spanish": "tigre"
+  },
+  {
+    "English": "monkey",
+    "Spanish": "mono"
+  },
+  {
+    "English": "elephant",
+    "Spanish": "elefante"
+  },
+  {
+    "English": "horse",
+    "Spanish": "caballo"
+  },
+  {
+    "English": "deer",
+    "Spanish": "ciervo"
+  }
 ]
