@@ -1,87 +1,87 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment te fais-tu pour parler français ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'ai appris le français à l'école. C'est une langue très belle."
-            },
-            {
-                "speaker": "person1",
-                "message": "J'aime beaucoup la France. J'y ai visité plusieurs fois."
-            }
-        ],
-        "conversation_summary": "A conversation about learning and enjoying the French language and culture."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Que fais-tu pour te détendre après un jour de travail ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je me bainerai dans une baignoire d'eau chaude et je me ferai une douche."
-            },
-            {
-                "speaker": "person1",
-                "message": "C'est très agréable. J'aime beaucoup me détendre comme ça."
-            }
-        ],
-        "conversation_summary": "A conversation about ways to relax after a day of work, including taking a hot bath and shower."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Qu'est-ce que tu préfères manger pour le déjeuner ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime beaucoup les croissants et le café."
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi, je prends souvent un sandwich."
-            }
-        ],
-        "conversation_summary": "A conversation about preferred breakfast foods, including croissants, coffee, and sandwiches."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Tu aimes regarder la télévision ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Oui, j'aime beaucoup les séries et les films."
-            },
-            {
-                "speaker": "person1",
-                "message": "J'ai remarqué que tu parles souvent d'argent. Pourquoi est-ce important pour toi ?"
-            }
-        ],
-        "conversation_summary": "A conversation about enjoying TV shows and movies, as well as a discussion about the importance of money."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment te fais-tu pour apprendre une nouvelle langue ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'utilise une application de langues et je prends des cours de français."
-            },
-            {
-                "speaker": "person1",
-                "message": "C'est une bonne idée. J'ai fait la même chose quand j'ai appris l'anglais."
-            }
-        ],
-        "conversation_summary": "A conversation about learning a new language, including the use of language learning apps and taking classes."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment te fais-tu pour parler français ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'ai appris le français à l'école. C'est une langue très belle."
+      },
+      {
+        "speaker": "person1",
+        "message": "J'aime beaucoup la France. J'y ai visité plusieurs fois."
+      }
+    ],
+    "conversation_summary": "A conversation about learning and enjoying the French language and culture."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Que fais-tu pour te détendre après un jour de travail ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je me bainerai dans une baignoire d'eau chaude et je me ferai une douche."
+      },
+      {
+        "speaker": "person1",
+        "message": "C'est très agréable. J'aime beaucoup me détendre comme ça."
+      }
+    ],
+    "conversation_summary": "A conversation about ways to relax after a day of work, including taking a hot bath and shower."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Qu'est-ce que tu préfères manger pour le déjeuner ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime beaucoup les croissants et le café."
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi, je prends souvent un sandwich."
+      }
+    ],
+    "conversation_summary": "A conversation about preferred breakfast foods, including croissants, coffee, and sandwiches."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Tu aimes regarder la télévision ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Oui, j'aime beaucoup les séries et les films."
+      },
+      {
+        "speaker": "person1",
+        "message": "J'ai remarqué que tu parles souvent d'argent. Pourquoi est-ce important pour toi ?"
+      }
+    ],
+    "conversation_summary": "A conversation about enjoying TV shows and movies, as well as a discussion about the importance of money."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment te fais-tu pour apprendre une nouvelle langue ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'utilise une application de langues et je prends des cours de français."
+      },
+      {
+        "speaker": "person1",
+        "message": "C'est une bonne idée. J'ai fait la même chose quand j'ai appris l'anglais."
+      }
+    ],
+    "conversation_summary": "A conversation about learning a new language, including the use of language learning apps and taking classes."
+  }
 ]

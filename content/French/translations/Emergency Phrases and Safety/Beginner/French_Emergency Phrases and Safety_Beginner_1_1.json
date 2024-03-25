@@ -1,22 +1,22 @@
 [
-    {
-        "English": "What is your name?",
-        "French": "Comment t'appelles-tu ?"
-    },
-    {
-        "English": "I am from the United States.",
-        "French": "Je viens des États-Unis."
-    },
-    {
-        "English": "Do you speak English?",
-        "French": "Parles-tu anglais ?"
-    },
-    {
-        "English": "Can you tell me where the nearest hospital is?",
-        "French": "Peux-tu me dire où est l'hôpital le plus proche ?"
-    },
-    {
-        "English": "I need to call my mom.",
-        "French": "J'ai besoin de parler à ma maman."
-    }
+  {
+    "English": "What is your name?",
+    "French": "Comment t'appelles-tu ?"
+  },
+  {
+    "English": "I am from the United States.",
+    "French": "Je viens des États-Unis."
+  },
+  {
+    "English": "Do you speak English?",
+    "French": "Parles-tu anglais ?"
+  },
+  {
+    "English": "Can you tell me where the nearest hospital is?",
+    "French": "Peux-tu me dire où est l'hôpital le plus proche ?"
+  },
+  {
+    "English": "I need to call my mom.",
+    "French": "J'ai besoin de parler à ma maman."
+  }
 ]

@@ -1,38 +1,38 @@
 [
-    {
-        "English": "breakfast",
-        "Spanish": "desayuno"
-    },
-    {
-        "English": "lunch",
-        "Spanish": "almuerzo"
-    },
-    {
-        "English": "dinner",
-        "Spanish": "cena"
-    },
-    {
-        "English": "work",
-        "Spanish": "trabajo"
-    },
-    {
-        "English": "relax",
-        "Spanish": "relajarse"
-    },
-    {
-        "English": "exercise",
-        "Spanish": "ejercicio"
-    },
-    {
-        "English": "shopping",
-        "Spanish": "comercio"
-    },
-    {
-        "English": "walk",
-        "Spanish": "pasear"
-    },
-    {
-        "English": "read",
-        "Spanish": "leer"
-    }
+  {
+    "English": "breakfast",
+    "Spanish": "desayuno"
+  },
+  {
+    "English": "lunch",
+    "Spanish": "almuerzo"
+  },
+  {
+    "English": "dinner",
+    "Spanish": "cena"
+  },
+  {
+    "English": "work",
+    "Spanish": "trabajo"
+  },
+  {
+    "English": "relax",
+    "Spanish": "relajarse"
+  },
+  {
+    "English": "exercise",
+    "Spanish": "ejercicio"
+  },
+  {
+    "English": "shopping",
+    "Spanish": "comercio"
+  },
+  {
+    "English": "walk",
+    "Spanish": "pasear"
+  },
+  {
+    "English": "read",
+    "Spanish": "leer"
+  }
 ]

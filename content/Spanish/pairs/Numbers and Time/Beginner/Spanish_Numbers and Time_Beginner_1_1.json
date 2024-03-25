@@ -1,22 +1,22 @@
 [
-    {
-        "English": "computer",
-        "French": "ordinateur"
-    },
-    {
-        "English": "shoes",
-        "French": "chaussures"
-    },
-    {
-        "English": "hat",
-        "French": "casquette"
-    },
-    {
-        "English": "coat",
-        "French": "veste"
-    },
-    {
-        "English": "key",
-        "French": "clé"
-    }
+  {
+    "English": "computer",
+    "French": "ordinateur"
+  },
+  {
+    "English": "shoes",
+    "French": "chaussures"
+  },
+  {
+    "English": "hat",
+    "French": "casquette"
+  },
+  {
+    "English": "coat",
+    "French": "veste"
+  },
+  {
+    "English": "key",
+    "French": "clé"
+  }
 ]

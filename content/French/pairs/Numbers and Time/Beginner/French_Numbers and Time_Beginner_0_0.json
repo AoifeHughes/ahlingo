@@ -1,38 +1,38 @@
 [
-    {
-        "English": "computer",
-        "French": "ordinateur"
-    },
-    {
-        "English": "shoe",
-        "French": "chaussure"
-    },
-    {
-        "English": "hat",
-        "French": "casquette"
-    },
-    {
-        "English": "key",
-        "French": "clé"
-    },
-    {
-        "English": "phone",
-        "French": "téléphone"
-    },
-    {
-        "English": "pizza",
-        "French": "pizza"
-    },
-    {
-        "English": "movie",
-        "French": "film"
-    },
-    {
-        "English": "music",
-        "French": "musique"
-    },
-    {
-        "English": "sports",
-        "French": "sports"
-    }
+  {
+    "English": "computer",
+    "French": "ordinateur"
+  },
+  {
+    "English": "shoe",
+    "French": "chaussure"
+  },
+  {
+    "English": "hat",
+    "French": "casquette"
+  },
+  {
+    "English": "key",
+    "French": "clé"
+  },
+  {
+    "English": "phone",
+    "French": "téléphone"
+  },
+  {
+    "English": "pizza",
+    "French": "pizza"
+  },
+  {
+    "English": "movie",
+    "French": "film"
+  },
+  {
+    "English": "music",
+    "French": "musique"
+  },
+  {
+    "English": "sports",
+    "French": "sports"
+  }
 ]

@@ -1,78 +1,78 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment ça va ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je vais bien, merci. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je vais bien aussi."
-            }
-        ],
-        "conversation_summary": "A conversation asking how each person is doing."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est le ton de ta journée ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je suis un peu fatigué, mais c'est normal après une semaine très chargée."
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi aussi, j'ai passé une semaine intensive."
-            }
-        ],
-        "conversation_summary": "A conversation discussing how each person is feeling after a busy week."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton métier ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'suis avocat.",
-                "message_type": "job"
-            }
-        ],
-        "conversation_summary": "A conversation discussing each person's profession."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Est-ce que tu as déjà voyagé ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Oui, j'ai visité l'Europe en voiture il y a un an.",
-                "message_type": "travel"
-            }
-        ],
-        "conversation_summary": "A conversation about travel experiences."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment t'aimes-tu passer ton temps libre ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime faire de la musculation et regarder des films.",
-                "message_type": "hobbies"
-            }
-        ],
-        "conversation_summary": "A conversation about leisure activities."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment ça va ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je vais bien, merci. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je vais bien aussi."
+      }
+    ],
+    "conversation_summary": "A conversation asking how each person is doing."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est le ton de ta journée ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je suis un peu fatigué, mais c'est normal après une semaine très chargée."
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi aussi, j'ai passé une semaine intensive."
+      }
+    ],
+    "conversation_summary": "A conversation discussing how each person is feeling after a busy week."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton métier ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'suis avocat.",
+        "message_type": "job"
+      }
+    ],
+    "conversation_summary": "A conversation discussing each person's profession."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Est-ce que tu as déjà voyagé ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Oui, j'ai visité l'Europe en voiture il y a un an.",
+        "message_type": "travel"
+      }
+    ],
+    "conversation_summary": "A conversation about travel experiences."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment t'aimes-tu passer ton temps libre ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime faire de la musculation et regarder des films.",
+        "message_type": "hobbies"
+      }
+    ],
+    "conversation_summary": "A conversation about leisure activities."
+  }
 ]

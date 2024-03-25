@@ -1,34 +1,34 @@
 [
-    {
-        "English": "airplane",
-        "French": "avion"
-    },
-    {
-        "English": "bicycle",
-        "French": "vélo"
-    },
-    {
-        "English": "hotel",
-        "French": "hôtel"
-    },
-    {
-        "English": "ocean",
-        "French": "océan"
-    },
-    {
-        "English": "railway station",
-        "French": "gare"
-    },
-    {
-        "English": "ship",
-        "French": "navire"
-    },
-    {
-        "English": "tourist",
-        "French": "touriste"
-    },
-    {
-        "English": "train",
-        "French": "train"
-    }
+  {
+    "English": "airplane",
+    "French": "avion"
+  },
+  {
+    "English": "bicycle",
+    "French": "vélo"
+  },
+  {
+    "English": "hotel",
+    "French": "hôtel"
+  },
+  {
+    "English": "ocean",
+    "French": "océan"
+  },
+  {
+    "English": "railway station",
+    "French": "gare"
+  },
+  {
+    "English": "ship",
+    "French": "navire"
+  },
+  {
+    "English": "tourist",
+    "French": "touriste"
+  },
+  {
+    "English": "train",
+    "French": "train"
+  }
 ]

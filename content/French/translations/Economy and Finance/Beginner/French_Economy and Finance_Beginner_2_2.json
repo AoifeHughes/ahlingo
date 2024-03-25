@@ -1,22 +1,22 @@
 [
-    {
-        "English": "What is your name?",
-        "French": "Comment t'appelles-tu ?"
-    },
-    {
-        "English": "I am studying economics at university.",
-        "French": "J'étudie les économies à l'université."
-    },
-    {
-        "English": "The stock market has been volatile lately.",
-        "French": "Le marché des actions a été instable ces derniers temps."
-    },
-    {
-        "English": "Can you tell me about the French economy?",
-        "French": "Peux-tu me parler de l'économie française ?"
-    },
-    {
-        "English": "I need to go to the bank to deposit this check.",
-        "French": "J'ai besoin d'aller à la banque pour déposer ce virement."
-    }
+  {
+    "English": "What is your name?",
+    "French": "Comment t'appelles-tu ?"
+  },
+  {
+    "English": "I am studying economics at university.",
+    "French": "J'étudie les économies à l'université."
+  },
+  {
+    "English": "The stock market has been volatile lately.",
+    "French": "Le marché des actions a été instable ces derniers temps."
+  },
+  {
+    "English": "Can you tell me about the French economy?",
+    "French": "Peux-tu me parler de l'économie française ?"
+  },
+  {
+    "English": "I need to go to the bank to deposit this check.",
+    "French": "J'ai besoin d'aller à la banque pour déposer ce virement."
+  }
 ]

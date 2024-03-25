@@ -1,87 +1,87 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment te sens-tu aujourd'hui ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'me sens bien. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je vais bien aussi. J'ai fait une promenade très agréable ce matin."
-            }
-        ],
-        "conversation_summary": "A conversation about how each person is feeling today."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton film préféré ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime beaucoup La Grande Illusion de Jean Renoir. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je suis un grand fan des films d'horreur. J'adore les films de Stephen King."
-            }
-        ],
-        "conversation_summary": "A conversation about favorite movies, with one person preferring classics and the other horror movies."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton sport favori ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime beaucoup faire de la course à pied. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je joue au football. J'ai été joueur professionnel dans mon temps libre."
-            }
-        ],
-        "conversation_summary": "A conversation about favorite sports, with one person preferring running and the other playing soccer."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Tu as déjà visité l'étranger ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Oui, j'ai visité l'Italie. C'est un pays très beau."
-            },
-            {
-                "speaker": "person1",
-                "message": "J'aimerais beaucoup y passer un jour. J'adore la cuisine italienne."
-            }
-        ],
-        "conversation_summary": "A conversation about traveling abroad, with one person having visited Italy and the other expressing interest in going there someday."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton livre préféré ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime beaucoup L'étranger de Albert Camus. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je suis un grand fan de science-fiction. J'ai lu tous les livres de Isaac Asimov."
-            }
-        ],
-        "conversation_summary": "A conversation about favorite books, with one person preferring classics and the other science-fiction."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment te sens-tu aujourd'hui ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'me sens bien. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je vais bien aussi. J'ai fait une promenade très agréable ce matin."
+      }
+    ],
+    "conversation_summary": "A conversation about how each person is feeling today."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton film préféré ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime beaucoup La Grande Illusion de Jean Renoir. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je suis un grand fan des films d'horreur. J'adore les films de Stephen King."
+      }
+    ],
+    "conversation_summary": "A conversation about favorite movies, with one person preferring classics and the other horror movies."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton sport favori ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime beaucoup faire de la course à pied. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je joue au football. J'ai été joueur professionnel dans mon temps libre."
+      }
+    ],
+    "conversation_summary": "A conversation about favorite sports, with one person preferring running and the other playing soccer."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Tu as déjà visité l'étranger ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Oui, j'ai visité l'Italie. C'est un pays très beau."
+      },
+      {
+        "speaker": "person1",
+        "message": "J'aimerais beaucoup y passer un jour. J'adore la cuisine italienne."
+      }
+    ],
+    "conversation_summary": "A conversation about traveling abroad, with one person having visited Italy and the other expressing interest in going there someday."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton livre préféré ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime beaucoup L'étranger de Albert Camus. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je suis un grand fan de science-fiction. J'ai lu tous les livres de Isaac Asimov."
+      }
+    ],
+    "conversation_summary": "A conversation about favorite books, with one person preferring classics and the other science-fiction."
+  }
 ]

@@ -1,87 +1,87 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment ça va ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je vais bien, merci. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je vais bien aussi."
-            }
-        ],
-        "conversation_summary": "A conversation asking how each person is doing."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton film préféré ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime bien le film de l'école des lois. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je n'ai pas vu ce film, mais j'aime beaucoup les films d'action."
-            }
-        ],
-        "conversation_summary": "A conversation discussing each person's favorite movie."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton livre préféré ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime beaucoup Les Misérables de Victor Hugo. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je n'ai pas lu ce livre, mais j'aime beaucoup la littérature française."
-            }
-        ],
-        "conversation_summary": "A conversation discussing each person's favorite book."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton sport favori ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime bien jouer au football. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je suis fan de basket-ball, c'est un sport très énergique."
-            }
-        ],
-        "conversation_summary": "A conversation discussing each person's favorite sport."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton pays favori ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je préfère la France, c'est un pays très beau. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je suis d'accord, le paysage y est magnifique."
-            }
-        ],
-        "conversation_summary": "A conversation discussing each person's favorite country."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment ça va ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je vais bien, merci. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je vais bien aussi."
+      }
+    ],
+    "conversation_summary": "A conversation asking how each person is doing."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton film préféré ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime bien le film de l'école des lois. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je n'ai pas vu ce film, mais j'aime beaucoup les films d'action."
+      }
+    ],
+    "conversation_summary": "A conversation discussing each person's favorite movie."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton livre préféré ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime beaucoup Les Misérables de Victor Hugo. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je n'ai pas lu ce livre, mais j'aime beaucoup la littérature française."
+      }
+    ],
+    "conversation_summary": "A conversation discussing each person's favorite book."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton sport favori ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime bien jouer au football. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je suis fan de basket-ball, c'est un sport très énergique."
+      }
+    ],
+    "conversation_summary": "A conversation discussing each person's favorite sport."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton pays favori ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je préfère la France, c'est un pays très beau. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je suis d'accord, le paysage y est magnifique."
+      }
+    ],
+    "conversation_summary": "A conversation discussing each person's favorite country."
+  }
 ]

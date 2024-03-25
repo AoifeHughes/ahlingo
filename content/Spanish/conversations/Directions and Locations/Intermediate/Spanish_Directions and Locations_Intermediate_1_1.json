@@ -1,87 +1,87 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Cuál es tu ciudad favorita?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Mi ciudad favorita es Madrid. ¿Y tú?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Yo también me gusta Madrid. Hay muchas cosas interesantes para ver y hacer."
-            }
-        ],
-        "conversation_summary": "A conversation about favorite cities and things to do in them."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Has ido al parque de la ciudad?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Sí, hace unas semanas. Es un lugar muy agradable para pasar el día."
-            },
-            {
-                "speaker": "person1",
-                "message": "Yo también lo hice último fin de semana. Hay muchas personas y mucha actividad."
-            }
-        ],
-        "conversation_summary": "A conversation about going to the local park and activities to do there."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Cuál es tu país favorito?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Mi país favorito es Francia. Me encanta la comida y la cultura."
-            },
-            {
-                "speaker": "person1",
-                "message": "Yo también me gusta Francia. ¿Has ido a París ?"
-            }
-        ],
-        "conversation_summary": "A conversation about favorite countries, food and culture."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Qué te gusta hacer los fines de semana?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Me gusta ir al cine. ¿Y tú?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Yo también me gusta ver películas, pero también me gusta salir a comer con amigos."
-            }
-        ],
-        "conversation_summary": "A conversation about weekend activities and preferences for going to the cinema or eating out with friends."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Has ido al museo de arte?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Sí, hace unos días. Me encantó la exposición actual."
-            },
-            {
-                "speaker": "person1",
-                "message": "Yo también la vi. ¿Qué te pareció más?"
-            }
-        ],
-        "conversation_summary": "A conversation about visiting a museum and enjoying an art exhibition."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Cuál es tu ciudad favorita?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Mi ciudad favorita es Madrid. ¿Y tú?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Yo también me gusta Madrid. Hay muchas cosas interesantes para ver y hacer."
+      }
+    ],
+    "conversation_summary": "A conversation about favorite cities and things to do in them."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Has ido al parque de la ciudad?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Sí, hace unas semanas. Es un lugar muy agradable para pasar el día."
+      },
+      {
+        "speaker": "person1",
+        "message": "Yo también lo hice último fin de semana. Hay muchas personas y mucha actividad."
+      }
+    ],
+    "conversation_summary": "A conversation about going to the local park and activities to do there."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Cuál es tu país favorito?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Mi país favorito es Francia. Me encanta la comida y la cultura."
+      },
+      {
+        "speaker": "person1",
+        "message": "Yo también me gusta Francia. ¿Has ido a París ?"
+      }
+    ],
+    "conversation_summary": "A conversation about favorite countries, food and culture."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Qué te gusta hacer los fines de semana?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Me gusta ir al cine. ¿Y tú?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Yo también me gusta ver películas, pero también me gusta salir a comer con amigos."
+      }
+    ],
+    "conversation_summary": "A conversation about weekend activities and preferences for going to the cinema or eating out with friends."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Has ido al museo de arte?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Sí, hace unos días. Me encantó la exposición actual."
+      },
+      {
+        "speaker": "person1",
+        "message": "Yo también la vi. ¿Qué te pareció más?"
+      }
+    ],
+    "conversation_summary": "A conversation about visiting a museum and enjoying an art exhibition."
+  }
 ]

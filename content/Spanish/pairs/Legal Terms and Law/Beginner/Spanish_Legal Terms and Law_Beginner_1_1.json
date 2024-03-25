@@ -1,26 +1,26 @@
 [
-    {
-        "English": "legal terms",
-        "French": "termes juridiques"
-    },
-    {
-        "English": "law",
-        "French": "loi"
-    },
-    {
-        "English": "contract",
-        "French": "contrat"
-    },
-    {
-        "English": "court",
-        "French": "tribunal"
-    },
-    {
-        "English": "dispute resolution",
-        "French": "résolution de conflit"
-    },
-    {
-        "English": "litigation",
-        "French": "contentieux"
-    }
+  {
+    "English": "legal terms",
+    "French": "termes juridiques"
+  },
+  {
+    "English": "law",
+    "French": "loi"
+  },
+  {
+    "English": "contract",
+    "French": "contrat"
+  },
+  {
+    "English": "court",
+    "French": "tribunal"
+  },
+  {
+    "English": "dispute resolution",
+    "French": "résolution de conflit"
+  },
+  {
+    "English": "litigation",
+    "French": "contentieux"
+  }
 ]

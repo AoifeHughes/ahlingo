@@ -1,87 +1,87 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment te sens-tu aujourd'hui ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je me sens un peu fatigué. J'ai travaillé tard hier soir."
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi aussi, j'ai été très occupé aujourd'hui."
-            }
-        ],
-        "conversation_summary": "A conversation about how each person is feeling that day."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Que fais-tu à présent ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je suis en train de manger mon déjeuner."
-            },
-            {
-                "speaker": "person1",
-                "message": "J'ai faim. Qu'est-ce que tu manges ?"
-            }
-        ],
-        "conversation_summary": "A conversation about what each person is doing and eating at the moment."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Tu aimes la musique ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Oui, j'adore la musique française."
-            },
-            {
-                "speaker": "person1",
-                "message": "J'aime aussi la musique espagnole."
-            }
-        ],
-        "conversation_summary": "A conversation about music preferences."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton pays préféré pour les vacances ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime bien l'Italie. J'adore la pizza et le vin."
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi, j'aime l'Espagne. J'aime la culture et la nourriture."
-            }
-        ],
-        "conversation_summary": "A conversation about favorite vacation destinations."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment vas-tu ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je vais bien, merci. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je vais bien aussi."
-            }
-        ],
-        "conversation_summary": "A conversation asking how each person is doing."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment te sens-tu aujourd'hui ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je me sens un peu fatigué. J'ai travaillé tard hier soir."
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi aussi, j'ai été très occupé aujourd'hui."
+      }
+    ],
+    "conversation_summary": "A conversation about how each person is feeling that day."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Que fais-tu à présent ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je suis en train de manger mon déjeuner."
+      },
+      {
+        "speaker": "person1",
+        "message": "J'ai faim. Qu'est-ce que tu manges ?"
+      }
+    ],
+    "conversation_summary": "A conversation about what each person is doing and eating at the moment."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Tu aimes la musique ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Oui, j'adore la musique française."
+      },
+      {
+        "speaker": "person1",
+        "message": "J'aime aussi la musique espagnole."
+      }
+    ],
+    "conversation_summary": "A conversation about music preferences."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton pays préféré pour les vacances ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime bien l'Italie. J'adore la pizza et le vin."
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi, j'aime l'Espagne. J'aime la culture et la nourriture."
+      }
+    ],
+    "conversation_summary": "A conversation about favorite vacation destinations."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment vas-tu ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je vais bien, merci. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je vais bien aussi."
+      }
+    ],
+    "conversation_summary": "A conversation asking how each person is doing."
+  }
 ]

@@ -1,87 +1,87 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment t'Occupes-tu ton temps libre ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime faire de l'escalade et du vélo."
-            },
-            {
-                "speaker": "person1",
-                "message": "Je suis curieux, qu'est-ce qui te fait du bon ?"
-            }
-        ],
-        "conversation_summary": "A conversation about hobbies and leisure activities."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Est-ce que tu as déjà essayé de faire du jogging ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Oui, j'aime beaucoup courir dans la montagne."
-            },
-            {
-                "speaker": "person1",
-                "message": "J'aimerais essayer, mais je n'ai pas de chaussures de sport."
-            }
-        ],
-        "conversation_summary": "A conversation about trying out jogging and the importance of having proper shoes for sports."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton sport préféré ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime faire de la natation et de la danse."
-            },
-            {
-                "speaker": "person1",
-                "message": "Je préfère le football et la course à pied."
-            }
-        ],
-        "conversation_summary": "A conversation about favorite sports and physical activities."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Tu as déjà été en vacances à la plage ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Oui, j'ai passé une semaine dans une petite ville de Riviera."
-            },
-            {
-                "speaker": "person1",
-                "message": "J'aimerais y aller un jour, c'est l'endroit le plus beau que j'ai jamais vu."
-            }
-        ],
-        "conversation_summary": "A conversation about going on a beach vacation and enjoying the beauty of nature."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Est-ce que tu as déjà essayé de faire de la musculation ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Oui, j'aime aller dans un gymnase pour me muscler."
-            },
-            {
-                "speaker": "person1",
-                "message": "J'aimerais commencer, mais je ne suis pas sûr de moi."
-            }
-        ],
-        "conversation_summary": "A conversation about trying out weightlifting and feeling confident in oneself."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment t'Occupes-tu ton temps libre ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime faire de l'escalade et du vélo."
+      },
+      {
+        "speaker": "person1",
+        "message": "Je suis curieux, qu'est-ce qui te fait du bon ?"
+      }
+    ],
+    "conversation_summary": "A conversation about hobbies and leisure activities."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Est-ce que tu as déjà essayé de faire du jogging ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Oui, j'aime beaucoup courir dans la montagne."
+      },
+      {
+        "speaker": "person1",
+        "message": "J'aimerais essayer, mais je n'ai pas de chaussures de sport."
+      }
+    ],
+    "conversation_summary": "A conversation about trying out jogging and the importance of having proper shoes for sports."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton sport préféré ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime faire de la natation et de la danse."
+      },
+      {
+        "speaker": "person1",
+        "message": "Je préfère le football et la course à pied."
+      }
+    ],
+    "conversation_summary": "A conversation about favorite sports and physical activities."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Tu as déjà été en vacances à la plage ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Oui, j'ai passé une semaine dans une petite ville de Riviera."
+      },
+      {
+        "speaker": "person1",
+        "message": "J'aimerais y aller un jour, c'est l'endroit le plus beau que j'ai jamais vu."
+      }
+    ],
+    "conversation_summary": "A conversation about going on a beach vacation and enjoying the beauty of nature."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Est-ce que tu as déjà essayé de faire de la musculation ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Oui, j'aime aller dans un gymnase pour me muscler."
+      },
+      {
+        "speaker": "person1",
+        "message": "J'aimerais commencer, mais je ne suis pas sûr de moi."
+      }
+    ],
+    "conversation_summary": "A conversation about trying out weightlifting and feeling confident in oneself."
+  }
 ]
