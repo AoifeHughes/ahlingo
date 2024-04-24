@@ -1,20 +1,7 @@
 import React, { useState, useEffect } from "react";
 import SubpageTemplate from "../templates/SubpageTemplate";
 import Button from "@mui/material/Button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableRow,
-  Paper,
-} from "@mui/material";
-import {
-  getLanguages,
-  getDifficultiesByLanguage,
-  getTopicsByLanguageDifficulty,
-  getRandomPairExercise,
-} from "./ipcUtilities"; // Adjust the import path as necessary
+import { getLanguages, getDifficultiesByLanguage, getTopicsByLanguageDifficulty, getRandomPairExercise } from "./ipcUtilities"; // Adjust the import path as necessary
 
 function Pairs({ onBack }) {
   const [languages, setLanguages] = useState([]);
@@ -25,7 +12,8 @@ function Pairs({ onBack }) {
   const [exercises, setExercises] = useState([]);
   const [shuffledExercises, setShuffledExercises] = useState([]);
   const [matches, setMatches] = useState({});
-  const [correctMatches, setCorrectMatches] = useState(0);
+  const [selectedPair, setSelectedPair] = useState(null); // Track the selected pair
+  const [incorrectAttempts, setIncorrectAttempts] = useState({}); // Track incorrect attempts for flashing red
 
   useEffect(() => {
     getLanguages(setLanguages);
@@ -39,11 +27,7 @@ function Pairs({ onBack }) {
 
   useEffect(() => {
     if (selectedLanguage && selectedDifficulty) {
-      getTopicsByLanguageDifficulty(
-        selectedLanguage,
-        selectedDifficulty,
-        setTopics
-      );
+      getTopicsByLanguageDifficulty(selectedLanguage, selectedDifficulty, setTopics);
     }
   }, [selectedLanguage, selectedDifficulty]);
 
@@ -52,78 +36,54 @@ function Pairs({ onBack }) {
       const shuffled = shuffleExercises(exercises);
       setShuffledExercises(shuffled);
       setMatches({});
-      setCorrectMatches(0);
+      setSelectedPair(null);
+      setIncorrectAttempts({});
     }
   }, [exercises]);
 
-  const handleLanguageClick = (language) => {
-    setSelectedLanguage(language);
-    setDifficulties([]);
-    setSelectedDifficulty("");
-    setTopics([]);
-    setExercises([]);
-  };
+  const handleExerciseClick = (id) => {
+    // Logic to determine if a pair is matched, turn green or flash red
+    const clickedExercise = shuffledExercises.find(exercise => exercise.id === id);
 
-  const handleDifficultyClick = (difficulty) => {
-    setSelectedDifficulty(difficulty);
-    setTopics([]);
-    setExercises([]);
-  };
-
-  const handleTopicClick = (topic) => {
-    getRandomPairExercise(
-      selectedLanguage,
-      selectedDifficulty,
-      topic,
-      setExercises
-    );
+    if (selectedPair === null) {
+      setSelectedPair(clickedExercise);
+    } else if (selectedPair.pairId === clickedExercise.pairId) {
+      setMatches({ ...matches, [selectedPair.id]: true, [id]: true });
+      setSelectedPair(null);
+    } else {
+      setIncorrectAttempts({ ...incorrectAttempts, [selectedPair.id]: true, [id]: true });
+      setTimeout(() => {
+        setIncorrectAttempts({});
+      }, 1000); // Remove incorrect highlight after 1 second
+      setSelectedPair(null);
+    }
   };
 
   const shuffleExercises = (exercises) => {
-    const pairedExercises = exercises.map((e, i) => ({ id: i, ...e }));
+    const pairedExercises = exercises.map((e, i) => ({ id: i, pairId: Math.floor(i / 2), ...e }));
     const shuffled = [...pairedExercises].sort(() => 0.5 - Math.random());
     return shuffled;
   };
 
-  const renderExerciseTable = (languageContentKey) => (
-    <TableContainer component={Paper}>
-      <Table aria-label="pairing game">
-        <TableBody>
-          {shuffledExercises.map((exercise, index) => (
-            <TableRow key={index} hover>
-              <TableCell
-                component="th"
-                scope="row"
-                style={{
-                  background: matches[index] ? "#90ee90" : "",
-                  cursor: "pointer",
-                }}
-              >
-                {exercise[languageContentKey]}
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
-  );
-
-  const handleResetClick = () => {
-    setSelectedLanguage("");
-    setSelectedDifficulty("");
-    setTopics([]);
-    setExercises([]);
-    setShuffledExercises([]);
-    setMatches({});
-    setCorrectMatches(0);
-  };
-
-  const renderExerciseTables = () => (
-    <div style={{ display: "flex", justifyContent: "space-around" }}>
-      {renderExerciseTable("language_1_content")}
-      {renderExerciseTable("language_2_content")}
+  const renderExerciseButtons = () => (
+    <div style={{ position: 'relative', height: '300px', width: '100%' }}>
+      {shuffledExercises.map((exercise, index) => (
+        <Button
+          key={index}
+          onClick={() => handleExerciseClick(exercise.id)}
+          style={{
+            position: 'absolute',
+            top: `${Math.random() * 250}px`, // Example of scattering, adjust as necessary
+            left: `${Math.random() * (100 - index)}%`, // Prevent overlapping by adjusting based on index or other methods
+            backgroundColor: matches[exercise.id] ? "#90ee90" : incorrectAttempts[exercise.id] ? "red" : "initial",
+          }}
+        >
+          {exercise.language_1_content} / {exercise.language_2_content}
+        </Button>
+      ))}
     </div>
   );
+
 
   return (
     <SubpageTemplate title="Pairs">
@@ -156,10 +116,11 @@ function Pairs({ onBack }) {
               {topic}
             </Button>
           ))}
-        {exercises.length > 0 && renderExerciseTables()}
+        {exercises.length > 0 && renderExerciseButtons()}
       </div>
     </SubpageTemplate>
   );
 }
+
 
 export default Pairs;
