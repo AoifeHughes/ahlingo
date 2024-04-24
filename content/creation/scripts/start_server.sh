@@ -1,6 +1,6 @@
 
-MODEL_PATH="/Users/ahughes/git/LLMs/LMStudio/TheBloke/WizardLM-1.0-Uncensored-Llama2-13B-GGUF/wizardlm-1.0-uncensored-llama2-13b.Q8_0.gguf"
-CONTEXT_SIZE=1024
+MODEL_PATH="/Users/ahughes/git/LLMs/LMStudio/lmstudio-community/Meta-Llama-3-8B-Instruct-GGUF/Meta-Llama-3-8B-Instruct-Q8_0.gguf"
+CONTEXT_SIZE=8192
 SERVER_HOST="127.0.0.1"
 SERVER_PORT="8080"
 SERVER_CMD="/Users/ahughes/git/llama.cpp/server"
