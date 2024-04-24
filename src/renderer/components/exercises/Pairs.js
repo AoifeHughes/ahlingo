@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from "react";
 import SubpageTemplate from "../templates/SubpageTemplate";
 import Button from "@mui/material/Button";
-import { getLanguages, getDifficultiesByLanguage, getTopicsByLanguageDifficulty, getRandomPairExercise } from "./ipcUtilities"; // Adjust the import path as necessary
+import {
+  getLanguages,
+  getDifficultiesByLanguage,
+  getTopicsByLanguageDifficulty,
+  getRandomPairExercise,
+} from "./ipcUtilities"; // Adjust the import path as necessary
 
 function Pairs({ onBack }) {
   const [languages, setLanguages] = useState([]);
@@ -27,7 +32,11 @@ function Pairs({ onBack }) {
 
   useEffect(() => {
     if (selectedLanguage && selectedDifficulty) {
-      getTopicsByLanguageDifficulty(selectedLanguage, selectedDifficulty, setTopics);
+      getTopicsByLanguageDifficulty(
+        selectedLanguage,
+        selectedDifficulty,
+        setTopics
+      );
     }
   }, [selectedLanguage, selectedDifficulty]);
 
@@ -43,7 +52,9 @@ function Pairs({ onBack }) {
 
   const handleExerciseClick = (id) => {
     // Logic to determine if a pair is matched, turn green or flash red
-    const clickedExercise = shuffledExercises.find(exercise => exercise.id === id);
+    const clickedExercise = shuffledExercises.find(
+      (exercise) => exercise.id === id
+    );
 
     if (selectedPair === null) {
       setSelectedPair(clickedExercise);
@@ -51,7 +62,11 @@ function Pairs({ onBack }) {
       setMatches({ ...matches, [selectedPair.id]: true, [id]: true });
       setSelectedPair(null);
     } else {
-      setIncorrectAttempts({ ...incorrectAttempts, [selectedPair.id]: true, [id]: true });
+      setIncorrectAttempts({
+        ...incorrectAttempts,
+        [selectedPair.id]: true,
+        [id]: true,
+      });
       setTimeout(() => {
         setIncorrectAttempts({});
       }, 1000); // Remove incorrect highlight after 1 second
@@ -60,22 +75,30 @@ function Pairs({ onBack }) {
   };
 
   const shuffleExercises = (exercises) => {
-    const pairedExercises = exercises.map((e, i) => ({ id: i, pairId: Math.floor(i / 2), ...e }));
+    const pairedExercises = exercises.map((e, i) => ({
+      id: i,
+      pairId: Math.floor(i / 2),
+      ...e,
+    }));
     const shuffled = [...pairedExercises].sort(() => 0.5 - Math.random());
     return shuffled;
   };
 
   const renderExerciseButtons = () => (
-    <div style={{ position: 'relative', height: '300px', width: '100%' }}>
+    <div style={{ position: "relative", height: "300px", width: "100%" }}>
       {shuffledExercises.map((exercise, index) => (
         <Button
           key={index}
           onClick={() => handleExerciseClick(exercise.id)}
           style={{
-            position: 'absolute',
+            position: "absolute",
             top: `${Math.random() * 250}px`, // Example of scattering, adjust as necessary
             left: `${Math.random() * (100 - index)}%`, // Prevent overlapping by adjusting based on index or other methods
-            backgroundColor: matches[exercise.id] ? "#90ee90" : incorrectAttempts[exercise.id] ? "red" : "initial",
+            backgroundColor: matches[exercise.id]
+              ? "#90ee90"
+              : incorrectAttempts[exercise.id]
+              ? "red"
+              : "initial",
           }}
         >
           {exercise.language_1_content} / {exercise.language_2_content}
@@ -83,7 +106,6 @@ function Pairs({ onBack }) {
       ))}
     </div>
   );
-
 
   return (
     <SubpageTemplate title="Pairs">
@@ -121,6 +143,5 @@ function Pairs({ onBack }) {
     </SubpageTemplate>
   );
 }
-
 
 export default Pairs;
