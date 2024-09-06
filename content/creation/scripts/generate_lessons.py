@@ -20,7 +20,7 @@ def load_assistant_content(language, lesson_kind, topic, level):
     else:
         return ""
 
-def generate_lessons_data(language, level, topic, N_runs=5, lesson_kinds=['conversations', 'pairs', 'translations']):
+def generate_lessons_data(language, level, topic, N_runs=5, lesson_kinds=['conversations', 'pairs', 'translations'], use_saved_output=False):
     def make_conversation_system(language, topic, level):
         return {
             "role": "system",
@@ -60,9 +60,10 @@ def generate_lessons_data(language, level, topic, N_runs=5, lesson_kinds=['conve
                 assistant = default_translation_assistants[language]
 
             # Load assistant content from saved output file, if it exists
-            better_content = load_assistant_content(language, lesson_kind, topic, level)
-            if better_content != "":
-                assistant["content"] = better_content
+            if use_saved_output:
+                better_content = load_assistant_content(language, lesson_kind, topic, level)
+                if better_content != "":
+                    assistant["content"] = better_content
 
             for _ in range(N_runs):
                 user1 = {
@@ -83,7 +84,7 @@ def generate_lessons_data(language, level, topic, N_runs=5, lesson_kinds=['conve
                         assistant,
                         user2
                     ],
-                    temperature=0.8,
+                    temperature=0.9,
                 )
                 raw_response = completion.choices[0].message.content
                 json_response = re.search(r'\[(.*)\]', raw_response, re.DOTALL)
