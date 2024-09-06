@@ -1,22 +1,22 @@
 [
-    {
-        "English": "bank",
-        "French": "banque"
-    },
-    {
-        "English": "budget",
-        "French": "budget"
-    },
-    {
-        "English": "cash",
-        "French": "valeur"
-    },
-    {
-        "English": "credit",
-        "French": "crédit"
-    },
-    {
-        "English": "debt",
-        "French": "dette"
-    }
+  {
+    "English": "bank",
+    "French": "banque"
+  },
+  {
+    "English": "budget",
+    "French": "budget"
+  },
+  {
+    "English": "cash",
+    "French": "valeur"
+  },
+  {
+    "English": "credit",
+    "French": "crédit"
+  },
+  {
+    "English": "debt",
+    "French": "dette"
+  }
 ]

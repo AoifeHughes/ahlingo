@@ -1,111 +1,111 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Qué significa la vida para ti?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Para mi, la vida es una oportunidad de crecer y aprender"
-            },
-            {
-                "speaker": "person1",
-                "message": "Y ¿qué te parece la muerte?"
-            },
-            {
-                "speaker": "person2",
-                "message": "La muerte es un proceso natural que todos llevamos dentro"
-            },
-            {
-                "speaker": "person1",
-                "message": "Te das cuenta de cómo la religión tiene un papel importante en la vida de las personas."
-            }
-        ],
-        "conversation_summary": "A conversation about the meaning of life and death, and how religion plays a role in people's lives."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Has oído hablar de la meditación?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Sí, me encanta practicar la meditación."
-            },
-            {
-                "speaker": "person1",
-                "message": "Y ¿cómo te hace sentir?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Me hace sentir más relajado y en paz conmigo mismo."
-            }
-        ],
-        "conversation_summary": "A conversation about the practice of meditation and how it makes one feel more relaxed and at peace with oneself."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Qué es el karma?"
-            },
-            {
-                "speaker": "person2",
-                "message": "El karma es la idea de que nuestras acciones tienen consecuencias."
-            },
-            {
-                "speaker": "person1",
-                "message": "Y ¿cómo influye en la vida de las personas?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Pues según la creencia en el karma, nuestras acciones buenas o malas van a determinar cómo será nuestra vida futura."
-            }
-        ],
-        "conversation_summary": "A conversation about the concept of karma and how it influences people's lives."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Te gusta ir a la iglesia?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Sí, me encanta. Me da una sensación de paz y tranquilidad."
-            },
-            {
-                "speaker": "person1",
-                "message": "Y ¿qué te parece la música en las misas?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Me encanta. Me emociona muchísimo y me hace sentir muy unido a mi fe."
-            }
-        ],
-        "conversation_summary": "A conversation about going to church and enjoying the music during mass."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Qué es una oración?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Una oración es una petición que hacemos a Dios para algo que nosotros deseamos."
-            },
-            {
-                "speaker": "person1",
-                "message": "Y ¿cómo lo haces?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Pongo mi atención en mí y en lo que deseo, y hablo con Dios como si estuviera hablando consigo directamente."
-            }
-        ],
-        "conversation_summary": "A conversation about prayer and how to do it."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Qué significa la vida para ti?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Para mi, la vida es una oportunidad de crecer y aprender"
+      },
+      {
+        "speaker": "person1",
+        "message": "Y ¿qué te parece la muerte?"
+      },
+      {
+        "speaker": "person2",
+        "message": "La muerte es un proceso natural que todos llevamos dentro"
+      },
+      {
+        "speaker": "person1",
+        "message": "Te das cuenta de cómo la religión tiene un papel importante en la vida de las personas."
+      }
+    ],
+    "conversation_summary": "A conversation about the meaning of life and death, and how religion plays a role in people's lives."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Has oído hablar de la meditación?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Sí, me encanta practicar la meditación."
+      },
+      {
+        "speaker": "person1",
+        "message": "Y ¿cómo te hace sentir?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Me hace sentir más relajado y en paz conmigo mismo."
+      }
+    ],
+    "conversation_summary": "A conversation about the practice of meditation and how it makes one feel more relaxed and at peace with oneself."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Qué es el karma?"
+      },
+      {
+        "speaker": "person2",
+        "message": "El karma es la idea de que nuestras acciones tienen consecuencias."
+      },
+      {
+        "speaker": "person1",
+        "message": "Y ¿cómo influye en la vida de las personas?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Pues según la creencia en el karma, nuestras acciones buenas o malas van a determinar cómo será nuestra vida futura."
+      }
+    ],
+    "conversation_summary": "A conversation about the concept of karma and how it influences people's lives."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Te gusta ir a la iglesia?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Sí, me encanta. Me da una sensación de paz y tranquilidad."
+      },
+      {
+        "speaker": "person1",
+        "message": "Y ¿qué te parece la música en las misas?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Me encanta. Me emociona muchísimo y me hace sentir muy unido a mi fe."
+      }
+    ],
+    "conversation_summary": "A conversation about going to church and enjoying the music during mass."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Qué es una oración?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Una oración es una petición que hacemos a Dios para algo que nosotros deseamos."
+      },
+      {
+        "speaker": "person1",
+        "message": "Y ¿cómo lo haces?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Pongo mi atención en mí y en lo que deseo, y hablo con Dios como si estuviera hablando consigo directamente."
+      }
+    ],
+    "conversation_summary": "A conversation about prayer and how to do it."
+  }
 ]

@@ -1,22 +1,22 @@
 [
-    {
-        "English": "computer",
-        "French": "ordinateur"
-    },
-    {
-        "English": "computer keyboard",
-        "French": "clavier d'ordinateur"
-    },
-    {
-        "English": "computer mouse",
-        "French": "souris d'ordinateur"
-    },
-    {
-        "English": "computer screen",
-        "French": "écran d'ordinateur"
-    },
-    {
-        "English": "computer software",
-        "French": "logiciel d'ordinateur"
-    }
+  {
+    "English": "computer",
+    "French": "ordinateur"
+  },
+  {
+    "English": "computer keyboard",
+    "French": "clavier d'ordinateur"
+  },
+  {
+    "English": "computer mouse",
+    "French": "souris d'ordinateur"
+  },
+  {
+    "English": "computer screen",
+    "French": "écran d'ordinateur"
+  },
+  {
+    "English": "computer software",
+    "French": "logiciel d'ordinateur"
+  }
 ]

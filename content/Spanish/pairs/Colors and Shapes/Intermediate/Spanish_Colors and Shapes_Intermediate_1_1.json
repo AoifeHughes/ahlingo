@@ -1,38 +1,38 @@
 [
-    {
-        "English": "shoe",
-        "French": "chaussure"
-    },
-    {
-        "English": "pizza",
-        "French": "pizza"
-    },
-    {
-        "English": "computer",
-        "French": "ordinateur"
-    },
-    {
-        "English": "phone",
-        "French": "téléphone"
-    },
-    {
-        "English": "cat",
-        "French": "chat"
-    },
-    {
-        "English": "hat",
-        "French": "chapeau"
-    },
-    {
-        "English": "cup",
-        "French": "tasse"
-    },
-    {
-        "English": "ball",
-        "French": "balle"
-    },
-    {
-        "English": "square",
-        "French": "carré"
-    }
+  {
+    "English": "shoe",
+    "French": "chaussure"
+  },
+  {
+    "English": "pizza",
+    "French": "pizza"
+  },
+  {
+    "English": "computer",
+    "French": "ordinateur"
+  },
+  {
+    "English": "phone",
+    "French": "téléphone"
+  },
+  {
+    "English": "cat",
+    "French": "chat"
+  },
+  {
+    "English": "hat",
+    "French": "chapeau"
+  },
+  {
+    "English": "cup",
+    "French": "tasse"
+  },
+  {
+    "English": "ball",
+    "French": "balle"
+  },
+  {
+    "English": "square",
+    "French": "carré"
+  }
 ]

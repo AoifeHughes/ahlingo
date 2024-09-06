@@ -1,22 +1,22 @@
 [
-    {
-        "English": "economy",
-        "French": "économie"
-    },
-    {
-        "English": "finance",
-        "French": "finances"
-    },
-    {
-        "English": "stock market",
-        "French": "bourse"
-    },
-    {
-        "English": "inflation",
-        "French": "inflation"
-    },
-    {
-        "English": "recession",
-        "French": "récession"
-    }
+  {
+    "English": "economy",
+    "French": "économie"
+  },
+  {
+    "English": "finance",
+    "French": "finances"
+  },
+  {
+    "English": "stock market",
+    "French": "bourse"
+  },
+  {
+    "English": "inflation",
+    "French": "inflation"
+  },
+  {
+    "English": "recession",
+    "French": "récession"
+  }
 ]

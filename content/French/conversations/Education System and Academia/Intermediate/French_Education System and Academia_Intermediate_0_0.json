@@ -1,87 +1,87 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment vas-tu ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je vais bien, merci. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je vais bien également."
-            }
-        ],
-        "conversation_summary": "A conversation asking how each person is doing."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Qu'est-ce que tu aimes faire en tôt ?"
-            },
-            {
-                "speaker": "person3",
-                "message": "Moi, j'aime lire des livres."
-            },
-            {
-                "speaker": "person1",
-                "message": "C'est bien. J'aime aussi la lecture."
-            }
-        ],
-        "conversation_summary": "A conversation about leisure activities in the morning."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton film préféré ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime beaucoup Le Grand Désespoir. Tu l'as déjà vu ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Oui, c'est un très bon film. J'ai aimé sa musique de fond."
-            }
-        ],
-        "conversation_summary": "A conversation about a favorite movie and its music."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Tu viens d'où ?"
-            },
-            {
-                "speaker": "person3",
-                "message": "Ah, c'est génial. J'adore la France."
-            },
-            {
-                "speaker": "person1",
-                "message": "Oui, c'est une belle pays. J'y suis allé l'année dernière."
-            }
-        ],
-        "conversation_summary": "A conversation about each person's place of origin and their experiences with that place."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment fais-tu ton travail ?"
-            },
-            {
-                "speaker": "person3",
-                "message": "Moi, j'suis étudiant en biologie."
-            },
-            {
-                "speaker": "person1",
-                "message": "C'est intéressant. J'aime la biologie."
-            }
-        ],
-        "conversation_summary": "A conversation about each person's job and a shared interest in biology."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment vas-tu ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je vais bien, merci. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je vais bien également."
+      }
+    ],
+    "conversation_summary": "A conversation asking how each person is doing."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Qu'est-ce que tu aimes faire en tôt ?"
+      },
+      {
+        "speaker": "person3",
+        "message": "Moi, j'aime lire des livres."
+      },
+      {
+        "speaker": "person1",
+        "message": "C'est bien. J'aime aussi la lecture."
+      }
+    ],
+    "conversation_summary": "A conversation about leisure activities in the morning."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton film préféré ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime beaucoup Le Grand Désespoir. Tu l'as déjà vu ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Oui, c'est un très bon film. J'ai aimé sa musique de fond."
+      }
+    ],
+    "conversation_summary": "A conversation about a favorite movie and its music."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Tu viens d'où ?"
+      },
+      {
+        "speaker": "person3",
+        "message": "Ah, c'est génial. J'adore la France."
+      },
+      {
+        "speaker": "person1",
+        "message": "Oui, c'est une belle pays. J'y suis allé l'année dernière."
+      }
+    ],
+    "conversation_summary": "A conversation about each person's place of origin and their experiences with that place."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment fais-tu ton travail ?"
+      },
+      {
+        "speaker": "person3",
+        "message": "Moi, j'suis étudiant en biologie."
+      },
+      {
+        "speaker": "person1",
+        "message": "C'est intéressant. J'aime la biologie."
+      }
+    ],
+    "conversation_summary": "A conversation about each person's job and a shared interest in biology."
+  }
 ]

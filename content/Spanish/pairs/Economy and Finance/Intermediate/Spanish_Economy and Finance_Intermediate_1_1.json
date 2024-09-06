@@ -1,22 +1,22 @@
 [
-    {
-        "English": "economy",
-        "Spanish": "economía"
-    },
-    {
-        "English": "finance",
-        "Spanish": "finanzas"
-    },
-    {
-        "English": "stock market",
-        "Spanish": "mercado de valores"
-    },
-    {
-        "English": "bank account",
-        "Spanish": "cuenta bancaria"
-    },
-    {
-        "English": "budget",
-        "Spanish": "presupuesto"
-    }
+  {
+    "English": "economy",
+    "Spanish": "economía"
+  },
+  {
+    "English": "finance",
+    "Spanish": "finanzas"
+  },
+  {
+    "English": "stock market",
+    "Spanish": "mercado de valores"
+  },
+  {
+    "English": "bank account",
+    "Spanish": "cuenta bancaria"
+  },
+  {
+    "English": "budget",
+    "Spanish": "presupuesto"
+  }
 ]

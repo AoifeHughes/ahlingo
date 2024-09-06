@@ -1,22 +1,22 @@
 [
-    {
-        "English": "What time is the train to Paris leaving?",
-        "French": "Quelle heure est le train pour Paris ?"
-    },
-    {
-        "English": "Do you have any recommendations for a good hotel in Paris?",
-        "French": "Avez-vous des recommandations pour un bon hôtel à Paris ?"
-    },
-    {
-        "English": "I want to buy a new pair of shoes, but they are too expensive.",
-        "French": "J'aimerais acheter une paire de chaussures, mais elles sont trop coûteuses."
-    },
-    {
-        "English": "Is this the correct bus stop for the museum?",
-        "French": "Est-ce que cet arrêt de bus est le bon pour le musée ?"
-    },
-    {
-        "English": "Can I have a discount on this item?",
-        "French": "Pourrais-je avoir un rabais pour cet article ?"
-    }
+  {
+    "English": "What time is the train to Paris leaving?",
+    "French": "Quelle heure est le train pour Paris ?"
+  },
+  {
+    "English": "Do you have any recommendations for a good hotel in Paris?",
+    "French": "Avez-vous des recommandations pour un bon hôtel à Paris ?"
+  },
+  {
+    "English": "I want to buy a new pair of shoes, but they are too expensive.",
+    "French": "J'aimerais acheter une paire de chaussures, mais elles sont trop coûteuses."
+  },
+  {
+    "English": "Is this the correct bus stop for the museum?",
+    "French": "Est-ce que cet arrêt de bus est le bon pour le musée ?"
+  },
+  {
+    "English": "Can I have a discount on this item?",
+    "French": "Pourrais-je avoir un rabais pour cet article ?"
+  }
 ]

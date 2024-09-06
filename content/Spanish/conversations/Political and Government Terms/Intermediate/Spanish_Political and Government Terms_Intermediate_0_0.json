@@ -1,91 +1,91 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Qué es la democracia ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "La democracia es un sistema de gobierno en el que el pueblo tiene el poder."
-            },
-            {
-                "speaker": "person1",
-                "message": "¿Y qué pasa con la dictadura ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "La dictadura es un sistema de gobierno en el que una persona o un grupo de personas tienen todo el poder."
-            }
-        ],
-        "conversation_summary": "A conversation about the meaning and difference between democracy and dictatorship."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Cuál es tu país favorito ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Mi país favorito es México. Es muy grande y diversificado."
-            },
-            {
-                "speaker": "person1",
-                "message": "Yo prefiero España. Tiene una cultura muy rica."
-            }
-        ],
-        "conversation_summary": "A conversation about favorite countries."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Cuál es tu partido político preferido ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Mi partido político preferido es el Partido Socialista. Están trabajando por mejorar la vida de las personas."
-            },
-            {
-                "speaker": "person1",
-                "message": "Yo prefiero el Partido Popular. Creo que son más prácticos."
-            }
-        ],
-        "conversation_summary": "A conversation about preferred political parties."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Cómo funciona el sistema de elecciones en tu país ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "En mi país, los políticos se postulan para ser elegidos y los votantes deciden quién ganará."
-            },
-            {
-                "speaker": "person1",
-                "message": "¿Y cómo se convirtió en presidente Trump ?"
-            }
-        ],
-        "conversation_summary": "A conversation about the election process in different countries and how Donald Trump became President of the United States."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Cuál es tu ciudad favorita ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Mi ciudad favorita es Nueva York. Hay tantas cosas para hacer y ver there."
-            },
-            {
-                "speaker": "person1",
-                "message": "Yo prefiero París. La arquitectura es muy impresionante."
-            }
-        ],
-        "conversation_summary": "A conversation about favorite cities."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Qué es la democracia ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "La democracia es un sistema de gobierno en el que el pueblo tiene el poder."
+      },
+      {
+        "speaker": "person1",
+        "message": "¿Y qué pasa con la dictadura ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "La dictadura es un sistema de gobierno en el que una persona o un grupo de personas tienen todo el poder."
+      }
+    ],
+    "conversation_summary": "A conversation about the meaning and difference between democracy and dictatorship."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Cuál es tu país favorito ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Mi país favorito es México. Es muy grande y diversificado."
+      },
+      {
+        "speaker": "person1",
+        "message": "Yo prefiero España. Tiene una cultura muy rica."
+      }
+    ],
+    "conversation_summary": "A conversation about favorite countries."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Cuál es tu partido político preferido ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Mi partido político preferido es el Partido Socialista. Están trabajando por mejorar la vida de las personas."
+      },
+      {
+        "speaker": "person1",
+        "message": "Yo prefiero el Partido Popular. Creo que son más prácticos."
+      }
+    ],
+    "conversation_summary": "A conversation about preferred political parties."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Cómo funciona el sistema de elecciones en tu país ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "En mi país, los políticos se postulan para ser elegidos y los votantes deciden quién ganará."
+      },
+      {
+        "speaker": "person1",
+        "message": "¿Y cómo se convirtió en presidente Trump ?"
+      }
+    ],
+    "conversation_summary": "A conversation about the election process in different countries and how Donald Trump became President of the United States."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Cuál es tu ciudad favorita ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Mi ciudad favorita es Nueva York. Hay tantas cosas para hacer y ver there."
+      },
+      {
+        "speaker": "person1",
+        "message": "Yo prefiero París. La arquitectura es muy impresionante."
+      }
+    ],
+    "conversation_summary": "A conversation about favorite cities."
+  }
 ]

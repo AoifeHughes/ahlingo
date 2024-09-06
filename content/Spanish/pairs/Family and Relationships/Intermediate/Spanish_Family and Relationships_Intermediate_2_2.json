@@ -1,26 +1,26 @@
 [
-    {
-        "English": "sister",
-        "French": "soeur"
-    },
-    {
-        "English": "brother",
-        "French": "frere"
-    },
-    {
-        "English": "father",
-        "French": "pere"
-    },
-    {
-        "English": "mother",
-        "French": "mere"
-    },
-    {
-        "English": "son",
-        "French": "fils"
-    },
-    {
-        "English": "daughter",
-        "French": "fillle"
-    }
+  {
+    "English": "sister",
+    "French": "soeur"
+  },
+  {
+    "English": "brother",
+    "French": "frere"
+  },
+  {
+    "English": "father",
+    "French": "pere"
+  },
+  {
+    "English": "mother",
+    "French": "mere"
+  },
+  {
+    "English": "son",
+    "French": "fils"
+  },
+  {
+    "English": "daughter",
+    "French": "fillle"
+  }
 ]

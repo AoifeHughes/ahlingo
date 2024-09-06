@@ -1,38 +1,38 @@
 [
-    {
-        "English": "bread",
-        "Spanish": "pan"
-    },
-    {
-        "English": "cheese",
-        "Spanish": "queso"
-    },
-    {
-        "English": "chicken",
-        "Spanish": "pollo"
-    },
-    {
-        "English": "coffee",
-        "Spanish": "cafe"
-    },
-    {
-        "English": "soup",
-        "Spanish": "sopa"
-    },
-    {
-        "English": "salad",
-        "Spanish": "ensalada"
-    },
-    {
-        "English": "pizza",
-        "Spanish": "pizza"
-    },
-    {
-        "English": "wine",
-        "Spanish": "vino"
-    },
-    {
-        "English": "beer",
-        "Spanish": "cerveza"
-    }
+  {
+    "English": "bread",
+    "Spanish": "pan"
+  },
+  {
+    "English": "cheese",
+    "Spanish": "queso"
+  },
+  {
+    "English": "chicken",
+    "Spanish": "pollo"
+  },
+  {
+    "English": "coffee",
+    "Spanish": "cafe"
+  },
+  {
+    "English": "soup",
+    "Spanish": "sopa"
+  },
+  {
+    "English": "salad",
+    "Spanish": "ensalada"
+  },
+  {
+    "English": "pizza",
+    "Spanish": "pizza"
+  },
+  {
+    "English": "wine",
+    "Spanish": "vino"
+  },
+  {
+    "English": "beer",
+    "Spanish": "cerveza"
+  }
 ]

@@ -1,87 +1,87 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est le temps aujourd'hui ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Il fait beau. C'est très ensoleillé."
-            },
-            {
-                "speaker": "person3",
-                "message": "Moi, je préfère les journées plus fraîches."
-            }
-        ],
-        "conversation_summary": "A conversation discussing the weather and preferences for different types of weather."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quand arrive l'été ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "L'été commence en général à la fin du mois de juin et dure jusqu'à la mi-septembre."
-            },
-            {
-                "speaker": "person3",
-                "message": "J'ai entendu dire qu'il faisait très chaud l'année dernière."
-            }
-        ],
-        "conversation_summary": "A conversation about when summer begins and ends, and how hot it can be."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quand arrive l'hiver ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "L'hiver commence en général à la fin du mois de décembre et dure jusqu'à la mi-mars."
-            },
-            {
-                "speaker": "person3",
-                "message": "J'ai entendu dire qu'il y avait beaucoup de neige l'année dernière."
-            }
-        ],
-        "conversation_summary": "A conversation about when winter begins and ends, and how much snow there can be."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton pays préféré ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime l'Australie. Ils ont une faune et une flore très uniques."
-            },
-            {
-                "speaker": "person3",
-                "message": "Moi, je préfère l'Afrique. Les paysages sont magnifiques."
-            }
-        ],
-        "conversation_summary": "A conversation discussing favorite countries and the unique aspects of their wildlife and landscapes."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment s'appelle ton arbre favori ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime l'arbre à fruits. Ils sont très colorés et délicieux à manger."
-            },
-            {
-                "speaker": "person3",
-                "message": "Moi, je préfère l'arbre à feuilles persistantes. Ils ont une silhouette très intéressante en hiver."
-            }
-        ],
-        "conversation_summary": "A conversation discussing favorite types of trees and their characteristics."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est le temps aujourd'hui ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Il fait beau. C'est très ensoleillé."
+      },
+      {
+        "speaker": "person3",
+        "message": "Moi, je préfère les journées plus fraîches."
+      }
+    ],
+    "conversation_summary": "A conversation discussing the weather and preferences for different types of weather."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quand arrive l'été ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "L'été commence en général à la fin du mois de juin et dure jusqu'à la mi-septembre."
+      },
+      {
+        "speaker": "person3",
+        "message": "J'ai entendu dire qu'il faisait très chaud l'année dernière."
+      }
+    ],
+    "conversation_summary": "A conversation about when summer begins and ends, and how hot it can be."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quand arrive l'hiver ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "L'hiver commence en général à la fin du mois de décembre et dure jusqu'à la mi-mars."
+      },
+      {
+        "speaker": "person3",
+        "message": "J'ai entendu dire qu'il y avait beaucoup de neige l'année dernière."
+      }
+    ],
+    "conversation_summary": "A conversation about when winter begins and ends, and how much snow there can be."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton pays préféré ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime l'Australie. Ils ont une faune et une flore très uniques."
+      },
+      {
+        "speaker": "person3",
+        "message": "Moi, je préfère l'Afrique. Les paysages sont magnifiques."
+      }
+    ],
+    "conversation_summary": "A conversation discussing favorite countries and the unique aspects of their wildlife and landscapes."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment s'appelle ton arbre favori ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime l'arbre à fruits. Ils sont très colorés et délicieux à manger."
+      },
+      {
+        "speaker": "person3",
+        "message": "Moi, je préfère l'arbre à feuilles persistantes. Ils ont une silhouette très intéressante en hiver."
+      }
+    ],
+    "conversation_summary": "A conversation discussing favorite types of trees and their characteristics."
+  }
 ]

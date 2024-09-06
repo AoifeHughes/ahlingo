@@ -1,34 +1,34 @@
 [
-    {
-        "English": "football",
-        "Spanish": "fútbol"
-    },
-    {
-        "English": "running",
-        "Spanish": "correr"
-    },
-    {
-        "English": "swimming",
-        "Spanish": "nadar"
-    },
-    {
-        "English": "basketball",
-        "Spanish": "baloncesto"
-    },
-    {
-        "English": "tennis",
-        "Spanish": "tenis"
-    },
-    {
-        "English": "soccer",
-        "Spanish": "fútbol"
-    },
-    {
-        "English": "jogging",
-        "Spanish": "jogging"
-    },
-    {
-        "English": "weightlifting",
-        "Spanish": "entrenamiento de fuerza"
-    }
+  {
+    "English": "football",
+    "Spanish": "fútbol"
+  },
+  {
+    "English": "running",
+    "Spanish": "correr"
+  },
+  {
+    "English": "swimming",
+    "Spanish": "nadar"
+  },
+  {
+    "English": "basketball",
+    "Spanish": "baloncesto"
+  },
+  {
+    "English": "tennis",
+    "Spanish": "tenis"
+  },
+  {
+    "English": "soccer",
+    "Spanish": "fútbol"
+  },
+  {
+    "English": "jogging",
+    "Spanish": "jogging"
+  },
+  {
+    "English": "weightlifting",
+    "Spanish": "entrenamiento de fuerza"
+  }
 ]

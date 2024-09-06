@@ -1,22 +1,22 @@
 [
-    {
-        "English": "What is your name?",
-        "French": "Comment t'appelles-tu ?"
-    },
-    {
-        "English": "Where are you from?",
-        "French": "D'où viens-tu ?"
-    },
-    {
-        "English": "I love playing soccer.",
-        "French": "J'adore jouer au football."
-    },
-    {
-        "English": "The French Revolution started in 1789.",
-        "French": "La Révolution française a commencé en 1789."
-    },
-    {
-        "English": "The President of France is Emmanuel Macron.",
-        "French": "Le président de la France est Emmanuel Macron."
-    }
+  {
+    "English": "What is your name?",
+    "French": "Comment t'appelles-tu ?"
+  },
+  {
+    "English": "Where are you from?",
+    "French": "D'où viens-tu ?"
+  },
+  {
+    "English": "I love playing soccer.",
+    "French": "J'adore jouer au football."
+  },
+  {
+    "English": "The French Revolution started in 1789.",
+    "French": "La Révolution française a commencé en 1789."
+  },
+  {
+    "English": "The President of France is Emmanuel Macron.",
+    "French": "Le président de la France est Emmanuel Macron."
+  }
 ]

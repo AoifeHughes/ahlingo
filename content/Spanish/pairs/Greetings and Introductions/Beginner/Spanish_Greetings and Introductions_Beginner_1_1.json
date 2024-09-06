@@ -1,34 +1,34 @@
 [
-    {
-        "English": "hello",
-        "French": "bonjour"
-    },
-    {
-        "English": "goodbye",
-        "French": "au revoir"
-    },
-    {
-        "English": "please",
-        "French": "s'il vous plaît"
-    },
-    {
-        "English": "thank you",
-        "French": "merci"
-    },
-    {
-        "English": "excuse me",
-        "French": "pardon"
-    },
-    {
-        "English": "my name is...",
-        "French": "je m'appelle..."
-    },
-    {
-        "English": "how are you?",
-        "French": "comment allez-vous?"
-    },
-    {
-        "English": "I am fine.",
-        "French": "Je vais bien."
-    }
+  {
+    "English": "hello",
+    "French": "bonjour"
+  },
+  {
+    "English": "goodbye",
+    "French": "au revoir"
+  },
+  {
+    "English": "please",
+    "French": "s'il vous plaît"
+  },
+  {
+    "English": "thank you",
+    "French": "merci"
+  },
+  {
+    "English": "excuse me",
+    "French": "pardon"
+  },
+  {
+    "English": "my name is...",
+    "French": "je m'appelle..."
+  },
+  {
+    "English": "how are you?",
+    "French": "comment allez-vous?"
+  },
+  {
+    "English": "I am fine.",
+    "French": "Je vais bien."
+  }
 ]

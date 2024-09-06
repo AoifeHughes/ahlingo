@@ -1,4 +1,0 @@
-[
-{"conversation": [{"speaker": "person1", "message": "Comment t'appelles-tu ?"}, {"speaker": "person2", "message": "Je m'appelle Marie."}, {"speaker": "person1", "message": "J'ai entendu dire qu'il y a une grande rivière près de ta maison. Est-ce vrai ?"}], "conversation_summary": "A conversation introducing oneself and asking about a nearby river."},
-{"conversation": [{"speaker": "person1", "message": "Quel est ton pays préféré pour les vacances ?"}, {"speaker": "person2", "message": "J'aime bien l'Italie. Les Italiens sont très cordiaux."}, {"speaker": "person1", "message": "J'ai été en Italie l'année dernière. C'était très agréable."}], "conversation_summary": "A conversation discussing favorite vacation destinations, with a focus on Italy and personal experiences."},
-{"conversation": [{"speaker": "person1", "message": "Quel est ton métier ?"}, {"speaker": "person2", "message": "J'suis professeur d'histoire."}, {"speaker": "person1", "message": "Interes
