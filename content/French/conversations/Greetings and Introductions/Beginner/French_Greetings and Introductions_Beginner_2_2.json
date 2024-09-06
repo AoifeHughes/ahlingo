@@ -1,87 +1,87 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Bonjour, comment ça va ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Bonjour, ça va bien, merci. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je vais bien, merci. Je m'appelle Marie."
-            }
-        ],
-        "conversation_summary": "A conversation starting with a greeting and introduction."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Je suis nouveau dans cette ville. Pouvez-vous m'aider ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Bien sûr ! Je suis un habitué ici. Comment puis-je vous aider ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je cherchais un café près de mon hôtel. En connaissez-vous un ?"
-            }
-        ],
-        "conversation_summary": "A conversation about helping someone new in a town, asking for directions, and introducing oneself."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Je suis désolé, je ne parle pas bien français. Pouvez-vous parler plus lentement ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Pas de problème ! Je parlerai plus lentement pour vous aider."
-            },
-            {
-                "speaker": "person1",
-                "message": "Merci beaucoup. Je m'appelle Pierre."
-            }
-        ],
-        "conversation_summary": "A conversation about asking for help with language and introducing oneself."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Salut, je m'appelle Emma. Je suis étudiante en sciences."
-            },
-            {
-                "speaker": "person2",
-                "message": "Salut Emma ! Je m'appelle Léon. Je suis étudiant en droit."
-            },
-            {
-                "speaker": "person1",
-                "message": "C'est sympa de faire connaissance !"
-            }
-        ],
-        "conversation_summary": "A conversation about introducing oneself and making small talk."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Bonjour, madame. Je m'appelle Jacques. Je suis à la recherche d'un appartement à louer."
-            },
-            {
-                "speaker": "person2",
-                "message": "Bonjour, monsieur Jacques. Je suis la propriétaire de cet immeuble. Quels sont vos besoins ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je suis un étudiant et je recherche un logement petit mais confortable."
-            }
-        ],
-        "conversation_summary": "A conversation about introducing oneself and searching for a place to live."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Bonjour, comment ça va ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Bonjour, ça va bien, merci. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je vais bien, merci. Je m'appelle Marie."
+      }
+    ],
+    "conversation_summary": "A conversation starting with a greeting and introduction."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Je suis nouveau dans cette ville. Pouvez-vous m'aider ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Bien sûr ! Je suis un habitué ici. Comment puis-je vous aider ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je cherchais un café près de mon hôtel. En connaissez-vous un ?"
+      }
+    ],
+    "conversation_summary": "A conversation about helping someone new in a town, asking for directions, and introducing oneself."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Je suis désolé, je ne parle pas bien français. Pouvez-vous parler plus lentement ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Pas de problème ! Je parlerai plus lentement pour vous aider."
+      },
+      {
+        "speaker": "person1",
+        "message": "Merci beaucoup. Je m'appelle Pierre."
+      }
+    ],
+    "conversation_summary": "A conversation about asking for help with language and introducing oneself."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Salut, je m'appelle Emma. Je suis étudiante en sciences."
+      },
+      {
+        "speaker": "person2",
+        "message": "Salut Emma ! Je m'appelle Léon. Je suis étudiant en droit."
+      },
+      {
+        "speaker": "person1",
+        "message": "C'est sympa de faire connaissance !"
+      }
+    ],
+    "conversation_summary": "A conversation about introducing oneself and making small talk."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Bonjour, madame. Je m'appelle Jacques. Je suis à la recherche d'un appartement à louer."
+      },
+      {
+        "speaker": "person2",
+        "message": "Bonjour, monsieur Jacques. Je suis la propriétaire de cet immeuble. Quels sont vos besoins ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je suis un étudiant et je recherche un logement petit mais confortable."
+      }
+    ],
+    "conversation_summary": "A conversation about introducing oneself and searching for a place to live."
+  }
 ]

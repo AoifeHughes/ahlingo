@@ -1,71 +1,71 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Bonjour, je m'appelle Marie. Et vous ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Bonjour Marie, je m'appelle Pierre. Enchanté !"
-            }
-        ],
-        "conversation_summary": "A conversation introducing oneself and exchanging names."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Je suis nouvellement arrivé en France. Pouvez-vous m'aider à trouver un logement ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Bien sûr ! Je connais un appartement disponible près du centre-ville."
-            }
-        ],
-        "conversation_summary": "A conversation about asking for help and offering assistance in finding a new place to live."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel âge as-tu ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'ai 25 ans."
-            },
-            {
-                "speaker": "person1",
-                "message": "Ah, je suis un peu plus âgé que toi. J'ai 30 ans."
-            }
-        ],
-        "conversation_summary": "A conversation discussing age and sharing personal information."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Je suis étudiant en français. Je suis très heureux de faire connaissance avec toi."
-            },
-            {
-                "speaker": "person2",
-                "message": "Je suis enseignant en français. C'est agréable de rencontrer un autre amour de la langue."
-            }
-        ],
-        "conversation_summary": "A conversation introducing oneself as a student or teacher and expressing enthusiasm for meeting someone who shares the same interest."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Je suis en vacances avec ma famille. Nous allons visiter la Normandie."
-            },
-            {
-                "speaker": "person2",
-                "message": "Ah, c'est une belle région ! J'y suis allé une fois avec mes amis."
-            }
-        ],
-        "conversation_summary": "A conversation discussing summer vacation plans and sharing experiences."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Bonjour, je m'appelle Marie. Et vous ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Bonjour Marie, je m'appelle Pierre. Enchanté !"
+      }
+    ],
+    "conversation_summary": "A conversation introducing oneself and exchanging names."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Je suis nouvellement arrivé en France. Pouvez-vous m'aider à trouver un logement ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Bien sûr ! Je connais un appartement disponible près du centre-ville."
+      }
+    ],
+    "conversation_summary": "A conversation about asking for help and offering assistance in finding a new place to live."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel âge as-tu ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'ai 25 ans."
+      },
+      {
+        "speaker": "person1",
+        "message": "Ah, je suis un peu plus âgé que toi. J'ai 30 ans."
+      }
+    ],
+    "conversation_summary": "A conversation discussing age and sharing personal information."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Je suis étudiant en français. Je suis très heureux de faire connaissance avec toi."
+      },
+      {
+        "speaker": "person2",
+        "message": "Je suis enseignant en français. C'est agréable de rencontrer un autre amour de la langue."
+      }
+    ],
+    "conversation_summary": "A conversation introducing oneself as a student or teacher and expressing enthusiasm for meeting someone who shares the same interest."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Je suis en vacances avec ma famille. Nous allons visiter la Normandie."
+      },
+      {
+        "speaker": "person2",
+        "message": "Ah, c'est une belle région ! J'y suis allé une fois avec mes amis."
+      }
+    ],
+    "conversation_summary": "A conversation discussing summer vacation plans and sharing experiences."
+  }
 ]
