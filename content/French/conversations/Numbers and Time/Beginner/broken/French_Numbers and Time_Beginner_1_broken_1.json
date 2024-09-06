@@ -1,7 +1,0 @@
-[
-{"conversation": [{"speaker": "person1", "message": "Comment allez-vous ?"}, {"speaker": "person2", "message": "Je vais bien, merci. Et toi ?"}, {"speaker": "person1", "message": "J'ai un peu de mal, mais ça va."}], "conversation_summary": "A conversation asking how each person is doing."},
-{"conversation": [{"speaker": "person1", "message": "Quelle est ta famille ?"}, {"speaker": "person2", "message": "J'ai un frère et une sœur. Et toi ?"}, {"speaker": "person1", "message": "Je suis le seul enfant de mes parents."}], "conversation_summary": "A conversation about family members."},
-{"conversation": [{"speaker": "person1", "message": "Quel est ton livre préféré ?"}, {"speaker": "person2", "message": "J'aime beaucoup les romans de Jane Austen. Et toi ?"}, {"speaker": "person1", "message": "Je suis fan de science-fiction. J'ai lu tout l'univers d'Isaac Asimov."}], "conversation_summary": "A conversation about favorite books."},
-{"conversation": [{"speaker": "person1", "message": "Quel est ton sport favori ?"}, {"speaker": "person2", "message": "Je joue au football. Et toi ?"}, {"speaker": "person1", "message": "J'aime faire de la course à pied. C'est très exaltant."}], "conversation_summary": "A conversation about favorite sports."},
-{"conversation": [{"speaker": "person1", "message": "Quel est ton pays préféré ?"}, {"speaker": "person2", "message": "J'adore l'Italie. Les Italiens sont très hospitaliers.", "speaker": "person1", "message": "Mo
-```

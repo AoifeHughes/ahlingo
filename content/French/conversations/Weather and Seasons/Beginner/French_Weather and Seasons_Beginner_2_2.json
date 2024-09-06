@@ -1,87 +1,87 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment va ta journée ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Elle va bien, merci. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je vais bien aussi. J'ai fait une promenade agréable dans la ville."
-            }
-        ],
-        "conversation_summary": "A conversation asking how each person's day is going and discussing a pleasant walk in the city."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton saison préférée ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime l'été, parce que j'aime la plage et la piscine."
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi, j'aime l'hiver. J'adore Noël et le ski."
-            }
-        ],
-        "conversation_summary": "A conversation discussing each person's favorite season and their preferences for summer (beach and pool) and winter (Christmas and skiing)."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est le temps aujourd'hui ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Il fait beau et chaud, mais il y a de gros nuages noirs dans le ciel."
-            },
-            {
-                "speaker": "person1",
-                "message": "Ah, c'est dommage. J'espérais qu'il ferait plus clair."
-            }
-        ],
-        "conversation_summary": "A conversation about the weather, noting that it is sunny and hot but there are dark clouds in the sky."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est le mois de l'année préféré ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime le mois de mai, parce que les fleurs sont belles et il fait beau."
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi, j'aime le mois de septembre. Les feuilles des arbres changent de couleur et c'est très agréable à regarder."
-            }
-        ],
-        "conversation_summary": "A conversation discussing each person's favorite month of the year and their preferences for May (beautiful flowers and nice weather) and September (fall foliage)."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment vas ta journée ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Elle va bien, merci. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je vais bien aussi. J'ai fait une promenade agréable dans la ville."
-            }
-        ],
-        "conversation_summary": "A conversation asking how each person's day is going and noting that they both had a nice walk in the city."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment va ta journée ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Elle va bien, merci. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je vais bien aussi. J'ai fait une promenade agréable dans la ville."
+      }
+    ],
+    "conversation_summary": "A conversation asking how each person's day is going and discussing a pleasant walk in the city."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton saison préférée ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime l'été, parce que j'aime la plage et la piscine."
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi, j'aime l'hiver. J'adore Noël et le ski."
+      }
+    ],
+    "conversation_summary": "A conversation discussing each person's favorite season and their preferences for summer (beach and pool) and winter (Christmas and skiing)."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est le temps aujourd'hui ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Il fait beau et chaud, mais il y a de gros nuages noirs dans le ciel."
+      },
+      {
+        "speaker": "person1",
+        "message": "Ah, c'est dommage. J'espérais qu'il ferait plus clair."
+      }
+    ],
+    "conversation_summary": "A conversation about the weather, noting that it is sunny and hot but there are dark clouds in the sky."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est le mois de l'année préféré ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime le mois de mai, parce que les fleurs sont belles et il fait beau."
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi, j'aime le mois de septembre. Les feuilles des arbres changent de couleur et c'est très agréable à regarder."
+      }
+    ],
+    "conversation_summary": "A conversation discussing each person's favorite month of the year and their preferences for May (beautiful flowers and nice weather) and September (fall foliage)."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment vas ta journée ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Elle va bien, merci. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je vais bien aussi. J'ai fait une promenade agréable dans la ville."
+      }
+    ],
+    "conversation_summary": "A conversation asking how each person's day is going and noting that they both had a nice walk in the city."
+  }
 ]

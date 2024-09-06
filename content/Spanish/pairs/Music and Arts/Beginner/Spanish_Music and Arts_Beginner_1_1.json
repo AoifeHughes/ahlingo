@@ -1,38 +1,38 @@
 [
-    {
-        "English": "pen",
-        "French": "stylo"
-    },
-    {
-        "English": "chair",
-        "French": "chaise"
-    },
-    {
-        "English": "computer",
-        "French": "ordinateur"
-    },
-    {
-        "English": "table",
-        "French": "table"
-    },
-    {
-        "English": "paintbrush",
-        "French": "brosse"
-    },
-    {
-        "English": "guitar",
-        "French": "guitare"
-    },
-    {
-        "English": "violin",
-        "French": "violon"
-    },
-    {
-        "English": "piano",
-        "French": "piano"
-    },
-    {
-        "English": "drums",
-        "French": "batterie"
-    }
+  {
+    "English": "pen",
+    "French": "stylo"
+  },
+  {
+    "English": "chair",
+    "French": "chaise"
+  },
+  {
+    "English": "computer",
+    "French": "ordinateur"
+  },
+  {
+    "English": "table",
+    "French": "table"
+  },
+  {
+    "English": "paintbrush",
+    "French": "brosse"
+  },
+  {
+    "English": "guitar",
+    "French": "guitare"
+  },
+  {
+    "English": "violin",
+    "French": "violon"
+  },
+  {
+    "English": "piano",
+    "French": "piano"
+  },
+  {
+    "English": "drums",
+    "French": "batterie"
+  }
 ]

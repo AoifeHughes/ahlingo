@@ -1,79 +1,79 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment allez-vous ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je vais bien, merci. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je vais bien aussi."
-            }
-        ],
-        "conversation_summary": "A conversation asking how each person is doing."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Que fais-tu ce week-end ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je vais à la plage. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "J'ai des courses à faire."
-            }
-        ],
-        "conversation_summary": "A conversation about weekend plans."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton parent préféré ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi, j'aime mieux ma mère."
-            }
-        ],
-        "conversation_summary": "A conversation about favorite parents."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Est-ce que tu veux venir au cinéma avec moi ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Oui, je suis prêt à partir. Quel film veux-tu voir ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "J'aimerais bien voir ce film avec Brad Pitt."
-            }
-        ],
-        "conversation_summary": "A conversation about going to the movies."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment tu t'appelles ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "J'ai un ami nommé Marie."
-            }
-        ],
-        "conversation_summary": "A conversation about names."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment allez-vous ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je vais bien, merci. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je vais bien aussi."
+      }
+    ],
+    "conversation_summary": "A conversation asking how each person is doing."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Que fais-tu ce week-end ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je vais à la plage. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "J'ai des courses à faire."
+      }
+    ],
+    "conversation_summary": "A conversation about weekend plans."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton parent préféré ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi, j'aime mieux ma mère."
+      }
+    ],
+    "conversation_summary": "A conversation about favorite parents."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Est-ce que tu veux venir au cinéma avec moi ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Oui, je suis prêt à partir. Quel film veux-tu voir ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "J'aimerais bien voir ce film avec Brad Pitt."
+      }
+    ],
+    "conversation_summary": "A conversation about going to the movies."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment tu t'appelles ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "J'ai un ami nommé Marie."
+      }
+    ],
+    "conversation_summary": "A conversation about names."
+  }
 ]

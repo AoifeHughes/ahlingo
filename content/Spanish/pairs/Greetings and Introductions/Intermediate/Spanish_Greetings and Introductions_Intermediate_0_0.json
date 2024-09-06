@@ -1,22 +1,22 @@
 [
-    {
-        "English": "hello",
-        "Spanish": "Hola"
-    },
-    {
-        "English": "goodbye",
-        "Spanish": "Adiós"
-    },
-    {
-        "English": "please",
-        "Spanish": "Por favor"
-    },
-    {
-        "English": "thank you",
-        "Spanish": "Gracias"
-    },
-    {
-        "English": "excuse me",
-        "Spanish": "Disculpe"
-    }
+  {
+    "English": "hello",
+    "Spanish": "Hola"
+  },
+  {
+    "English": "goodbye",
+    "Spanish": "Adiós"
+  },
+  {
+    "English": "please",
+    "Spanish": "Por favor"
+  },
+  {
+    "English": "thank you",
+    "Spanish": "Gracias"
+  },
+  {
+    "English": "excuse me",
+    "Spanish": "Disculpe"
+  }
 ]

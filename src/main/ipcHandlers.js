@@ -1,15 +1,18 @@
 const { ipcMain } = require("electron");
-const LanguageDB = require('../database/LanguageDB');
+const LanguageDB = require("../database/LanguageDB");
 
 function setupIPC() {
-  const db = new LanguageDB("../database/languageLearningDatabase.db", function(err) {
-    if (err) {
-      console.log("Failed to initialize database", err);
-    } else {
-      console.log("Database initialized successfully");
+  const db = new LanguageDB(
+    "./src/database/languageLearningDatabase.db",
+    function (err) {
+      if (err) {
+        console.log("Failed to initialize database", err);
+      } else {
+        console.log("Database initialized successfully");
+      }
     }
-  });
-  
+  );
+
   ipcMain.on("add-user", (event, arg) => {
     const userName = arg.name;
     db.addUser(userName, (err) => {
@@ -24,53 +27,75 @@ function setupIPC() {
     });
   });
 
-  ipcMain.on('get-difficulty-levels', (event) => {
-    db.getDifficultyLevels((err, levels) => {
+  ipcMain.on("get-languages", (event, arg) => {
+    db.getLanguages((err, languages) => {
       if (err) {
-        console.error("Error fetching difficulty levels:", err);
-        event.reply('get-difficulty-levels-reply', { error: err.message });
-        return;
+        event.reply("get-languages-response", {
+          success: false,
+          error: err.message,
+        });
+      } else {
+        event.reply("get-languages-response", { success: true, languages });
       }
-      event.reply('get-difficulty-levels-reply', { levels });
     });
   });
 
-  ipcMain.on('get-topics-by-difficulty', (event, difficultyLevel) => {
-    db.getTopicsByDifficulty(difficultyLevel, (err, topics) => {
+  ipcMain.on("get-difficulty-by-language", (event, arg) => {
+    db.getDifficultyByLanguage(arg.language, (err, difficulty) => {
       if (err) {
-        console.error("Error fetching topics:", err);
-        event.reply('get-topics-reply', { error: err.message });
-        return;
+        event.reply("get-difficulty-by-language-response", {
+          success: false,
+          error: err.message,
+        });
+      } else {
+        event.reply("get-difficulty-by-language-response", {
+          success: true,
+          difficulty,
+        });
       }
-      event.reply('get-topics-reply', { topics });
     });
   });
 
-  ipcMain.on('get-languages', (event, { topic, difficultyLevel }) => {
-    db.getLanguagesByTopicAndDifficulty(topic, difficultyLevel, (err, languages) => {
-      if (err) {
-        console.error("Error fetching languages:", err);
-        event.reply('get-languages-reply', { error: err.message });
-        return;
+  ipcMain.on("get-topics-by-language-difficulty", (event, arg) => {
+    db.getTopicsByLanguageDifficulty(
+      arg.language,
+      arg.difficulty,
+      (err, topics) => {
+        if (err) {
+          event.reply("get-topics-by-language-difficulty-response", {
+            success: false,
+            error: err.message,
+          });
+        } else {
+          event.reply("get-topics-by-language-difficulty-response", {
+            success: true,
+            topics,
+          });
+        }
       }
-      event.reply('get-languages-reply', { languages });
-    });
+    );
   });
 
-// IPC Listener for fetching topics
-ipcMain.on('get-topics', (event, languageName) => {
-  db.getTopicsByLanguage(languageName, (err, topics) => {
-    if (err) {
-      console.error("Error fetching topics:", err);
-      event.reply('get-topics-reply', { error: err.message });
-      return;
-    }
-    console.log("Sending topics:", topics);
-    event.reply('get-topics-reply', { topics });
+  ipcMain.on("get-random-pair-exercise", (event, arg) => {
+    db.getRandomPairExercise(
+      arg.language,
+      arg.difficulty,
+      arg.topic,
+      (err, exercise) => {
+        if (err) {
+          event.reply("get-random-pair-exercise-response", {
+            success: false,
+            error: err.message,
+          });
+        } else {
+          event.reply("get-random-pair-exercise-response", {
+            success: true,
+            exercise,
+          });
+        }
+      }
+    );
   });
-});
-
-
 }
 
 module.exports = setupIPC;

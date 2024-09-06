@@ -1,22 +1,22 @@
 [
-    {
-        "English": "shirt",
-        "French": "chemise"
-    },
-    {
-        "English": "pants",
-        "French": "pantalons"
-    },
-    {
-        "English": "shoes",
-        "French": "chaussures"
-    },
-    {
-        "English": "hat",
-        "French": "casquette"
-    },
-    {
-        "English": "jacket",
-        "French": "veste"
-    }
+  {
+    "English": "shirt",
+    "French": "chemise"
+  },
+  {
+    "English": "pants",
+    "French": "pantalons"
+  },
+  {
+    "English": "shoes",
+    "French": "chaussures"
+  },
+  {
+    "English": "hat",
+    "French": "casquette"
+  },
+  {
+    "English": "jacket",
+    "French": "veste"
+  }
 ]

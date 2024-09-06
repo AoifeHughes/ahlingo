@@ -1,34 +1,34 @@
 [
-    {
-        "English": "computer",
-        "French": "ordinateur"
-    },
-    {
-        "English": "computer mouse",
-        "French": "souris pour ordinateur"
-    },
-    {
-        "English": "keyboard",
-        "French": "clavier"
-    },
-    {
-        "English": "printer",
-        "French": "imprimante"
-    },
-    {
-        "English": "scanner",
-        "French": "scan"
-    },
-    {
-        "English": "smartphone",
-        "French": "smartphone"
-    },
-    {
-        "English": "tablet",
-        "French": "tablette"
-    },
-    {
-        "English": "camera",
-        "French": "appareil photo"
-    }
+  {
+    "English": "computer",
+    "French": "ordinateur"
+  },
+  {
+    "English": "computer mouse",
+    "French": "souris pour ordinateur"
+  },
+  {
+    "English": "keyboard",
+    "French": "clavier"
+  },
+  {
+    "English": "printer",
+    "French": "imprimante"
+  },
+  {
+    "English": "scanner",
+    "French": "scan"
+  },
+  {
+    "English": "smartphone",
+    "French": "smartphone"
+  },
+  {
+    "English": "tablet",
+    "French": "tablette"
+  },
+  {
+    "English": "camera",
+    "French": "appareil photo"
+  }
 ]

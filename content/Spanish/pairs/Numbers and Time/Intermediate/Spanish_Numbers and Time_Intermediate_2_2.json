@@ -1,38 +1,38 @@
 [
-    {
-        "English": "computer",
-        "French": "ordinateur"
-    },
-    {
-        "English": "television",
-        "French": "télévision"
-    },
-    {
-        "English": "pizza",
-        "French": "pizza"
-    },
-    {
-        "English": "chair",
-        "French": "chaise"
-    },
-    {
-        "English": "desk",
-        "French": "bureau"
-    },
-    {
-        "English": "phone",
-        "French": "téléphone"
-    },
-    {
-        "English": "camera",
-        "French": "appareil photo"
-    },
-    {
-        "English": "music",
-        "French": "musique"
-    },
-    {
-        "English": "movie",
-        "French": "film"
-    }
+  {
+    "English": "computer",
+    "French": "ordinateur"
+  },
+  {
+    "English": "television",
+    "French": "télévision"
+  },
+  {
+    "English": "pizza",
+    "French": "pizza"
+  },
+  {
+    "English": "chair",
+    "French": "chaise"
+  },
+  {
+    "English": "desk",
+    "French": "bureau"
+  },
+  {
+    "English": "phone",
+    "French": "téléphone"
+  },
+  {
+    "English": "camera",
+    "French": "appareil photo"
+  },
+  {
+    "English": "music",
+    "French": "musique"
+  },
+  {
+    "English": "movie",
+    "French": "film"
+  }
 ]

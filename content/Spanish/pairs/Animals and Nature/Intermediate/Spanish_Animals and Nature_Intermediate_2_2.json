@@ -1,38 +1,38 @@
 [
-    {
-        "English": "cat",
-        "French": "chat"
-    },
-    {
-        "English": "forest",
-        "French": "forêt"
-    },
-    {
-        "English": "bird",
-        "French": "oiseau"
-    },
-    {
-        "English": "sea",
-        "French": "mer"
-    },
-    {
-        "English": "river",
-        "French": "rivière"
-    },
-    {
-        "English": "cloud",
-        "French": "nuage"
-    },
-    {
-        "English": "mountain",
-        "French": "montagne"
-    },
-    {
-        "English": "butterfly",
-        "French": "papillon"
-    },
-    {
-        "English": "flower",
-        "French": "fleur"
-    }
+  {
+    "English": "cat",
+    "French": "chat"
+  },
+  {
+    "English": "forest",
+    "French": "forêt"
+  },
+  {
+    "English": "bird",
+    "French": "oiseau"
+  },
+  {
+    "English": "sea",
+    "French": "mer"
+  },
+  {
+    "English": "river",
+    "French": "rivière"
+  },
+  {
+    "English": "cloud",
+    "French": "nuage"
+  },
+  {
+    "English": "mountain",
+    "French": "montagne"
+  },
+  {
+    "English": "butterfly",
+    "French": "papillon"
+  },
+  {
+    "English": "flower",
+    "French": "fleur"
+  }
 ]

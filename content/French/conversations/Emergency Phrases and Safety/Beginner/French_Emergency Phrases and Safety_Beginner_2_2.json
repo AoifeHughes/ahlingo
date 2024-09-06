@@ -1,85 +1,85 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment vas-tu ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je vais bien, merci."
-            },
-            {
-                "speaker": "person1",
-                "message": "C'est génial d'être en bonne santé."
-            }
-        ],
-        "conversation_summary": "A conversation about how the person is doing."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Tu as faim ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Oui, j'ai faim.",
-                "message_type": "statement"
-            }
-        ],
-        "conversation_summary": "A conversation about being hungry."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton livre préféré ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime beaucoup le roman de Victor Hugo, 'Les Misérables'. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je suis un fan de la série de livres 'Harry Potter'. Littéralement."
-            }
-        ],
-        "conversation_summary": "A conversation about favorite books."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton film préféré ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'adore 'Le Fabuleux Destin d'Amélie Poulain'. C'est une comédie romantique géniale.",
-                "message_type": "statement"
-            }
-        ],
-        "conversation_summary": "A conversation about favorite movies."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment ça va pour les vacances ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je vais bien, je suis en train de préparer mon sac à dos pour le voyage."
-            },
-            {
-                "speaker": "person1",
-                "message": "C'est génial d'avoir des vacances. Où vas-tu ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je vais dans les Alpes, je veux faire du ski et profiter de la nature."
-            }
-        ],
-        "conversation_summary": "A conversation about vacations and travel plans."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment vas-tu ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je vais bien, merci."
+      },
+      {
+        "speaker": "person1",
+        "message": "C'est génial d'être en bonne santé."
+      }
+    ],
+    "conversation_summary": "A conversation about how the person is doing."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Tu as faim ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Oui, j'ai faim.",
+        "message_type": "statement"
+      }
+    ],
+    "conversation_summary": "A conversation about being hungry."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton livre préféré ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime beaucoup le roman de Victor Hugo, 'Les Misérables'. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je suis un fan de la série de livres 'Harry Potter'. Littéralement."
+      }
+    ],
+    "conversation_summary": "A conversation about favorite books."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton film préféré ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'adore 'Le Fabuleux Destin d'Amélie Poulain'. C'est une comédie romantique géniale.",
+        "message_type": "statement"
+      }
+    ],
+    "conversation_summary": "A conversation about favorite movies."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment ça va pour les vacances ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je vais bien, je suis en train de préparer mon sac à dos pour le voyage."
+      },
+      {
+        "speaker": "person1",
+        "message": "C'est génial d'avoir des vacances. Où vas-tu ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je vais dans les Alpes, je veux faire du ski et profiter de la nature."
+      }
+    ],
+    "conversation_summary": "A conversation about vacations and travel plans."
+  }
 ]

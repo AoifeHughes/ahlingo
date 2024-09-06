@@ -1,87 +1,87 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Cuál es tu hogar favorito?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Mi hogar favorito es la playa. ¿Y tú?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Mi hogar favorito es mi casa en el campo. Me gusta la tranquilidad."
-            }
-        ],
-        "conversation_summary": "A conversation about favorite homes, with one person preferring the beach and the other a countryside house."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Te gusta viajar ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Sí, me encanta viajar. ¿Y tú?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Yo también. Mi lugar favorito que he visitado es Italia."
-            }
-        ],
-        "conversation_summary": "A conversation about traveling, with both people expressing an interest and discussing their favorite place they've visited."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Cuál es tu tipo de vivienda preferida ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Mi tipo de vivienda preferido es un apartamento en la ciudad. ¿Y tú?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Yo prefiero una casa en el campo con jardín."
-            }
-        ],
-        "conversation_summary": "A conversation about preferred types of housing, with one person liking an apartment in the city and the other a house with a garden in the countryside."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Cuánto tiempo pasas en tu hogar?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Generalmente, paso la mayoría de mi tiempo en casa. ¿Y tú?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Yo también. Me gusta estar en mi hogar."
-            }
-        ],
-        "conversation_summary": "A conversation about how much time is spent at home, with both people expressing a preference for spending most of their time there."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "¿Por qué elegiste este hogar en particular ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Elegí este hogar porque me gusta la vista y es muy acogedor. ¿Y tú?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Elegí mi hogar porque está en un lugar tranquilo y tiene mucha naturaleza cerca."
-            }
-        ],
-        "conversation_summary": "A conversation about why a particular home was chosen, with both people discussing the factors that influenced their decision."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Cuál es tu hogar favorito?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Mi hogar favorito es la playa. ¿Y tú?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Mi hogar favorito es mi casa en el campo. Me gusta la tranquilidad."
+      }
+    ],
+    "conversation_summary": "A conversation about favorite homes, with one person preferring the beach and the other a countryside house."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Te gusta viajar ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Sí, me encanta viajar. ¿Y tú?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Yo también. Mi lugar favorito que he visitado es Italia."
+      }
+    ],
+    "conversation_summary": "A conversation about traveling, with both people expressing an interest and discussing their favorite place they've visited."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Cuál es tu tipo de vivienda preferida ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Mi tipo de vivienda preferido es un apartamento en la ciudad. ¿Y tú?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Yo prefiero una casa en el campo con jardín."
+      }
+    ],
+    "conversation_summary": "A conversation about preferred types of housing, with one person liking an apartment in the city and the other a house with a garden in the countryside."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Cuánto tiempo pasas en tu hogar?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Generalmente, paso la mayoría de mi tiempo en casa. ¿Y tú?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Yo también. Me gusta estar en mi hogar."
+      }
+    ],
+    "conversation_summary": "A conversation about how much time is spent at home, with both people expressing a preference for spending most of their time there."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "¿Por qué elegiste este hogar en particular ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Elegí este hogar porque me gusta la vista y es muy acogedor. ¿Y tú?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Elegí mi hogar porque está en un lugar tranquilo y tiene mucha naturaleza cerca."
+      }
+    ],
+    "conversation_summary": "A conversation about why a particular home was chosen, with both people discussing the factors that influenced their decision."
+  }
 ]

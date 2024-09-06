@@ -1,87 +1,87 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment vas-tu ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je vais bien, merci. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "J'ai été au parc aujourd'hui."
-            }
-        ],
-        "conversation_summary": "A conversation asking how each person is doing and discussing going to the park today."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton livre préféré ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime beaucoup Les Misérables de Victor Hugo."
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi aussi, c'est un livre très interessant."
-            }
-        ],
-        "conversation_summary": "A conversation discussing each person's favorite book."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton film préféré ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime Le Fabuleux Destin d'Amélie Poulain."
-            },
-            {
-                "speaker": "person1",
-                "message": "C'est un film très agréable à regarder."
-            }
-        ],
-        "conversation_summary": "A conversation discussing each person's favorite movie."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Est-ce que tu aimes la musique ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Oui, j'adore la musique classique."
-            },
-            {
-                "speaker": "person1",
-                "message": "J'aime aussi la musique pop moderne."
-            }
-        ],
-        "conversation_summary": "A conversation discussing each person's preference in music."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment vas-tu ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "J'ai été au cinéma hier soir."
-            },
-            {
-                "speaker": "person2",
-                "message": "Quel film as-tu vu ?"
-            }
-        ],
-        "conversation_summary": "A conversation asking how each person is doing and discussing going to the cinema the previous night."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment vas-tu ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je vais bien, merci. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "J'ai été au parc aujourd'hui."
+      }
+    ],
+    "conversation_summary": "A conversation asking how each person is doing and discussing going to the park today."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton livre préféré ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime beaucoup Les Misérables de Victor Hugo."
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi aussi, c'est un livre très interessant."
+      }
+    ],
+    "conversation_summary": "A conversation discussing each person's favorite book."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton film préféré ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime Le Fabuleux Destin d'Amélie Poulain."
+      },
+      {
+        "speaker": "person1",
+        "message": "C'est un film très agréable à regarder."
+      }
+    ],
+    "conversation_summary": "A conversation discussing each person's favorite movie."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Est-ce que tu aimes la musique ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Oui, j'adore la musique classique."
+      },
+      {
+        "speaker": "person1",
+        "message": "J'aime aussi la musique pop moderne."
+      }
+    ],
+    "conversation_summary": "A conversation discussing each person's preference in music."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment vas-tu ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "J'ai été au cinéma hier soir."
+      },
+      {
+        "speaker": "person2",
+        "message": "Quel film as-tu vu ?"
+      }
+    ],
+    "conversation_summary": "A conversation asking how each person is doing and discussing going to the cinema the previous night."
+  }
 ]

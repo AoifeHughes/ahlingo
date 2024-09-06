@@ -1,22 +1,22 @@
 [
-    {
-        "English": "What is your name?",
-        "French": "Comment t'appelles-tu ?"
-    },
-    {
-        "English": "Where are you from?",
-        "French": "D'où viens-tu ?"
-    },
-    {
-        "English": "How much does this cost?",
-        "French": "Combien coûte ça ?"
-    },
-    {
-        "English": "Can I have a discount?",
-        "French": "Pourrais-je avoir un rabais ?"
-    },
-    {
-        "English": "I like shopping.",
-        "French": "J'aime faire des courses."
-    }
+  {
+    "English": "What is your name?",
+    "French": "Comment t'appelles-tu ?"
+  },
+  {
+    "English": "Where are you from?",
+    "French": "D'où viens-tu ?"
+  },
+  {
+    "English": "How much does this cost?",
+    "French": "Combien coûte ça ?"
+  },
+  {
+    "English": "Can I have a discount?",
+    "French": "Pourrais-je avoir un rabais ?"
+  },
+  {
+    "English": "I like shopping.",
+    "French": "J'aime faire des courses."
+  }
 ]

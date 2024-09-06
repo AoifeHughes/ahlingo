@@ -1,34 +1,34 @@
 [
-    {
-        "English": "happy",
-        "French": "heureux"
-    },
-    {
-        "English": "sad",
-        "French": "triste"
-    },
-    {
-        "English": "angry",
-        "French": "colère"
-    },
-    {
-        "English": "excited",
-        "French": "enthousiaste"
-    },
-    {
-        "English": "anxious",
-        "French": "nervous"
-    },
-    {
-        "English": "confused",
-        "French": "perdu/e"
-    },
-    {
-        "English": "hungry",
-        "French": "faim"
-    },
-    {
-        "English": "tired",
-        "French": "fatigué/e"
-    }
+  {
+    "English": "happy",
+    "French": "heureux"
+  },
+  {
+    "English": "sad",
+    "French": "triste"
+  },
+  {
+    "English": "angry",
+    "French": "colère"
+  },
+  {
+    "English": "excited",
+    "French": "enthousiaste"
+  },
+  {
+    "English": "anxious",
+    "French": "nervous"
+  },
+  {
+    "English": "confused",
+    "French": "perdu/e"
+  },
+  {
+    "English": "hungry",
+    "French": "faim"
+  },
+  {
+    "English": "tired",
+    "French": "fatigué/e"
+  }
 ]

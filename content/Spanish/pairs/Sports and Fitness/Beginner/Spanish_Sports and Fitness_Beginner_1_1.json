@@ -1,22 +1,22 @@
 [
-    {
-        "English": "sports",
-        "Spanish": "deporte"
-    },
-    {
-        "English": "football",
-        "Spanish": "fútbol"
-    },
-    {
-        "English": "basketball",
-        "Spanish": "baloncesto"
-    },
-    {
-        "English": "running",
-        "Spanish": "correr"
-    },
-    {
-        "English": "swimming",
-        "Spanish": "nadar"
-    }
+  {
+    "English": "sports",
+    "Spanish": "deporte"
+  },
+  {
+    "English": "football",
+    "Spanish": "fútbol"
+  },
+  {
+    "English": "basketball",
+    "Spanish": "baloncesto"
+  },
+  {
+    "English": "running",
+    "Spanish": "correr"
+  },
+  {
+    "English": "swimming",
+    "Spanish": "nadar"
+  }
 ]

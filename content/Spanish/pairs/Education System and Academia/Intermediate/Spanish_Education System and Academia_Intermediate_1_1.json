@@ -1,22 +1,22 @@
 [
-    {
-        "English": "computer",
-        "French": "ordinateur"
-    },
-    {
-        "English": "computer program",
-        "French": "programme informatique"
-    },
-    {
-        "English": "mathematics",
-        "French": "mathématiques"
-    },
-    {
-        "English": "science",
-        "French": "sciences"
-    },
-    {
-        "English": "history",
-        "French": "histoire"
-    }
+  {
+    "English": "computer",
+    "French": "ordinateur"
+  },
+  {
+    "English": "computer program",
+    "French": "programme informatique"
+  },
+  {
+    "English": "mathematics",
+    "French": "mathématiques"
+  },
+  {
+    "English": "science",
+    "French": "sciences"
+  },
+  {
+    "English": "history",
+    "French": "histoire"
+  }
 ]

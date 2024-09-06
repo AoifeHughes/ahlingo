@@ -4,7 +4,6 @@ import { Box, Grid, Paper, IconButton } from "@mui/material";
 import ReadIcon from "@mui/icons-material/Book";
 import WriteIcon from "@mui/icons-material/Create";
 import ScenarioIcon from "@mui/icons-material/Explore";
-import ChatIcon from "@mui/icons-material/Chat";
 
 function Menu({ showMenu, setShowMenu }) {
   const navigate = useNavigate();
@@ -26,35 +25,33 @@ function Menu({ showMenu, setShowMenu }) {
     <Box sx={{ flexGrow: 1, display: showMenu ? "flex" : "none" }}>
       <Grid container spacing={2}>
         <Grid item xs={6}>
-          <Paper elevation={3} onClick={() => handleNavigation("/reading")}>
+          <Paper
+            elevation={3}
+            onClick={() => handleNavigation("/conversation")}
+          >
             <IconButton>
               <ReadIcon />
             </IconButton>
-            <div>Reading</div>
+            <div>Conversation</div>
           </Paper>
         </Grid>
         <Grid item xs={6}>
-          <Paper elevation={3} onClick={() => handleNavigation("/writing")}>
-            <IconButton>
-              <WriteIcon />
-            </IconButton>
-            <div>Writing</div>
-          </Paper>
-        </Grid>
-        <Grid item xs={6}>
-          <Paper elevation={3} onClick={() => handleNavigation("/scenarios")}>
+          <Paper elevation={3} onClick={() => handleNavigation("/pairs")}>
             <IconButton>
               <ScenarioIcon />
             </IconButton>
-            <div>Scenarios</div>
+            <div>Pairs</div>
           </Paper>
         </Grid>
         <Grid item xs={6}>
-          <Paper elevation={3} onClick={() => handleNavigation("/chatbot")}>
+          <Paper
+            elevation={3}
+            onClick={() => handleNavigation("/translations")}
+          >
             <IconButton>
-              <ChatIcon />
+              <WriteIcon />
             </IconButton>
-            <div>Chatbot</div>
+            <div>Translations</div>
           </Paper>
         </Grid>
       </Grid>

@@ -1,84 +1,84 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment tu t'appelles ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je m'appelle Marie. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "J'me nomme Pierre."
-            }
-        ],
-        "conversation_summary": "A conversation introducing oneself."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton sport préféré ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime faire de l'escalade. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je joue au football."
-            }
-        ],
-        "conversation_summary": "A conversation about favorite sports: climbing and soccer."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Tu as déjà visité la France ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Oui, l'année dernière. J'ai adoré Paris et la cuisine française."
-            },
-            {
-                "speaker": "person1",
-                "message": "J'ai également visité l'Italie. J'aime beaucoup la pizza et la gelati."
-            }
-        ],
-        "conversation_summary": "A conversation about traveling to France and Italy, highlighting the food and cuisine."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton livre préféré ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime beaucoup les romans policiers. Et toi ?"
-            },
-            {
-                "speaker": "person1",
-                "message": "Je préfère les livres d'histoire."
-            }
-        ],
-        "conversation_summary": "A conversation about favorite books: mystery novels and historical fiction."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Tu fais quoi pour t'amuser ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime regarder des films et écrire des histoires courtes.",
-                "person1": "Et moi, j'aime jouer de la guitare et faire du sport."
-            }
-        ],
-        "conversation_summary": "A conversation about favorite leisure activities: watching movies and writing short stories vs playing guitar and sports."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment tu t'appelles ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je m'appelle Marie. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "J'me nomme Pierre."
+      }
+    ],
+    "conversation_summary": "A conversation introducing oneself."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton sport préféré ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime faire de l'escalade. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je joue au football."
+      }
+    ],
+    "conversation_summary": "A conversation about favorite sports: climbing and soccer."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Tu as déjà visité la France ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Oui, l'année dernière. J'ai adoré Paris et la cuisine française."
+      },
+      {
+        "speaker": "person1",
+        "message": "J'ai également visité l'Italie. J'aime beaucoup la pizza et la gelati."
+      }
+    ],
+    "conversation_summary": "A conversation about traveling to France and Italy, highlighting the food and cuisine."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton livre préféré ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime beaucoup les romans policiers. Et toi ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je préfère les livres d'histoire."
+      }
+    ],
+    "conversation_summary": "A conversation about favorite books: mystery novels and historical fiction."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Tu fais quoi pour t'amuser ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime regarder des films et écrire des histoires courtes.",
+        "person1": "Et moi, j'aime jouer de la guitare et faire du sport."
+      }
+    ],
+    "conversation_summary": "A conversation about favorite leisure activities: watching movies and writing short stories vs playing guitar and sports."
+  }
 ]

@@ -1,38 +1,38 @@
 [
-    {
-        "English": "city",
-        "French": "ville"
-    },
-    {
-        "English": "hotel",
-        "French": "hôtel"
-    },
-    {
-        "English": "airplane",
-        "French": "avion"
-    },
-    {
-        "English": "train",
-        "French": "train"
-    },
-    {
-        "English": "bus",
-        "French": "bus"
-    },
-    {
-        "English": "bicycle",
-        "French": "vélo"
-    },
-    {
-        "English": "boat",
-        "French": "bateau"
-    },
-    {
-        "English": "ship",
-        "French": "navire"
-    },
-    {
-        "English": "car rental",
-        "French": "location de voitures"
-    }
+  {
+    "English": "city",
+    "French": "ville"
+  },
+  {
+    "English": "hotel",
+    "French": "hôtel"
+  },
+  {
+    "English": "airplane",
+    "French": "avion"
+  },
+  {
+    "English": "train",
+    "French": "train"
+  },
+  {
+    "English": "bus",
+    "French": "bus"
+  },
+  {
+    "English": "bicycle",
+    "French": "vélo"
+  },
+  {
+    "English": "boat",
+    "French": "bateau"
+  },
+  {
+    "English": "ship",
+    "French": "navire"
+  },
+  {
+    "English": "car rental",
+    "French": "location de voitures"
+  }
 ]

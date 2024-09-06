@@ -1,22 +1,22 @@
 [
-    {
-        "English": "What is your name?",
-        "French": "Comment t'appelles-tu ?"
-    },
-    {
-        "English": "Where are you from?",
-        "French": "D'où viens-tu ?"
-    },
-    {
-        "English": "I like to travel.",
-        "French": "J'aime voyager."
-    },
-    {
-        "English": "The train is late today.",
-        "French": "Le train est en retard aujourd'hui."
-    },
-    {
-        "English": "Do you speak English?",
-        "French": "Parles-tu anglais ?"
-    }
+  {
+    "English": "What is your name?",
+    "French": "Comment t'appelles-tu ?"
+  },
+  {
+    "English": "Where are you from?",
+    "French": "D'où viens-tu ?"
+  },
+  {
+    "English": "I like to travel.",
+    "French": "J'aime voyager."
+  },
+  {
+    "English": "The train is late today.",
+    "French": "Le train est en retard aujourd'hui."
+  },
+  {
+    "English": "Do you speak English?",
+    "French": "Parles-tu anglais ?"
+  }
 ]
