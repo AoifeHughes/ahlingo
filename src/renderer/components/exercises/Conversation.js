@@ -21,7 +21,7 @@ function Conversation({ onBack }) {
           return;
         }
         setDifficultyLevels(levels);
-      }
+      },
     );
 
     // Cleanup
