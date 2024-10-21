@@ -35,7 +35,7 @@ function Pairs({ onBack }) {
       getTopicsByLanguageDifficulty(
         selectedLanguage,
         selectedDifficulty,
-        setTopics
+        setTopics,
       );
     }
   }, [selectedLanguage, selectedDifficulty]);
@@ -53,7 +53,7 @@ function Pairs({ onBack }) {
   const handleExerciseClick = (id) => {
     // Logic to determine if a pair is matched, turn green or flash red
     const clickedExercise = shuffledExercises.find(
-      (exercise) => exercise.id === id
+      (exercise) => exercise.id === id,
     );
 
     if (selectedPair === null) {
@@ -97,8 +97,8 @@ function Pairs({ onBack }) {
             backgroundColor: matches[exercise.id]
               ? "#90ee90"
               : incorrectAttempts[exercise.id]
-              ? "red"
-              : "initial",
+                ? "red"
+                : "initial",
           }}
         >
           {exercise.language_1_content} / {exercise.language_2_content}

@@ -10,7 +10,7 @@ function setupIPC() {
       } else {
         console.log("Database initialized successfully");
       }
-    }
+    },
   );
 
   ipcMain.on("add-user", (event, arg) => {
@@ -72,7 +72,7 @@ function setupIPC() {
             topics,
           });
         }
-      }
+      },
     );
   });
 
@@ -93,7 +93,7 @@ function setupIPC() {
             exercise,
           });
         }
-      }
+      },
     );
   });
 }

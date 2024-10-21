@@ -21,7 +21,7 @@ function Translation({ onBack }) {
           return;
         }
         setDifficultyLevels(levels);
-      }
+      },
     );
 
     // Cleanup

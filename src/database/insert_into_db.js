@@ -17,7 +17,7 @@ function addContentFromFile(filename) {
   const difficulty = pathParts[4].split(".")[0];
 
   console.log(
-    `Adding content for language: ${language} - Exercise type: ${exerciseType} - Topic: ${topic} - Difficulty: ${difficulty}`
+    `Adding content for language: ${language} - Exercise type: ${exerciseType} - Topic: ${topic} - Difficulty: ${difficulty}`,
   );
 
   fs.readFile(filename, "utf8", (err, data) => {
@@ -45,10 +45,10 @@ function addContentFromFile(filename) {
               console.error(`Error adding pairs exercise ${index + 1}:`, err);
             } else {
               console.log(
-                `Added pairs exercise ${index + 1} with ID: ${exerciseId}`
+                `Added pairs exercise ${index + 1} with ID: ${exerciseId}`,
               );
             }
-          }
+          },
         );
       } else if (exerciseType === "translations") {
         db.addTranslationExerciseFromJSON(
@@ -61,16 +61,16 @@ function addContentFromFile(filename) {
             if (err) {
               console.error(
                 `Error adding translations exercise ${index + 1}:`,
-                err
+                err,
               );
             } else {
               console.log(
                 `Added translations exercise ${
                   index + 1
-                } with ID: ${exerciseId}`
+                } with ID: ${exerciseId}`,
               );
             }
-          }
+          },
         );
       } else {
         db.addConversationExerciseFromJSON(
@@ -83,16 +83,16 @@ function addContentFromFile(filename) {
             if (err) {
               console.error(
                 `Error adding conversation exercise ${index + 1}:`,
-                err
+                err,
               );
             } else {
               console.log(
                 `Added conversation exercise ${
                   index + 1
-                } with ID: ${exerciseId}`
+                } with ID: ${exerciseId}`,
               );
             }
-          }
+          },
         );
       }
     });

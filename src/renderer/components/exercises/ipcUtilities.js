@@ -13,7 +13,7 @@ export const getLanguages = (setLanguagesCallback) => {
 
 export const getDifficultiesByLanguage = (
   language,
-  setDifficultiesCallback
+  setDifficultiesCallback,
 ) => {
   ipcRenderer.send("get-difficulty-by-language", { language });
   ipcRenderer.once("get-difficulty-by-language-response", (event, response) => {
@@ -27,7 +27,7 @@ export const getDifficultiesByLanguage = (
 export const getTopicsByLanguageDifficulty = (
   language,
   difficulty,
-  setTopicsCallback
+  setTopicsCallback,
 ) => {
   ipcRenderer.send("get-topics-by-language-difficulty", {
     language,
@@ -40,7 +40,7 @@ export const getTopicsByLanguageDifficulty = (
       if (!error) {
         setTopicsCallback(topics);
       }
-    }
+    },
   );
 };
 
@@ -48,7 +48,7 @@ export const getRandomPairExercise = (
   language,
   difficulty,
   topic,
-  setExercisesCallback
+  setExercisesCallback,
 ) => {
   ipcRenderer.send("get-random-pair-exercise", { language, difficulty, topic });
   ipcRenderer.once("get-random-pair-exercise-response", (event, response) => {

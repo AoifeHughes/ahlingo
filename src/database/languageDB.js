@@ -12,7 +12,7 @@ class LanguageDB {
           return;
         }
         this._initialize(callback);
-      }
+      },
     );
   }
 
@@ -149,7 +149,7 @@ class LanguageDB {
     difficultyLevel,
     conversations,
     summary,
-    callback
+    callback,
   ) {
     // Capture a reference to the db property of LanguageDB instance
     const db = this.db;
@@ -186,13 +186,13 @@ class LanguageDB {
                           [exerciseId, summary],
                           (err) => {
                             callback(err, exerciseId);
-                          }
+                          },
                         );
                       }
-                    }
+                    },
                   );
                 });
-              }
+              },
             );
           });
         });
@@ -206,7 +206,7 @@ class LanguageDB {
     topic,
     difficultyLevel,
     jsonInput,
-    callback
+    callback,
   ) {
     const conversations = jsonInput.conversation;
     const summary = jsonInput.conversation_summary;
@@ -218,7 +218,7 @@ class LanguageDB {
       difficultyLevel,
       conversations,
       summary,
-      callback
+      callback,
     );
   }
 
@@ -231,11 +231,11 @@ class LanguageDB {
     language2,
     language1Content,
     language2Content,
-    callback
+    callback,
   ) {
     const db = this.db;
     console.log(
-      `Adding pair exercise: ${exerciseName}, ${language}, ${topic}, ${difficultyLevel}, ${language1}, ${language2}, ${language1Content}, ${language2Content}`
+      `Adding pair exercise: ${exerciseName}, ${language}, ${topic}, ${difficultyLevel}, ${language1}, ${language2}, ${language1Content}, ${language2Content}`,
     );
 
     // Check if the pair exercise already exists
@@ -280,11 +280,11 @@ class LanguageDB {
                         ],
                         (err) => {
                           callback(err, exerciseId);
-                        }
+                        },
                       );
-                    }
+                    },
                   );
-                }
+                },
               );
             });
           });
@@ -299,7 +299,7 @@ class LanguageDB {
     topic,
     difficultyLevel,
     jsonInput,
-    callback
+    callback,
   ) {
     const language_1 = "English";
     const language_2 = language;
@@ -315,7 +315,7 @@ class LanguageDB {
       language_2,
       language_1_content,
       language_2_content,
-      callback
+      callback,
     );
   }
 
@@ -328,7 +328,7 @@ class LanguageDB {
     language2,
     language1Content,
     language2Content,
-    callback
+    callback,
   ) {
     const db = this.db; // Capture a reference to the db property of LanguageDB instance
 
@@ -360,9 +360,9 @@ class LanguageDB {
                   ],
                   (err) => {
                     callback(err, exerciseId);
-                  }
+                  },
                 );
-              }
+              },
             );
           });
         });
@@ -376,7 +376,7 @@ class LanguageDB {
     topic,
     difficultyLevel,
     jsonInput,
-    callback
+    callback,
   ) {
     const language_1 = "English";
     const language_2 = language;
@@ -392,7 +392,7 @@ class LanguageDB {
       language_2,
       language_1_content,
       language_2_content,
-      callback
+      callback,
     );
   }
 
@@ -454,7 +454,7 @@ class LanguageDB {
       ["English", language, topic, difficulty],
       (err, rows) => {
         callback(err, rows);
-      }
+      },
     );
   }
 
