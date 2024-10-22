@@ -6,6 +6,7 @@ from kivy.utils import platform
 from screens.main_screen import HomeScreen
 from screens.settings import SettingsScreen
 from screens.games.pairs.pairs_menu import PairsScreen
+from screens.games.conversations.conversations_menu import ConversationScreen
 from database.database_manager import LanguageDB
 from kivy.storage.jsonstore import JsonStore
 import os
@@ -26,6 +27,7 @@ class LanguageLearningApp(MDApp):
         sm = MDScreenManager()
         sm.add_widget(HomeScreen(self.db))
         sm.add_widget(PairsScreen(self.db))
+        sm.add_widget(ConversationScreen(self.db))
         sm.add_widget(SettingsScreen(self.db))
         
         

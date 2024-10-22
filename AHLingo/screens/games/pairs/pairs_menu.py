@@ -32,7 +32,11 @@ class PairsScreen(MDScreen):
         self.buttons_1 = []
         self.buttons_2 = []
         self.correct_pairs = 0
+        self.incorrect_attempts = 0
         self.total_pairs = 0
+        self.current_topic = None
+        self.current_language = None
+        self.current_difficulty = None
 
     def create_topic_view(self):
         layout = MDBoxLayout(orientation='vertical')
@@ -46,7 +50,7 @@ class PairsScreen(MDScreen):
         layout.add_widget(toolbar)
         
         # Scrollable list of topics
-        scroll = MDScrollView()
+        scroll = MDScrollView(size_hint=(1, 1))
         self.topics_list = MDList()
         scroll.add_widget(self.topics_list)
         layout.add_widget(scroll)
@@ -54,7 +58,7 @@ class PairsScreen(MDScreen):
         return layout
 
     def create_exercise_view(self):
-        layout = MDBoxLayout(orientation='vertical')
+        layout = MDBoxLayout(orientation='vertical', spacing=dp(8))
         
         # Top toolbar with back button
         self.exercise_toolbar = MDTopAppBar(
@@ -64,40 +68,170 @@ class PairsScreen(MDScreen):
         )
         layout.add_widget(self.exercise_toolbar)
         
-        # Score label
+        # Add reset button
+        self.reset_button = MDRaisedButton(
+            text="Reset Exercise",
+            size_hint=(None, None),
+            width=dp(200),
+            height=dp(48),
+            pos_hint={'center_x': 0.5}
+        )
+        self.reset_button.bind(on_release=self.reset_exercise)
+        reset_container = MDBoxLayout(
+            size_hint_y=None,
+            height=dp(56),
+            padding=[0, dp(4), 0, dp(4)]
+        )
+        reset_container.add_widget(self.reset_button)
+        layout.add_widget(reset_container)
+        
+        # Score layout
+        score_layout = MDBoxLayout(
+            orientation='horizontal',
+            size_hint_y=None,
+            height=dp(50),
+            padding=[dp(16), 0, dp(16), 0]
+        )
+        
+        # Correct matches label
         self.score_label = MDLabel(
             text="Matched: 0/0",
-            halign="center",
-            size_hint_y=None,
-            height=dp(50)
+            halign="left",
+            size_hint_x=0.5
         )
-        layout.add_widget(self.score_label)
+        score_layout.add_widget(self.score_label)
+        
+        # Incorrect attempts label
+        self.incorrect_label = MDLabel(
+            text="Incorrect: 0",
+            halign="right",
+            size_hint_x=0.5
+        )
+        score_layout.add_widget(self.incorrect_label)
+        
+        layout.add_widget(score_layout)
 
         # Container for word buttons
         content_layout = MDBoxLayout(
             orientation='horizontal',
             padding=dp(16),
-            spacing=dp(16)
+            spacing=dp(16),
+            size_hint_y=None
         )
+        content_layout.bind(minimum_height=content_layout.setter('height'))
 
         # Left column (language 1)
         self.left_column = MDBoxLayout(
             orientation='vertical',
             spacing=dp(8),
-            size_hint_x=0.5
+            size_hint_x=0.5,
+            size_hint_y=None
         )
+        self.left_column.bind(minimum_height=self.left_column.setter('height'))
         content_layout.add_widget(self.left_column)
 
         # Right column (language 2)
         self.right_column = MDBoxLayout(
             orientation='vertical',
             spacing=dp(8),
-            size_hint_x=0.5
+            size_hint_x=0.5,
+            size_hint_y=None
         )
+        self.right_column.bind(minimum_height=self.right_column.setter('height'))
         content_layout.add_widget(self.right_column)
 
-        layout.add_widget(content_layout)
+        # Wrap content layout in a scroll view
+        scroll = MDScrollView(size_hint=(1, 1))
+        scroll.add_widget(content_layout)
+        layout.add_widget(scroll)
+        
         return layout
+
+    def reset_exercise(self, *args):
+        if self.current_topic and self.current_language and self.current_difficulty:
+            self.select_topic(self.current_topic)
+
+    def select_topic(self, topic):
+        settings = JsonStore('settings.json')
+        if settings.exists('language') and settings.exists('difficulty'):
+            self.current_language = settings.get('language')['value']
+            self.current_difficulty = settings.get('difficulty')['value']
+            self.current_topic = topic
+            
+            with self.db() as db:
+                exercises = db.get_random_pair_exercise(
+                    self.current_language,
+                    self.current_difficulty,
+                    topic
+                )
+                if exercises:
+                    self.pairs = []
+                    for exercise in exercises:
+                        self.pairs.append({
+                            'lang1': exercise['language_1_content'],
+                            'lang2': exercise['language_2_content']
+                        })
+                    
+                    self.total_pairs = len(self.pairs)
+                    self.correct_pairs = 0
+                    self.incorrect_attempts = 0
+                    self.switch_to_exercise()
+                    self.display_pairs()
+
+    def update_score(self):
+        self.score_label.text = f"Matched: {self.correct_pairs}/{self.total_pairs}"
+        self.incorrect_label.text = f"Incorrect: {self.incorrect_attempts}"
+
+    def on_button_press(self, button):
+        # If the same button is pressed again, deselect it
+        if self.selected_button == button:
+            self.selected_button.md_bg_color = (0.2, 0.6, 1, 1)  # Reset to default blue
+            self.selected_button = None
+            return
+
+        # If this is the first button selected
+        if not self.selected_button:
+            self.selected_button = button
+            button.md_bg_color = (0.4, 0.4, 0.4, 1)  # Change to grey when selected
+            return
+
+        # This is the second button - check if it's a match
+        is_match = False
+        for pair in self.pairs:
+            if (self.selected_button.word == pair['lang1'] and button.word == pair['lang2']) or \
+               (self.selected_button.word == pair['lang2'] and button.word == pair['lang1']):
+                is_match = True
+                break
+
+        if is_match:
+            # Correct match
+            self.selected_button.md_bg_color = (0, 0.8, 0, 1)  # Green for correct
+            button.md_bg_color = (0, 0.8, 0, 1)
+            self.selected_button.disabled = True
+            button.disabled = True
+            self.correct_pairs += 1
+        else:
+            # Wrong match
+            self.selected_button.md_bg_color = (0.2, 0.6, 1, 1)  # Reset to default blue
+            button.md_bg_color = (0.2, 0.6, 1, 1)
+            self.incorrect_attempts += 1
+
+        self.update_score()
+        self.selected_button = None
+
+    def switch_to_exercise(self):
+        self.main_layout.clear_widgets()
+        self.main_layout.add_widget(self.exercise_view)
+
+    def return_to_topics(self):
+        self.main_layout.clear_widgets()
+        self.main_layout.add_widget(self.topic_view)
+        # Reset exercise state
+        self.selected_button = None
+        self.correct_pairs = 0
+        self.incorrect_attempts = 0
+        self.total_pairs = 0
+        self.current_topic = None
 
     def load_topics(self):
         settings = JsonStore('settings.json')
@@ -116,39 +250,6 @@ class PairsScreen(MDScreen):
                         on_release=lambda x, t=topic: self.select_topic(t)
                     )
                 )
-
-    def select_topic(self, topic):
-        settings = JsonStore('settings.json')
-        if settings.exists('language') and settings.exists('difficulty'):
-            language = settings.get('language')['value']
-            difficulty = settings.get('difficulty')['value']
-            
-            with self.db() as db:
-                exercises = db.get_random_pair_exercise(language, difficulty, topic)
-                if exercises:
-                    self.pairs = []
-                    for exercise in exercises:
-                        self.pairs.append({
-                            'lang1': exercise['language_1_content'],
-                            'lang2': exercise['language_2_content']
-                        })
-                    
-                    self.total_pairs = len(self.pairs)
-                    self.correct_pairs = 0
-                    self.switch_to_exercise()
-                    self.display_pairs()
-
-    def switch_to_exercise(self):
-        self.main_layout.clear_widgets()
-        self.main_layout.add_widget(self.exercise_view)
-
-    def return_to_topics(self):
-        self.main_layout.clear_widgets()
-        self.main_layout.add_widget(self.topic_view)
-        # Reset exercise state
-        self.selected_button = None
-        self.correct_pairs = 0
-        self.total_pairs = 0
 
     def display_pairs(self):
         # Clear existing buttons
@@ -193,45 +294,6 @@ class PairsScreen(MDScreen):
             self.right_column.add_widget(btn)
 
         self.update_score()
-
-    def on_button_press(self, button):
-        # If the same button is pressed again, deselect it
-        if self.selected_button == button:
-            self.selected_button.md_bg_color = (0.2, 0.6, 1, 1)  # Reset to default blue
-            self.selected_button = None
-            return
-
-        # If this is the first button selected
-        if not self.selected_button:
-            self.selected_button = button
-            button.md_bg_color = (0.4, 0.4, 0.4, 1)  # Change to grey when selected
-            return
-
-        # This is the second button - check if it's a match
-        is_match = False
-        for pair in self.pairs:
-            if (self.selected_button.word == pair['lang1'] and button.word == pair['lang2']) or \
-               (self.selected_button.word == pair['lang2'] and button.word == pair['lang1']):
-                is_match = True
-                break
-
-        if is_match:
-            # Correct match
-            self.selected_button.md_bg_color = (0, 0.8, 0, 1)  # Green for correct
-            button.md_bg_color = (0, 0.8, 0, 1)
-            self.selected_button.disabled = True
-            button.disabled = True
-            self.correct_pairs += 1
-            self.update_score()
-        else:
-            # Wrong match
-            self.selected_button.md_bg_color = (0.2, 0.6, 1, 1)  # Reset to default blue
-            button.md_bg_color = (0.2, 0.6, 1, 1)
-
-        self.selected_button = None
-
-    def update_score(self):
-        self.score_label.text = f"Matched: {self.correct_pairs}/{self.total_pairs}"
 
     def go_back_to_home(self):
         self.manager.current = 'home'

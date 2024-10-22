@@ -33,7 +33,7 @@ class HomeScreen(MDScreen):
             padding=dp(16),
             spacing=dp(10),
             size_hint_y=None,
-            height=dp(100)  # Adjust based on your content
+            height=dp(160)  # Adjusted for two buttons
         )
         
         pairs_button = MDRaisedButton(
@@ -45,6 +45,16 @@ class HomeScreen(MDScreen):
         )
         pairs_button.bind(on_release=self.go_to_pairs)
         content_layout.add_widget(pairs_button)
+        
+        conversation_button = MDRaisedButton(
+            text="Conversation Exercises",
+            size_hint=(None, None),
+            width=dp(200),
+            height=dp(48),
+            pos_hint={'center_x': 0.5}
+        )
+        conversation_button.bind(on_release=self.go_to_conversation)
+        content_layout.add_widget(conversation_button)
         
         # Add the content layout to a top-aligned box
         top_box = MDBoxLayout(
@@ -62,7 +72,10 @@ class HomeScreen(MDScreen):
         layout.add_widget(spacer)
         
         self.add_widget(layout)
-    
+
+    def go_to_conversation(self, *args):
+        self.manager.current = 'conversation'
+        self.manager.get_screen('conversation').load_topics()
     def go_to_settings(self):
         self.manager.current = 'settings'
     
