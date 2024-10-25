@@ -76,7 +76,7 @@ class HomeScreen(BaseScreen):
         button_height = dp(80)
         spacing = dp(20)
         padding = dp(40)
-        num_buttons = 3
+        num_buttons = 5  # Updated to include translation button
 
         return (button_height * num_buttons) + (spacing * (num_buttons - 1)) + padding
 
@@ -94,10 +94,22 @@ class HomeScreen(BaseScreen):
         )
         layout.add_widget(conversation_button)
 
+        # Translation Exercise Button
+        translation_button = StandardButton(
+            text="Translation Exercises", on_release=self.go_to_translation
+        )
+        layout.add_widget(translation_button)
+
         chatbot_button = StandardButton(
             text="Chatbot Exercises", on_release=self.go_to_chatbot
         )
         layout.add_widget(chatbot_button)
+
+        # Revise Mistakes Button
+        revise_button = StandardButton(
+            text="Revise Mistakes", on_release=self.go_to_revise_mistakes
+        )
+        layout.add_widget(revise_button)
 
     def go_to_conversation(self, *args):
         """Navigate to conversation exercises screen."""
@@ -115,6 +127,16 @@ class HomeScreen(BaseScreen):
         screen.load_topics()
         self.manager.current = "pairs"
 
+    def go_to_translation(self, *args):
+        """Navigate to translation exercises screen."""
+        screen = self.manager.get_screen("translation")
+        screen.load_topics()
+        self.manager.current = "translation"
+
     def go_to_chatbot(self, *args):
         """Navigate to chatbot exercises screen."""
         self.manager.current = "chatbot"
+
+    def go_to_revise_mistakes(self, *args):
+        """Navigate to revise mistakes screen."""
+        self.manager.current = "revise_mistakes"

@@ -86,6 +86,7 @@ class ConversationExerciseScreen(BaseExerciseScreen):
         self.name = "conversation"
         self.current_summary = None
         self.current_exercise_id = None
+        self.attempt_recorded = False
 
     def create_exercise_view(self):
         """Create the exercise view with conversation components."""
@@ -142,7 +143,30 @@ class ConversationExerciseScreen(BaseExerciseScreen):
                 if result:
                     self.current_exercise_id = result[0]
                     self.current_topic = topic
+                    self.attempt_recorded = False
                     self.load_conversation(self.current_exercise_id, settings)
+                    self.switch_to_exercise()
+
+    def load_specific_exercise(self, exercise_id):
+        """Load a specific exercise by ID."""
+        settings = self.get_user_settings()
+        if settings:
+            with self.db() as db:
+                # Get exercise details
+                db.cursor.execute(
+                    """SELECT t.topic
+                       FROM exercises_info e
+                       JOIN topics t ON e.topic_id = t.id
+                       WHERE e.id = ?""",
+                    (exercise_id,)
+                )
+                exercise_info = db.cursor.fetchone()
+                
+                if exercise_info:
+                    self.current_topic = exercise_info["topic"]
+                    self.current_exercise_id = exercise_id
+                    self.attempt_recorded = False
+                    self.load_conversation(exercise_id, settings)
                     self.switch_to_exercise()
 
     def load_conversation(self, exercise_id, settings):
@@ -215,6 +239,20 @@ class ConversationExerciseScreen(BaseExerciseScreen):
 
     def check_answer(self, selected_summary):
         """Check if selected summary is correct and update UI."""
+        if not self.attempt_recorded:
+            is_correct = selected_summary == self.current_summary
+            
+            # Record the attempt
+            settings = self.get_user_settings()
+            if settings and self.current_exercise_id:
+                with self.db() as db:
+                    db.record_exercise_attempt(
+                        settings["username"],
+                        self.current_exercise_id,
+                        is_correct
+                    )
+                self.attempt_recorded = True
+
         # Update all button states
         for child in self.question_layout.options_layout.children:
             if isinstance(child, ConversationSummaryButton):
@@ -225,5 +263,6 @@ class ConversationExerciseScreen(BaseExerciseScreen):
 
     def reset_exercise(self, *args):
         """Reset the current exercise."""
-        if self.current_exercise_id:
-            self.load_conversation(self.current_exercise_id)
+        super().reset_exercise(*args)
+        if self.current_topic:
+            self.select_topic(self.current_topic)

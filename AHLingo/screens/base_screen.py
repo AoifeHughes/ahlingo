@@ -13,10 +13,11 @@ class BaseScreen(MDScreen):
 
     def get_user_settings(self):
         """Get current user settings."""
-        if self.settings.exists("language") and self.settings.exists("difficulty"):
+        if self.settings.exists("language") and self.settings.exists("difficulty") and self.settings.exists("username"):
             return {
                 "language": self.settings.get("language")["value"],
                 "difficulty": self.settings.get("difficulty")["value"],
+                "username": self.settings.get("username")["value"],
             }
         return None
 
