@@ -1,42 +1,42 @@
 [
-    {
-        "English": "morning",
-        "Spanish": "mañana"
-    },
-    {
-        "English": "evening",
-        "Spanish": "tarde"
-    },
-    {
-        "English": "hour",
-        "Spanish": "hora"
-    },
-    {
-        "English": "minute",
-        "Spanish": "minuto"
-    },
-    {
-        "English": "second",
-        "Spanish": "segundo"
-    },
-    {
-        "English": "quarter past",
-        "Spanish": "y cuarto"
-    },
-    {
-        "English": "half past",
-        "Spanish": "y media"
-    },
-    {
-        "English": "to the hour",
-        "Spanish": "a la una"
-    },
-    {
-        "English": "to the half",
-        "Spanish": "y media"
-    },
-    {
-        "English": "to the quarter",
-        "Spanish": "y cuarto"
-    }
+  {
+    "English": "morning",
+    "Spanish": "mañana"
+  },
+  {
+    "English": "evening",
+    "Spanish": "tarde"
+  },
+  {
+    "English": "hour",
+    "Spanish": "hora"
+  },
+  {
+    "English": "minute",
+    "Spanish": "minuto"
+  },
+  {
+    "English": "second",
+    "Spanish": "segundo"
+  },
+  {
+    "English": "quarter past",
+    "Spanish": "y cuarto"
+  },
+  {
+    "English": "half past",
+    "Spanish": "y media"
+  },
+  {
+    "English": "to the hour",
+    "Spanish": "a la una"
+  },
+  {
+    "English": "to the half",
+    "Spanish": "y media"
+  },
+  {
+    "English": "to the quarter",
+    "Spanish": "y cuarto"
+  }
 ]

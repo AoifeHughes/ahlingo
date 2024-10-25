@@ -1,87 +1,87 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quelle est la saison la plus agréable pour vous ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "La saison estivale. C'est le meilleur moment pour visiter les plages."
-            },
-            {
-                "speaker": "person1",
-                "message": "Moi, je préfère la saison d'automne. J'aime les feuilles qui changent de couleur."
-            }
-        ],
-        "conversation_summary": "A conversation discussing favorite seasons and activities."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quand est-ce que tu te maries ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je prévois de me marier pendant le mois de mai."
-            },
-            {
-                "speaker": "person1",
-                "message": "C'est une excellente occasion. Ne fais pas de plans pour célébrer."
-            }
-        ],
-        "conversation_summary": "A conversation about wedding planning and scheduling."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment te sens-tu le temps ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je me sens un peu ennuyé ces jours-ci. Pas beaucoup de promenades et pas de pluie pour faire de l'exercice."
-            },
-            {
-                "speaker": "person1",
-                "message": "Je comprends. J'aime quand c'est chaud et ensoleillé."
-            }
-        ],
-        "conversation_summary": "A conversation discussing feelings about the current weather and its impact on activities."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton film préféré pour regarder en été ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime regarder des films d'aventure parce que les vacances d'été sont une bonne occasion de s'imaginer dans des endroits exotiques."
-            },
-            {
-                "speaker": "person1",
-                "message": "Je pense que les films de science-fiction sont aussi intéressants pour les vacances d'été."
-            }
-        ],
-        "conversation_summary": "A conversation about favorite movies for summer and the reasons behind them."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel mois est-ce que tu as l'anniversaire ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Mon anniversaire est en avril. C'est une belle saison pour célébrer car les fleurs commencent à fleurir."
-            },
-            {
-                "speaker": "person1",
-                "message": "Oh, j'aime l'avènement du printemps. Je souhaite aussi célébrer mon anniversaire au printemps."
-            }
-        ],
-        "conversation_summary": "A conversation discussing favorite times to celebrate birthdays and the reasons behind them."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quelle est la saison la plus agréable pour vous ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "La saison estivale. C'est le meilleur moment pour visiter les plages."
+      },
+      {
+        "speaker": "person1",
+        "message": "Moi, je préfère la saison d'automne. J'aime les feuilles qui changent de couleur."
+      }
+    ],
+    "conversation_summary": "A conversation discussing favorite seasons and activities."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quand est-ce que tu te maries ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je prévois de me marier pendant le mois de mai."
+      },
+      {
+        "speaker": "person1",
+        "message": "C'est une excellente occasion. Ne fais pas de plans pour célébrer."
+      }
+    ],
+    "conversation_summary": "A conversation about wedding planning and scheduling."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment te sens-tu le temps ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je me sens un peu ennuyé ces jours-ci. Pas beaucoup de promenades et pas de pluie pour faire de l'exercice."
+      },
+      {
+        "speaker": "person1",
+        "message": "Je comprends. J'aime quand c'est chaud et ensoleillé."
+      }
+    ],
+    "conversation_summary": "A conversation discussing feelings about the current weather and its impact on activities."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton film préféré pour regarder en été ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime regarder des films d'aventure parce que les vacances d'été sont une bonne occasion de s'imaginer dans des endroits exotiques."
+      },
+      {
+        "speaker": "person1",
+        "message": "Je pense que les films de science-fiction sont aussi intéressants pour les vacances d'été."
+      }
+    ],
+    "conversation_summary": "A conversation about favorite movies for summer and the reasons behind them."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel mois est-ce que tu as l'anniversaire ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Mon anniversaire est en avril. C'est une belle saison pour célébrer car les fleurs commencent à fleurir."
+      },
+      {
+        "speaker": "person1",
+        "message": "Oh, j'aime l'avènement du printemps. Je souhaite aussi célébrer mon anniversaire au printemps."
+      }
+    ],
+    "conversation_summary": "A conversation discussing favorite times to celebrate birthdays and the reasons behind them."
+  }
 ]

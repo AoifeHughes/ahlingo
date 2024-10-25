@@ -1,107 +1,107 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est le mois où tu fêtes ton anniversaire ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je l'organise le 20 mai."
-            },
-            {
-                "speaker": "person1",
-                "message": "Ah bon, c'est en mai donc il fait bon !"
-            },
-            {
-                "speaker": "person2",
-                "message": "Oui, j'aime les températures chaudes."
-            }
-        ],
-        "conversation_summary": "A conversation discussing the month of the birthday party and the weather in that month."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quelles sont tes activités préférées pendant le printemps ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime faire de la randonnée et jeter des pétards."
-            },
-            {
-                "speaker": "person1",
-                "message": "Oh, c'est amusant de jouer aux pétards en avril."
-            },
-            {
-                "speaker": "person2",
-                "message": "Oui, mais nous devons faire attention, April show (les tempêtes de printemps)."
-            }
-        ],
-        "conversation_summary": "A conversation about favorite springtime activities and the 'April showers' idiom."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel jour sommes-nous aujourd'hui ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "C'est le mercredi."
-            },
-            {
-                "speaker": "person1",
-                "message": "Ah, mercredi est le jour du travail en français."
-            },
-            {
-                "speaker": "person2",
-                "message": "Vrai, on dit que c'est le 'début du travail', et non le 'fin du week-end'."
-            }
-        ],
-        "conversation_summary": "A conversation discussing the day of the week and cultural perception of it."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment prépares-tu pour le froid en automne ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je porte un manteau épais et des gants."
-            },
-            {
-                "speaker": "person1",
-                "message": "C'est bien, je porte aussi un chapeau chaud pour protéger ma tête."
-            },
-            {
-                "speaker": "person2",
-                "message": "Vraiment, il fait mauvais de se retrouver sans chapeau en automne."
-            }
-        ],
-        "conversation_summary": "A conversation about preparing for the cold weather in the fall season."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel est ton favori, le printemps ou l'automne ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Personnellement, j'aime le printemps. Il semble que tout est renaître."
-            },
-            {
-                "speaker": "person1",
-                "message": "Je comprends, mais j'apprécie aussi l'automne. C'est une belle couleur pour le paysage."
-            },
-            {
-                "speaker": "person2",
-                "message": "Vraiment, l'automne a une beauté naturelle en soi."
-            }
-        ],
-        "conversation_summary": "A conversation discussing the favorite seasons and reasons behind them."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est le mois où tu fêtes ton anniversaire ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je l'organise le 20 mai."
+      },
+      {
+        "speaker": "person1",
+        "message": "Ah bon, c'est en mai donc il fait bon !"
+      },
+      {
+        "speaker": "person2",
+        "message": "Oui, j'aime les températures chaudes."
+      }
+    ],
+    "conversation_summary": "A conversation discussing the month of the birthday party and the weather in that month."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quelles sont tes activités préférées pendant le printemps ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime faire de la randonnée et jeter des pétards."
+      },
+      {
+        "speaker": "person1",
+        "message": "Oh, c'est amusant de jouer aux pétards en avril."
+      },
+      {
+        "speaker": "person2",
+        "message": "Oui, mais nous devons faire attention, April show (les tempêtes de printemps)."
+      }
+    ],
+    "conversation_summary": "A conversation about favorite springtime activities and the 'April showers' idiom."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel jour sommes-nous aujourd'hui ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "C'est le mercredi."
+      },
+      {
+        "speaker": "person1",
+        "message": "Ah, mercredi est le jour du travail en français."
+      },
+      {
+        "speaker": "person2",
+        "message": "Vrai, on dit que c'est le 'début du travail', et non le 'fin du week-end'."
+      }
+    ],
+    "conversation_summary": "A conversation discussing the day of the week and cultural perception of it."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment prépares-tu pour le froid en automne ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je porte un manteau épais et des gants."
+      },
+      {
+        "speaker": "person1",
+        "message": "C'est bien, je porte aussi un chapeau chaud pour protéger ma tête."
+      },
+      {
+        "speaker": "person2",
+        "message": "Vraiment, il fait mauvais de se retrouver sans chapeau en automne."
+      }
+    ],
+    "conversation_summary": "A conversation about preparing for the cold weather in the fall season."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton favori, le printemps ou l'automne ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Personnellement, j'aime le printemps. Il semble que tout est renaître."
+      },
+      {
+        "speaker": "person1",
+        "message": "Je comprends, mais j'apprécie aussi l'automne. C'est une belle couleur pour le paysage."
+      },
+      {
+        "speaker": "person2",
+        "message": "Vraiment, l'automne a une beauté naturelle en soi."
+      }
+    ],
+    "conversation_summary": "A conversation discussing the favorite seasons and reasons behind them."
+  }
 ]

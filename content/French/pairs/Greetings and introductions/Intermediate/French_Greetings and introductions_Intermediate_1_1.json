@@ -1,38 +1,38 @@
 [
-    {
-        "English": "friend",
-        "French": "ami/amie"
-    },
-    {
-        "English": "hello",
-        "French": "bonjour"
-    },
-    {
-        "English": "how are you?",
-        "French": "comment ça va?"
-    },
-    {
-        "English": "goodbye",
-        "French": "au revoir"
-    },
-    {
-        "English": "please",
-        "French": "s'il vous plaît"
-    },
-    {
-        "English": "excuse me",
-        "French": "excusez-moi"
-    },
-    {
-        "English": "nice to meet you",
-        "French": "enchanté/enchantée"
-    },
-    {
-        "English": "thank you",
-        "French": "merci"
-    },
-    {
-        "English": "sorry",
-        "French": "désolé"
-    }
+  {
+    "English": "friend",
+    "French": "ami/amie"
+  },
+  {
+    "English": "hello",
+    "French": "bonjour"
+  },
+  {
+    "English": "how are you?",
+    "French": "comment ça va?"
+  },
+  {
+    "English": "goodbye",
+    "French": "au revoir"
+  },
+  {
+    "English": "please",
+    "French": "s'il vous plaît"
+  },
+  {
+    "English": "excuse me",
+    "French": "excusez-moi"
+  },
+  {
+    "English": "nice to meet you",
+    "French": "enchanté/enchantée"
+  },
+  {
+    "English": "thank you",
+    "French": "merci"
+  },
+  {
+    "English": "sorry",
+    "French": "désolé"
+  }
 ]

@@ -1,62 +1,62 @@
 [
-    {
-        "English": "apple",
-        "French": "pomme"
-    },
-    {
-        "English": "book",
-        "French": "livre"
-    },
-    {
-        "English": "car",
-        "French": "voiture"
-    },
-    {
-        "English": "dog",
-        "French": "chien"
-    },
-    {
-        "English": "house",
-        "French": "maison"
-    },
-    {
-        "English": "love",
-        "French": "amour"
-    },
-    {
-        "English": "moon",
-        "French": "lune"
-    },
-    {
-        "English": "sun",
-        "French": "soleil"
-    },
-    {
-        "English": "tree",
-        "French": "arbre"
-    },
-    {
-        "English": "water",
-        "French": "eau"
-    },
-    {
-        "English": "one",
-        "French": "un"
-    },
-    {
-        "English": "two",
-        "French": "deux"
-    },
-    {
-        "English": "three",
-        "French": "trois"
-    },
-    {
-        "English": "four",
-        "French": "quatre"
-    },
-    {
-        "English": "five",
-        "French": "cinq"
-    }
+  {
+    "English": "apple",
+    "French": "pomme"
+  },
+  {
+    "English": "book",
+    "French": "livre"
+  },
+  {
+    "English": "car",
+    "French": "voiture"
+  },
+  {
+    "English": "dog",
+    "French": "chien"
+  },
+  {
+    "English": "house",
+    "French": "maison"
+  },
+  {
+    "English": "love",
+    "French": "amour"
+  },
+  {
+    "English": "moon",
+    "French": "lune"
+  },
+  {
+    "English": "sun",
+    "French": "soleil"
+  },
+  {
+    "English": "tree",
+    "French": "arbre"
+  },
+  {
+    "English": "water",
+    "French": "eau"
+  },
+  {
+    "English": "one",
+    "French": "un"
+  },
+  {
+    "English": "two",
+    "French": "deux"
+  },
+  {
+    "English": "three",
+    "French": "trois"
+  },
+  {
+    "English": "four",
+    "French": "quatre"
+  },
+  {
+    "English": "five",
+    "French": "cinq"
+  }
 ]

@@ -1,62 +1,62 @@
 [
-    {
-        "English": "apple",
-        "Spanish": "manzana"
-    },
-    {
-        "English": "book",
-        "Spanish": "libro"
-    },
-    {
-        "English": "car",
-        "Spanish": "coche"
-    },
-    {
-        "English": "dog",
-        "Spanish": "perro"
-    },
-    {
-        "English": "house",
-        "Spanish": "casa"
-    },
-    {
-        "English": "love",
-        "Spanish": "amor"
-    },
-    {
-        "English": "moon",
-        "Spanish": "luna"
-    },
-    {
-        "English": "sun",
-        "Spanish": "sol"
-    },
-    {
-        "English": "tree",
-        "Spanish": "árbol"
-    },
-    {
-        "English": "water",
-        "Spanish": "agua"
-    },
-    {
-        "English": "one",
-        "Spanish": "uno"
-    },
-    {
-        "English": "two",
-        "Spanish": "dos"
-    },
-    {
-        "English": "three",
-        "Spanish": "tres"
-    },
-    {
-        "English": "four",
-        "Spanish": "cuatro"
-    },
-    {
-        "English": "five",
-        "Spanish": "cinco"
-    }
+  {
+    "English": "apple",
+    "Spanish": "manzana"
+  },
+  {
+    "English": "book",
+    "Spanish": "libro"
+  },
+  {
+    "English": "car",
+    "Spanish": "coche"
+  },
+  {
+    "English": "dog",
+    "Spanish": "perro"
+  },
+  {
+    "English": "house",
+    "Spanish": "casa"
+  },
+  {
+    "English": "love",
+    "Spanish": "amor"
+  },
+  {
+    "English": "moon",
+    "Spanish": "luna"
+  },
+  {
+    "English": "sun",
+    "Spanish": "sol"
+  },
+  {
+    "English": "tree",
+    "Spanish": "árbol"
+  },
+  {
+    "English": "water",
+    "Spanish": "agua"
+  },
+  {
+    "English": "one",
+    "Spanish": "uno"
+  },
+  {
+    "English": "two",
+    "Spanish": "dos"
+  },
+  {
+    "English": "three",
+    "Spanish": "tres"
+  },
+  {
+    "English": "four",
+    "Spanish": "cuatro"
+  },
+  {
+    "English": "five",
+    "Spanish": "cinco"
+  }
 ]
