@@ -25,3 +25,7 @@ yarn-error.log*
 /llama
 *.log
 *prompt*.txt
+
+*.pyc
+*settings.json
+*broken*
