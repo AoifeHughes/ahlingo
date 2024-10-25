@@ -11,6 +11,7 @@ from AHLingo.screens.home_screen import HomeScreen
 from AHLingo.screens.settings_screen import SettingsScreen
 from AHLingo.screens.exercises.pairs_screen import PairsExerciseScreen
 from AHLingo.screens.exercises.conversations_screen import ConversationExerciseScreen
+from AHLingo.screens.exercises.chatbot_screen import ChatbotExerciseScreen
 
 # Import database
 from AHLingo.database.database_manager import LanguageDB
@@ -64,7 +65,8 @@ class ScreenManager(MDScreenManager):
             HomeScreen(self.db),
             SettingsScreen(self.db),
             PairsExerciseScreen(self.db),
-            ConversationExerciseScreen(self.db)
+            ConversationExerciseScreen(self.db),
+            ChatbotExerciseScreen(self.db)
         ]
         for screen in screens:
             self.add_widget(screen)

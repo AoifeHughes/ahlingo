@@ -10,6 +10,10 @@ default_conversation_assistants = {
     "Spanish": {
         "role": "assistant",
         "content": '[{"conversation": [{"speaker": "Persona 1", "message": "¿Cuál es tu animal favorito?"}, {"speaker": "Persona 2", "message": "Mi animal favorito es el gato. ¿Y el tuyo?"}, {"speaker": "Persona 1", "message": "Me gustan los perros. Son muy leales."}], "conversation_summary": "A conversation about each person\'s favorite animal."}, {"conversation": [{"speaker": "Persona 1", "message": "¿Te gusta la naturaleza?"}, {"speaker": "Persona 2", "message": "Sí, me encanta pasear por el bosque."}, {"speaker": "Persona 1", "message": "A mí también. Es muy relajante escuchar a los pájaros."}], "conversation_summary": "A conversation about enjoying nature, especially walking in the forest and listening to birds."}]'
+    },
+    "Ukrainian": {
+        "role": "assistant",
+        "content": '[{"conversation": [{"speaker": "Особа 1", "message": "Яка твоя улюблена тварина?"}, {"speaker": "Особа 2", "message": "Моя улюблена тварина - кіт. А твоя?"}, {"speaker": "Особа 1", "message": "Мені подобаються собаки. Вони дуже вірні."}], "conversation_summary": "A conversation discussing each person\'s favorite animal."}, {"conversation": [{"speaker": "Особа 1", "message": "Тобі подобається природа?"}, {"speaker": "Особа 2", "message": "Так, я обожнюю гуляти в лісі."}, {"speaker": "Особа 1", "message": "Я теж. Дуже заспокійливо слухати птахів."}], "conversation_summary": "A conversation about enjoying nature, especially walking in the forest and listening to birds."}]'
     }
 }
 
@@ -25,6 +29,10 @@ default_pairs_assistants = {
     "Spanish": {
         "role": "assistant",
         "content": '[{"English": "apple", "Spanish": "manzana"}, {"English": "book", "Spanish": "libro"}, {"English": "car", "Spanish": "coche"}, {"English": "dog", "Spanish": "perro"}, {"English": "house", "Spanish": "casa"}, {"English": "love", "Spanish": "amor"}, {"English": "moon", "Spanish": "luna"}, {"English": "sun", "Spanish": "sol"}, {"English": "tree", "Spanish": "árbol"}, {"English": "water", "Spanish": "agua"}]'
+    },
+    "Ukrainian": {
+        "role": "assistant",
+        "content": '[{"English": "apple", "Ukrainian": "яблуко"}, {"English": "book", "Ukrainian": "книга"}, {"English": "car", "Ukrainian": "автомобіль"}, {"English": "dog", "Ukrainian": "собака"}, {"English": "house", "Ukrainian": "будинок"}, {"English": "love", "Ukrainian": "любов"}, {"English": "moon", "Ukrainian": "місяць"}, {"English": "sun", "Ukrainian": "сонце"}, {"English": "tree", "Ukrainian": "дерево"}, {"English": "water", "Ukrainian": "вода"}]'
     }
 }
 
@@ -40,6 +48,10 @@ default_translation_assistants = {
     "Spanish": {
         "role": "assistant",
         "content": '[{"English": "How are you today?", "Spanish": "¿Cómo estás hoy?"}, {"English": "I am learning to speak Spanish.", "Spanish": "Estoy aprendiendo a hablar español."}, {"English": "The weather is nice this afternoon.", "Spanish": "El clima es agradable esta tarde."}, {"English": "Can you help me with my homework?", "Spanish": "¿Puedes ayudarme con mi tarea?"}, {"English": "My family is going on vacation next week.", "Spanish": "Mi familia se va de vacaciones la próxima semana."}, {"English": "This restaurant has delicious food.", "Spanish": "Este restaurante tiene comida deliciosa."}]'
+    },
+    "Ukrainian": {
+        "role": "assistant",
+        "content": '[{"English": "How are you today?", "Ukrainian": "Як ти сьогодні?"}, {"English": "I am learning to speak Ukrainian.", "Ukrainian": "Я вчуся розмовляти українською."}, {"English": "The weather is nice this afternoon.", "Ukrainian": "Сьогодні вдень гарна погода."}, {"English": "Can you help me with my homework?", "Ukrainian": "Можеш допомогти мені з домашнім завданням?"}, {"English": "My family is going on vacation next week.", "Ukrainian": "Моя сім\'я їде у відпустку наступного тижня."}, {"English": "This restaurant has delicious food.", "Ukrainian": "У цьому ресторані смачна їжа."}]'
     }
 }
 
@@ -53,6 +65,10 @@ blank_conversation_assistants = {
         "content": ""
     },
     "Spanish": {
+        "role": "assistant",
+        "content": ""
+    },
+    "Ukrainian": {
         "role": "assistant",
         "content": ""
     }
@@ -70,6 +86,10 @@ blank_pairs_assistants = {
     "Spanish": {
         "role": "assistant",
         "content": ""
+    },
+    "Ukrainian": {
+        "role": "assistant",
+        "content": ""
     }
 }
 
@@ -83,6 +103,10 @@ blank_translation_assistants = {
         "content": ""
     },
     "Spanish": {
+        "role": "assistant",
+        "content": ""
+    },
+    "Ukrainian": {
         "role": "assistant",
         "content": ""
     }

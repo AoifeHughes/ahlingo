@@ -1,6 +1,7 @@
 import sqlite3
 from typing import List, Dict
 from pathlib import Path
+from datetime import datetime
 
 class LanguageDB:
     def __init__(self, db_path: str = "./languageLearningDatabase.db"):
@@ -77,6 +78,15 @@ class LanguageDB:
                 language_1_content TEXT NOT NULL,
                 language_2_content TEXT NOT NULL,
                 FOREIGN KEY (exercise_id) REFERENCES exercises_info (id)
+            )""",
+            """CREATE TABLE IF NOT EXISTS user_exercise_attempts (
+                id INTEGER PRIMARY KEY,
+                user_id INTEGER NOT NULL,
+                exercise_id INTEGER NOT NULL,
+                is_correct BOOLEAN NOT NULL,
+                attempt_date TIMESTAMP NOT NULL,
+                FOREIGN KEY (user_id) REFERENCES users (id),
+                FOREIGN KEY (exercise_id) REFERENCES exercises_info (id)
             )"""
         ]
         
@@ -116,6 +126,84 @@ class LanguageDB:
         self.cursor.execute("INSERT INTO difficulties (difficulty_level) VALUES (?)", (difficulty_level,))
         self.conn.commit()
         return self.cursor.lastrowid
+
+    def _get_or_create_user(self, username: str) -> int:
+        """Get user ID or create if it doesn't exist."""
+        self.cursor.execute("SELECT id FROM users WHERE name = ?", (username,))
+        result = self.cursor.fetchone()
+        if result:
+            return result[0]
+        
+        self.cursor.execute("INSERT INTO users (name) VALUES (?)", (username,))
+        self.conn.commit()
+        return self.cursor.lastrowid
+
+    def record_exercise_attempt(self, username: str, exercise_id: int, is_correct: bool):
+        """Record a user's attempt at an exercise."""
+        user_id = self._get_or_create_user(username)
+        self.cursor.execute(
+            """INSERT INTO user_exercise_attempts 
+               (user_id, exercise_id, is_correct, attempt_date) 
+               VALUES (?, ?, ?, ?)""",
+            (user_id, exercise_id, is_correct, datetime.now())
+        )
+        self.conn.commit()
+
+    def get_user_stats(self, username: str) -> Dict:
+        """Get statistics for a user's exercise attempts."""
+        user_id = self._get_or_create_user(username)
+        
+        # Get total attempts, correct answers, and success rate
+        self.cursor.execute(
+            """SELECT 
+                COUNT(*) as total_attempts,
+                SUM(CASE WHEN is_correct THEN 1 ELSE 0 END) as correct_answers
+               FROM user_exercise_attempts 
+               WHERE user_id = ?""",
+            (user_id,)
+        )
+        result = dict(self.cursor.fetchone())
+        
+        # Calculate success rate
+        total = result['total_attempts']
+        correct = result['correct_answers']
+        result['success_rate'] = (correct / total * 100) if total > 0 else 0
+        
+        # Get recent attempts
+        self.cursor.execute(
+            """SELECT 
+                ei.exercise_name,
+                uea.is_correct,
+                uea.attempt_date
+               FROM user_exercise_attempts uea
+               JOIN exercises_info ei ON uea.exercise_id = ei.id
+               WHERE uea.user_id = ?
+               ORDER BY uea.attempt_date DESC
+               LIMIT 10""",
+            (user_id,)
+        )
+        result['recent_attempts'] = [dict(row) for row in self.cursor.fetchall()]
+        
+        return result
+
+    def get_exercise_stats(self, exercise_id: int) -> Dict:
+        """Get statistics for a specific exercise."""
+        self.cursor.execute(
+            """SELECT 
+                COUNT(*) as total_attempts,
+                SUM(CASE WHEN is_correct THEN 1 ELSE 0 END) as correct_answers
+               FROM user_exercise_attempts 
+               WHERE exercise_id = ?""",
+            (exercise_id,)
+        )
+        result = dict(self.cursor.fetchone())
+        
+        # Calculate success rate
+        total = result['total_attempts']
+        correct = result['correct_answers']
+        result['success_rate'] = (correct / total * 100) if total > 0 else 0
+        
+        return result
 
     def add_conversation_exercise(self, exercise_name: str, language: str, topic: str,
                                 difficulty_level: str, conversations: List[Dict[str, str]], 
