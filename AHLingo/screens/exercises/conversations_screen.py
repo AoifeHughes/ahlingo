@@ -41,31 +41,42 @@ class ConversationSummaryButton(OptionButton):
 
 class QuestionLayout(ContentLayout):
     """Layout for the summary question and options."""
-
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.size_hint_y = None
-        self.height = dp(280)  # Adjusted for question and 3 buttons
+        self.height = dp(400)  # Increased overall height
+        self.spacing = dp(16)  # Add spacing between children
+        self.padding = [dp(16), dp(16), dp(16), dp(16)]  # Add padding around all sides
+
+        # Question container to ensure fixed space
+        question_container = MDBoxLayout(
+            orientation='vertical',
+            size_hint_y=None,
+            height=dp(80),  # Fixed height for question
+            padding=[0, dp(8), 0, dp(8)]  # Add vertical padding
+        )
 
         # Question label
         self.question_label = MDLabel(
             text="What is the main topic of this conversation?",
             halign="center",
+            valign="center",  # Center text vertically
             size_hint_y=None,
-            height=dp(48),
+            height=dp(64),    # Increased height
+            font_style="H6"   # Larger font
         )
-        self.add_widget(self.question_label)
+        question_container.add_widget(self.question_label)
+        self.add_widget(question_container)
 
-        # Options layout
+        # Options container with remaining space
         self.options_layout = MDBoxLayout(
             orientation="vertical",
-            spacing=dp(8),
+            spacing=dp(12),     # Increased spacing between buttons
             size_hint_y=None,
-            height=dp(180),
-            padding=[dp(16), dp(8), dp(16), dp(8)],
+            height=dp(280),     # Increased height for buttons
+            padding=[dp(8), dp(4), dp(8), dp(4)]
         )
         self.add_widget(self.options_layout)
-
 
 class ConversationLayout(ContentLayout):
     """Layout for displaying the conversation messages."""
@@ -83,7 +94,7 @@ class ConversationExerciseScreen(BaseExerciseScreen):
 
     def __init__(self, db, **kwargs):
         super().__init__(db, **kwargs)
-        self.name = "conversation"
+        self.name = "conversations"  # Fixed: Changed from "conversation" to "conversations"
         self.current_summary = None
         self.current_exercise_id = None
         self.attempt_recorded = False
@@ -163,7 +174,7 @@ class ConversationExerciseScreen(BaseExerciseScreen):
                 exercise_info = db.cursor.fetchone()
                 
                 if exercise_info:
-                    self.current_topic = exercise_info["topic"]
+                    self.current_topic = exercise_info[0]  # Fixed: Changed from exercise_info["topic"] to exercise_info[0]
                     self.current_exercise_id = exercise_id
                     self.attempt_recorded = False
                     self.load_conversation(exercise_id, settings)

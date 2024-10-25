@@ -3,15 +3,16 @@ from kivymd.uix.button import MDRaisedButton
 from kivy.metrics import dp
 
 
+
+
 class StandardButton(MDRaisedButton):
     """Standard button with consistent styling."""
 
     def __init__(self, **kwargs):
         super().__init__(
-            size_hint=(None, None),
             width=dp(300),  # Increased from 200
-            height=dp(80),  # Increased from 48
-            pos_hint={"center_x": 0.5},
+            # height=dp(80),  # Increased from 48
+            # pos_hint={"center_x": 0.5},
             **kwargs
         )
 

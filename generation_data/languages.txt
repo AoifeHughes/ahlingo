@@ -1,2 +1,4 @@
 French
+Spanish
+German
 Ukrainian

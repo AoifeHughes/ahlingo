@@ -13,7 +13,7 @@ from .assistants import (
 import uuid
 import html
 import logging
-logging.disable(logging.CRITICAL)
+# logging.disable(logging.CRITICAL)
 
 def clean_text(text: str) -> str:
     """Clean and normalize text content with proper escaping."""
@@ -225,7 +225,7 @@ def generate_lessons_data(
     def make_pairs_system(language: str, topic: str, level: str) -> Dict[str, str]:
         return {
             "role": "system",
-            "content": f'You are a {language} language learning tool. Your task is to generate a JSON array containing pairs of {language} words and their English translations. The words should be common and relevant to the topic "{topic}" at the {level} level. Include a mix of nouns, verbs, adjectives, and adverbs. Aim for 10-15 word pairs.',
+            "content": f'You are a {language} language learning tool. Your task is to generate a JSON array containing pairs of {language} words and their English translations. Where possible use single words only. The words should be common and relevant to the topic "{topic}" at the {level} level. Include a mix of nouns, verbs, adjectives, and adverbs. Aim for 5-10 word pairs.',
         }
 
     def make_translation_system(
@@ -233,7 +233,7 @@ def generate_lessons_data(
     ) -> Dict[str, str]:
         return {
             "role": "system",
-            "content": f'You are a {language} language learning tool. Your task is to generate a JSON array containing {level} level {language} sentences and their English translations. The sentences should be focused on the topic "{topic}" and showcase relevant vocabulary and grammar structures. Vary the sentence structures and include a mix of statements, questions, and commands. Aim for 5-8 sentence pairs.',
+            "content": f'You are a {language} language learning tool. Your task is to generate a JSON array containing {level} level {language} sentences and their English translations. The sentences should be focused on the topic "{topic}" and showcase relevant vocabulary and grammar structures. Vary the sentence structures and include a mix of statements, questions, and commands. Aim for 5 sentence pairs. These should be full sentences.',
         }
 
     client = openai.OpenAI(
