@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Path to the model
-MODEL_PATH="/Users/ahughes/git/LLMs/LMStudio/lmstudio-community/Phi-3.1-mini-4k-instruct-GGUF/Phi-3.1-mini-4k-instruct-Q4_K_M.gguf"
+MODEL_PATH="/Users/ahughes/git/LLMs/LMStudio/bartowski/Llama-3.2-3B-Instruct-GGUF/Llama-3.2-3B-Instruct-Q8_0.gguf"
 
 # Server configuration
 CONTEXT_SIZE=4096
@@ -25,7 +25,7 @@ fi
 
 # Add system prompt file if it exists
 if [ -f "$PROMPT_FILE" ]; then
-    SERVER_ARGS="$SERVER_ARGS --system-prompt-file $PROMPT_FILE"
+    SERVER_ARGS="$SERVER_ARGS --prompt $PROMPT_FILE -fa --mlock"
 fi
 
 # Start the llama.cpp server
