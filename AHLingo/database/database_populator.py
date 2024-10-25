@@ -1,9 +1,10 @@
+# -*- coding: utf-8 -*-
 import json
-import os
 from pathlib import Path
-from typing import Dict, Any, List
+from typing import Dict
 import uuid
-from .database_manager import LanguageDB 
+from .database_manager import LanguageDB
+
 
 class DatabasePopulator:
     def __init__(self, db_path: str = "./languageLearningDatabase.db"):
@@ -24,7 +25,7 @@ class DatabasePopulator:
             "language": parts[1],
             "exercise_type": parts[2],
             "topic": parts[3].replace("_", " "),
-            "difficulty": parts[4].split(".")[0]
+            "difficulty": parts[4].split(".")[0],
         }
 
     def _add_content_from_file(self, file_path: Path, db: LanguageDB):
@@ -33,7 +34,7 @@ class DatabasePopulator:
         print(f"Adding content for: {metadata}")
 
         try:
-            with open(file_path, 'r', encoding='utf-8') as f:
+            with open(file_path, "r", encoding="utf-8") as f:
                 content = json.load(f)
 
             for idx, exercise in enumerate(content):
@@ -41,41 +42,43 @@ class DatabasePopulator:
                 exercise_name = f"{metadata['topic']} {metadata['exercise_type'].title()} {idx + 1} - ID: {exercise_id}"
 
                 try:
-                    if metadata['exercise_type'] == 'pairs':
+                    if metadata["exercise_type"] == "pairs":
                         db.add_pair_exercise(
                             exercise_name=exercise_name,
-                            language=metadata['language'],
-                            topic=metadata['topic'],
-                            difficulty_level=metadata['difficulty'],
+                            language=metadata["language"],
+                            topic=metadata["topic"],
+                            difficulty_level=metadata["difficulty"],
                             language_1="English",
-                            language_2=metadata['language'],
+                            language_2=metadata["language"],
                             language_1_content=exercise["English"],
-                            language_2_content=exercise[metadata['language']]
+                            language_2_content=exercise[metadata["language"]],
                         )
-                        
-                    elif metadata['exercise_type'] == 'translations':
+
+                    elif metadata["exercise_type"] == "translations":
                         db.add_translation_exercise(
                             exercise_name=exercise_name,
-                            language=metadata['language'],
-                            topic=metadata['topic'],
-                            difficulty_level=metadata['difficulty'],
+                            language=metadata["language"],
+                            topic=metadata["topic"],
+                            difficulty_level=metadata["difficulty"],
                             language_1="English",
-                            language_2=metadata['language'],
+                            language_2=metadata["language"],
                             language_1_content=exercise["English"],
-                            language_2_content=exercise[metadata['language']]
+                            language_2_content=exercise[metadata["language"]],
                         )
-                        
+
                     else:  # conversations
                         db.add_conversation_exercise(
                             exercise_name=exercise_name,
-                            language=metadata['language'],
-                            topic=metadata['topic'],
-                            difficulty_level=metadata['difficulty'],
+                            language=metadata["language"],
+                            topic=metadata["topic"],
+                            difficulty_level=metadata["difficulty"],
                             conversations=exercise["conversation"],
-                            summary=exercise["conversation_summary"]
+                            summary=exercise["conversation_summary"],
                         )
 
-                    print(f"Added {metadata['exercise_type']} exercise {idx + 1} with ID: {exercise_id}")
+                    print(
+                        f"Added {metadata['exercise_type']} exercise {idx + 1} with ID: {exercise_id}"
+                    )
 
                 except Exception as e:
                     print(f"Error adding exercise {idx + 1} from {file_path}: {str(e)}")
@@ -88,11 +91,12 @@ class DatabasePopulator:
     def populate_database(self):
         """Populate the database with content from JSON files."""
         print("Populating database with JSON files...")
-        
+
         with LanguageDB(str(self.db_path)) as db:
             for file_path in self.content_dir.rglob("*.json"):
                 if "broken" not in file_path.name:
                     self._add_content_from_file(file_path, db)
+
 
 def main():
     """Main function to reset and repopulate the database."""
@@ -100,6 +104,7 @@ def main():
     populator.reset_database()
     populator.populate_database()
     print("Database population complete.")
+
 
 if __name__ == "__main__":
     main()

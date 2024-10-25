@@ -7,7 +7,7 @@ MODEL_PATH="/Users/ahughes/git/LLMs/LMStudio/bartowski/Llama-3.2-3B-Instruct-GGU
 CONTEXT_SIZE=4096
 SERVER_HOST="127.0.0.1"
 SERVER_PORT="8080"
-SERVER_CMD="/Users/ahughes/git/llama.cpp/llama-server"  
+SERVER_CMD="/Users/ahughes/git/llama.cpp/llama-server"
 
 # GPU configuration
 GPU_LAYERS=-1
