@@ -3,14 +3,15 @@ from kivymd.app import MDApp
 from kivymd.uix.screenmanager import MDScreenManager
 from kivy.core.window import Window
 from kivy.utils import platform
-from screens.main_screen import HomeScreen
-from screens.settings import SettingsScreen
-from screens.games.pairs.pairs_menu import PairsScreen
-from screens.games.conversations.conversations_menu import ConversationScreen
-from database.database_manager import LanguageDB
+from AHLingo.screens.main_screen import HomeScreen
+from AHLingo.screens.settings import SettingsScreen
+from AHLingo.screens.games.pairs.pairs_menu import PairsScreen
+from AHLingo.screens.games.conversations.conversations_menu import ConversationScreen
+from AHLingo.database.database_manager import LanguageDB
 from kivy.storage.jsonstore import JsonStore
 import os
 from kivy.config import Config
+
 Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
 
 class LanguageLearningApp(MDApp):
@@ -45,6 +46,3 @@ class LanguageLearningApp(MDApp):
         sm.current = initial_screen
         print(f"Initial screen: {initial_screen}")
         return sm
-
-if __name__ == '__main__':
-    LanguageLearningApp().run()
