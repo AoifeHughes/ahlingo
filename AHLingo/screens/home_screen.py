@@ -72,6 +72,13 @@ class HomeScreen(BaseScreen):
         )
         layout.add_widget(conversation_button)
 
+        chatbot_button = StandardButton(
+        text="Chatbot Exercises",
+        on_release=self.go_to_chatbot)
+
+        layout.add_widget(chatbot_button)
+
+
     def go_to_conversation(self, *args):
         """Navigate to conversation exercises screen."""
         screen = self.manager.get_screen('conversation')
@@ -87,3 +94,7 @@ class HomeScreen(BaseScreen):
         screen = self.manager.get_screen('pairs')
         screen.load_topics()
         self.manager.current = 'pairs'
+
+    def go_to_chatbot(self, *args):
+        """Navigate to chatbot exercises screen."""
+        self.manager.current = 'chatbot'

@@ -13,7 +13,23 @@ class ConversationSummaryButton(OptionButton):
     """Button for conversation summary options."""
     def __init__(self, summary="", **kwargs):
         super().__init__(**kwargs)
-        self.text = summary
+        # if text is too long, add newlines to wrap text without breaking words
+        size_limit = 30
+        words = summary.split()
+        lines = []
+        current_line = ""
+        for word in words:
+            if len(current_line) + len(word) + 1 > size_limit:
+                lines.append(current_line)
+                current_line = word
+            else:
+                if current_line:
+                    current_line += " " + word
+                else:
+                    current_line = word
+        if current_line:
+            lines.append(current_line)
+        self.text = '\n'.join(lines)
         self.summary = summary
     
     def set_result(self, is_correct):

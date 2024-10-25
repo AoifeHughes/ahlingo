@@ -6,9 +6,35 @@ from typing import Generator, Dict, Any, List
 from AHLingo.database.database_manager import LanguageDB
 from .assistants import default_conversation_assistants, default_pairs_assistants, default_translation_assistants
 import uuid
+import html
+
+
+def clean_text(text: str) -> str:
+    """Clean and normalize text content."""
+    # Replace LaTeX-style escapes
+    text = re.sub(r'\\textbackslash{\\textsl}a', 'ça', text)
+    text = re.sub(r'\\textbackslash{\\text\w+}', '', text)
+    text = re.sub(r'{\\\w+}', '', text)
+    
+    # Fix common escape sequences
+    text = text.replace('\\\"', '"')
+    text = text.replace('\\"', '"')
+    text = text.replace('\\\'', "'")
+    text = text.replace('\\n', ' ')
+    
+    # Unescape HTML entities
+    text = html.unescape(text)
+    
+    # Remove any remaining backslashes before quotes
+    text = text.replace('\\', '')
+    
+    # Normalize spaces
+    text = ' '.join(text.split())
+    
+    return text
 
 def validate_json_structure(response_json: List[Dict], language: str, lesson_kind: str) -> bool:
-    """Validate the structure of generated JSON responses."""
+    """Validate the structure and content of generated JSON responses."""
     if not isinstance(response_json, list):
         return False
     
@@ -25,6 +51,11 @@ def validate_json_structure(response_json: List[Dict], language: str, lesson_kin
             for message in item["conversation"]:
                 if not set(message.keys()) == conversation_keys:
                     return False
+                # Validate message content
+                if not message['message'] or len(message['message'].strip()) == 0:
+                    return False
+                if '\\' in message['message'] and not any(esc in message['message'] for esc in ['\\n', '\\"', "\\'"]): 
+                    return False
     
     elif lesson_kind in ['pairs', 'translations']:
         sample = None
@@ -38,6 +69,12 @@ def validate_json_structure(response_json: List[Dict], language: str, lesson_kin
         for item in response_json:
             if not set(item.keys()) == required_keys:
                 return False
+            # Validate content for each language
+            for key in required_keys:
+                if not item[key] or len(str(item[key]).strip()) == 0:
+                    return False
+                if '\\' in str(item[key]) and not any(esc in str(item[key]) for esc in ['\\n', '\\"', "\\'"]):
+                    return False
             
     return True
 
@@ -121,8 +158,12 @@ def process_response(
     lesson_kind: str,
     lesson_id: str
 ) -> None:
-    """Process and insert response data into the database."""
+    """Process and insert response data into the database with proper text cleaning."""
     try:
+        # Handle potential JSON string issues before parsing
+        response = response.replace('\n', ' ').replace('\r', ' ')
+        response = re.sub(r'\\([^"\'n])', r'\1', response)  # Remove unnecessary escapes
+        
         response_json = json.loads(response)
         
         if not validate_json_structure(response_json, language, lesson_kind):
@@ -135,13 +176,21 @@ def process_response(
             exercise_name = f"{lesson_name} - Exercise {idx + 1}"
             
             if lesson_kind == 'conversations':
+                # Clean conversation messages
+                cleaned_conversations = []
+                for conv in exercise["conversation"]:
+                    cleaned_conversations.append({
+                        "speaker": clean_text(conv["speaker"]),
+                        "message": clean_text(conv["message"])
+                    })
+                
                 db.add_conversation_exercise(
                     exercise_name=exercise_name,
                     language=language,
                     topic=topic,
                     difficulty_level=level,
-                    conversations=exercise["conversation"],
-                    summary=exercise["conversation_summary"]
+                    conversations=cleaned_conversations,
+                    summary=clean_text(exercise["conversation_summary"])
                 )
             elif lesson_kind == 'pairs':
                 db.add_pair_exercise(
@@ -151,8 +200,8 @@ def process_response(
                     difficulty_level=level,
                     language_1="English",
                     language_2=language,
-                    language_1_content=exercise["English"],
-                    language_2_content=exercise[language]
+                    language_1_content=clean_text(exercise["English"]),
+                    language_2_content=clean_text(exercise[language])
                 )
             elif lesson_kind == 'translations':
                 db.add_translation_exercise(
@@ -162,12 +211,14 @@ def process_response(
                     difficulty_level=level,
                     language_1="English",
                     language_2=language,
-                    language_1_content=exercise["English"],
-                    language_2_content=exercise[language]
+                    language_1_content=clean_text(exercise["English"]),
+                    language_2_content=clean_text(exercise[language])
                 )
                 
-    except json.JSONDecodeError:
-        print(f"JSON decode error for {language}_{topic}_{level}_{lesson_id} in {lesson_kind}")
+    except json.JSONDecodeError as e:
+        print(f"JSON decode error for {language}_{topic}_{level}_{lesson_id} in {lesson_kind}: {str(e)}")
+    except Exception as e:
+        print(f"Error processing response for {language}_{topic}_{level}_{lesson_id} in {lesson_kind}: {str(e)}")
 
 def populate_database():
     """Main function to generate lessons and populate the database."""
@@ -196,7 +247,7 @@ def populate_database():
             for level in tqdm(levels, desc="Levels"):
                 for topic in tqdm(topics, desc="Topics"):
                     for lesson_kind, lesson_id, raw_response, json_response in generate_lessons_data(
-                        language, level, topic, N_runs=2, lesson_kinds=['conversations', 'pairs', 'translations']
+                        language, level, topic, N_runs=5, lesson_kinds=['conversations', 'pairs', 'translations']
                     ):
                         process_response(
                             db=db,
@@ -210,5 +261,3 @@ def populate_database():
     finally:
         db.close()
 
-if __name__ == "__main__":
-    main()
