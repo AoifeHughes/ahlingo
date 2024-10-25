@@ -3,85 +3,129 @@
     "conversation": [
       {
         "speaker": "person1",
-        "message": "Comment allez-vous ?"
+        "message": "Comment t'appelles-tu ?"
       },
       {
         "speaker": "person2",
-        "message": "Je vais bien, merci. Et toi ?"
+        "message": "Je m'appelle Pierre."
       },
       {
         "speaker": "person1",
-        "message": "J'ai un peu de mal à m'exprimer en français."
-      }
-    ],
-    "conversation_summary": "A conversation asking how each person is doing and expressing difficulty with speaking French."
-  },
-  {
-    "conversation": [
-      {
-        "speaker": "person1",
-        "message": "Pourquoi tu es venu(e) dans cette école de français ?"
+        "message": "Enchanté, Pierre. Et toi ?"
       },
       {
         "speaker": "person2",
-        "message": "J'aime beaucoup la langue française et sa culture."
+        "message": "Enchanté aussi. Comment tu t'appelles ?"
       },
       {
         "speaker": "person1",
-        "message": "Moi aussi, j'adore la musique française."
-      }
-    ],
-    "conversation_summary": "A conversation discussing why each person is interested in learning French and their appreciation for French music and culture."
-  },
-  {
-    "conversation": [
-      {
-        "speaker": "person1",
-        "message": "Quel est ton pays préféré ?"
-      },
-      {
-        "speaker": "person2",
-        "message": "J'aime bien les États-Unis, c'est un pays très grand et diversifié."
-      },
-      {
-        "speaker": "person1",
-        "message": "Moi aussi, je suis intéressé(e) par l'Amérique."
-      }
-    ],
-    "conversation_summary": "A conversation discussing each person's favorite country and why they find it interesting."
-  },
-  {
-    "conversation": [
-      {
-        "speaker": "person1",
-        "message": "Quel est ton hobby préféré ?"
-      },
-      {
-        "speaker": "person2",
-        "message": "J'aime beaucoup la lecture et l'écriture."
-      },
-      {
-        "speaker": "person1",
-        "message": "Moi aussi, j'adore écrire des poèmes."
-      }
-    ],
-    "conversation_summary": "A conversation discussing each person's favorite hobby and their love of reading and writing."
-  },
-  {
-    "conversation": [
-      {
-        "speaker": "person1",
-        "message": "Comment tu t'appelles ?"
-      },
-      {
-        "speaker": "person2",
         "message": "Je m'appelle Marie."
+      }
+    ],
+    "conversation_summary": "An introduction exchange with basic French greetings."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quelle est ton occupation ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je suis enseignante en français."
       },
       {
         "speaker": "person1",
-        "message": "J'aime ce nom, c'est très joli."
+        "message": "C'est génial. Je suis ingénieur."
+      },
+      {
+        "speaker": "person2",
+        "message": "Et vous ? Qu'est-ce que vous faites ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "J'ai créé une application pour apprendre le français."
       }
     ],
-    "conversation_summary": "A conversation asking and complimenting each person's name."
+    "conversation_summary": "A conversation about occupations with each person introducing themselves."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Pourquoi est-ce que tu vis à Paris ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je vis à Paris parce que j'aime la culture et les activités artistiques."
+      },
+      {
+        "speaker": "person1",
+        "message": "Je comprends. Et moi, je vis à Lyon pour travailler chez une entreprise de technologie."
+      },
+      {
+        "speaker": "person2",
+        "message": "Ça doit être excitant. Quelles sont tes activités favorites ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "J'aime aller au cinéma et faire des randonnées dans les montagnes."
+      }
+    ],
+    "conversation_summary": "A conversation about reasons for living in different cities with discussion of favorite activities."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel est ton film préféré ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Mon film préféré est 'Le Fabuleux Destin d'Amélie Poulain'."
+      },
+      {
+        "speaker": "person1",
+        "message": "Oh, j'adore cette série ! Elle est vraiment triste et belle."
+      },
+      {
+        "speaker": "person2",
+        "message": "C'est la tristesse qui fait la beauté de la France, comme dit l'expression."
+      },
+      {
+        "speaker": "person1",
+        "message": "C'est vrai. Et toi, quelle est ta phrase préférée de cette série ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je préfère dire 'Bonne journée' à Amélie."
+      }
+    ],
+    "conversation_summary": "A discussion about favorite films with a focus on French cinema."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment aimes-tu célébrer les vacances ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime aller à la plage et apprendre une nouvelle langue."
+      },
+      {
+        "speaker": "person1",
+        "message": "J'apprécie aussi la plage. J'aime aussi manger des fruits et des cocktails."
+      },
+      {
+        "speaker": "person2",
+        "message": "Cela semble très agréable. Qu'est-ce que tu aimes apprendre en particulier ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "J'aime apprendre l'italien. Je pense que la musique italienne est incroyable."
+      }
+    ],
+    "conversation_summary": "A conversation about celebrating vacations with a focus on shared interests and language learning."
   }
 ]

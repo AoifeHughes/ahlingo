@@ -1,0 +1,46 @@
+[
+  {
+    "English": "day",
+    "French": "jour"
+  },
+  {
+    "English": "evening",
+    "French": "soir"
+  },
+  {
+    "English": "morning",
+    "French": "matin"
+  },
+  {
+    "English": "night",
+    "French": "nuit"
+  },
+  {
+    "English": "hour",
+    "French": "heure"
+  },
+  {
+    "English": "minute",
+    "French": "minute"
+  },
+  {
+    "English": "second",
+    "French": "seconde"
+  },
+  {
+    "English": "clock",
+    "French": "horloge"
+  },
+  {
+    "English": "time",
+    "French": "temps"
+  },
+  {
+    "English": "clockwise",
+    "French": "hors cadence"
+  },
+  {
+    "English": "clockwise",
+    "French": "vers la direction de l'horloge"
+  }
+]
