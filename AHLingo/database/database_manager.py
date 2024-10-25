@@ -16,7 +16,6 @@ class LanguageDB:
 
         # print the number of rows in the database
         self.cursor.execute("SELECT COUNT(*) FROM languages")
-        print(f"Number of rows in the database: {self.cursor.fetchone()[0]}")
 
     def _initialize(self):
         """Create all necessary tables if they don't exist."""

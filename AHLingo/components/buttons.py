@@ -1,0 +1,33 @@
+from kivymd.uix.button import MDRaisedButton
+from kivy.metrics import dp
+
+class StandardButton(MDRaisedButton):
+    """Standard button with consistent styling."""
+    def __init__(self, **kwargs):
+        super().__init__(
+            size_hint=(None, None),
+            width=dp(200),
+            height=dp(48),
+            pos_hint={'center_x': 0.5},
+            **kwargs
+        )
+
+class OptionButton(MDRaisedButton):
+    """Button for quiz options with state management."""
+    def __init__(self, **kwargs):
+        super().__init__(
+            size_hint=(1, None),
+            height=dp(48),
+            md_bg_color=(0.2, 0.6, 1, 1),
+            **kwargs
+        )
+        self.original_color = self.md_bg_color
+
+    def set_state(self, state):
+        """Update button color based on state."""
+        colors = {
+            'default': (0.2, 0.6, 1, 1),
+            'correct': (0, 0.8, 0, 1),
+            'incorrect': (0.8, 0, 0, 1)
+        }
+        self.md_bg_color = colors.get(state, self.original_color)
