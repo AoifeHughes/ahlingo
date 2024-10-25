@@ -1,175 +1,175 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "Persona 1",
-                "message": "Hola, me llamo Juan. ¿Y tú?"
-            },
-            {
-                "speaker": "Persona 2",
-                "message": "Mucho gusto, me llamo María. Soy de España."
-            },
-            {
-                "speaker": "Persona 1",
-                "message": "El placer es mío. ¿Cuál es tu profesión?"
-            },
-            {
-                "speaker": "Persona 2",
-                "message": "Soy ingeniera. Es un campo en el que me siento muy realizada."
-            },
-            {
-                "speaker": "Persona 1",
-                "message": "Eso es impresionante. Me encanta aprender sobre diferentes profesiones."
-            },
-            {
-                "speaker": "Persona 2",
-                "message": "Me alegro de que te guste. ¿Tienes alguna otra pregunta sobre España?"
-            }
-        ],
-        "conversation_summary": "Una introducción básica entre dos personas, discutiendo sus nombres, profesiones y curiosidades sobre España."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "Persona 1",
-                "message": "Hola, ¿cómo te va?"
-            },
-            {
-                "speaker": "Persona 2",
-                "message": "Muy bien, gracias. Y tú, ¿estás bien?"
-            },
-            {
-                "speaker": "Persona 1",
-                "message": "Por supuesto, todo está en orden. ¿Qué planes tienes para hoy?"
-            },
-            {
-                "speaker": "Persona 2",
-                "message": "Voy a visitar a unos amigos. Quizás podríamos encontrarnos después de eso."
-            },
-            {
-                "speaker": "Persona 1",
-                "message": "Suena genial. ¿Puedes decirme más sobre los amigos que vas a visitar?"
-            },
-            {
-                "speaker": "Persona 2",
-                "message": "Son un par de personas que no conocí antes. Están en mi trabajo y me siento muy nerviosa."
-            },
-            {
-                "speaker": "Persona 1",
-                "message": "No te preocupes, todos nos conocemos bien aquí. Seguro que te llevarán bien."
-            }
-        ],
-        "conversation_summary": "Una conversación sobre cómo están las personas, sus planes para el día y una discusión sobre visitar a unos amigos."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "Persona 1",
-                "message": "Hola, ¿cómo te llamas?"
-            },
-            {
-                "speaker": "Persona 2",
-                "message": "Me llamo Carlos. ¿Y tú?"
-            },
-            {
-                "speaker": "Persona 1",
-                "message": "Hola, soy Laura. He oído mucho sobre tu pasión por el fútbol."
-            },
-            {
-                "speaker": "Persona 2",
-                "message": "Sí, me encanta jugar al fútbol. ¿Y tú?"
-            },
-            {
-                "speaker": "Persona 1",
-                "message": "Pero no, soy más una fanática del baloncesto. ¿Por qué te gusta tanto el fútbol?"
-            },
-            {
-                "speaker": "Persona 2",
-                "message": "Creo que es la unión y el trabajo en equipo. Todos tienen roles importantes y juntos hacen un gran equipo."
-            },
-            {
-                "speaker": "Persona 1",
-                "message": "Eso es muy interesante. No podría jugar mucho baloncesto pero disfruto viendo los partidos."
-            }
-        ],
-        "conversation_summary": "Una conversación entre dos personas, donde se habla sobre sus intereses deportivos y por qué uno prefiere el fútbol y el otro el baloncesto."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "Persona 1",
-                "message": "Hola, ¿cómo te llamas?"
-            },
-            {
-                "speaker": "Persona 2",
-                "message": "Me llamo Ana. ¿Y tú?"
-            },
-            {
-                "speaker": "Persona 1",
-                "message": "Soy Roberto. Me alegro de conocerte."
-            },
-            {
-                "speaker": "Persona 2",
-                "message": "Igualmente, Roberto. ¿De dónde eres?"
-            },
-            {
-                "speaker": "Persona 1",
-                "message": "Soy de México. Es un país muy diverso y rico en cultura."
-            },
-            {
-                "speaker": "Persona 2",
-                "message": "Es fascinante. Me gustaría visitar algún día."
-            },
-            {
-                "speaker": "Persona 1",
-                "message": "También hay muchas cosas interesantes que hacer en México, como la playa, la ciudad y la gastronomía."
-            },
-            {
-                "speaker": "Persona 2",
-                "message": "Sí, parece que tienes muchas opciones de turismo."
-            },
-            {
-                "speaker": "Persona 1",
-                "message": "Sí, el turismo es muy popular en México."
-            }
-        ],
-        "conversation_summary": "Una conversación inicial entre dos personas donde se habla sobre sus nombres, orígenes y interés en la cultura y el turismo."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "Persona 1",
-                "message": "Hola, ¿cómo estás?"
-            },
-            {
-                "speaker": "Persona 2",
-                "message": "Estoy bien, gracias por preguntar. ¿Y tú?"
-            },
-            {
-                "speaker": "Persona 1",
-                "message": "También estoy bien. ¿Qué planes tienes para esta noche?"
-            },
-            {
-                "speaker": "Persona 2",
-                "message": "Voy a tener una cena con amigos. ¿Quieres unirte?"
-            },
-            {
-                "speaker": "Persona 1",
-                "message": "Me encantaría, pero ya tengo otros planes para esta noche. Pero sí, me encantaría saber de tus planes para la próxima."
-            },
-            {
-                "speaker": "Persona 2",
-                "message": "Nos vemos entonces. ¡Que tengas una buena noche!"
-            },
-            {
-                "speaker": "Persona 1",
-                "message": "Igualmente. ¡Hasta luego!"
-            },
-            {
-                "speaker": "Persona 2",
-                "message": "Adiós."
-            }
-        ],
-        "conversation_summary": "Una conversación de encuentros casuales en la que se discuten los planes para la noche y se toman la decisión de verse en otro momento."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "Persona 1",
+        "message": "Hola, me llamo Juan. ¿Y tú?"
+      },
+      {
+        "speaker": "Persona 2",
+        "message": "Mucho gusto, me llamo María. Soy de España."
+      },
+      {
+        "speaker": "Persona 1",
+        "message": "El placer es mío. ¿Cuál es tu profesión?"
+      },
+      {
+        "speaker": "Persona 2",
+        "message": "Soy ingeniera. Es un campo en el que me siento muy realizada."
+      },
+      {
+        "speaker": "Persona 1",
+        "message": "Eso es impresionante. Me encanta aprender sobre diferentes profesiones."
+      },
+      {
+        "speaker": "Persona 2",
+        "message": "Me alegro de que te guste. ¿Tienes alguna otra pregunta sobre España?"
+      }
+    ],
+    "conversation_summary": "Una introducción básica entre dos personas, discutiendo sus nombres, profesiones y curiosidades sobre España."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "Persona 1",
+        "message": "Hola, ¿cómo te va?"
+      },
+      {
+        "speaker": "Persona 2",
+        "message": "Muy bien, gracias. Y tú, ¿estás bien?"
+      },
+      {
+        "speaker": "Persona 1",
+        "message": "Por supuesto, todo está en orden. ¿Qué planes tienes para hoy?"
+      },
+      {
+        "speaker": "Persona 2",
+        "message": "Voy a visitar a unos amigos. Quizás podríamos encontrarnos después de eso."
+      },
+      {
+        "speaker": "Persona 1",
+        "message": "Suena genial. ¿Puedes decirme más sobre los amigos que vas a visitar?"
+      },
+      {
+        "speaker": "Persona 2",
+        "message": "Son un par de personas que no conocí antes. Están en mi trabajo y me siento muy nerviosa."
+      },
+      {
+        "speaker": "Persona 1",
+        "message": "No te preocupes, todos nos conocemos bien aquí. Seguro que te llevarán bien."
+      }
+    ],
+    "conversation_summary": "Una conversación sobre cómo están las personas, sus planes para el día y una discusión sobre visitar a unos amigos."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "Persona 1",
+        "message": "Hola, ¿cómo te llamas?"
+      },
+      {
+        "speaker": "Persona 2",
+        "message": "Me llamo Carlos. ¿Y tú?"
+      },
+      {
+        "speaker": "Persona 1",
+        "message": "Hola, soy Laura. He oído mucho sobre tu pasión por el fútbol."
+      },
+      {
+        "speaker": "Persona 2",
+        "message": "Sí, me encanta jugar al fútbol. ¿Y tú?"
+      },
+      {
+        "speaker": "Persona 1",
+        "message": "Pero no, soy más una fanática del baloncesto. ¿Por qué te gusta tanto el fútbol?"
+      },
+      {
+        "speaker": "Persona 2",
+        "message": "Creo que es la unión y el trabajo en equipo. Todos tienen roles importantes y juntos hacen un gran equipo."
+      },
+      {
+        "speaker": "Persona 1",
+        "message": "Eso es muy interesante. No podría jugar mucho baloncesto pero disfruto viendo los partidos."
+      }
+    ],
+    "conversation_summary": "Una conversación entre dos personas, donde se habla sobre sus intereses deportivos y por qué uno prefiere el fútbol y el otro el baloncesto."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "Persona 1",
+        "message": "Hola, ¿cómo te llamas?"
+      },
+      {
+        "speaker": "Persona 2",
+        "message": "Me llamo Ana. ¿Y tú?"
+      },
+      {
+        "speaker": "Persona 1",
+        "message": "Soy Roberto. Me alegro de conocerte."
+      },
+      {
+        "speaker": "Persona 2",
+        "message": "Igualmente, Roberto. ¿De dónde eres?"
+      },
+      {
+        "speaker": "Persona 1",
+        "message": "Soy de México. Es un país muy diverso y rico en cultura."
+      },
+      {
+        "speaker": "Persona 2",
+        "message": "Es fascinante. Me gustaría visitar algún día."
+      },
+      {
+        "speaker": "Persona 1",
+        "message": "También hay muchas cosas interesantes que hacer en México, como la playa, la ciudad y la gastronomía."
+      },
+      {
+        "speaker": "Persona 2",
+        "message": "Sí, parece que tienes muchas opciones de turismo."
+      },
+      {
+        "speaker": "Persona 1",
+        "message": "Sí, el turismo es muy popular en México."
+      }
+    ],
+    "conversation_summary": "Una conversación inicial entre dos personas donde se habla sobre sus nombres, orígenes y interés en la cultura y el turismo."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "Persona 1",
+        "message": "Hola, ¿cómo estás?"
+      },
+      {
+        "speaker": "Persona 2",
+        "message": "Estoy bien, gracias por preguntar. ¿Y tú?"
+      },
+      {
+        "speaker": "Persona 1",
+        "message": "También estoy bien. ¿Qué planes tienes para esta noche?"
+      },
+      {
+        "speaker": "Persona 2",
+        "message": "Voy a tener una cena con amigos. ¿Quieres unirte?"
+      },
+      {
+        "speaker": "Persona 1",
+        "message": "Me encantaría, pero ya tengo otros planes para esta noche. Pero sí, me encantaría saber de tus planes para la próxima."
+      },
+      {
+        "speaker": "Persona 2",
+        "message": "Nos vemos entonces. ¡Que tengas una buena noche!"
+      },
+      {
+        "speaker": "Persona 1",
+        "message": "Igualmente. ¡Hasta luego!"
+      },
+      {
+        "speaker": "Persona 2",
+        "message": "Adiós."
+      }
+    ],
+    "conversation_summary": "Una conversación de encuentros casuales en la que se discuten los planes para la noche y se toman la decisión de verse en otro momento."
+  }
 ]

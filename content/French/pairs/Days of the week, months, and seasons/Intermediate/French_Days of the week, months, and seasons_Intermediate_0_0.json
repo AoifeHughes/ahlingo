@@ -1,74 +1,74 @@
 [
-    {
-        "English": "apple",
-        "French": "pomme"
-    },
-    {
-        "English": "book",
-        "French": "livre"
-    },
-    {
-        "English": "car",
-        "French": "voiture"
-    },
-    {
-        "English": "dog",
-        "French": "chien"
-    },
-    {
-        "English": "house",
-        "French": "maison"
-    },
-    {
-        "English": "love",
-        "French": "amour"
-    },
-    {
-        "English": "moon",
-        "French": "lune"
-    },
-    {
-        "English": "sun",
-        "French": "soleil"
-    },
-    {
-        "English": "tree",
-        "French": "arbre"
-    },
-    {
-        "English": "water",
-        "French": "eau"
-    },
-    {
-        "English": "city",
-        "French": "ville"
-    },
-    {
-        "English": "dance",
-        "French": "danse"
-    },
-    {
-        "English": "friend",
-        "French": "ami"
-    },
-    {
-        "English": "laugh",
-        "French": "rire"
-    },
-    {
-        "English": "market",
-        "French": "marché"
-    },
-    {
-        "English": "music",
-        "French": "musique"
-    },
-    {
-        "English": "river",
-        "French": "rivière"
-    },
-    {
-        "English": "tree",
-        "French": "arbre"
-    }
+  {
+    "English": "apple",
+    "French": "pomme"
+  },
+  {
+    "English": "book",
+    "French": "livre"
+  },
+  {
+    "English": "car",
+    "French": "voiture"
+  },
+  {
+    "English": "dog",
+    "French": "chien"
+  },
+  {
+    "English": "house",
+    "French": "maison"
+  },
+  {
+    "English": "love",
+    "French": "amour"
+  },
+  {
+    "English": "moon",
+    "French": "lune"
+  },
+  {
+    "English": "sun",
+    "French": "soleil"
+  },
+  {
+    "English": "tree",
+    "French": "arbre"
+  },
+  {
+    "English": "water",
+    "French": "eau"
+  },
+  {
+    "English": "city",
+    "French": "ville"
+  },
+  {
+    "English": "dance",
+    "French": "danse"
+  },
+  {
+    "English": "friend",
+    "French": "ami"
+  },
+  {
+    "English": "laugh",
+    "French": "rire"
+  },
+  {
+    "English": "market",
+    "French": "marché"
+  },
+  {
+    "English": "music",
+    "French": "musique"
+  },
+  {
+    "English": "river",
+    "French": "rivière"
+  },
+  {
+    "English": "tree",
+    "French": "arbre"
+  }
 ]

@@ -1,82 +1,82 @@
 [
-    {
-        "English": "apple",
-        "Spanish": "manzana"
-    },
-    {
-        "English": "book",
-        "Spanish": "libro"
-    },
-    {
-        "English": "car",
-        "Spanish": "coche"
-    },
-    {
-        "English": "dog",
-        "Spanish": "perro"
-    },
-    {
-        "English": "house",
-        "Spanish": "casa"
-    },
-    {
-        "English": "love",
-        "Spanish": "amor"
-    },
-    {
-        "English": "moon",
-        "Spanish": "luna"
-    },
-    {
-        "English": "sun",
-        "Spanish": "sol"
-    },
-    {
-        "English": "tree",
-        "Spanish": "árbol"
-    },
-    {
-        "English": "water",
-        "Spanish": "agua"
-    },
-    {
-        "English": "morning",
-        "Spanish": "mañana"
-    },
-    {
-        "English": "afternoon",
-        "Spanish": "tarde"
-    },
-    {
-        "English": "evening",
-        "Spanish": "noche"
-    },
-    {
-        "English": "week",
-        "Spanish": "semana"
-    },
-    {
-        "English": "month",
-        "Spanish": "mes"
-    },
-    {
-        "English": "year",
-        "Spanish": "año"
-    },
-    {
-        "English": "summer",
-        "Spanish": "verano"
-    },
-    {
-        "English": "autumn",
-        "Spanish": "otoño"
-    },
-    {
-        "English": "spring",
-        "Spanish": "primavera"
-    },
-    {
-        "English": "winter",
-        "Spanish": "invierno"
-    }
+  {
+    "English": "apple",
+    "Spanish": "manzana"
+  },
+  {
+    "English": "book",
+    "Spanish": "libro"
+  },
+  {
+    "English": "car",
+    "Spanish": "coche"
+  },
+  {
+    "English": "dog",
+    "Spanish": "perro"
+  },
+  {
+    "English": "house",
+    "Spanish": "casa"
+  },
+  {
+    "English": "love",
+    "Spanish": "amor"
+  },
+  {
+    "English": "moon",
+    "Spanish": "luna"
+  },
+  {
+    "English": "sun",
+    "Spanish": "sol"
+  },
+  {
+    "English": "tree",
+    "Spanish": "árbol"
+  },
+  {
+    "English": "water",
+    "Spanish": "agua"
+  },
+  {
+    "English": "morning",
+    "Spanish": "mañana"
+  },
+  {
+    "English": "afternoon",
+    "Spanish": "tarde"
+  },
+  {
+    "English": "evening",
+    "Spanish": "noche"
+  },
+  {
+    "English": "week",
+    "Spanish": "semana"
+  },
+  {
+    "English": "month",
+    "Spanish": "mes"
+  },
+  {
+    "English": "year",
+    "Spanish": "año"
+  },
+  {
+    "English": "summer",
+    "Spanish": "verano"
+  },
+  {
+    "English": "autumn",
+    "Spanish": "otoño"
+  },
+  {
+    "English": "spring",
+    "Spanish": "primavera"
+  },
+  {
+    "English": "winter",
+    "Spanish": "invierno"
+  }
 ]
