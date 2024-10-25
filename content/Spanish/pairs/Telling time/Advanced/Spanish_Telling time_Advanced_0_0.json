@@ -1,42 +1,42 @@
 [
-    {
-        "English": "hour",
-        "Spanish": "hora"
-    },
-    {
-        "English": "minute",
-        "Spanish": "minuto"
-    },
-    {
-        "English": "second",
-        "Spanish": "segundo"
-    },
-    {
-        "English": "time",
-        "Spanish": "tiempo"
-    },
-    {
-        "English": "clock",
-        "Spanish": "reloj"
-    },
-    {
-        "English": "day",
-        "Spanish": "día"
-    },
-    {
-        "English": "evening",
-        "Spanish": "tarde"
-    },
-    {
-        "English": "night",
-        "Spanish": "noche"
-    },
-    {
-        "English": "morning",
-        "Spanish": "mañana"
-    },
-    {
-        "English": "tomorrow",
-        "Spanish": "mañana"
-    }
+  {
+    "English": "hour",
+    "Spanish": "hora"
+  },
+  {
+    "English": "minute",
+    "Spanish": "minuto"
+  },
+  {
+    "English": "second",
+    "Spanish": "segundo"
+  },
+  {
+    "English": "time",
+    "Spanish": "tiempo"
+  },
+  {
+    "English": "clock",
+    "Spanish": "reloj"
+  },
+  {
+    "English": "day",
+    "Spanish": "día"
+  },
+  {
+    "English": "evening",
+    "Spanish": "tarde"
+  },
+  {
+    "English": "night",
+    "Spanish": "noche"
+  },
+  {
+    "English": "morning",
+    "Spanish": "mañana"
+  },
+  {
+    "English": "tomorrow",
+    "Spanish": "mañana"
+  }
 ]

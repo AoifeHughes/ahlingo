@@ -1,30 +1,30 @@
 [
-    {
-        "English": "My name is John. What's your name?",
-        "Spanish": "Mi nombre es John. ¿Cómo te llamas?"
-    },
-    {
-        "English": "Good morning! How was your weekend?",
-        "Spanish": "¡Buenos días! ¿Cómo estuvo tu fin de semana?"
-    },
-    {
-        "English": "I am meeting my friends at the café.",
-        "Spanish": "Voy a encontrar a mis amigos en el café."
-    },
-    {
-        "English": "I would like to order a coffee, please.",
-        "Spanish": "Me gustaría pedir un café, por favor."
-    },
-    {
-        "English": "Excuse me, do you speak English?",
-        "Spanish": "Disculpe, ¿hablas inglés?"
-    },
-    {
-        "English": "The children are playing in the park.",
-        "Spanish": "Los niños están jugando en el parque."
-    },
-    {
-        "English": "My sister is a doctor, and my brother is an engineer.",
-        "Spanish": "Mi hermana es médica y mi hermano es ingeniero."
-    }
+  {
+    "English": "My name is John. What's your name?",
+    "Spanish": "Mi nombre es John. ¿Cómo te llamas?"
+  },
+  {
+    "English": "Good morning! How was your weekend?",
+    "Spanish": "¡Buenos días! ¿Cómo estuvo tu fin de semana?"
+  },
+  {
+    "English": "I am meeting my friends at the café.",
+    "Spanish": "Voy a encontrar a mis amigos en el café."
+  },
+  {
+    "English": "I would like to order a coffee, please.",
+    "Spanish": "Me gustaría pedir un café, por favor."
+  },
+  {
+    "English": "Excuse me, do you speak English?",
+    "Spanish": "Disculpe, ¿hablas inglés?"
+  },
+  {
+    "English": "The children are playing in the park.",
+    "Spanish": "Los niños están jugando en el parque."
+  },
+  {
+    "English": "My sister is a doctor, and my brother is an engineer.",
+    "Spanish": "Mi hermana es médica y mi hermano es ingeniero."
+  }
 ]

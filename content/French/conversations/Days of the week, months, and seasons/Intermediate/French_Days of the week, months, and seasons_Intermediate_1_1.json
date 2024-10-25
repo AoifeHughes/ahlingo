@@ -1,87 +1,87 @@
 [
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Penses-tu que le printemps soit le meilleur moment pour voyager ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Oui, j'aime l'idée de voir les fleurs en plein essor."
-            },
-            {
-                "speaker": "person1",
-                "message": "C'est pour moi aussi. C'est la saison des jolies fleurs et des paysages magnifiques."
-            }
-        ],
-        "conversation_summary": "A conversation about whether spring is the best time for travel."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quel jour aimes-tu le plus dans la semaine ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je préfère le week-end, c'est le moment où je peux me détendre et sortir."
-            },
-            {
-                "speaker": "person1",
-                "message": "Je trouve le dimanche le meilleur, il y a toujours quelque chose de spécial à faire."
-            }
-        ],
-        "conversation_summary": "A conversation discussing preferred months and weekdays."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Comment te sens-tu avec le changement des saisons ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je suis content du printemps, mais j'aime aussi l'hiver pour les activités de ski."
-            },
-            {
-                "speaker": "person1",
-                "message": "Je suis d'accord, chaque saison a ses avantages."
-            }
-        ],
-        "conversation_summary": "A conversation about personal feelings towards different seasons and related activities."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quelles sont tes activités préférées en été ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "J'aime faire de la plongée, c'est amusant et j'apprends beaucoup."
-            },
-            {
-                "speaker": "person1",
-                "message": "J'apprécie la randonnée. Ça me permet de découvrir de nouveaux endroits."
-            }
-        ],
-        "conversation_summary": "A conversation about summer activities and interests."
-    },
-    {
-        "conversation": [
-            {
-                "speaker": "person1",
-                "message": "Quelle saison préfères-tu pour passer Noël ?"
-            },
-            {
-                "speaker": "person2",
-                "message": "Je préfère Noël en hiver. C'est l'occasion de faire beaucoup de joies avec la famille et les amis."
-            },
-            {
-                "speaker": "person1",
-                "message": "Je suis d'accord, c'est un moment où tout devient plus festif."
-            }
-        ],
-        "conversation_summary": "A conversation about holiday preferences."
-    }
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Penses-tu que le printemps soit le meilleur moment pour voyager ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Oui, j'aime l'idée de voir les fleurs en plein essor."
+      },
+      {
+        "speaker": "person1",
+        "message": "C'est pour moi aussi. C'est la saison des jolies fleurs et des paysages magnifiques."
+      }
+    ],
+    "conversation_summary": "A conversation about whether spring is the best time for travel."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quel jour aimes-tu le plus dans la semaine ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je préfère le week-end, c'est le moment où je peux me détendre et sortir."
+      },
+      {
+        "speaker": "person1",
+        "message": "Je trouve le dimanche le meilleur, il y a toujours quelque chose de spécial à faire."
+      }
+    ],
+    "conversation_summary": "A conversation discussing preferred months and weekdays."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Comment te sens-tu avec le changement des saisons ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je suis content du printemps, mais j'aime aussi l'hiver pour les activités de ski."
+      },
+      {
+        "speaker": "person1",
+        "message": "Je suis d'accord, chaque saison a ses avantages."
+      }
+    ],
+    "conversation_summary": "A conversation about personal feelings towards different seasons and related activities."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quelles sont tes activités préférées en été ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "J'aime faire de la plongée, c'est amusant et j'apprends beaucoup."
+      },
+      {
+        "speaker": "person1",
+        "message": "J'apprécie la randonnée. Ça me permet de découvrir de nouveaux endroits."
+      }
+    ],
+    "conversation_summary": "A conversation about summer activities and interests."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "person1",
+        "message": "Quelle saison préfères-tu pour passer Noël ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je préfère Noël en hiver. C'est l'occasion de faire beaucoup de joies avec la famille et les amis."
+      },
+      {
+        "speaker": "person1",
+        "message": "Je suis d'accord, c'est un moment où tout devient plus festif."
+      }
+    ],
+    "conversation_summary": "A conversation about holiday preferences."
+  }
 ]
