@@ -1,30 +1,30 @@
 [
-    {
-        "English": "I will meet you at seven o'clock.",
-        "French": "Je te retrouverai à sept heures."
-    },
-    {
-        "English": "What time does the movie start?",
-        "French": "À quelle heure commence le film ?"
-    },
-    {
-        "English": "I arrived at eight in the morning.",
-        "French": "J'arrivai huit heures du matin."
-    },
-    {
-        "English": "We need to leave by nine at night.",
-        "French": "Nous devons partir avant neuf heures du soir."
-    },
-    {
-        "English": "The train arrives at midnight.",
-        "French": "Le train arrive à minuit."
-    },
-    {
-        "English": "It's time to study for the exam.",
-        "French": "Il est temps d'étudier pour l'examen."
-    },
-    {
-        "English": "I have to catch the bus at four in the afternoon.",
-        "French": "Je dois attraper le bus à quatre heures de l'après-midi."
-    }
+  {
+    "English": "I will meet you at seven o'clock.",
+    "French": "Je te retrouverai à sept heures."
+  },
+  {
+    "English": "What time does the movie start?",
+    "French": "À quelle heure commence le film ?"
+  },
+  {
+    "English": "I arrived at eight in the morning.",
+    "French": "J'arrivai huit heures du matin."
+  },
+  {
+    "English": "We need to leave by nine at night.",
+    "French": "Nous devons partir avant neuf heures du soir."
+  },
+  {
+    "English": "The train arrives at midnight.",
+    "French": "Le train arrive à minuit."
+  },
+  {
+    "English": "It's time to study for the exam.",
+    "French": "Il est temps d'étudier pour l'examen."
+  },
+  {
+    "English": "I have to catch the bus at four in the afternoon.",
+    "French": "Je dois attraper le bus à quatre heures de l'après-midi."
+  }
 ]
