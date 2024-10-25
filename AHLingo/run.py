@@ -60,29 +60,6 @@ class DatabaseManager:
         return lambda: LanguageDB(cls.DB_PATH)
 
 
-class ScreenManager(MDScreenManager):
-    """Custom screen manager with screen initialization."""
-
-    def __init__(self, database):
-        super().__init__()
-        self.db = database
-        self.setup_screens()
-
-    def setup_screens(self):
-        """Initialize and add all application screens."""
-        screens = [
-            HomeScreen(self.db),
-            SettingsScreen(self.db),
-            PairsExerciseScreen(self.db),
-            ConversationExerciseScreen(self.db),
-            ChatbotExerciseScreen(self.db),
-            TranslationExerciseScreen(self.db),
-            ReviseMistakesScreen(self.db),
-        ]
-        for screen in screens:
-            self.add_widget(screen)
-
-
 class LanguageLearningApp(MDApp):
     """Main application class."""
 
@@ -91,10 +68,11 @@ class LanguageLearningApp(MDApp):
         self.setup_window()
         self.setup_theme()
         self.icon = "./assets/logo.png"
+        self.screen_manager = None
+        self.db = None
 
     def setup_window(self):
         """Configure window properties."""
-        pass
         if platform not in ("android", "ios"):
             Window.size = (400, 800)
 
@@ -102,14 +80,29 @@ class LanguageLearningApp(MDApp):
         """Configure application theme."""
         self.theme_cls.primary_palette = "Blue"
         self.theme_cls.theme_style = "Light"
+        self.theme_cls.material_style = "M3"
 
     def build(self):
         """Build and return the application's root widget."""
         # Initialize database
         self.db = DatabaseManager.get_database()
-
-        # Create and initialize screen manager
-        self.screen_manager = ScreenManager(self.db)
+        
+        # Create screen manager
+        self.screen_manager = MDScreenManager()
+        
+        # Initialize and add all screens
+        screens = {
+            'home': HomeScreen(self.db),
+            'settings': SettingsScreen(self.db),
+            'pairs': PairsExerciseScreen(self.db),
+            'conversations': ConversationExerciseScreen(self.db),
+            'chatbot': ChatbotExerciseScreen(self.db),
+            'translation': TranslationExerciseScreen(self.db),
+            'revise_mistakes': ReviseMistakesScreen(self.db)
+        }
+        
+        for screen in screens.values():
+            self.screen_manager.add_widget(screen)
 
         # Set initial screen based on settings
         initial_screen = AppSettings.check_settings()
@@ -127,6 +120,7 @@ class LanguageLearningApp(MDApp):
         print("\nApplication Debug Information:")
         print("-" * 30)
         print(f"Current Screen: {self.screen_manager.current}")
+        print(f"Available Screens: {[screen.name for screen in self.screen_manager.screens]}")
         print(f"Settings File: {os.path.exists(AppSettings.SETTINGS_FILE)}")
 
         if os.path.exists(AppSettings.SETTINGS_FILE):
@@ -147,3 +141,7 @@ class LanguageLearningApp(MDApp):
             print(f"Number of languages: {lang_count}")
 
         print("-" * 30)
+
+
+if __name__ == "__main__":
+    LanguageLearningApp().run()

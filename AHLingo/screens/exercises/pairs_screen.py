@@ -139,8 +139,10 @@ class PairsExerciseScreen(BaseExerciseScreen):
                        JOIN topics t ON e.topic_id = t.id
                        JOIN languages l ON e.language_id = l.id
                        JOIN difficulties d ON e.difficulty_id = d.id
-                       WHERE t.topic = ? AND l.language = ? AND d.difficulty_level = ?""",
-                    (topic, settings["language"], settings["difficulty"]),
+                       WHERE t.topic = ? AND l.language = ? AND
+                       d.difficulty_level = ?
+                       LIMIT ?""",
+                    (topic, settings["language"], settings["difficulty"], self.MAX_PAIRS),
                 )
                 exercises = db.cursor.fetchall()
                 
@@ -255,57 +257,55 @@ class PairsExerciseScreen(BaseExerciseScreen):
 
         # This is the second button - check if it's a match
         is_match = False
+        current_exercise_id = None
+        
+        # Find the current exercise ID based on the selected buttons
         for pair in self.current_pairs:
             if (
-                self.selected_button.word == pair["lang1"]
-                and button.word == pair["lang2"]
-                and self.selected_button.pair_id == pair["id"]
-                and button.pair_id == pair["id"]
+                (self.selected_button.word == pair["lang1"] and button.word == pair["lang2"]) or
+                (self.selected_button.word == pair["lang2"] and button.word == pair["lang1"])
             ):
-                is_match = True
-                self.current_exercise_id = pair["id"]
+                current_exercise_id = pair["id"]
+                if self.selected_button.pair_id == current_exercise_id and button.pair_id == current_exercise_id:
+                    is_match = True
                 break
 
-        if is_match:
-            # Correct match
-            self.selected_button.set_state("correct")
-            button.set_state("correct")
-            self.selected_button.disabled = True
-            button.disabled = True
-            self.correct_pairs += 1
-            self.completed_pairs.add(self.current_exercise_id)
-            
-            # Record successful attempt immediately
-            settings = self.get_user_settings()
-            if settings:
-                with self.db() as db:
+        settings = self.get_user_settings()
+        if settings and current_exercise_id:
+            with self.db() as db:
+                if is_match:
+                    # Correct match
+                    self.selected_button.set_state("correct")
+                    button.set_state("correct")
+                    self.selected_button.disabled = True
+                    button.disabled = True
+                    self.correct_pairs += 1
+                    self.completed_pairs.add(current_exercise_id)
+                    
+                    # Record successful attempt
                     db.record_exercise_attempt(
                         settings["username"],
-                        self.current_exercise_id,
+                        current_exercise_id,
                         True  # Successful attempt
                     )
 
-            # Check if batch is complete
-            if self.correct_pairs == self.total_pairs:
-                self.current_batch_index += self.MAX_PAIRS
-                if self.current_batch_index < len(self.all_pairs):
-                    self.load_next_batch()
-        else:
-            # Wrong match
-            self.selected_button.set_state("default")
-            button.set_state("default")
-            self.incorrect_attempts += 1
-
-            # Record failed attempt immediately
-            if len(self.current_pairs) == 1:
-                settings = self.get_user_settings()
-                if settings:
-                    with self.db() as db:
-                        db.record_exercise_attempt(
-                            settings["username"],
-                            self.current_pairs[0]["id"],
-                            False  # Failed attempt
-                        )
+                    # Check if batch is complete
+                    if self.correct_pairs == self.total_pairs:
+                        self.current_batch_index += self.MAX_PAIRS
+                        if self.current_batch_index < len(self.all_pairs):
+                            self.load_next_batch()
+                else:
+                    # Wrong match
+                    self.selected_button.set_state("default")
+                    button.set_state("default")
+                    self.incorrect_attempts += 1
+                    
+                    # Record failed attempt
+                    db.record_exercise_attempt(
+                        settings["username"],
+                        current_exercise_id,
+                        False  # Failed attempt
+                    )
 
         self.update_score()
         self.selected_button = None
