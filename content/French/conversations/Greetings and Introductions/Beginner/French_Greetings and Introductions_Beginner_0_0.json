@@ -7,81 +7,121 @@
       },
       {
         "speaker": "person2",
-        "message": "Je m'appelle Marie."
+        "message": "Je m'appelle Pierre."
       },
       {
         "speaker": "person1",
-        "message": "Pleased to meet you, Marie."
+        "message": "Enchanté, Pierre. Comment ça va ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Ça va bien, merci. Et toi, comment tu t'appelles ?"
+      },
+      {
+        "speaker": "person1",
+        "message": "Je m'appelle Sophie."
       }
     ],
-    "conversation_summary": "A conversation introducing oneself and greeting someone."
+    "conversation_summary": "A conversation introducing oneself."
   },
   {
     "conversation": [
       {
         "speaker": "person1",
-        "message": "Salut ! Comment vas-tu ?"
+        "message": "Comment vas-tu ?"
       },
       {
         "speaker": "person2",
-        "message": "Je vais bien, merci. Et toi ?"
+        "message": "Je vais bien, merci."
       },
       {
         "speaker": "person1",
-        "message": "Je vais bien aussi."
+        "message": "C'est bon. Et toi, comment t'appelles-tu ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je m'appelle Jean."
+      },
+      {
+        "speaker": "person1",
+        "message": "Enchanté, Jean."
       }
     ],
-    "conversation_summary": "A conversation greeting someone and asking how they are doing."
+    "conversation_summary": "A conversation discussing one's well-being and introductions."
   },
   {
     "conversation": [
       {
         "speaker": "person1",
-        "message": "Bonjour, comment ça va ?"
+        "message": "Quelle est ton profession ?"
       },
       {
         "speaker": "person2",
-        "message": "Ça va bien, merci. Comment avec toi ?"
+        "message": "Je suis enseignante."
       },
       {
         "speaker": "person1",
-        "message": "Je vais bien aussi."
+        "message": "C'est formidable ! Quelle matière enseigne-t-elle ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Je parle français et anglais."
+      },
+      {
+        "speaker": "person1",
+        "message": "Impressionnant ! J'espère avoir la chance de l'avoir comme professeur."
       }
     ],
-    "conversation_summary": "A conversation greeting someone in the morning and asking how they are doing."
+    "conversation_summary": "A conversation about professions, discussing someone's occupation and teaching languages."
   },
   {
     "conversation": [
       {
         "speaker": "person1",
-        "message": "C'est avec plaisir que je te rencontre."
+        "message": "Quel est le lieu préféré de ta famille ?"
       },
       {
         "speaker": "person2",
-        "message": "De même pour moi. Comment t'appelles-tu ?"
+        "message": "Nous aimons aller à la montagne."
       },
       {
         "speaker": "person1",
-        "message": "Je m'appelle David."
+        "message": "C'est intéressant. Qu'y faites-vous ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Nous faisons de la randonnée et cuisinons ensemble."
+      },
+      {
+        "speaker": "person1",
+        "message": "Ça semble être une belle façon de passer du temps en famille."
       }
     ],
-    "conversation_summary": "A conversation greeting someone and introducing oneself."
+    "conversation_summary": "A conversation discussing family activities and hobbies."
   },
   {
     "conversation": [
       {
         "speaker": "person1",
-        "message": "Bonjour, comment va ta famille ?"
+        "message": "Quelle est ta préparation de Noël ?"
       },
       {
         "speaker": "person2",
-        "message": "Ma famille est bien merci. Et toi ?"
+        "message": "Nous organisons un dîner traditionnel avec de la bonne ch'ti."
       },
       {
         "speaker": "person1",
-        "message": "Moi aussi."
+        "message": "C'est charmant. Quelles sont les traditions que vous préférez ?"
+      },
+      {
+        "speaker": "person2",
+        "message": "Nous aimez les crèches et partager un café ensemble."
+      },
+      {
+        "speaker": "person1",
+        "message": "Ça sonne super. J'aimerais apprendre plus sur les traditions françaises pendant Noël."
       }
     ],
-    "conversation_summary": "A conversation greeting someone and asking about their family."
+    "conversation_summary": "A conversation discussing holiday traditions and sharing experiences."
   }
 ]

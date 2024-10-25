@@ -1,0 +1,135 @@
+[
+  {
+    "conversation": [
+      {
+        "speaker": "Persona 1",
+        "message": "Hola, ¿cómo estás?"
+      },
+      {
+        "speaker": "Persona 2",
+        "message": "Estoy bien, gracias. ¿Y tú?"
+      },
+      {
+        "speaker": "Persona 1",
+        "message": "Bien también, gracias. ¿Has terminado de leer el libro que te recomendé?"
+      },
+      {
+        "speaker": "Persona 2",
+        "message": "Sí, lo he terminado. Me encantó."
+      },
+      {
+        "speaker": "Persona 1",
+        "message": "Me alegro escuchar eso. ¿Te gustaría un café?"
+      }
+    ],
+    "conversation_summary": "Una conversación común entre amigos al principio de la reunión donde se habla del estado de ánimo, lectura recomendada y oferta de café."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "Persona 1",
+        "message": "Buenos días, ¿cómo has estado desde la última vez que nos vimos?"
+      },
+      {
+        "speaker": "Persona 2",
+        "message": "Hola, buenos días. He estado bien, gracias. Estoy buscando un nuevo trabajo."
+      },
+      {
+        "speaker": "Persona 1",
+        "message": "Entiendo, eso puede ser desafiante. ¿En qué tipo de trabajo estás buscando?"
+      },
+      {
+        "speaker": "Persona 2",
+        "message": "Estoy buscando algo en el área de tecnología, algo que me desafíe."
+      },
+      {
+        "speaker": "Persona 1",
+        "message": "Esos son buenos motivos. Si necesitas consejos para tu búsqueda de empleo, no dude en preguntar."
+      }
+    ],
+    "conversation_summary": "Una conversación entre amigos en la que se habla de los estados de ánimo recientes, la situación laboral y ofrecimiento de ayuda."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "Persona 1",
+        "message": "Hola, ¿cómo has estado?"
+      },
+      {
+        "speaker": "Persona 2",
+        "message": "Bien, ¿y tú?"
+      },
+      {
+        "speaker": "Persona 1",
+        "message": "Muy bien, gracias. Estoy estudiando para un examen de español."
+      },
+      {
+        "speaker": "Persona 2",
+        "message": "Eso es excelente. ¿Hay algún tema que necesites practicar en particular?"
+      },
+      {
+        "speaker": "Persona 1",
+        "message": "Pues, me estoy enfocando en los tiempos verbales y los modos subjuntivo e imperativo."
+      },
+      {
+        "speaker": "Persona 2",
+        "message": "Me alegro escuchar eso. ¿Te gustaría que te ayude con algunos ejemplos?"
+      }
+    ],
+    "conversation_summary": "Una conversación entre estudiantes de español discutiendo los temas de estudio y ofreciendo apoyo mutuo."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "Persona 1",
+        "message": "Hola, ¿has visto mi libro de español? Lo necesito."
+      },
+      {
+        "speaker": "Persona 2",
+        "message": "Sí, lo tengo. Creo que está en la mesa de la sala de estar."
+      },
+      {
+        "speaker": "Persona 1",
+        "message": "Gracias. ¿Puedes decirme cómo se dice 'gracias' en español?"
+      },
+      {
+        "speaker": "Persona 2",
+        "message": "Claro, se dice 'gracias'."
+      },
+      {
+        "speaker": "Persona 1",
+        "message": "Perfecto. Aprecio tu ayuda, ¡muchas gracias!"
+      },
+      {
+        "speaker": "Persona 2",
+        "message": "No hay de qué, siempre estoy aquí para ayudar."
+      }
+    ],
+    "conversation_summary": "Una conversación donde se busca un libro, se pregunta sobre la traducción de un vocabulario y se expresa gratitud."
+  },
+  {
+    "conversation": [
+      {
+        "speaker": "Persona 1",
+        "message": "Hola, ¿has visto a mi perro?"
+      },
+      {
+        "speaker": "Persona 2",
+        "message": "Sí, está aquí. ¿Qué pasa?"
+      },
+      {
+        "speaker": "Persona 1",
+        "message": "Solo estaba preguntando por casualidad. ¿Sabes qué? Me encantan los perros."
+      },
+      {
+        "speaker": "Persona 2",
+        "message": "No me sorprende, tu perro es muy lindo y amigable."
+      },
+      {
+        "speaker": "Persona 1",
+        "message": "Es verdad, siempre hace feliz a todas las personas."
+      }
+    ],
+    "conversation_summary": "Una conversación casual y amistosa entre dos personas que se conoce a través de su perro, mencionando la simpatía de los perros."
+  }
+]
