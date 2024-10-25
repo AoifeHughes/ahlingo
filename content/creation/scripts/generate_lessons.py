@@ -126,7 +126,7 @@ for language in tqdm(languages, desc="Languages"):
         for topic in tqdm(topics, desc="Topics"):
             for lesson_kind in ['conversations', 'pairs', 'translations']:
                 run = 0
-                for idx, response in enumerate(generate_lessons_data(language, level, topic, N_runs=3, lesson_kinds=[lesson_kind])):
+                for idx, response in enumerate(generate_lessons_data(language, level, topic, N_runs=2, lesson_kinds=[lesson_kind])):
                     output_folder = f"../../{language}/{lesson_kind}/{topic}/{level}/"
                     dump_response(response, language, topic, level, idx, run, output_folder)
                     run += 1
