@@ -1,64 +1,72 @@
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.boxlayout import MDBoxLayout
-from kivymd.uix.button import MDFillRoundFlatButton
+from kivymd.uix.button import MDRaisedButton
 from kivymd.uix.toolbar import MDTopAppBar
 from kivymd.uix.label import MDLabel
-from kivymd.uix.list import MDList, OneLineListItem
+from kivymd.uix.list import MDList, OneLineListItem, TwoLineListItem
 from kivymd.uix.scrollview import MDScrollView
 from kivymd.uix.card import MDCard
 from kivy.metrics import dp
 from kivy.storage.jsonstore import JsonStore
+from kivy.properties import StringProperty
 import random
-from kivy.properties import StringProperty, ColorProperty
-from kivy.utils import get_color_from_hex
 
 class MessageBubble(MDCard):
-    text = StringProperty()
-    speaker = StringProperty()
-    background_color = ColorProperty()
+    message = StringProperty()
     
-    def __init__(self, **kwargs):
+    def __init__(self, speaker, message, is_right=False, **kwargs):
         super().__init__(**kwargs)
+        self.orientation = 'vertical'
         self.size_hint_y = None
-        self.height = dp(60)  # Will be adjusted based on content
-        self.radius = [dp(20)]
-        self.padding = [dp(15), dp(10)]
-        self.elevation = 2
+        self.height = dp(60)  # Adjust based on content
+        self.padding = dp(8)
+        self.spacing = dp(4)
+        self.radius = [dp(15)]
         
-        # Create layout for speaker and message
-        layout = MDBoxLayout(orientation='vertical', spacing=dp(4))
+        # Set different colors and alignment based on speaker
+        if is_right:
+            self.md_bg_color = (0.2, 0.6, 1, 1)  # Blue for speaker2
+            self.pos_hint = {'right': 0.98, 'center_y': 0.5}
+            self.size_hint_x = 0.8
+        else:
+            self.md_bg_color = (1, 0.4, 0.4, 1)  # Red for speaker1
+            self.pos_hint = {'x': 0.02, 'center_y': 0.5}
+            self.size_hint_x = 0.8
         
-        # Speaker label
+        # Add speaker label
         speaker_label = MDLabel(
-            text=self.speaker,
-            bold=True,
-            font_style='Caption',
+            text=speaker,
+            theme_text_color="Custom",
+            text_color=(1, 1, 1, 1),
             size_hint_y=None,
-            height=dp(20)
+            height=dp(20),
+            bold=True
         )
-        layout.add_widget(speaker_label)
         
-        # Message label
+        # Add message label
         message_label = MDLabel(
-            text=self.text,
+            text=message,
+            theme_text_color="Custom",
+            text_color=(1, 1, 1, 1),
             size_hint_y=None
         )
-        message_label.bind(texture_size=self._update_height)
-        layout.add_widget(message_label)
+        message_label.bind(texture_size=lambda instance, value: setattr(instance, 'height', value[1]))
         
-        self.add_widget(layout)
-    
-    def _update_height(self, instance, value):
-        # Update height based on content
-        self.height = value[1] + dp(40)  # Add padding
+        self.add_widget(speaker_label)
+        self.add_widget(message_label)
+        
+        # Update card height based on content
+        self.height = speaker_label.height + message_label.height + dp(16)
 
 class ConversationScreen(MDScreen):
     def __init__(self, db, **kwargs):
         super().__init__(**kwargs)
-        self.name = 'conversation'
         self.db = db
+        self.name = 'conversation'
+        self.current_summary = None
+        self.current_exercise_id = None
         
-        # Create the main layout
+        # Create main layout
         self.main_layout = MDBoxLayout(orientation='vertical')
         
         # Create both views
@@ -68,19 +76,6 @@ class ConversationScreen(MDScreen):
         # Start with topic view
         self.main_layout.add_widget(self.topic_view)
         self.add_widget(self.main_layout)
-        
-        # Initialize state
-        self.current_topic = None
-        self.current_language = None
-        self.current_difficulty = None
-        self.correct_summary = None
-        self.speaker_colors = {}
-        
-        # Define colors for speakers
-        self.colors = {
-            'speaker1': get_color_from_hex('#E3F2FD'),  # Light blue
-            'speaker2': get_color_from_hex('#F3E5F5')   # Light purple
-        }
     
     def create_topic_view(self):
         layout = MDBoxLayout(orientation='vertical')
@@ -104,7 +99,7 @@ class ConversationScreen(MDScreen):
     def create_exercise_view(self):
         layout = MDBoxLayout(orientation='vertical', spacing=dp(8))
         
-        # Top toolbar with back button and reset
+        # Top toolbar with back button
         self.exercise_toolbar = MDTopAppBar(
             title="Conversation Exercise",
             left_action_items=[["arrow-left", lambda x: self.return_to_topics()]],
@@ -113,7 +108,7 @@ class ConversationScreen(MDScreen):
         layout.add_widget(self.exercise_toolbar)
         
         # Add reset button
-        self.reset_button = MDFillRoundFlatButton(
+        self.reset_button = MDRaisedButton(
             text="New Conversation",
             size_hint=(None, None),
             width=dp(200),
@@ -129,38 +124,36 @@ class ConversationScreen(MDScreen):
         reset_container.add_widget(self.reset_button)
         layout.add_widget(reset_container)
         
-        # Conversation messages container
-        scroll = MDScrollView(size_hint=(1, 1))
-        self.conversation_layout = MDBoxLayout(
+        # Conversation messages area
+        self.messages_scroll = MDScrollView(size_hint=(1, 0.7))
+        self.messages_layout = MDBoxLayout(
             orientation='vertical',
-            spacing=dp(10),
-            padding=dp(16),
-            size_hint_y=None
-        )
-        self.conversation_layout.bind(minimum_height=self.conversation_layout.setter('height'))
-        scroll.add_widget(self.conversation_layout)
-        layout.add_widget(scroll)
-        
-        # Summary options container
-        self.summary_layout = MDBoxLayout(
-            orientation='vertical',
-            spacing=dp(10),
-            padding=dp(16),
+            spacing=dp(8),
             size_hint_y=None,
-            height=dp(200)
+            padding=[dp(8), dp(8), dp(8), dp(8)]
         )
+        self.messages_layout.bind(minimum_height=self.messages_layout.setter('height'))
+        self.messages_scroll.add_widget(self.messages_layout)
+        layout.add_widget(self.messages_scroll)
         
-        # Summary prompt
-        summary_prompt = MDLabel(
-            text="What is this conversation about?",
+        # Summary question
+        self.question_label = MDLabel(
+            text="What is the main topic of this conversation?",
             halign="center",
             size_hint_y=None,
-            height=dp(40)
+            height=dp(48)
         )
-        self.summary_layout.add_widget(summary_prompt)
+        layout.add_widget(self.question_label)
         
-        # Summary buttons will be added dynamically
-        layout.add_widget(self.summary_layout)
+        # Summary options buttons
+        self.options_layout = MDBoxLayout(
+            orientation='vertical',
+            spacing=dp(8),
+            size_hint_y=None,
+            height=dp(180),
+            padding=[dp(16), dp(8), dp(16), dp(8)]
+        )
+        layout.add_widget(self.options_layout)
         
         return layout
     
@@ -185,170 +178,107 @@ class ConversationScreen(MDScreen):
     def select_topic(self, topic):
         settings = JsonStore('settings.json')
         if settings.exists('language') and settings.exists('difficulty'):
-            self.current_language = settings.get('language')['value']
-            self.current_difficulty = settings.get('difficulty')['value']
-            self.current_topic = topic
-            self.load_conversation()
-    
-    def load_conversation(self):
-        with self.db() as db:
-            # Get random conversation for the topic
-            db.cursor.execute("""
-                SELECT ce.exercise_id, ce.conversation_order, ce.speaker, ce.message, cs.summary
-                FROM conversation_exercises ce
-                JOIN exercises_info ei ON ce.exercise_id = ei.id
-                JOIN topics t ON ei.topic_id = t.id
-                JOIN difficulties d ON ei.difficulty_id = d.id
-                JOIN languages l ON ei.language_id = l.id
-                JOIN conversation_summaries cs ON ce.exercise_id = cs.exercise_id
-                WHERE t.topic = ? AND d.difficulty_level = ? AND l.language = ?
-                ORDER BY RANDOM()
-                LIMIT 1
-            """, (self.current_topic, self.current_difficulty, self.current_language))
+            language = settings.get('language')['value']
+            difficulty = settings.get('difficulty')['value']
             
-            conversation = db.cursor.fetchall()
-            if conversation:
-                exercise_id = conversation[0]['exercise_id']
-                
-                # Get all messages for this exercise
+            with self.db() as db:
+                # Get a random exercise_id for the selected topic
                 db.cursor.execute("""
-                    SELECT conversation_order, speaker, message
-                    FROM conversation_exercises
-                    WHERE exercise_id = ?
-                    ORDER BY conversation_order
-                """, (exercise_id,))
-                messages = db.cursor.fetchall()
+                    SELECT DISTINCT ce.exercise_id 
+                    FROM conversation_exercises ce
+                    JOIN exercises_info ei ON ce.exercise_id = ei.id
+                    JOIN topics t ON ei.topic_id = t.id
+                    JOIN languages l ON ei.language_id = l.id
+                    JOIN difficulties d ON ei.difficulty_id = d.id
+                    WHERE t.topic = ? AND l.language = ? AND d.difficulty_level = ?
+                    ORDER BY RANDOM() LIMIT 1
+                """, (topic, language, difficulty))
                 
-                # Get correct summary and two random other summaries
-                db.cursor.execute("""
-                    SELECT summary FROM conversation_summaries
-                    WHERE exercise_id != ?
-                    ORDER BY RANDOM() LIMIT 2
-                """, (exercise_id,))
-                other_summaries = [row['summary'] for row in db.cursor.fetchall()]
-                
-                self.correct_summary = conversation[0]['summary']
-                self.display_conversation(messages, self.correct_summary, other_summaries)
+                result = db.cursor.fetchone()
+                if result:
+                    exercise_id = result[0]
+                    self.current_exercise_id = exercise_id
+                    self.load_conversation(exercise_id)
+                    self.switch_to_exercise()
     
-
-    def display_conversation(self, messages, correct_summary, other_summaries):
-        # Switch to exercise view
+    def load_conversation(self, exercise_id):
+        with self.db() as db:
+            # Get conversation messages
+            db.cursor.execute("""
+                SELECT speaker, message, conversation_order 
+                FROM conversation_exercises 
+                WHERE exercise_id = ? 
+                ORDER BY conversation_order
+            """, (exercise_id,))
+            messages = db.cursor.fetchall()
+            
+            # Get correct summary
+            db.cursor.execute("""
+                SELECT summary 
+                FROM conversation_summaries 
+                WHERE exercise_id = ?
+            """, (exercise_id,))
+            correct_summary = db.cursor.fetchone()[0]
+            self.current_summary = correct_summary
+            
+            # Get two random different summaries
+            db.cursor.execute("""
+                SELECT summary 
+                FROM conversation_summaries 
+                WHERE exercise_id != ? 
+                ORDER BY RANDOM() 
+                LIMIT 2
+            """, (exercise_id,))
+            other_summaries = [row[0] for row in db.cursor.fetchall()]
+            
+            # Display conversation
+            self.messages_layout.clear_widgets()
+            for msg in messages:
+                is_right = "2" in msg['speaker'].lower()
+                self.messages_layout.add_widget(
+                    MessageBubble(msg['speaker'], msg['message'], is_right)
+                )
+            
+            # Create and shuffle summary options
+            summary_options = [correct_summary] + other_summaries
+            random.shuffle(summary_options)
+            
+            # Create summary buttons
+            self.options_layout.clear_widgets()
+            for summary in summary_options:
+                btn = MDRaisedButton(
+                    text=summary,
+                    size_hint=(1, None),
+                    height=dp(48),
+                    md_bg_color=(0.2, 0.6, 1, 1)
+                )
+                btn.bind(on_release=lambda x, s=summary: self.check_answer(s))
+                self.options_layout.add_widget(btn)
+    
+    def check_answer(self, selected_summary):
+        # Get all buttons
+        for child in self.options_layout.children:
+            if isinstance(child, MDRaisedButton):
+                if child.text == selected_summary:
+                    # Update color based on correctness
+                    if selected_summary == self.current_summary:
+                        child.md_bg_color = (0, 0.8, 0, 1)  # Green for correct
+                    else:
+                        child.md_bg_color = (0.8, 0, 0, 1)  # Red for incorrect
+    
+    def reset_exercise(self, *args):
+        if self.current_exercise_id:
+            self.load_conversation(self.current_exercise_id)
+    
+    def switch_to_exercise(self):
         self.main_layout.clear_widgets()
         self.main_layout.add_widget(self.exercise_view)
-        
-        # Clear previous conversation
-        self.conversation_layout.clear_widgets()
-        self.summary_layout.clear_widgets()
-        self.speaker_colors = {}
-        
-        # Add messages
-        for msg in messages:
-            if msg['speaker'] not in self.speaker_colors:
-                self.speaker_colors[msg['speaker']] = len(self.speaker_colors) + 1
-            
-            speaker_num = self.speaker_colors[msg['speaker']]
-            color = self.colors[f'speaker{speaker_num}']
-            pos_hint = {'left': 1} if speaker_num == 1 else {'right': 1}
-            
-            bubble = MessageBubble(
-                text=msg['message'],
-                speaker=msg['speaker'],
-                background_color=[color[0], color[1], color[2], 0.8],
-                size_hint_x=0.8,
-                pos_hint=pos_hint
-            )
-            self.conversation_layout.add_widget(bubble)
-        
-        # Add summary prompt
-        summary_prompt = MDLabel(
-            text="What is this conversation about?",
-            halign="center",
-            size_hint_y=None,
-            height=dp(40)
-        )
-        self.summary_layout.add_widget(summary_prompt)
-        
-        # Create and shuffle summary options
-        summaries = [correct_summary] + other_summaries
-        random.shuffle(summaries)
-        
-        # Add summary buttons
-        for summary in summaries:
-            # Create a container for the button
-            button_container = MDBoxLayout(
-                orientation='vertical',
-                size_hint_y=None,
-                height=dp(80),  # Adjust this value based on your needs
-                padding=[dp(10), dp(5)],
-                spacing=dp(5)
-            )
-            
-            # Create the button with proper text wrapping
-            btn = MDFillRoundFlatButton(
-                text=summary,
-                size_hint=(0.9, None),
-                height=dp(70),  # Adjust this value based on your needs
-                pos_hint={'center_x': 0.5},
-                halign='center',
-                text_size=(dp(280), None),
-            )
-            
-            # Configure text properties for wrapping
-            btn.text_size = (dp(280), None)  # Fixed width for text
-            btn.line_height = 1.2
-            btn.halign = 'center'
-            
-            # Style the button
-            btn.md_bg_color = (0.9, 0.9, 0.9, 1)
-            btn.text_color = (0, 0, 0, 1)
-            
-            # Bind the button click event
-            btn.bind(on_release=lambda x, s=summary: self.check_summary(s))
-            
-            # Add the button to its container
-            button_container.add_widget(btn)
-            
-            # Add the container to the summary layout
-            self.summary_layout.add_widget(button_container)
-            
-            # Add spacing between buttons
-            spacing = MDBoxLayout(
-                size_hint_y=None,
-                height=dp(10)
-            )
-            self.summary_layout.add_widget(spacing)
-        
-        # Update summary layout height based on content
-        total_height = sum(child.height for child in self.summary_layout.children)
-        self.summary_layout.height = total_height + dp(20)  # Add some padding
-    def check_summary(self, selected_summary):
-        # Loop through direct children of summary_layout
-        for button in self.summary_layout.children:
-            if isinstance(button, MDFillRoundFlatButton):
-                if button.text == selected_summary:
-                    if selected_summary == self.correct_summary:
-                        # Selected correct answer - turn green
-                        button.md_bg_color = (0, 0.8, 0, 1)  # Bright green
-                        button.text_color = (1, 1, 1, 1)  # White text
-                    else:
-                        # Selected wrong answer - turn red
-                        button.md_bg_color = (0.8, 0, 0, 1)  # Bright red
-                        button.text_color = (1, 1, 1, 1)  # White text
-                        # Find and highlight correct answer
-                        for other_button in self.summary_layout.children:
-                            if isinstance(other_button, MDFillRoundFlatButton) and other_button.text == self.correct_summary:
-                                other_button.md_bg_color = (0, 0.8, 0, 1)  # Bright green
-                                other_button.text_color = (1, 1, 1, 1)  # White text
-                
-                #button.disabled = True  # Disable all buttons after selection
-    def reset_exercise(self, *args):
-        if self.current_topic:
-            self.load_conversation()
     
     def return_to_topics(self):
         self.main_layout.clear_widgets()
         self.main_layout.add_widget(self.topic_view)
-        self.current_topic = None
+        self.current_summary = None
+        self.current_exercise_id = None
     
     def go_back_to_home(self):
         self.manager.current = 'home'
