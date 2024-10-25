@@ -1,0 +1,67 @@
+[
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "Combien de frères et sœurs as-tu ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "Je suis le troisième enfant de ma famille."
+            }
+        ],
+        "conversation_summary": "A conversation asking about the number of siblings."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "Cette robe est très élégante. Combien l'a-t-elle coûtée ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "Elle a coûté 200 euros."
+            }
+        ],
+        "conversation_summary": "A conversation about the price of a dress."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "Tu as passé beaucoup de temps à la campagne cet été ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "Oui, j'ai passé les six premières semaines à mon grand-père à la campagne."
+            }
+        ],
+        "conversation_summary": "A conversation about spending time at the countryside."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "Pourquoi te tiens-tu là ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "Je m'attends à mon frère qui fait le tour de la ville pour lui remonter le moral."
+            }
+        ],
+        "conversation_summary": "A conversation about waiting for someone."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "Cette somme est énorme. Comment tu l'as pu économiser ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "J'ai commencé à économiser dès mon premier salaire. En fait, j'ai économisé une somme totale de 3000 euros."
+            }
+        ],
+        "conversation_summary": "A conversation about saving a large sum of money."
+    }
+]

@@ -1,0 +1,42 @@
+[
+    {
+        "English": "hour",
+        "French": "heure"
+    },
+    {
+        "English": "minute",
+        "French": "minute"
+    },
+    {
+        "English": "second",
+        "French": "seconde"
+    },
+    {
+        "English": "day",
+        "French": "jour"
+    },
+    {
+        "English": "night",
+        "French": "nuit"
+    },
+    {
+        "English": "morning",
+        "French": "matin"
+    },
+    {
+        "English": "noon",
+        "French": "midi"
+    },
+    {
+        "English": "afternoon",
+        "French": "après-midi"
+    },
+    {
+        "English": "evening",
+        "French": "soir"
+    },
+    {
+        "English": "weekend",
+        "French": "week-end"
+    }
+]
