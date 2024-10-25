@@ -4,9 +4,41 @@ import os
 import re
 from tqdm import tqdm
 from assistants import default_conversation_assistants, default_translation_assistants, default_pairs_assistants
-from assistants import blank_conversation_assistants, blank_translation_assistants, blank_pairs_assistants
 
-
+def validate_json_structure(response_json, language, lesson_kind):
+    if not isinstance(response_json, list):
+        return False
+    
+    if lesson_kind == 'conversations':
+        # Get structure from default assistant
+        sample = json.loads(default_conversation_assistants[language]["content"])
+        required_keys = set(sample[0].keys())  # conversation, conversation_summary
+        conversation_keys = set(sample[0]["conversation"][0].keys())  # speaker, message
+        
+        for item in response_json:
+            if not set(item.keys()) == required_keys:
+                return False
+            if not isinstance(item["conversation"], list):
+                return False
+            for message in item["conversation"]:
+                if not set(message.keys()) == conversation_keys:
+                    return False
+    
+    elif lesson_kind in ['pairs', 'translations']:
+        # Get structure from default assistant
+        sample = None
+        if lesson_kind == 'pairs':
+            sample = json.loads(default_pairs_assistants[language]["content"])
+        else:
+            sample = json.loads(default_translation_assistants[language]["content"])
+        
+        required_keys = set(sample[0].keys())  # English, target language
+        
+        for item in response_json:
+            if not set(item.keys()) == required_keys:
+                return False
+            
+    return True
 
 def load_assistant_content(language, lesson_kind, topic, level):
     folder = f"../../{language}/{lesson_kind}/{topic}/{level}/"
@@ -73,7 +105,7 @@ def generate_lessons_data(language, level, topic, N_runs=5, lesson_kinds=['conve
 
                 user2 = {
                     "role": "user",
-                    "content": f"Great! Now, generate 5 more varied examples for {lesson_kind} exercises at the {level} level, focusing on the topic '{topic}'. Ensure that the exercises are well-structured, cover different aspects of the language, and maintain the JSON format in your response."
+                    "content": f"Perfect! Now, generate 5 more varied examples for {lesson_kind} exercises at the {level} level, focusing on the topic '{topic}'. Ensure that the exercises are well-structured, cover different aspects of the language, and maintain the JSON format in your response. Use the exact same naming convention for your JSON keys, do not create new ones."
                 }
 
                 completion = client.chat.completions.create(
@@ -98,6 +130,18 @@ def generate_lessons_data(language, level, topic, N_runs=5, lesson_kinds=['conve
 def dump_response(response, language, topic, level, idx, run, folder):
     try:
         response_json = json.loads(response)
+        
+        # Extract lesson kind from folder path
+        lesson_kind = folder.split('/')[-4]  # Based on path structure ../../language/lesson_kind/topic/level/
+        
+        # Validate JSON structure
+        if not validate_json_structure(response_json, language, lesson_kind):
+            broken_folder = os.path.join(folder, "broken")
+            os.makedirs(broken_folder, exist_ok=True)
+            with open(os.path.join(broken_folder, f"{language}_{topic}_{level}_{idx}_invalid_structure_{run}.json"), "w") as f:
+                f.write(response)
+            return
+            
         os.makedirs(folder, exist_ok=True)
         with open(os.path.join(folder, f"{language}_{topic}_{level}_{idx}_{run}.json"), "w") as f:
             json.dump(response_json, f, indent=4, ensure_ascii=False)
