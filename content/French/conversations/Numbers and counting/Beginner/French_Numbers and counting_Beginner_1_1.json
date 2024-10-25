@@ -1,0 +1,95 @@
+[
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "Combien de personnes y a-t-il dans la famille?"
+            },
+            {
+                "speaker": "person2",
+                "message": "Il y a quatre personnes dans ma famille."
+            },
+            {
+                "speaker": "person1",
+                "message": "Quels sont leurs noms ?"
+            }
+        ],
+        "conversation_summary": "A conversation asking about the number of people in a family and their names."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "Combien de livres as-tu lus ce mois-ci ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "J'ai lu cinq livres ce mois-ci."
+            },
+            {
+                "speaker": "person1",
+                "message": "De quels genres ?"
+            }
+        ],
+        "conversation_summary": "A conversation discussing the number of books read and their genres."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "Combien de temps faut-il pour aller au travail ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "Il faut deux heures pour aller au travail."
+            },
+            {
+                "speaker": "person1",
+                "message": "Y a-t-il de la circulation sur le chemin ?"
+            }
+        ],
+        "conversation_summary": "A conversation asking about travel time to work and traffic conditions."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "Combien de s'il te plaît, donne-moi le nombre de chiffres dans 507 ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "Il y a trois chiffres dans 507."
+            },
+            {
+                "speaker": "person1",
+                "message": "Très bien, et combien y a-t-il de lettres dans 'cinq' ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "Il y a quatre lettres dans 'cinq'."
+            }
+        ],
+        "conversation_summary": "A conversation asking for the number of digits and letters in a specific number and word."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "Quand est-ce que tu as visité Paris pour la première fois ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "Je l'ai visité l'année dernière, en juin."
+            },
+            {
+                "speaker": "person1",
+                "message": "As-tu visité d'autres villes en France ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "Oui, j'ai aussi visité Lyon et Marseille."
+            }
+        ],
+        "conversation_summary": "A conversation about visiting cities in France and the order in which they were visited."
+    }
+]

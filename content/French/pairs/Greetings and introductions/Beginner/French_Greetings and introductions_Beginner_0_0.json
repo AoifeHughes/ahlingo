@@ -1,0 +1,38 @@
+[
+    {
+        "English": "happy",
+        "French": "heureux"
+    },
+    {
+        "English": "hello",
+        "French": "bonjour"
+    },
+    {
+        "English": "friend",
+        "French": "ami"
+    },
+    {
+        "English": "please",
+        "French": "s'il vous plaît"
+    },
+    {
+        "English": "thank you",
+        "French": "merci"
+    },
+    {
+        "English": "goodbye",
+        "French": "au revoir"
+    },
+    {
+        "English": "yes",
+        "French": "oui"
+    },
+    {
+        "English": "no",
+        "French": "non"
+    },
+    {
+        "English": "please help",
+        "French": "veuillez m'aider"
+    }
+]

@@ -1,0 +1,42 @@
+[
+    {
+        "English": "hour",
+        "Spanish": "hora"
+    },
+    {
+        "English": "minute",
+        "Spanish": "minuto"
+    },
+    {
+        "English": "second",
+        "Spanish": "segundo"
+    },
+    {
+        "English": "clock",
+        "Spanish": "reloj"
+    },
+    {
+        "English": "day",
+        "Spanish": "día"
+    },
+    {
+        "English": "night",
+        "Spanish": "noche"
+    },
+    {
+        "English": "morning",
+        "Spanish": "mañana"
+    },
+    {
+        "English": "evening",
+        "Spanish": "tarde"
+    },
+    {
+        "English": "midnight",
+        "Spanish": "medianoche"
+    },
+    {
+        "English": "noon",
+        "Spanish": "mediodía"
+    }
+]

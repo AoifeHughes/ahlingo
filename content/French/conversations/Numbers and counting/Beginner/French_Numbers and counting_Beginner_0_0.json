@@ -1,0 +1,87 @@
+[
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "Combien d'enfants as-tu ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "J'ai trois enfants."
+            },
+            {
+                "speaker": "person1",
+                "message": "C'est intéressant. Je n'ai qu'un enfant."
+            }
+        ],
+        "conversation_summary": "A conversation about the number of children each person has."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "Quel âge as-tu ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "J'ai trente ans."
+            },
+            {
+                "speaker": "person1",
+                "message": "J'ai vingt ans."
+            }
+        ],
+        "conversation_summary": "A conversation about the ages of each person."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "Combien de chambres as-tu dans ta maison ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "J'ai deux chambres."
+            },
+            {
+                "speaker": "person1",
+                "message": "Moins que moi. J'ai cinq chambres."
+            }
+        ],
+        "conversation_summary": "A conversation about the number of rooms in each person's house."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "Combien de langues parles-tu ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "Je parle deux langues."
+            },
+            {
+                "speaker": "person1",
+                "message": "Je connais trois langues."
+            }
+        ],
+        "conversation_summary": "A conversation about the number of languages each person can speak."
+    },
+    {
+        "conversation": [
+            {
+                "speaker": "person1",
+                "message": "Combien de livres as-tu lus ce mois-ci ?"
+            },
+            {
+                "speaker": "person2",
+                "message": "J'ai lu cinq livres."
+            },
+            {
+                "speaker": "person1",
+                "message": "Moins que moi. J'ai lu dix livres ce mois-ci."
+            }
+        ],
+        "conversation_summary": "A conversation about the number of books each person has read this month."
+    }
+]
