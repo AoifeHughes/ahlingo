@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Path to the model
-MODEL_PATH="/Users/ahughes/git/LLMs/LMStudio/QuantFactory/dolphin-2.9-llama3-8b-GGUF/dolphin-2.9-llama3-8b.Q4_K_M.gguf"
+MODEL_PATH="/Users/ahughes/git/LLMs/LMStudio/lmstudio-community/Phi-3.1-mini-4k-instruct-GGUF/Phi-3.1-mini-4k-instruct-Q4_K_M.gguf"
 
 # Server configuration
 CONTEXT_SIZE=4096
