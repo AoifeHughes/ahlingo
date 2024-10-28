@@ -152,7 +152,7 @@ class TranslationExerciseScreen(BaseExerciseScreen):
             text="",
             halign="center",
             size_hint_y=None,
-            height=dp(80),  # Reduced from 100
+            height=dp(25),  # Reduced from 100
             font_style="H5",
             padding=[0, dp(8)]  # Add vertical padding
         )
@@ -163,7 +163,7 @@ class TranslationExerciseScreen(BaseExerciseScreen):
             hint_text="Your translation will appear here",
             readonly=True,
             size_hint_y=None,
-            height=dp(80),  # Reduced from 100
+            height=dp(25),  # Reduced from 100
             multiline=True,
             padding=[0, dp(8)]  # Add vertical padding
         )
@@ -288,13 +288,14 @@ class TranslationExerciseScreen(BaseExerciseScreen):
             self.words_layout.reposition_children()
             self.update_flow_layout_height()
             self.update_score()
+
     def update_flow_layout_height(self, *args):
         """Update FlowLayout height based on content."""
         if hasattr(self, 'words_layout'):
             # Calculate needed height based on children
             total_height = 0
             current_row_width = 0
-            row_height = dp(50)  # Height of one row including spacing
+            row_height = dp(85)  # Height of one row including spacing
             
             for child in self.words_layout.children:
                 if current_row_width + child.width + dp(10) > self.words_layout.width:
