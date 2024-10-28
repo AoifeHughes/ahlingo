@@ -141,7 +141,7 @@ class HomeScreen(BaseScreen):
             )
             button_content.add_widget(icon_button)
 
-            # Add text
+            # Add text with on_release event
             button = StandardButton(
                 text=text,
                 theme_text_color="Custom",
@@ -149,7 +149,8 @@ class HomeScreen(BaseScreen):
                 size_hint=(1, None),
                 height=dp(48),
                 md_bg_color=[0, 0, 0, 0],
-                pos_hint={"center_x": 0.5}
+                pos_hint={"center_x": 0.5},
+                on_release=callback  # Added callback here
             )
             button_content.add_widget(button)
             
@@ -206,7 +207,8 @@ class HomeScreen(BaseScreen):
             size_hint=(1, None),
             height=dp(48),
             md_bg_color=[0, 0, 0, 0],
-            pos_hint={"center_y": 0.5}
+            pos_hint={"center_y": 0.5},
+            on_release=self.go_to_revise_mistakes  # Added callback here
         )
         revise_content.add_widget(revise_button)
         

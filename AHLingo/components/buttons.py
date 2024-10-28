@@ -10,7 +10,7 @@ class StandardButton(MDRaisedButton):
 
     def __init__(self, **kwargs):
         super().__init__(
-            width=dp(300),  # Increased from 200
+            # width=dp(300),  # Increased from 200
             # height=dp(80),  # Increased from 48
             # pos_hint={"center_x": 0.5},
             **kwargs
