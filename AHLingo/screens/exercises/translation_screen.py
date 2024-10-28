@@ -67,7 +67,7 @@ class FlowLayout(FloatLayout):
 class ScoreLabel(MDLabel):
     """Custom label for displaying scores."""
     def __init__(self, halign="left", **kwargs):
-        super().__init__(halign=halign, size_hint_y=None, height=dp(50), **kwargs)
+        super().__init__(halign=halign, size_hint_y=None, **kwargs)
 
 
 class WordButton(MDRaisedButton):
@@ -112,42 +112,49 @@ class TranslationExerciseScreen(BaseExerciseScreen):
         # Add reset button
         self.reset_button.text = "Reset Exercise"
 
-        # Score layout
+        # Score layout with flexible height
         score_layout = MDBoxLayout(
             orientation="horizontal",
             size_hint_y=None,
-            height=dp(50),
+            height=dp(40),  # Reduced from 50
             padding=[dp(16), 0, dp(16), 0],
         )
 
         self.score_label = ScoreLabel(
-            text="Correct: 0/0", halign="left", size_hint_x=0.5
+            text="Correct: 0/0", 
+            halign="left", 
+            size_hint_x=0.5,
+            height=dp(40)  # Match parent height
         )
         score_layout.add_widget(self.score_label)
 
         self.incorrect_label = ScoreLabel(
-            text="Incorrect: 0", halign="right", size_hint_x=0.5
+            text="Incorrect: 0", 
+            halign="right", 
+            size_hint_x=0.5,
+            height=dp(40)  # Match parent height
         )
         score_layout.add_widget(self.incorrect_label)
 
         layout.add_widget(score_layout)
 
-        # Translation layout
+        # Translation layout with adaptive height
         self.translation_layout = MDBoxLayout(
             orientation="vertical",
-            spacing=dp(20),
-            padding=dp(16),
-            size_hint_y=None,
-            height=dp(500),
+            spacing=dp(16),  # Reduced from 20
+            padding=[dp(16), dp(8), dp(16), dp(8)],  # Reduced vertical padding
+            size_hint_y=None
         )
+        self.translation_layout.bind(minimum_height=self.translation_layout.setter('height'))
 
         # Original phrase to translate
         self.phrase_label = MDLabel(
             text="",
             halign="center",
             size_hint_y=None,
-            height=dp(100),
+            height=dp(80),  # Reduced from 100
             font_style="H5",
+            padding=[0, dp(8)]  # Add vertical padding
         )
         self.translation_layout.add_widget(self.phrase_label)
 
@@ -156,17 +163,24 @@ class TranslationExerciseScreen(BaseExerciseScreen):
             hint_text="Your translation will appear here",
             readonly=True,
             size_hint_y=None,
-            height=dp(100),
+            height=dp(80),  # Reduced from 100
             multiline=True,
+            padding=[0, dp(8)]  # Add vertical padding
         )
         self.translation_layout.add_widget(self.answer_field)
 
-        # Word buttons container using FlowLayout
+        # Word buttons container with adaptive height
         self.words_layout = FlowLayout(
             size_hint_y=None,
-            height=dp(150)  # Initial height, will adjust automatically
+            height=dp(120)  # Initial height, will adjust as needed
         )
+        # Bind size to ensure proper height calculation
+        #self.words_layout.bind(minimum_height=self.words_layout.setter('height'))
         self.translation_layout.add_widget(self.words_layout)
+
+        # Spacer to push content up
+        spacer = MDBoxLayout(size_hint_y=None, height=dp(20))
+        self.translation_layout.add_widget(spacer)
 
         # Submit button
         self.submit_button = StandardButton(
@@ -175,16 +189,26 @@ class TranslationExerciseScreen(BaseExerciseScreen):
             disabled=True,
             size_hint=(None, None),
             width=dp(200),
-            height=dp(50),
+            height=dp(48),  # Slightly reduced height
             pos_hint={'center_x': 0.5}
         )
         self.translation_layout.add_widget(self.submit_button)
 
-        self.game_container = ScrollableContent(self.translation_layout)
+        # Bottom spacer for padding
+        bottom_spacer = MDBoxLayout(size_hint_y=None, height=dp(20))
+        self.translation_layout.add_widget(bottom_spacer)
+
+        # Create scrollable container with proper sizing
+        self.game_container = ScrollableContent(
+            self.translation_layout,
+            do_scroll_x=False,
+            do_scroll_y=True,
+            size_hint=(1, 1),
+            scroll_type=['bars', 'content']
+        )
         layout.add_widget(self.game_container)
 
         return layout
-
     def display_topics(self, topics):
         """Display available topics."""
         self.topics_list.clear()
@@ -260,9 +284,30 @@ class TranslationExerciseScreen(BaseExerciseScreen):
                 self.word_buttons.append(btn)
                 self.words_layout.add_widget(btn)
 
-            # Trigger layout update
+            # Update layout heights
             self.words_layout.reposition_children()
+            self.update_flow_layout_height()
             self.update_score()
+    def update_flow_layout_height(self, *args):
+        """Update FlowLayout height based on content."""
+        if hasattr(self, 'words_layout'):
+            # Calculate needed height based on children
+            total_height = 0
+            current_row_width = 0
+            row_height = dp(50)  # Height of one row including spacing
+            
+            for child in self.words_layout.children:
+                if current_row_width + child.width + dp(10) > self.words_layout.width:
+                    total_height += row_height
+                    current_row_width = child.width + dp(10)
+                else:
+                    current_row_width += child.width + dp(10)
+            
+            # Add height for the last row
+            total_height += row_height
+            
+            # Set minimum height with some padding
+            self.words_layout.height = total_height + dp(20)
 
     def word_button_pressed(self, button):
         """Handle word button press."""
