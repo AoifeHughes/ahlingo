@@ -83,6 +83,7 @@ class WordButton(MDRaisedButton):
         self.height = dp(40)
         # Adjust width based on text length
         self.width = max(len(text) * dp(15), dp(80))  # Minimum width of 80dp
+        self.in_use = False
 
 
 class TranslationExerciseScreen(BaseExerciseScreen):
@@ -265,16 +266,20 @@ class TranslationExerciseScreen(BaseExerciseScreen):
 
     def word_button_pressed(self, button):
         """Handle word button press."""
-        if button.enabled:
-            # Disable the button and add word to answer
-            button.enabled = False
-            button.disabled = True
+        if not button.in_use:
+            button.in_use = True
             self.answer_words.append(button.text)
             self.update_answer_field()
-            
             # Enable submit button if all words are used
             if all(not btn.enabled for btn in self.word_buttons):
                 self.submit_button.disabled = False
+            # change button color to indicate selection
+            button.md_bg_color = [0.5, 0.5, 0.5, 1]
+        elif button.in_use:
+            button.in_use = False
+            self.answer_words.remove(button.text)
+            self.update_answer_field()
+            self.submit_button.disabled = True
 
     def update_answer_field(self):
         """Update the answer field with current words."""
