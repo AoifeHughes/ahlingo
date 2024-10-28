@@ -309,7 +309,7 @@ def populate_database():
                             language,
                             level,
                             topic,
-                            N_runs=2,
+                            N_runs=5,
                             lesson_kinds=["conversations", "pairs", "translations"],
                         ):
                             process_response(

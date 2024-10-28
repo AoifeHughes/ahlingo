@@ -1,6 +1,6 @@
 #!/bin/bash
 
-MODEL_PATH="/Users/ahughes/git/LLMs/LMStudio/bartowski/Llama-3.2-3B-Instruct-GGUF/Llama-3.2-3B-Instruct-Q8_0.gguf"
+MODEL_PATH="/Users/ahughes/git/LLMs/LMStudio/QuantFactory/Mistral-Nemo-Instruct-2407-GGUF/Mistral-Nemo-Instruct-2407.Q4_0.gguf"
 CONTEXT_SIZE=2048
 SERVER_HOST="127.0.0.1"
 SERVER_PORT="8080"
