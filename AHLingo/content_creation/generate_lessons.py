@@ -11,10 +11,9 @@ from .assistants import (
     default_translation_assistants,
 )
 import uuid
-import html
 import logging
 
-# logging.disable(logging.CRITICAL)
+logging.disable(logging.CRITICAL)
 
 
 def clean_text(text: str) -> str:

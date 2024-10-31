@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 from AHLingo.screens.base_screen import BaseScreen
-from AHLingo.components.layouts import ContentLayout
-from AHLingo.components.toolbars import StandardToolbar
 from AHLingo.components.buttons import StandardButton
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.gridlayout import MDGridLayout

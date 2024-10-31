@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from .base_exercise import BaseExerciseScreen
-from AHLingo.components.layouts import ContentLayout, ScrollableContent
+from AHLingo.components.layouts import ScrollableContent
 from AHLingo.components.buttons import StandardButton
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.label import MDLabel
@@ -10,7 +10,6 @@ from kivymd.uix.textfield import MDTextField
 from kivy.metrics import dp
 from kivy.properties import BooleanProperty
 from kivy.uix.floatlayout import FloatLayout
-from kivy.core.window import Window
 import random
 
 
