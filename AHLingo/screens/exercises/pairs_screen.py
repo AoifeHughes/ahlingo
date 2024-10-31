@@ -263,8 +263,10 @@ class PairsExerciseScreen(BaseExerciseScreen):
                 return
             self.lang2_is_selected = False
             return
-        
-        if (button.lang_num == 1 and self.lang1_is_selected) or (button.lang_num == 2 and self.lang2_is_selected):
+
+        if (button.lang_num == 1 and self.lang1_is_selected) or (
+            button.lang_num == 2 and self.lang2_is_selected
+        ):
             return
 
         # If this is the first button selected
@@ -328,8 +330,6 @@ class PairsExerciseScreen(BaseExerciseScreen):
         self.lang1_is_selected = False
         self.lang2_is_selected = False
         button.set_state("default")
-
-
 
     def update_score(self):
         """Update the score display."""
