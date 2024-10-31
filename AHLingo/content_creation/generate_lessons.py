@@ -13,7 +13,7 @@ from .assistants import (
 import uuid
 import logging
 
-logging.disable(logging.CRITICAL)
+#logging.disable(logging.CRITICAL)
 
 
 def clean_text(text: str) -> str:

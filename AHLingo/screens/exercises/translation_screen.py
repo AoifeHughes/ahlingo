@@ -5,7 +5,7 @@ from AHLingo.components.buttons import StandardButton
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.label import MDLabel
 from kivymd.uix.list import OneLineListItem
-from kivymd.uix.button import MDRaisedButton
+from AHLingo.components.buttons import OptionButton
 from kivymd.uix.textfield import MDTextField
 from kivy.metrics import dp
 from kivy.properties import BooleanProperty
@@ -70,7 +70,7 @@ class ScoreLabel(MDLabel):
         super().__init__(halign=halign, size_hint_y=None, **kwargs)
 
 
-class WordButton(MDRaisedButton):
+class WordButton(OptionButton):
     """Button for individual words in the translation."""
 
     enabled = BooleanProperty(True)
@@ -85,6 +85,12 @@ class WordButton(MDRaisedButton):
         # Adjust width based on text length
         self.width = max(len(text) * dp(15), dp(80))  # Minimum width of 80dp
         self.in_use = False
+
+    def reset(self):
+        """Reset the button state."""
+        self.in_use = False
+        self.md_bg_color = self.original_color
+        self.disabled = False
 
 
 class TranslationExerciseScreen(BaseExerciseScreen):
@@ -155,7 +161,7 @@ class TranslationExerciseScreen(BaseExerciseScreen):
             text="",
             halign="center",
             size_hint_y=None,
-            height=dp(25),  # Reduced from 100
+            height=dp(50),  # Reduced from 100
             font_style="H5",
             padding=[0, dp(8)],  # Add vertical padding
         )
@@ -329,6 +335,8 @@ class TranslationExerciseScreen(BaseExerciseScreen):
             self.answer_words.remove(button.text)
             self.update_answer_field()
             self.submit_button.disabled = True
+            # change button color back to original
+            button.set_state("default")
 
     def update_answer_field(self):
         """Update the answer field with current words."""
