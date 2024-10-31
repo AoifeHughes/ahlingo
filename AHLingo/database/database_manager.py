@@ -154,7 +154,7 @@ class LanguageDB:
             SELECT DISTINCT
             ei.id as exercise_id,
             t.topic as exercise_topic,
-            CASE 
+            CASE
                 WHEN pe.id IS NOT NULL THEN 'Pairs'
                 WHEN ce.id IS NOT NULL THEN 'Conversation'
                 ELSE 'Unknown'

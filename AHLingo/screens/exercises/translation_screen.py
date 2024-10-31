@@ -16,7 +16,7 @@ import random
 
 class FlowLayout(FloatLayout):
     """Layout that flows widgets from left to right, wrapping to new rows as needed."""
-    
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.bind(size=self.reposition_children)
@@ -35,7 +35,7 @@ class FlowLayout(FloatLayout):
         # First pass: calculate rows
         for child in self.children:
             child_width = child.width + self.spacing
-            
+
             if row_width + child_width > max_width:
                 # Position widgets in current row
                 self._position_row(row_widgets, y)
@@ -66,12 +66,14 @@ class FlowLayout(FloatLayout):
 
 class ScoreLabel(MDLabel):
     """Custom label for displaying scores."""
+
     def __init__(self, halign="left", **kwargs):
         super().__init__(halign=halign, size_hint_y=None, **kwargs)
 
 
 class WordButton(MDRaisedButton):
     """Button for individual words in the translation."""
+
     enabled = BooleanProperty(True)
 
     def __init__(self, text="", index=0, **kwargs):
@@ -121,18 +123,18 @@ class TranslationExerciseScreen(BaseExerciseScreen):
         )
 
         self.score_label = ScoreLabel(
-            text="Correct: 0/0", 
-            halign="left", 
+            text="Correct: 0/0",
+            halign="left",
             size_hint_x=0.5,
-            height=dp(40)  # Match parent height
+            height=dp(40),  # Match parent height
         )
         score_layout.add_widget(self.score_label)
 
         self.incorrect_label = ScoreLabel(
-            text="Incorrect: 0", 
-            halign="right", 
+            text="Incorrect: 0",
+            halign="right",
             size_hint_x=0.5,
-            height=dp(40)  # Match parent height
+            height=dp(40),  # Match parent height
         )
         score_layout.add_widget(self.incorrect_label)
 
@@ -143,9 +145,11 @@ class TranslationExerciseScreen(BaseExerciseScreen):
             orientation="vertical",
             spacing=dp(16),  # Reduced from 20
             padding=[dp(16), dp(8), dp(16), dp(8)],  # Reduced vertical padding
-            size_hint_y=None
+            size_hint_y=None,
         )
-        self.translation_layout.bind(minimum_height=self.translation_layout.setter('height'))
+        self.translation_layout.bind(
+            minimum_height=self.translation_layout.setter("height")
+        )
 
         # Original phrase to translate
         self.phrase_label = MDLabel(
@@ -154,7 +158,7 @@ class TranslationExerciseScreen(BaseExerciseScreen):
             size_hint_y=None,
             height=dp(25),  # Reduced from 100
             font_style="H5",
-            padding=[0, dp(8)]  # Add vertical padding
+            padding=[0, dp(8)],  # Add vertical padding
         )
         self.translation_layout.add_widget(self.phrase_label)
 
@@ -165,17 +169,16 @@ class TranslationExerciseScreen(BaseExerciseScreen):
             size_hint_y=None,
             height=dp(25),  # Reduced from 100
             multiline=True,
-            padding=[0, dp(8)]  # Add vertical padding
+            padding=[0, dp(8)],  # Add vertical padding
         )
         self.translation_layout.add_widget(self.answer_field)
 
         # Word buttons container with adaptive height
         self.words_layout = FlowLayout(
-            size_hint_y=None,
-            height=dp(120)  # Initial height, will adjust as needed
+            size_hint_y=None, height=dp(120)  # Initial height, will adjust as needed
         )
         # Bind size to ensure proper height calculation
-        #self.words_layout.bind(minimum_height=self.words_layout.setter('height'))
+        # self.words_layout.bind(minimum_height=self.words_layout.setter('height'))
         self.translation_layout.add_widget(self.words_layout)
 
         # Spacer to push content up
@@ -190,7 +193,7 @@ class TranslationExerciseScreen(BaseExerciseScreen):
             size_hint=(None, None),
             width=dp(200),
             height=dp(48),  # Slightly reduced height
-            pos_hint={'center_x': 0.5}
+            pos_hint={"center_x": 0.5},
         )
         self.translation_layout.add_widget(self.submit_button)
 
@@ -204,11 +207,12 @@ class TranslationExerciseScreen(BaseExerciseScreen):
             do_scroll_x=False,
             do_scroll_y=True,
             size_hint=(1, 1),
-            scroll_type=['bars', 'content']
+            scroll_type=["bars", "content"],
         )
         layout.add_widget(self.game_container)
 
         return layout
+
     def display_topics(self, topics):
         """Display available topics."""
         self.topics_list.clear()
@@ -235,15 +239,17 @@ class TranslationExerciseScreen(BaseExerciseScreen):
                     (topic, settings["language"], settings["difficulty"]),
                 )
                 exercises = db.cursor.fetchall()
-                
+
                 if exercises:
                     self.exercises = []
                     for exercise in exercises:
-                        self.exercises.append({
-                            "id": exercise[0],
-                            "lang1": exercise[1],
-                            "lang2": exercise[2],
-                        })
+                        self.exercises.append(
+                            {
+                                "id": exercise[0],
+                                "lang1": exercise[1],
+                                "lang2": exercise[2],
+                            }
+                        )
 
                     random.shuffle(self.exercises)
                     self.total_exercises = len(self.exercises)
@@ -260,26 +266,24 @@ class TranslationExerciseScreen(BaseExerciseScreen):
         if self.current_exercise_index < len(self.exercises):
             current = self.exercises[self.current_exercise_index]
             self.current_exercise_id = current["id"]
-            
+
             # Display the phrase to translate
             self.phrase_label.text = current["lang1"]
-            
+
             # Clear previous state
             self.words_layout.clear_widgets()
             self.answer_field.text = ""
             self.word_buttons = []
             self.answer_words = []
             self.submit_button.disabled = True
-            
+
             # Split language_2_content into words and create buttons
             words = current["lang2"].split()
             random.shuffle(words)  # Randomize word order
-            
+
             for i, word in enumerate(words):
                 btn = WordButton(
-                    text=word,
-                    index=i,
-                    on_release=self.word_button_pressed
+                    text=word, index=i, on_release=self.word_button_pressed
                 )
                 self.word_buttons.append(btn)
                 self.words_layout.add_widget(btn)
@@ -291,22 +295,22 @@ class TranslationExerciseScreen(BaseExerciseScreen):
 
     def update_flow_layout_height(self, *args):
         """Update FlowLayout height based on content."""
-        if hasattr(self, 'words_layout'):
+        if hasattr(self, "words_layout"):
             # Calculate needed height based on children
             total_height = 0
             current_row_width = 0
             row_height = dp(85)  # Height of one row including spacing
-            
+
             for child in self.words_layout.children:
                 if current_row_width + child.width + dp(10) > self.words_layout.width:
                     total_height += row_height
                     current_row_width = child.width + dp(10)
                 else:
                     current_row_width += child.width + dp(10)
-            
+
             # Add height for the last row
             total_height += row_height
-            
+
             # Set minimum height with some padding
             self.words_layout.height = total_height + dp(20)
 
@@ -335,13 +339,13 @@ class TranslationExerciseScreen(BaseExerciseScreen):
         """Check if the answer is correct."""
         current = self.exercises[self.current_exercise_index]
         user_answer = " ".join(self.answer_words)
-        
+
         if user_answer == current["lang2"]:
             self.correct_answers += 1
             if not self.attempt_recorded:
                 self.record_attempt()
             self.current_exercise_index += 1
-            
+
             if self.current_exercise_index < self.total_exercises:
                 self.display_current_exercise()
         else:
@@ -353,12 +357,14 @@ class TranslationExerciseScreen(BaseExerciseScreen):
                 btn.enabled = True
                 btn.disabled = False
             self.submit_button.disabled = True
-        
+
         self.update_score()
 
     def update_score(self):
         """Update the score display."""
-        self.score_label.text = f"Correct: {self.correct_answers}/{self.total_exercises}"
+        self.score_label.text = (
+            f"Correct: {self.correct_answers}/{self.total_exercises}"
+        )
         self.incorrect_label.text = f"Incorrect: {self.incorrect_attempts}"
 
     def record_attempt(self):
@@ -369,7 +375,7 @@ class TranslationExerciseScreen(BaseExerciseScreen):
                 db.record_exercise_attempt(
                     settings["username"],
                     self.current_exercise_id,
-                    self.incorrect_attempts == 0
+                    self.incorrect_attempts == 0,
                 )
             self.attempt_recorded = True
 

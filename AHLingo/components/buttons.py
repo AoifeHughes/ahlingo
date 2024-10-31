@@ -3,8 +3,6 @@ from kivymd.uix.button import MDRaisedButton
 from kivy.metrics import dp
 
 
-
-
 class StandardButton(MDRaisedButton):
     """Standard button with consistent styling."""
 

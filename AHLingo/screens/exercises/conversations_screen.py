@@ -41,6 +41,7 @@ class ConversationSummaryButton(OptionButton):
 
 class QuestionLayout(ContentLayout):
     """Layout for the summary question and options."""
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.size_hint_y = None
@@ -50,10 +51,10 @@ class QuestionLayout(ContentLayout):
 
         # Question container to ensure fixed space
         question_container = MDBoxLayout(
-            orientation='vertical',
+            orientation="vertical",
             size_hint_y=None,
             height=dp(80),  # Fixed height for question
-            padding=[0, dp(8), 0, dp(8)]  # Add vertical padding
+            padding=[0, dp(8), 0, dp(8)],  # Add vertical padding
         )
 
         # Question label
@@ -62,8 +63,8 @@ class QuestionLayout(ContentLayout):
             halign="center",
             valign="center",  # Center text vertically
             size_hint_y=None,
-            height=dp(64),    # Increased height
-            font_style="H6"   # Larger font
+            height=dp(64),  # Increased height
+            font_style="H6",  # Larger font
         )
         question_container.add_widget(self.question_label)
         self.add_widget(question_container)
@@ -71,12 +72,13 @@ class QuestionLayout(ContentLayout):
         # Options container with remaining space
         self.options_layout = MDBoxLayout(
             orientation="vertical",
-            spacing=dp(12),     # Increased spacing between buttons
+            spacing=dp(12),  # Increased spacing between buttons
             size_hint_y=None,
-            height=dp(280),     # Increased height for buttons
-            padding=[dp(8), dp(4), dp(8), dp(4)]
+            height=dp(280),  # Increased height for buttons
+            padding=[dp(8), dp(4), dp(8), dp(4)],
         )
         self.add_widget(self.options_layout)
+
 
 class ConversationLayout(ContentLayout):
     """Layout for displaying the conversation messages."""
@@ -94,7 +96,9 @@ class ConversationExerciseScreen(BaseExerciseScreen):
 
     def __init__(self, db, **kwargs):
         super().__init__(db, **kwargs)
-        self.name = "conversations"  # Fixed: Changed from "conversation" to "conversations"
+        self.name = (
+            "conversations"  # Fixed: Changed from "conversation" to "conversations"
+        )
         self.current_summary = None
         self.current_exercise_id = None
         self.attempt_recorded = False
@@ -169,12 +173,14 @@ class ConversationExerciseScreen(BaseExerciseScreen):
                        FROM exercises_info e
                        JOIN topics t ON e.topic_id = t.id
                        WHERE e.id = ?""",
-                    (exercise_id,)
+                    (exercise_id,),
                 )
                 exercise_info = db.cursor.fetchone()
-                
+
                 if exercise_info:
-                    self.current_topic = exercise_info[0]  # Fixed: Changed from exercise_info["topic"] to exercise_info[0]
+                    self.current_topic = exercise_info[
+                        0
+                    ]  # Fixed: Changed from exercise_info["topic"] to exercise_info[0]
                     self.current_exercise_id = exercise_id
                     self.attempt_recorded = False
                     self.load_conversation(exercise_id, settings)
@@ -252,15 +258,13 @@ class ConversationExerciseScreen(BaseExerciseScreen):
         """Check if selected summary is correct and update UI."""
         if not self.attempt_recorded:
             is_correct = selected_summary == self.current_summary
-            
+
             # Record the attempt
             settings = self.get_user_settings()
             if settings and self.current_exercise_id:
                 with self.db() as db:
                     db.record_exercise_attempt(
-                        settings["username"],
-                        self.current_exercise_id,
-                        is_correct
+                        settings["username"], self.current_exercise_id, is_correct
                     )
                 self.attempt_recorded = True
 

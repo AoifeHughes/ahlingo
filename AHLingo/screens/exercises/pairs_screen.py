@@ -19,12 +19,13 @@ class ScoreLabel(MDLabel):
 class WordButton(OptionButton):
     """Button for word matching with game logic."""
 
-    def __init__(self, word="", pair_id=None, **kwargs):
+    def __init__(self, lang_num, word="", pair_id=None, **kwargs):
         super().__init__(**kwargs)
         self.word = word
         self.text = word
         self.pair_id = pair_id
         self.original_color = self.md_bg_color
+        self.lang_num = lang_num
 
     def reset(self):
         """Reset button to original state."""
@@ -78,6 +79,8 @@ class PairsExerciseScreen(BaseExerciseScreen):
         self.current_exercise_id = None
         self.completed_pairs = set()
         self.current_batch_index = 0
+        self.lang1_is_selected = False
+        self.lang2_is_selected = False
 
     def create_exercise_view(self):
         """Create the exercise view with game components."""
@@ -142,18 +145,25 @@ class PairsExerciseScreen(BaseExerciseScreen):
                        WHERE t.topic = ? AND l.language = ? AND
                        d.difficulty_level = ?
                        LIMIT ?""",
-                    (topic, settings["language"], settings["difficulty"], self.MAX_PAIRS),
+                    (
+                        topic,
+                        settings["language"],
+                        settings["difficulty"],
+                        self.MAX_PAIRS,
+                    ),
                 )
                 exercises = db.cursor.fetchall()
-                
+
                 if exercises:
                     self.all_pairs = []
                     for exercise in exercises:
-                        self.all_pairs.append({
-                            "id": exercise[0],
-                            "lang1": exercise[1],
-                            "lang2": exercise[2],
-                        })
+                        self.all_pairs.append(
+                            {
+                                "id": exercise[0],
+                                "lang1": exercise[1],
+                                "lang2": exercise[2],
+                            }
+                        )
 
                     random.shuffle(self.all_pairs)
                     self.current_batch_index = 0
@@ -165,13 +175,13 @@ class PairsExerciseScreen(BaseExerciseScreen):
         """Load the next batch of pairs."""
         start_idx = self.current_batch_index
         end_idx = min(start_idx + self.MAX_PAIRS, len(self.all_pairs))
-        
+
         self.current_pairs = self.all_pairs[start_idx:end_idx]
         self.total_pairs = len(self.current_pairs)
         self.correct_pairs = 0
         self.incorrect_attempts = 0
         self.completed_pairs = set()
-        
+
         if self.current_pairs:
             self.display_pairs()
 
@@ -188,17 +198,19 @@ class PairsExerciseScreen(BaseExerciseScreen):
                    JOIN languages l ON e.language_id = l.id
                    JOIN difficulties d ON e.difficulty_id = d.id
                    WHERE e.id = ?""",
-                (exercise_id,)
+                (exercise_id,),
             )
             exercise = db.cursor.fetchone()
-            
+
             if exercise:
                 self.current_topic = exercise[2]
-                self.all_pairs = [{
-                    "id": exercise_id,
-                    "lang1": exercise[0],
-                    "lang2": exercise[1],
-                }]
+                self.all_pairs = [
+                    {
+                        "id": exercise_id,
+                        "lang1": exercise[0],
+                        "lang2": exercise[1],
+                    }
+                ]
                 self.current_pairs = self.all_pairs
                 self.total_pairs = 1
                 self.correct_pairs = 0
@@ -227,13 +239,13 @@ class PairsExerciseScreen(BaseExerciseScreen):
 
         # Create buttons for both languages
         for word, pair_id in words_1:
-            btn = WordButton(word=word, pair_id=pair_id)
+            btn = WordButton(1, word=word, pair_id=pair_id)
             btn.bind(on_release=self.on_button_press)
             self.buttons_1.append(btn)
             self.game_layout.left_column.add_widget(btn)
 
         for word, pair_id in words_2:
-            btn = WordButton(word=word, pair_id=pair_id)
+            btn = WordButton(2, word=word, pair_id=pair_id)
             btn.bind(on_release=self.on_button_press)
             self.buttons_2.append(btn)
             self.game_layout.right_column.add_widget(btn)
@@ -246,6 +258,13 @@ class PairsExerciseScreen(BaseExerciseScreen):
         if self.selected_button == button:
             button.set_state("default")
             self.selected_button = None
+            if button.lang_num == 1:
+                self.lang1_is_selected = False
+                return
+            self.lang2_is_selected = False
+            return
+        
+        if (button.lang_num == 1 and self.lang1_is_selected) or (button.lang_num == 2 and self.lang2_is_selected):
             return
 
         # If this is the first button selected
@@ -253,22 +272,18 @@ class PairsExerciseScreen(BaseExerciseScreen):
             self.selected_button = button
             button.set_state("default")
             button.md_bg_color = (0.4, 0.4, 0.4, 1)  # Grey for selected
+            if button.lang_num == 1:
+                self.lang1_is_selected = True
+            else:
+                self.lang2_is_selected = True
             return
 
         # This is the second button - check if it's a match
         is_match = False
-        current_exercise_id = None
-        
-        # Find the current exercise ID based on the selected buttons
-        for pair in self.current_pairs:
-            if (
-                (self.selected_button.word == pair["lang1"] and button.word == pair["lang2"]) or
-                (self.selected_button.word == pair["lang2"] and button.word == pair["lang1"])
-            ):
-                current_exercise_id = pair["id"]
-                if self.selected_button.pair_id == current_exercise_id and button.pair_id == current_exercise_id:
-                    is_match = True
-                break
+        current_exercise_id = button.pair_id
+
+        if self.selected_button.pair_id == current_exercise_id:
+            is_match = True
 
         settings = self.get_user_settings()
         if settings and current_exercise_id:
@@ -281,12 +296,12 @@ class PairsExerciseScreen(BaseExerciseScreen):
                     button.disabled = True
                     self.correct_pairs += 1
                     self.completed_pairs.add(current_exercise_id)
-                    
+
                     # Record successful attempt
                     db.record_exercise_attempt(
                         settings["username"],
                         current_exercise_id,
-                        True  # Successful attempt
+                        True,  # Successful attempt
                     )
 
                     # Check if batch is complete
@@ -299,16 +314,22 @@ class PairsExerciseScreen(BaseExerciseScreen):
                     self.selected_button.set_state("default")
                     button.set_state("default")
                     self.incorrect_attempts += 1
-                    
+
                     # Record failed attempt
                     db.record_exercise_attempt(
                         settings["username"],
                         current_exercise_id,
-                        False  # Failed attempt
+                        False,  # Failed attempt
                     )
 
         self.update_score()
+        self.selected_button.set_state("default")
         self.selected_button = None
+        self.lang1_is_selected = False
+        self.lang2_is_selected = False
+        button.set_state("default")
+
+
 
     def update_score(self):
         """Update the score display."""
