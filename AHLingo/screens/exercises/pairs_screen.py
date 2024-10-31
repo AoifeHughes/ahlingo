@@ -231,15 +231,17 @@ class PairsExerciseScreen(BaseExerciseScreen):
 
                 # Add the additional random exercises
                 for ex in additional_exercises:
-                    self.all_pairs.append({
-                        "id": ex[0],
-                        "lang1": ex[1],
-                        "lang2": ex[2],
-                    })
+                    self.all_pairs.append(
+                        {
+                            "id": ex[0],
+                            "lang1": ex[1],
+                            "lang2": ex[2],
+                        }
+                    )
 
                 # Shuffle the pairs
                 random.shuffle(self.all_pairs)
-                
+
                 self.current_pairs = self.all_pairs
                 self.total_pairs = len(self.all_pairs)
                 self.correct_pairs = 0
@@ -292,8 +294,10 @@ class PairsExerciseScreen(BaseExerciseScreen):
                 return
             self.lang2_is_selected = False
             return
-        
-        if (button.lang_num == 1 and self.lang1_is_selected) or (button.lang_num == 2 and self.lang2_is_selected):
+
+        if (button.lang_num == 1 and self.lang1_is_selected) or (
+            button.lang_num == 2 and self.lang2_is_selected
+        ):
             return
 
         # If this is the first button selected
