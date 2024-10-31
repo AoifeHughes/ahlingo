@@ -204,6 +204,23 @@ class PairsExerciseScreen(BaseExerciseScreen):
 
             if exercise:
                 self.current_topic = exercise[2]
+                # Get 4 additional random exercises with the same topic, language, and difficulty
+                db.cursor.execute(
+                    """SELECT e.id, p.language_1_content, p.language_2_content
+                       FROM exercises_info e
+                       JOIN pair_exercises p ON e.id = p.exercise_id
+                       JOIN topics t ON e.topic_id = t.id
+                       JOIN languages l ON e.language_id = l.id
+                       JOIN difficulties d ON e.difficulty_id = d.id
+                       WHERE t.topic = ? AND l.language = ? AND d.difficulty_level = ?
+                       AND e.id != ?
+                       ORDER BY RANDOM()
+                       LIMIT 4""",
+                    (exercise[2], exercise[3], exercise[4], exercise_id),
+                )
+                additional_exercises = db.cursor.fetchall()
+
+                # Start with the specific exercise
                 self.all_pairs = [
                     {
                         "id": exercise_id,
@@ -211,8 +228,20 @@ class PairsExerciseScreen(BaseExerciseScreen):
                         "lang2": exercise[1],
                     }
                 ]
+
+                # Add the additional random exercises
+                for ex in additional_exercises:
+                    self.all_pairs.append({
+                        "id": ex[0],
+                        "lang1": ex[1],
+                        "lang2": ex[2],
+                    })
+
+                # Shuffle the pairs
+                random.shuffle(self.all_pairs)
+                
                 self.current_pairs = self.all_pairs
-                self.total_pairs = 1
+                self.total_pairs = len(self.all_pairs)
                 self.correct_pairs = 0
                 self.incorrect_attempts = 0
                 self.completed_pairs = set()
@@ -328,8 +357,6 @@ class PairsExerciseScreen(BaseExerciseScreen):
         self.lang1_is_selected = False
         self.lang2_is_selected = False
         button.set_state("default")
-
-
 
     def update_score(self):
         """Update the score display."""

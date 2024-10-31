@@ -81,5 +81,6 @@ class BaseExerciseScreen(BaseScreen):
     def return_to_topics(self):
         """Return to topic selection view."""
         self.main_layout.clear_widgets()
+        self.create_topic_view()
         self.main_layout.add_widget(self.topic_view)
         self.current_topic = None
