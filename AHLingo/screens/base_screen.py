@@ -11,8 +11,10 @@ class BaseScreen(MDScreen):
         self.db = db
         self.settings = JsonStore("settings.json")
 
+
     def get_user_settings(self):
         """Get current user settings."""
+        self.settings = JsonStore("settings.json")
         if (
             self.settings.exists("language")
             and self.settings.exists("difficulty")
