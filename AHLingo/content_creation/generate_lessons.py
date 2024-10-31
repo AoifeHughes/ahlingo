@@ -13,38 +13,41 @@ from .assistants import (
 import uuid
 import html
 import logging
+
 # logging.disable(logging.CRITICAL)
+
 
 def clean_text(text: str) -> str:
     """Clean and normalize text content with proper escaping."""
     if not text:
         return ""
-        
+
     # One-pass replacement for better performance
     replacements = {
-        "\\'": "'",    # Remove existing escaped single quotes
-        '\\"': '"',    # Remove existing escaped double quotes
-        '\\n': ' ',    # Replace newlines with spaces
-        '\\t': ' ',    # Replace tabs with spaces
-        '"': '\\"',    # Escape double quotes
+        "\\'": "'",  # Remove existing escaped single quotes
+        '\\"': '"',  # Remove existing escaped double quotes
+        "\\n": " ",  # Replace newlines with spaces
+        "\\t": " ",  # Replace tabs with spaces
+        '"': '\\"',  # Escape double quotes
     }
-    
+
     for old, new in replacements.items():
         text = text.replace(old, new)
-    
+
     # Remove any invalid escape sequences
-    text = re.sub(r'\\([^"\\/bfnrtu])', r'\1', text)
-    
+    text = re.sub(r'\\([^"\\/bfnrtu])', r"\1", text)
+
     # Normalize spaces in one pass
-    text = ' '.join(text.split())
-    
+    text = " ".join(text.split())
+
     return text
+
 
 def clean_json_string(text: str) -> str:
     """Clean and prepare JSON string for parsing."""
     if not text:
         return ""
-        
+
     # Handle French apostrophes and common patterns in one pass
     french_patterns = {
         "m\\'": "m'",
@@ -55,18 +58,20 @@ def clean_json_string(text: str) -> str:
         "s\\'": "s'",
         "qu\\'": "qu'",
         "n\\'": "n'",
-        "c\\'": "c'"  # Added common French pattern
+        "c\\'": "c'",  # Added common French pattern
     }
-    
+
     for pattern, replacement in french_patterns.items():
         text = text.replace(pattern, replacement)
-    
+
     # Fix any remaining problematic escapes
-    text = re.sub(r'\\+\'', "'", text)
+    text = re.sub(r"\\+\'", "'", text)
     text = text.replace('\\"', '"')
-    text = text.replace('\\n', ' ')
-    
+    text = text.replace("\\n", " ")
+
     return text
+
+
 def safe_json_loads(text: str) -> Any:
     """Safely load JSON data with multiple fallback approaches."""
     try:
@@ -80,24 +85,35 @@ def safe_json_loads(text: str) -> Any:
         except json.JSONDecodeError:
             try:
                 # Third try: find and extract JSON array
-                json_match = re.search(r'\[[\s\S]*\]', cleaned)
+                json_match = re.search(r"\[[\s\S]*\]", cleaned)
                 if json_match:
                     return json.loads(json_match.group())
                 raise ValueError("No JSON array found in response")
             except Exception as e:
                 raise ValueError(f"Failed to parse JSON after cleaning: {str(e)}")
 
-def process_response(db: LanguageDB, response: str, language: str, topic: str, level: str, lesson_kind: str, lesson_id: str) -> None:
+
+def process_response(
+    db: LanguageDB,
+    response: str,
+    language: str,
+    topic: str,
+    level: str,
+    lesson_kind: str,
+    lesson_id: str,
+) -> None:
     """Process and insert response data into the database with proper text cleaning."""
     try:
         # Parse the JSON response
         cleaned_response = safe_json_loads(response)
-        
+
         # Validate the structure
         if not validate_json_structure(cleaned_response, language, lesson_kind):
-            print(f"Invalid response structure for {language}_{topic}_{level}_{lesson_id} in {lesson_kind}")
+            print(
+                f"Invalid response structure for {language}_{topic}_{level}_{lesson_id} in {lesson_kind}"
+            )
             return
-        
+
         lesson_name = f"{topic} {lesson_kind.title()} Lesson - ID: {lesson_id}"
 
         for idx, exercise in enumerate(cleaned_response):
@@ -108,10 +124,12 @@ def process_response(db: LanguageDB, response: str, language: str, topic: str, l
                     # Clean conversation messages
                     cleaned_conversations = []
                     for conv in exercise["conversation"]:
-                        cleaned_conversations.append({
-                            "speaker": clean_text(conv["speaker"]),
-                            "message": clean_text(conv["message"])
-                        })
+                        cleaned_conversations.append(
+                            {
+                                "speaker": clean_text(conv["speaker"]),
+                                "message": clean_text(conv["message"]),
+                            }
+                        )
 
                     db.add_conversation_exercise(
                         exercise_name=exercise_name,
@@ -119,7 +137,7 @@ def process_response(db: LanguageDB, response: str, language: str, topic: str, l
                         topic=topic,
                         difficulty_level=level,
                         conversations=cleaned_conversations,
-                        summary=clean_text(exercise["conversation_summary"])
+                        summary=clean_text(exercise["conversation_summary"]),
                     )
                 elif lesson_kind == "pairs":
                     db.add_pair_exercise(
@@ -130,7 +148,7 @@ def process_response(db: LanguageDB, response: str, language: str, topic: str, l
                         language_1="English",
                         language_2=language,
                         language_1_content=clean_text(exercise["English"]),
-                        language_2_content=clean_text(exercise[language])
+                        language_2_content=clean_text(exercise[language]),
                     )
                 elif lesson_kind == "translations":
                     db.add_translation_exercise(
@@ -141,16 +159,22 @@ def process_response(db: LanguageDB, response: str, language: str, topic: str, l
                         language_1="English",
                         language_2=language,
                         language_1_content=clean_text(exercise["English"]),
-                        language_2_content=clean_text(exercise[language])
+                        language_2_content=clean_text(exercise[language]),
                     )
             except Exception as e:
-                print(f"Error processing exercise {idx + 1} for {language}_{topic}_{level}_{lesson_id} in {lesson_kind}: {str(e)}")
+                print(
+                    f"Error processing exercise {idx + 1} for {language}_{topic}_{level}_{lesson_id} in {lesson_kind}: {str(e)}"
+                )
                 continue
 
     except json.JSONDecodeError as e:
-        print(f"JSON decode error for {language}_{topic}_{level}_{lesson_id} in {lesson_kind}: {str(e)}")
+        print(
+            f"JSON decode error for {language}_{topic}_{level}_{lesson_id} in {lesson_kind}: {str(e)}"
+        )
     except Exception as e:
-        print(f"Error processing response for {language}_{topic}_{level}_{lesson_id} in {lesson_kind}: {str(e)}")
+        print(
+            f"Error processing response for {language}_{topic}_{level}_{lesson_id} in {lesson_kind}: {str(e)}"
+        )
 
 
 def validate_json_structure(
@@ -280,7 +304,6 @@ def generate_lessons_data(
                 yield lesson_kind, lesson_id, raw_response, raw_response
 
 
-
 def populate_database():
     """Main function to generate lessons and populate the database."""
     # Read configuration files
@@ -305,7 +328,12 @@ def populate_database():
                 for level in levels:
                     for topic in topics:
                         tqdm.write(f"\nProcessing: {language} - {level} - {topic}")
-                        for lesson_kind, lesson_id, raw_response, json_response in generate_lessons_data(
+                        for (
+                            lesson_kind,
+                            lesson_id,
+                            raw_response,
+                            json_response,
+                        ) in generate_lessons_data(
                             language,
                             level,
                             topic,

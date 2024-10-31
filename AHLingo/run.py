@@ -86,21 +86,21 @@ class LanguageLearningApp(MDApp):
         """Build and return the application's root widget."""
         # Initialize database
         self.db = DatabaseManager.get_database()
-        
+
         # Create screen manager
         self.screen_manager = MDScreenManager()
-        
+
         # Initialize and add all screens
         screens = {
-            'home': HomeScreen(self.db),
-            'settings': SettingsScreen(self.db),
-            'pairs': PairsExerciseScreen(self.db),
-            'conversations': ConversationExerciseScreen(self.db),
-            'chatbot': ChatbotExerciseScreen(self.db),
-            'translation': TranslationExerciseScreen(self.db),
-            'revise_mistakes': ReviseMistakesScreen(self.db)
+            "home": HomeScreen(self.db),
+            "settings": SettingsScreen(self.db),
+            "pairs": PairsExerciseScreen(self.db),
+            "conversations": ConversationExerciseScreen(self.db),
+            "chatbot": ChatbotExerciseScreen(self.db),
+            "translation": TranslationExerciseScreen(self.db),
+            "revise_mistakes": ReviseMistakesScreen(self.db),
         }
-        
+
         for screen in screens.values():
             self.screen_manager.add_widget(screen)
 
@@ -120,7 +120,9 @@ class LanguageLearningApp(MDApp):
         print("\nApplication Debug Information:")
         print("-" * 30)
         print(f"Current Screen: {self.screen_manager.current}")
-        print(f"Available Screens: {[screen.name for screen in self.screen_manager.screens]}")
+        print(
+            f"Available Screens: {[screen.name for screen in self.screen_manager.screens]}"
+        )
         print(f"Settings File: {os.path.exists(AppSettings.SETTINGS_FILE)}")
 
         if os.path.exists(AppSettings.SETTINGS_FILE):
