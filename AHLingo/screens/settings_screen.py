@@ -13,6 +13,7 @@ from functools import partial
 
 class SettingsTextField(MDTextField):
     """Custom text field for settings with consistent styling."""
+
     def __init__(self, **kwargs):
         super().__init__(
             mode="fill",  # Use filled style for consistency
@@ -41,8 +42,7 @@ class SettingsScreen(BaseScreen):
 
         # Add toolbar with back button
         toolbar = StandardToolbar(
-            title="Settings",
-            left_action=lambda x: self.go_back_to_home()
+            title="Settings", left_action=lambda x: self.go_back_to_home()
         )
         layout.add_widget(toolbar)
 
@@ -52,7 +52,7 @@ class SettingsScreen(BaseScreen):
             size_hint_y=None,
             height=dp(160),  # Height for 2 buttons + padding
             padding=[dp(16), dp(8), dp(16), dp(8)],
-            spacing=dp(8)
+            spacing=dp(8),
         )
 
         # Language selector
@@ -95,7 +95,7 @@ class SettingsScreen(BaseScreen):
             theme_text_color="Error",
             size_hint_y=None,
             height=dp(48),
-            halign="center"
+            halign="center",
         )
         layout.add_widget(required_notice)
 
@@ -116,30 +116,29 @@ class SettingsScreen(BaseScreen):
 
         # Language menu
         self.language_menu = self.create_dropdown_menu(
-            self.language_button,
-            languages,
-            self.set_language
+            self.language_button, languages, self.set_language
         )
 
         # Difficulty menu
         self.difficulty_menu = self.create_dropdown_menu(
-            self.difficulty_button,
-            difficulties,
-            self.set_difficulty
+            self.difficulty_button, difficulties, self.set_difficulty
         )
 
     def create_dropdown_menu(self, caller, items, callback):
         """Create a dropdown menu with consistent styling."""
         return MDDropdownMenu(
             caller=caller,
-            items=[{
-                "text": item,
-                "viewclass": "OneLineListItem",
-                "on_release": partial(callback, item)
-            } for item in items],
+            items=[
+                {
+                    "text": item,
+                    "viewclass": "OneLineListItem",
+                    "on_release": partial(callback, item),
+                }
+                for item in items
+            ],
             width_mult=4,
             radius=[dp(4), dp(4), dp(4), dp(4)],
-            background_color=self.theme_cls.bg_normal
+            background_color=self.theme_cls.bg_normal,
         )
 
     def show_language_menu(self, button):
@@ -192,5 +191,5 @@ class SettingsScreen(BaseScreen):
             with self.db() as db:
                 db.cursor.execute(
                     "INSERT OR IGNORE INTO users (name) VALUES (?)",
-                    (self.username_field.text,)
+                    (self.username_field.text,),
                 )

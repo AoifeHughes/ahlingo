@@ -11,11 +11,14 @@ from kivy.metrics import dp
 from kivymd.uix.card import MDCard
 import webbrowser
 
+
 class ImageButton(ButtonBehavior, Image):
     def __init__(self, **kwargs):
         super(ImageButton, self).__init__(**kwargs)
+
     def on_press(self):
         webbrowser.open("https://github.com/aoifehughes/ahlingo")
+
 
 class HomeScreen(BaseScreen):
     """Modern home screen of the application with enhanced visual elements."""
@@ -24,8 +27,6 @@ class HomeScreen(BaseScreen):
         super().__init__(db, **kwargs)
         self.name = "home"
         self.setup_ui()
-
-
 
     def setup_ui(self):
         """Setup the enhanced user interface with icons and better styling."""
