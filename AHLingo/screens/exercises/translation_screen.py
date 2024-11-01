@@ -26,7 +26,6 @@ class FlowLayout(FloatLayout):
 
     def reposition_children(self, *args):
         """Reposition children in a flow layout pattern."""
-        x = self.padding
         y = self.height - self.row_height
         max_width = self.width - self.padding
         row_width = self.padding
