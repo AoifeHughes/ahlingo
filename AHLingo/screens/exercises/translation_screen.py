@@ -229,7 +229,9 @@ class TranslationExerciseScreen(BaseExerciseScreen):
                        JOIN topics top ON e.topic_id = top.id
                        JOIN languages l ON e.language_id = l.id
                        JOIN difficulties d ON e.difficulty_id = d.id
-                       WHERE top.topic = ? AND l.language = ? AND d.difficulty_level = ?""",
+                       WHERE top.topic = ? AND l.language = ? AND d.difficulty_level = ?
+                       ORDER BY RANDOM()
+                       LIMIT 5""",
                     (topic, settings["language"], settings["difficulty"]),
                 )
                 exercises = db.cursor.fetchall()
@@ -254,6 +256,74 @@ class TranslationExerciseScreen(BaseExerciseScreen):
                     self.current_topic = topic
                     self.switch_to_exercise()
                     self.display_current_exercise()
+
+    def load_specific_exercise(self, exercise_id):
+        """Load a specific exercise by ID."""
+        with self.db() as db:
+            # Get exercise details
+            db.cursor.execute(
+                """SELECT t.language_1_content, t.language_2_content,
+                          top.topic, l.language, d.difficulty_level
+                   FROM exercises_info e
+                   JOIN translation_exercises t ON e.id = t.exercise_id
+                   JOIN topics top ON e.topic_id = t.id
+                   JOIN languages l ON e.language_id = l.id
+                   JOIN difficulties d ON e.difficulty_id = d.id
+                   WHERE e.id = ?""",
+                (exercise_id,),
+            )
+            exercise = db.cursor.fetchone()
+
+            if exercise:
+                self.current_topic = exercise[2]
+                # Get 4 additional random exercises with the same topic, language, and difficulty
+                db.cursor.execute(
+                    """SELECT e.id, t.language_1_content, t.language_2_content
+                       FROM exercises_info e
+                       JOIN translation_exercises t ON e.id = t.exercise_id
+                       JOIN topics top ON e.topic_id = t.id
+                       JOIN languages l ON e.language_id = l.id
+                       JOIN difficulties d ON e.difficulty_id = d.id
+                       WHERE top.topic = ? AND l.language = ? AND d.difficulty_level = ?
+                       AND e.id != ?
+                       ORDER BY RANDOM()
+                       LIMIT 4""",
+                    (exercise[2], exercise[3], exercise[4], exercise_id),
+                )
+                additional_exercises = db.cursor.fetchall()
+
+                # Start with the specific exercise
+                self.exercises = [
+                    {
+                        "id": exercise_id,
+                        "lang1": exercise[0],
+                        "lang2": exercise[1],
+                    }
+                ]
+
+                # Add the additional random exercises
+                for ex in additional_exercises:
+                    self.exercises.append(
+                        {
+                            "id": ex[0],
+                            "lang1": ex[1],
+                            "lang2": ex[2],
+                        }
+                    )
+
+                # Shuffle the exercises
+                random.shuffle(self.exercises)
+                
+                # Reset exercise state
+                self.total_exercises = len(self.exercises)
+                self.correct_answers = 0
+                self.incorrect_attempts = 0
+                self.current_exercise_index = 0
+                self.attempt_recorded = False
+                
+                # Switch to exercise view and display first exercise
+                self.switch_to_exercise()
+                self.display_current_exercise()
 
     def display_current_exercise(self):
         """Display the current translation exercise."""
@@ -346,7 +416,7 @@ class TranslationExerciseScreen(BaseExerciseScreen):
             self.answer_words.append(button.text)
             self.update_answer_field()
             # Enable submit button if all words are used
-            if all(not btn.enabled for btn in self.word_buttons):
+            if all(btn.in_use for btn in self.word_buttons):
                 self.submit_button.disabled = False
             # change button color to indicate selection
             button.md_bg_color = [0.5, 0.5, 0.5, 1]
@@ -369,8 +439,6 @@ class TranslationExerciseScreen(BaseExerciseScreen):
 
         if user_answer == current["lang2"]:
             self.correct_answers += 1
-            if not self.attempt_recorded:
-                self.record_attempt()
             self.current_exercise_index += 1
 
             if self.current_exercise_index < self.total_exercises:
@@ -383,9 +451,11 @@ class TranslationExerciseScreen(BaseExerciseScreen):
             for btn in self.word_buttons:
                 btn.enabled = True
                 btn.disabled = False
+                btn.in_use = False
             self.submit_button.disabled = True
 
         self.update_score()
+        self.record_attempt()
 
     def update_score(self):
         """Update the score display."""
