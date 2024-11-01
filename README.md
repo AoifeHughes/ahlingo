@@ -1,5 +1,12 @@
 # AHLingo Translation Evaluator
-
+<p align="left">
+  <a href="https://results.pre-commit.ci/latest/github/AoifeHughes/ahlingo/main">
+    <img src="https://results.pre-commit.ci/badge/github/AoifeHughes/ahlingo/main.svg" alt="pre-commit.ci status">
+  </a>
+  <a href="https://github.com/AoifeHughes/ahlingo/actions/workflows/tests.yml">
+    <img src="https://github.com/AoifeHughes/ahlingo/actions/workflows/tests.yml/badge.svg" alt="Tests">
+  </a>
+</p>
 ![logo](./assets/logo.png)
 
 AHLingo Translation Evaluator is a comprehensive tool designed to assist language learners in improving their translation skills. By evaluating translations against source texts, users gain insight into their proficiency and areas of improvement.
