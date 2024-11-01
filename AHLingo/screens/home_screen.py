@@ -1,23 +1,16 @@
 # -*- coding: utf-8 -*-
 from AHLingo.screens.base_screen import BaseScreen
-from AHLingo.components.buttons import StandardButton
+from AHLingo.components.buttons import StandardButton, ImageButton
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.gridlayout import MDGridLayout
 from kivymd.uix.button import MDIconButton
 from kivymd.uix.label import MDLabel
-from kivy.uix.image import Image
-from kivy.uix.behaviors import ButtonBehavior
+
 from kivy.metrics import dp
 from kivymd.uix.card import MDCard
-import webbrowser
 
 
-class ImageButton(ButtonBehavior, Image):
-    def __init__(self, **kwargs):
-        super(ImageButton, self).__init__(**kwargs)
 
-    def on_press(self):
-        webbrowser.open("https://github.com/aoifehughes/ahlingo")
 
 
 class HomeScreen(BaseScreen):
