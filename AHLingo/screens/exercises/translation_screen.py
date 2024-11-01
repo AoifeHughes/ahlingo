@@ -313,14 +313,14 @@ class TranslationExerciseScreen(BaseExerciseScreen):
 
                 # Shuffle the exercises
                 random.shuffle(self.exercises)
-                
+
                 # Reset exercise state
                 self.total_exercises = len(self.exercises)
                 self.correct_answers = 0
                 self.incorrect_attempts = 0
                 self.current_exercise_index = 0
                 self.attempt_recorded = False
-                
+
                 # Switch to exercise view and display first exercise
                 self.switch_to_exercise()
                 self.display_current_exercise()
