@@ -71,7 +71,6 @@ class ScoreLabel(MDLabel):
         super().__init__(halign=halign, size_hint_y=None, **kwargs)
 
 
-
 class WordButton(OptionButton):
     """Button for individual words in the translation."""
 
@@ -258,56 +257,62 @@ class TranslationExerciseScreen(BaseExerciseScreen):
                     self.display_current_exercise()
 
     def display_current_exercise(self):
-            """Display the current translation exercise."""
-            if self.current_exercise_index < len(self.exercises):
-                current = self.exercises[self.current_exercise_index]
-                self.current_exercise_id = current["id"]
+        """Display the current translation exercise."""
+        if self.current_exercise_index < len(self.exercises):
+            current = self.exercises[self.current_exercise_index]
+            self.current_exercise_id = current["id"]
 
-                # Display the phrase to translate
-                self.phrase_label.text = current["lang1"]
+            # Display the phrase to translate
+            self.phrase_label.text = current["lang1"]
 
-                # Clear previous state
-                self.words_layout.clear_widgets()
-                self.answer_field.text = ""
-                self.word_buttons = []
-                self.answer_words = []
-                self.submit_button.disabled = True
+            # Clear previous state
+            self.words_layout.clear_widgets()
+            self.answer_field.text = ""
+            self.word_buttons = []
+            self.answer_words = []
+            self.submit_button.disabled = True
 
-                # Create word buttons
-                words = current["lang2"].split()
-                random.shuffle(words)
+            # Create word buttons
+            words = current["lang2"].split()
+            random.shuffle(words)
 
-                for i, word in enumerate(words):
-                    btn = WordButton(
-                        text=word,
-                        index=i,
-                        on_release=self.word_button_pressed
-                    )
-                    self.word_buttons.append(btn)
-                    self.words_layout.add_widget(btn)
+            for i, word in enumerate(words):
+                btn = WordButton(
+                    text=word, index=i, on_release=self.word_button_pressed
+                )
+                self.word_buttons.append(btn)
+                self.words_layout.add_widget(btn)
 
-                # Schedule the layout updates for the next frame to ensure proper widget sizing
-                from kivy.clock import Clock
-                def update_layouts(dt):
-                    self.words_layout.reposition_children()
-                    self.update_flow_layout_height()
-                    self.update_translation_layout_height()
-                    self.update_score()
-                
-                Clock.schedule_once(update_layouts)
+            # Schedule the layout updates for the next frame to ensure proper widget sizing
+            from kivy.clock import Clock
+
+            def update_layouts(dt):
+                self.words_layout.reposition_children()
+                self.update_flow_layout_height()
+                self.update_translation_layout_height()
+                self.update_score()
+
+            Clock.schedule_once(update_layouts)
+
     def update_translation_layout_height(self, *args):
         """Update the translation layout height when content changes."""
         # Calculate total height needed
-        total_height = sum([
-            self.phrase_label.height,
-            self.answer_field.height,
-            self.words_layout.height,
-            self.submit_button.height
-        ]) + (self.translation_layout.spacing * 3)  # Spacing between 4 elements
-        
+        total_height = sum(
+            [
+                self.phrase_label.height,
+                self.answer_field.height,
+                self.words_layout.height,
+                self.submit_button.height,
+            ]
+        ) + (
+            self.translation_layout.spacing * 3
+        )  # Spacing between 4 elements
+
         # Add padding
-        total_height += self.translation_layout.padding[1] + self.translation_layout.padding[3]
-        
+        total_height += (
+            self.translation_layout.padding[1] + self.translation_layout.padding[3]
+        )
+
         # Update layout height
         self.translation_layout.height = total_height
 
@@ -331,7 +336,7 @@ class TranslationExerciseScreen(BaseExerciseScreen):
 
             # Set height with minimal padding
             self.words_layout.height = total_height + dp(10)
-            
+
             # Update the parent layout
             self.update_translation_layout_height()
 
@@ -401,5 +406,3 @@ class TranslationExerciseScreen(BaseExerciseScreen):
                     self.incorrect_attempts == 0,
                 )
             self.attempt_recorded = True
-
-
