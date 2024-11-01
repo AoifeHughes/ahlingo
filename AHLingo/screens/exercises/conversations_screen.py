@@ -45,24 +45,37 @@ class QuestionLayout(ContentLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.size_hint_y = None
-        self.height = dp(280)  # Adjusted for question and 3 buttons
+        self.height = dp(400)  # Increased overall height
+        self.spacing = dp(16)  # Add spacing between children
+        self.padding = [dp(16), dp(16), dp(16), dp(16)]  # Add padding around all sides
+
+        # Question container to ensure fixed space
+        question_container = MDBoxLayout(
+            orientation="vertical",
+            size_hint_y=None,
+            height=dp(80),  # Fixed height for question
+            padding=[0, dp(8), 0, dp(8)],  # Add vertical padding
+        )
 
         # Question label
         self.question_label = MDLabel(
             text="What is the main topic of this conversation?",
             halign="center",
+            valign="center",  # Center text vertically
             size_hint_y=None,
-            height=dp(48),
+            height=dp(64),  # Increased height
+            font_style="H6",  # Larger font
         )
-        self.add_widget(self.question_label)
+        question_container.add_widget(self.question_label)
+        self.add_widget(question_container)
 
-        # Options layout
+        # Options container with remaining space
         self.options_layout = MDBoxLayout(
             orientation="vertical",
-            spacing=dp(8),
+            spacing=dp(12),  # Increased spacing between buttons
             size_hint_y=None,
-            height=dp(180),
-            padding=[dp(16), dp(8), dp(16), dp(8)],
+            height=dp(280),  # Increased height for buttons
+            padding=[dp(8), dp(4), dp(8), dp(4)],
         )
         self.add_widget(self.options_layout)
 
@@ -83,9 +96,12 @@ class ConversationExerciseScreen(BaseExerciseScreen):
 
     def __init__(self, db, **kwargs):
         super().__init__(db, **kwargs)
-        self.name = "conversation"
+        self.name = (
+            "conversations"  # Fixed: Changed from "conversation" to "conversations"
+        )
         self.current_summary = None
         self.current_exercise_id = None
+        self.attempt_recorded = False
 
     def create_exercise_view(self):
         """Create the exercise view with conversation components."""
@@ -142,7 +158,32 @@ class ConversationExerciseScreen(BaseExerciseScreen):
                 if result:
                     self.current_exercise_id = result[0]
                     self.current_topic = topic
+                    self.attempt_recorded = False
                     self.load_conversation(self.current_exercise_id, settings)
+                    self.switch_to_exercise()
+
+    def load_specific_exercise(self, exercise_id):
+        """Load a specific exercise by ID."""
+        settings = self.get_user_settings()
+        if settings:
+            with self.db() as db:
+                # Get exercise details
+                db.cursor.execute(
+                    """SELECT t.topic
+                       FROM exercises_info e
+                       JOIN topics t ON e.topic_id = t.id
+                       WHERE e.id = ?""",
+                    (exercise_id,),
+                )
+                exercise_info = db.cursor.fetchone()
+
+                if exercise_info:
+                    self.current_topic = exercise_info[
+                        0
+                    ]  # Fixed: Changed from exercise_info["topic"] to exercise_info[0]
+                    self.current_exercise_id = exercise_id
+                    self.attempt_recorded = False
+                    self.load_conversation(exercise_id, settings)
                     self.switch_to_exercise()
 
     def load_conversation(self, exercise_id, settings):
@@ -215,6 +256,18 @@ class ConversationExerciseScreen(BaseExerciseScreen):
 
     def check_answer(self, selected_summary):
         """Check if selected summary is correct and update UI."""
+        if not self.attempt_recorded:
+            is_correct = selected_summary == self.current_summary
+
+            # Record the attempt
+            settings = self.get_user_settings()
+            if settings and self.current_exercise_id:
+                with self.db() as db:
+                    db.record_exercise_attempt(
+                        settings["username"], self.current_exercise_id, is_correct
+                    )
+                self.attempt_recorded = True
+
         # Update all button states
         for child in self.question_layout.options_layout.children:
             if isinstance(child, ConversationSummaryButton):
@@ -225,5 +278,6 @@ class ConversationExerciseScreen(BaseExerciseScreen):
 
     def reset_exercise(self, *args):
         """Reset the current exercise."""
-        if self.current_exercise_id:
-            self.load_conversation(self.current_exercise_id)
+        super().reset_exercise(*args)
+        if self.current_topic:
+            self.select_topic(self.current_topic)
