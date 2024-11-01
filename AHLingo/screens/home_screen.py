@@ -10,9 +10,6 @@ from kivy.metrics import dp
 from kivymd.uix.card import MDCard
 
 
-
-
-
 class HomeScreen(BaseScreen):
     """Modern home screen of the application with enhanced visual elements."""
 

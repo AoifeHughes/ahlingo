@@ -5,12 +5,14 @@ from kivy.uix.image import Image
 from kivy.uix.behaviors import ButtonBehavior
 import webbrowser
 
+
 class ImageButton(ButtonBehavior, Image):
     def __init__(self, **kwargs):
         super(ImageButton, self).__init__(**kwargs)
 
     def on_press(self):
         webbrowser.open("https://github.com/aoifehughes/ahlingo")
+
 
 class StandardButton(MDRaisedButton):
     """Standard button with consistent styling."""
