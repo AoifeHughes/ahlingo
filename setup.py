@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from setuptools import setup, find_packages
 
 with open("README.md", "r", encoding="utf-8") as fh:
@@ -20,12 +21,7 @@ setup(
         "Operating System :: OS Independent",
     ],
     python_requires=">=3.8",
-    install_requires=[
-        "kivy",
-        "kivymd",
-        "tqdm",
-        "openai"
-    ],
+    install_requires=["kivy", "kivymd", "tqdm", "openai", "setuptools"],
     entry_points={
         "console_scripts": [
             "ahlingo=AHLingo.run:main",
@@ -33,10 +29,6 @@ setup(
     },
     include_package_data=True,
     package_data={
-        "AHLingo": [
-            "database/*.db",
-            "assets/*",
-            "generation_data/*"
-        ],
+        "AHLingo": ["database/*.db", "assets/*", "generation_data/*"],
     },
 )
