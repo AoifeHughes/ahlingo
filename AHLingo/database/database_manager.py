@@ -146,6 +146,34 @@ class LanguageDB:
         self.conn.commit()
         return self.cursor.lastrowid
 
+    def get_failed_attempts(self, username: str) -> List[Dict]:
+        """Get list of failed exercise attempts for a user."""
+        user_id = self._get_or_create_user(username)
+        self.cursor.execute(
+            """
+            SELECT DISTINCT
+            ei.id as exercise_id,
+            t.topic as exercise_topic,
+            CASE
+                WHEN pe.id IS NOT NULL THEN 'Pairs'
+                WHEN ce.id IS NOT NULL THEN 'Conversation'
+                WHEN te.id IS NOT NULL THEN 'Translation'
+                ELSE 'Unknown'
+            END as exercise_type,
+            uea.attempt_date
+            FROM user_exercise_attempts uea
+            JOIN exercises_info ei ON uea.exercise_id = ei.id
+            JOIN topics t ON ei.topic_id = t.id
+            LEFT JOIN pair_exercises pe ON ei.id = pe.exercise_id
+            LEFT JOIN conversation_exercises ce ON ei.id = ce.exercise_id
+            LEFT JOIN translation_exercises te ON ei.id = te.exercise_id
+            WHERE uea.user_id = ? AND uea.is_correct = 0
+            ORDER BY uea.attempt_date DESC
+            """,
+            (user_id,),
+        )
+        return [dict(row) for row in self.cursor.fetchall()]
+
     def record_exercise_attempt(
         self, username: str, exercise_id: int, is_correct: bool
     ):
