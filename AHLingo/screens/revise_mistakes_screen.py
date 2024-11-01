@@ -118,13 +118,9 @@ class ReviseMistakesScreen(BaseScreen):
             screen.load_specific_exercise(exercise_id)
             screen_manager.current = "pairs"
         elif exercise_type == "Conversation":
-            screen = screen_manager.get_screen(
-                "conversations"
-            )  
+            screen = screen_manager.get_screen("conversations")
             screen.load_specific_exercise(exercise_id)
-            screen_manager.current = (
-                "conversations"  
-            )
+            screen_manager.current = "conversations"
         elif exercise_type == "Translation":
             screen = screen_manager.get_screen("translation")
             screen.load_specific_exercise(exercise_id)
