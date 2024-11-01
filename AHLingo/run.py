@@ -83,7 +83,7 @@ class LanguageLearningApp(MDApp):
         super().__init__(**kwargs)
         self.setup_window()
         self.setup_theme()
-        self.icon = get_resource_path("assets/logo.png")
+        
         self.screen_manager = None
         self.db = None
         self.settings = AppSettings()
@@ -102,6 +102,7 @@ class LanguageLearningApp(MDApp):
 
     def build(self):
         """Build and return the application's root widget."""
+        self.icon = get_resource_path("../assets/logo.png")
         # Initialize database
         self.db = self.db_manager.get_database()
 
