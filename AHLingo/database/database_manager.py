@@ -157,6 +157,7 @@ class LanguageDB:
             CASE
                 WHEN pe.id IS NOT NULL THEN 'Pairs'
                 WHEN ce.id IS NOT NULL THEN 'Conversation'
+                WHEN te.id IS NOT NULL THEN 'Translation'
                 ELSE 'Unknown'
             END as exercise_type,
             uea.attempt_date
@@ -165,6 +166,7 @@ class LanguageDB:
             JOIN topics t ON ei.topic_id = t.id
             LEFT JOIN pair_exercises pe ON ei.id = pe.exercise_id
             LEFT JOIN conversation_exercises ce ON ei.id = ce.exercise_id
+            LEFT JOIN translation_exercises te ON ei.id = te.exercise_id
             WHERE uea.user_id = ? AND uea.is_correct = 0
             ORDER BY uea.attempt_date DESC
             """,
