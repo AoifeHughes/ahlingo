@@ -2,6 +2,7 @@
 from .base_exercise import BaseExerciseScreen
 from AHLingo.components.layouts import ScrollableContent
 from AHLingo.components.buttons import StandardButton
+from AHLingo.components.labels import AutoHeightLabel
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.label import MDLabel
 from kivymd.uix.list import OneLineListItem
@@ -70,6 +71,7 @@ class ScoreLabel(MDLabel):
         super().__init__(halign=halign, size_hint_y=None, **kwargs)
 
 
+
 class WordButton(OptionButton):
     """Button for individual words in the translation."""
 
@@ -123,7 +125,7 @@ class TranslationExerciseScreen(BaseExerciseScreen):
         score_layout = MDBoxLayout(
             orientation="horizontal",
             size_hint_y=None,
-            height=dp(40),  # Reduced from 50
+            height=dp(40),
             padding=[dp(16), 0, dp(16), 0],
         )
 
@@ -131,7 +133,7 @@ class TranslationExerciseScreen(BaseExerciseScreen):
             text="Correct: 0/0",
             halign="left",
             size_hint_x=0.5,
-            height=dp(40),  # Match parent height
+            height=dp(40),
         )
         score_layout.add_widget(self.score_label)
 
@@ -139,7 +141,7 @@ class TranslationExerciseScreen(BaseExerciseScreen):
             text="Incorrect: 0",
             halign="right",
             size_hint_x=0.5,
-            height=dp(40),  # Match parent height
+            height=dp(40),
         )
         score_layout.add_widget(self.incorrect_label)
 
@@ -148,8 +150,8 @@ class TranslationExerciseScreen(BaseExerciseScreen):
         # Translation layout with adaptive height
         self.translation_layout = MDBoxLayout(
             orientation="vertical",
-            spacing=dp(16),  # Reduced from 20
-            padding=[dp(16), dp(8), dp(16), dp(8)],  # Reduced vertical padding
+            spacing=dp(8),  # Reduced spacing between elements
+            padding=[dp(16), dp(4), dp(16), dp(4)],  # Reduced vertical padding
             size_hint_y=None,
         )
         self.translation_layout.bind(
@@ -157,13 +159,12 @@ class TranslationExerciseScreen(BaseExerciseScreen):
         )
 
         # Original phrase to translate
-        self.phrase_label = MDLabel(
+        self.phrase_label = AutoHeightLabel(
             text="",
             halign="center",
             size_hint_y=None,
-            height=dp(50),  # Reduced from 100
+            height=dp(40),  # Set fixed initial height
             font_style="H5",
-            padding=[0, dp(8)],  # Add vertical padding
         )
         self.translation_layout.add_widget(self.phrase_label)
 
@@ -172,23 +173,17 @@ class TranslationExerciseScreen(BaseExerciseScreen):
             hint_text="Your translation will appear here",
             readonly=True,
             size_hint_y=None,
-            height=dp(25),  # Reduced from 100
+            height=dp(48),  # Standard height for text field
             multiline=True,
-            padding=[0, dp(8)],  # Add vertical padding
         )
         self.translation_layout.add_widget(self.answer_field)
 
-        # Word buttons container with adaptive height
+        # Word buttons container
         self.words_layout = FlowLayout(
-            size_hint_y=None, height=dp(120)  # Initial height, will adjust as needed
+            size_hint_y=None,
         )
-        # Bind size to ensure proper height calculation
-        # self.words_layout.bind(minimum_height=self.words_layout.setter('height'))
+        self.words_layout.bind(height=self.update_translation_layout_height)
         self.translation_layout.add_widget(self.words_layout)
-
-        # Spacer to push content up
-        spacer = MDBoxLayout(size_hint_y=None, height=dp(20))
-        self.translation_layout.add_widget(spacer)
 
         # Submit button
         self.submit_button = StandardButton(
@@ -197,16 +192,12 @@ class TranslationExerciseScreen(BaseExerciseScreen):
             disabled=True,
             size_hint=(None, None),
             width=dp(200),
-            height=dp(48),  # Slightly reduced height
+            height=dp(48),
             pos_hint={"center_x": 0.5},
         )
         self.translation_layout.add_widget(self.submit_button)
 
-        # Bottom spacer for padding
-        bottom_spacer = MDBoxLayout(size_hint_y=None, height=dp(20))
-        self.translation_layout.add_widget(bottom_spacer)
-
-        # Create scrollable container with proper sizing
+        # Create scrollable container
         self.game_container = ScrollableContent(
             self.translation_layout,
             do_scroll_x=False,
@@ -267,47 +258,69 @@ class TranslationExerciseScreen(BaseExerciseScreen):
                     self.display_current_exercise()
 
     def display_current_exercise(self):
-        """Display the current translation exercise."""
-        if self.current_exercise_index < len(self.exercises):
-            current = self.exercises[self.current_exercise_index]
-            self.current_exercise_id = current["id"]
+            """Display the current translation exercise."""
+            if self.current_exercise_index < len(self.exercises):
+                current = self.exercises[self.current_exercise_index]
+                self.current_exercise_id = current["id"]
 
-            # Display the phrase to translate
-            self.phrase_label.text = current["lang1"]
+                # Display the phrase to translate
+                self.phrase_label.text = current["lang1"]
 
-            # Clear previous state
-            self.words_layout.clear_widgets()
-            self.answer_field.text = ""
-            self.word_buttons = []
-            self.answer_words = []
-            self.submit_button.disabled = True
+                # Clear previous state
+                self.words_layout.clear_widgets()
+                self.answer_field.text = ""
+                self.word_buttons = []
+                self.answer_words = []
+                self.submit_button.disabled = True
 
-            # Split language_2_content into words and create buttons
-            words = current["lang2"].split()
-            random.shuffle(words)  # Randomize word order
+                # Create word buttons
+                words = current["lang2"].split()
+                random.shuffle(words)
 
-            for i, word in enumerate(words):
-                btn = WordButton(
-                    text=word, index=i, on_release=self.word_button_pressed
-                )
-                self.word_buttons.append(btn)
-                self.words_layout.add_widget(btn)
+                for i, word in enumerate(words):
+                    btn = WordButton(
+                        text=word,
+                        index=i,
+                        on_release=self.word_button_pressed
+                    )
+                    self.word_buttons.append(btn)
+                    self.words_layout.add_widget(btn)
 
-            # Update layout heights
-            self.words_layout.reposition_children()
-            self.update_flow_layout_height()
-            self.update_score()
+                # Schedule the layout updates for the next frame to ensure proper widget sizing
+                from kivy.clock import Clock
+                def update_layouts(dt):
+                    self.words_layout.reposition_children()
+                    self.update_flow_layout_height()
+                    self.update_translation_layout_height()
+                    self.update_score()
+                
+                Clock.schedule_once(update_layouts)
+    def update_translation_layout_height(self, *args):
+        """Update the translation layout height when content changes."""
+        # Calculate total height needed
+        total_height = sum([
+            self.phrase_label.height,
+            self.answer_field.height,
+            self.words_layout.height,
+            self.submit_button.height
+        ]) + (self.translation_layout.spacing * 3)  # Spacing between 4 elements
+        
+        # Add padding
+        total_height += self.translation_layout.padding[1] + self.translation_layout.padding[3]
+        
+        # Update layout height
+        self.translation_layout.height = total_height
 
     def update_flow_layout_height(self, *args):
         """Update FlowLayout height based on content."""
         if hasattr(self, "words_layout"):
-            # Calculate needed height based on children
             total_height = 0
             current_row_width = 0
-            row_height = dp(85)  # Height of one row including spacing
+            row_height = dp(50)  # Reduced row height
+            layout_width = self.words_layout.width - self.words_layout.padding * 2
 
             for child in self.words_layout.children:
-                if current_row_width + child.width + dp(10) > self.words_layout.width:
+                if current_row_width + child.width + dp(10) > layout_width:
                     total_height += row_height
                     current_row_width = child.width + dp(10)
                 else:
@@ -316,8 +329,11 @@ class TranslationExerciseScreen(BaseExerciseScreen):
             # Add height for the last row
             total_height += row_height
 
-            # Set minimum height with some padding
-            self.words_layout.height = total_height + dp(20)
+            # Set height with minimal padding
+            self.words_layout.height = total_height + dp(10)
+            
+            # Update the parent layout
+            self.update_translation_layout_height()
 
     def word_button_pressed(self, button):
         """Handle word button press."""
@@ -386,8 +402,4 @@ class TranslationExerciseScreen(BaseExerciseScreen):
                 )
             self.attempt_recorded = True
 
-    def reset_exercise(self, *args):
-        """Reset the current exercise."""
-        super().reset_exercise(*args)
-        if self.current_topic:
-            self.select_topic(self.current_topic)
+
