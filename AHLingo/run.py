@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import sys
 from kivymd.app import MDApp
 from kivymd.uix.screenmanager import MDScreenManager
 from kivy.core.window import Window
@@ -6,6 +7,7 @@ from kivy.utils import platform
 from kivy.storage.jsonstore import JsonStore
 from kivy.config import Config
 import os
+import pkg_resources
 
 # Import screens
 from AHLingo.screens.home_screen import HomeScreen
@@ -23,23 +25,36 @@ from AHLingo.database.database_manager import LanguageDB
 Config.set("input", "mouse", "mouse,multitouch_on_demand")
 
 
+def get_resource_path(relative_path):
+    """Get absolute path to resource, works for dev and for PyInstaller"""
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = pkg_resources.resource_filename('AHLingo', '')
+    
+    return os.path.join(base_path, relative_path)
+
+
 class AppSettings:
     """Manages application settings."""
 
-    SETTINGS_FILE = "settings.json"
-    REQUIRED_SETTINGS = ["username", "language", "difficulty"]
+    def __init__(self):
+        self.settings_dir = "./"
+        os.makedirs(self.settings_dir, exist_ok=True)
+        self.SETTINGS_FILE = os.path.join(self.settings_dir, "settings.json")
+        self.REQUIRED_SETTINGS = ["username", "language", "difficulty"]
 
-    @classmethod
-    def check_settings(cls) -> str:
+    def check_settings(self) -> str:
         """
         Check if settings exist and are complete.
         Returns: Initial screen name based on settings state.
         """
-        if not os.path.exists(cls.SETTINGS_FILE):
+        if not os.path.exists(self.SETTINGS_FILE):
             return "settings"
 
-        settings = JsonStore(cls.SETTINGS_FILE)
-        if not all(settings.exists(setting) for setting in cls.REQUIRED_SETTINGS):
+        settings = JsonStore(self.SETTINGS_FILE)
+        if not all(settings.exists(setting) for setting in self.REQUIRED_SETTINGS):
             return "settings"
 
         return "home"
@@ -48,16 +63,17 @@ class AppSettings:
 class DatabaseManager:
     """Manages database connection and initialization."""
 
-    DB_PATH = "./database/languageLearningDatabase.db"
+    def __init__(self):
+        self.db_dir = os.path.expanduser("./database")
+        os.makedirs(self.db_dir, exist_ok=True)
+        self.DB_PATH = os.path.join(self.db_dir, "languageLearningDatabase.db")
 
-    @classmethod
-    def get_database(cls):
+    def get_database(self):
         """
         Initialize and return database connection.
         Creates necessary directories if they don't exist.
         """
-        os.makedirs(os.path.dirname(cls.DB_PATH), exist_ok=True)
-        return lambda: LanguageDB(cls.DB_PATH)
+        return lambda: LanguageDB(self.DB_PATH)
 
 
 class LanguageLearningApp(MDApp):
@@ -67,9 +83,11 @@ class LanguageLearningApp(MDApp):
         super().__init__(**kwargs)
         self.setup_window()
         self.setup_theme()
-        self.icon = "./assets/logo.png"
+        self.icon = get_resource_path("assets/logo.png")
         self.screen_manager = None
         self.db = None
+        self.settings = AppSettings()
+        self.db_manager = DatabaseManager()
 
     def setup_window(self):
         """Configure window properties."""
@@ -85,7 +103,7 @@ class LanguageLearningApp(MDApp):
     def build(self):
         """Build and return the application's root widget."""
         # Initialize database
-        self.db = DatabaseManager.get_database()
+        self.db = self.db_manager.get_database()
 
         # Create screen manager
         self.screen_manager = MDScreenManager()
@@ -105,7 +123,7 @@ class LanguageLearningApp(MDApp):
             self.screen_manager.add_widget(screen)
 
         # Set initial screen based on settings
-        initial_screen = AppSettings.check_settings()
+        initial_screen = self.settings.check_settings()
         self.screen_manager.current = initial_screen
 
         return self.screen_manager
@@ -123,12 +141,12 @@ class LanguageLearningApp(MDApp):
         print(
             f"Available Screens: {[screen.name for screen in self.screen_manager.screens]}"
         )
-        print(f"Settings File: {os.path.exists(AppSettings.SETTINGS_FILE)}")
+        print(f"Settings File: {os.path.exists(self.settings.SETTINGS_FILE)}")
 
-        if os.path.exists(AppSettings.SETTINGS_FILE):
-            settings = JsonStore(AppSettings.SETTINGS_FILE)
+        if os.path.exists(self.settings.SETTINGS_FILE):
+            settings = JsonStore(self.settings.SETTINGS_FILE)
             print("\nCurrent Settings:")
-            for setting in AppSettings.REQUIRED_SETTINGS:
+            for setting in self.settings.REQUIRED_SETTINGS:
                 value = (
                     settings.get(setting)["value"]
                     if settings.exists(setting)
@@ -145,5 +163,10 @@ class LanguageLearningApp(MDApp):
         print("-" * 30)
 
 
-if __name__ == "__main__":
+def main():
+    """Entry point for the application when installed as a package."""
     LanguageLearningApp().run()
+
+
+if __name__ == "__main__":
+    main()
