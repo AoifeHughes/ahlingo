@@ -22,7 +22,24 @@ class WordButton(OptionButton):
     def __init__(self, lang_num, word="", pair_id=None, **kwargs):
         super().__init__(**kwargs)
         self.word = word
-        self.text = word
+
+        size_limit = 20
+        words = word.split()
+        lines = []
+        current_line = ""
+        for word in words:
+            if len(current_line) + len(word) + 1 > size_limit:
+                lines.append(current_line)
+                current_line = word
+            else:
+                if current_line:
+                    current_line += " " + word
+                else:
+                    current_line = word
+        if current_line:
+            lines.append(current_line)
+        self.text = "\n".join(lines)
+
         self.pair_id = pair_id
         self.original_color = self.md_bg_color
         self.lang_num = lang_num
