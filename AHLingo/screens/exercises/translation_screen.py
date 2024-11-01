@@ -219,43 +219,42 @@ class TranslationExerciseScreen(BaseExerciseScreen):
 
     def select_topic(self, topic):
         """Handle topic selection and load translation exercises."""
-        settings = self.get_user_settings()
-        if settings:
-            with self.db() as db:
-                db.cursor.execute(
-                    """SELECT e.id, t.language_1_content, t.language_2_content
-                       FROM exercises_info e
-                       JOIN translation_exercises t ON e.id = t.exercise_id
-                       JOIN topics top ON e.topic_id = top.id
-                       JOIN languages l ON e.language_id = l.id
-                       JOIN difficulties d ON e.difficulty_id = d.id
-                       WHERE top.topic = ? AND l.language = ? AND d.difficulty_level = ?
-                       ORDER BY RANDOM()
-                       LIMIT 5""",
-                    (topic, settings["language"], settings["difficulty"]),
-                )
-                exercises = db.cursor.fetchall()
+        with self.db() as db:
+            settings = db.get_user_settings()
+            db.cursor.execute(
+                """SELECT e.id, t.language_1_content, t.language_2_content
+                    FROM exercises_info e
+                    JOIN translation_exercises t ON e.id = t.exercise_id
+                    JOIN topics top ON e.topic_id = top.id
+                    JOIN languages l ON e.language_id = l.id
+                    JOIN difficulties d ON e.difficulty_id = d.id
+                    WHERE top.topic = ? AND l.language = ? AND d.difficulty_level = ?
+                    ORDER BY RANDOM()
+                    LIMIT 5""",
+                (topic, settings["language"], settings["difficulty"]),
+            )
+            exercises = db.cursor.fetchall()
 
-                if exercises:
-                    self.exercises = []
-                    for exercise in exercises:
-                        self.exercises.append(
-                            {
-                                "id": exercise[0],
-                                "lang1": exercise[1],
-                                "lang2": exercise[2],
-                            }
-                        )
+            if exercises:
+                self.exercises = []
+                for exercise in exercises:
+                    self.exercises.append(
+                        {
+                            "id": exercise[0],
+                            "lang1": exercise[1],
+                            "lang2": exercise[2],
+                        }
+                    )
 
-                    random.shuffle(self.exercises)
-                    self.total_exercises = len(self.exercises)
-                    self.correct_answers = 0
-                    self.incorrect_attempts = 0
-                    self.current_exercise_index = 0
-                    self.attempt_recorded = False
-                    self.current_topic = topic
-                    self.switch_to_exercise()
-                    self.display_current_exercise()
+                random.shuffle(self.exercises)
+                self.total_exercises = len(self.exercises)
+                self.correct_answers = 0
+                self.incorrect_attempts = 0
+                self.current_exercise_index = 0
+                self.attempt_recorded = False
+                self.current_topic = topic
+                self.switch_to_exercise()
+                self.display_current_exercise()
 
     def load_specific_exercise(self, exercise_id):
         """Load a specific exercise by ID."""
@@ -466,9 +465,9 @@ class TranslationExerciseScreen(BaseExerciseScreen):
 
     def record_attempt(self):
         """Record the exercise attempt in the database."""
-        settings = self.get_user_settings()
-        if settings and self.current_exercise_id:
+        if self.current_exercise_id:
             with self.db() as db:
+                settings = db.get_user_settings()
                 db.record_exercise_attempt(
                     settings["username"],
                     self.current_exercise_id,

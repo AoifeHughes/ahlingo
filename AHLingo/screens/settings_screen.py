@@ -153,20 +153,27 @@ class SettingsScreen(BaseScreen):
         """Set selected language."""
         self.language_button.text = language
         self.language_menu.dismiss()
+        self.save_settings()
 
     def set_difficulty(self, difficulty, *args):
         """Set selected difficulty."""
         self.difficulty_button.text = difficulty
         self.difficulty_menu.dismiss()
+        self.save_settings()
 
     def load_existing_settings(self):
         """Load existing user settings if available."""
-        if self.settings.exists("username"):
-            self.username_field.text = self.settings.get("username")["value"]
-        if self.settings.exists("language"):
-            self.language_button.text = self.settings.get("language")["value"]
-        if self.settings.exists("difficulty"):
-            self.difficulty_button.text = self.settings.get("difficulty")["value"]
+        with self.db() as db:
+            # Get most recent user or default to "default_user"
+            username = db.get_most_recent_user() or "default_user"
+            settings = db.get_user_settings(username)
+
+            if "username" in settings:
+                self.username_field.text = settings["username"]
+            if "language" in settings:
+                self.language_button.text = settings["language"]
+            if "difficulty" in settings:
+                self.difficulty_button.text = settings["difficulty"]
 
     def validate_settings(self):
         """Validate all required settings are provided."""
@@ -179,17 +186,18 @@ class SettingsScreen(BaseScreen):
             return False
         return True
 
+    def save_settings(self):
+        """Save current settings to the database."""
+        if self.validate_settings():
+            with self.db() as db:
+                username = self.username_field.text
+                # Update last login time
+                db.update_user_login(username)
+                # Save all settings
+                db.set_user_setting(username, "username", username)
+                db.set_user_setting(username, "language", self.language_button.text)
+                db.set_user_setting(username, "difficulty", self.difficulty_button.text)
+
     def on_leave(self, *args):
         """Save settings when leaving the screen."""
-        if self.validate_settings():
-            # Save settings
-            self.settings.put("username", value=self.username_field.text)
-            self.settings.put("language", value=self.language_button.text)
-            self.settings.put("difficulty", value=self.difficulty_button.text)
-
-            # Create user if doesn't exist
-            with self.db() as db:
-                db.cursor.execute(
-                    "INSERT OR IGNORE INTO users (name) VALUES (?)",
-                    (self.username_field.text,),
-                )
+        self.save_settings()

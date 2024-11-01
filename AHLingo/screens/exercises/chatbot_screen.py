@@ -145,7 +145,9 @@ class ChatbotExerciseScreen(BaseExerciseScreen):
 
     def get_bot_response_in_thread(self, message):
         """Get bot response in a separate thread."""
-        settings = self.get_user_settings()
+        settings = None
+        with self.db() as db:
+            settings = db.get_user_settings()
         if not settings:
             return "Error: Could not get user settings"
 

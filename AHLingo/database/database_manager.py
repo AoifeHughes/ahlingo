@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import sqlite3
-from typing import List, Dict
+from typing import List, Dict, Optional
 from pathlib import Path
 from datetime import datetime
 
@@ -18,14 +18,20 @@ class LanguageDB:
         self._initialize()
 
         # print the number of rows in the database
-        self.cursor.execute("SELECT COUNT(*) FROM languages")
+        self.cursor.execute("SELECT COUNT(*) FROM topics")
+        print(f"Number of topics in the database: {self.cursor.fetchone()[0]}")
+
+        # print number of exercises in the database
+        self.cursor.execute("SELECT COUNT(*) FROM exercises_info")
+        print(f"Number of exercises in the database: {self.cursor.fetchone()[0]}")
 
     def _initialize(self):
         """Create all necessary tables if they don't exist."""
         table_creation_queries = [
             """CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY,
-                name TEXT NOT NULL UNIQUE
+                name TEXT NOT NULL UNIQUE,
+                last_login TIMESTAMP
             )""",
             """CREATE TABLE IF NOT EXISTS difficulties (
                 id INTEGER PRIMARY KEY,
@@ -90,10 +96,43 @@ class LanguageDB:
                 FOREIGN KEY (user_id) REFERENCES users (id),
                 FOREIGN KEY (exercise_id) REFERENCES exercises_info (id)
             )""",
+            """CREATE TABLE IF NOT EXISTS user_settings (
+                id INTEGER PRIMARY KEY,
+                user_id INTEGER NOT NULL,
+                setting_name TEXT NOT NULL,
+                setting_value TEXT NOT NULL,
+                FOREIGN KEY (user_id) REFERENCES users (id),
+                UNIQUE(user_id, setting_name)
+            )""",
         ]
+
+        # Add last_login column to users table if it doesn't exist
+        try:
+            self.cursor.execute("SELECT last_login FROM users LIMIT 1")
+        except sqlite3.OperationalError:
+            self.cursor.execute("ALTER TABLE users ADD COLUMN last_login TIMESTAMP")
 
         for query in table_creation_queries:
             self.cursor.execute(query)
+        self.conn.commit()
+
+    def get_most_recent_user(self) -> Optional[str]:
+        """Get the username of the most recently logged in user."""
+        self.cursor.execute(
+            """SELECT name FROM users
+               WHERE last_login IS NOT NULL
+               ORDER BY last_login DESC LIMIT 1"""
+        )
+        result = self.cursor.fetchone()
+        return result["name"] if result else "default_user"
+
+    def update_user_login(self, username: str):
+        """Update the last login time for a user."""
+        user_id = self._get_or_create_user(username)
+        self.cursor.execute(
+            "UPDATE users SET last_login = ? WHERE id = ?",
+            (datetime.now(), user_id),
+        )
         self.conn.commit()
 
     def _get_or_create_topic(self, topic: str) -> int:
@@ -142,9 +181,39 @@ class LanguageDB:
         if result:
             return result[0]
 
-        self.cursor.execute("INSERT INTO users (name) VALUES (?)", (username,))
+        self.cursor.execute(
+            "INSERT INTO users (name, last_login) VALUES (?, ?)",
+            (username, datetime.now()),
+        )
         self.conn.commit()
         return self.cursor.lastrowid
+
+    def get_user_settings(self, username: str = None) -> Dict[str, str]:
+        """Get all settings for a user."""
+        if not username:
+            username = self.get_most_recent_user()
+        user_id = self._get_or_create_user(username)
+        self.cursor.execute(
+            """SELECT setting_name, setting_value
+               FROM user_settings
+               WHERE user_id = ?""",
+            (user_id,),
+        )
+        return {
+            row["setting_name"]: row["setting_value"] for row in self.cursor.fetchall()
+        }
+
+    def set_user_setting(self, username: str, setting_name: str, setting_value: str):
+        """Set a setting for a user."""
+        user_id = self._get_or_create_user(username)
+        self.cursor.execute(
+            """INSERT INTO user_settings (user_id, setting_name, setting_value)
+               VALUES (?, ?, ?)
+               ON CONFLICT(user_id, setting_name)
+               DO UPDATE SET setting_value = ?""",
+            (user_id, setting_name, setting_value, setting_value),
+        )
+        self.conn.commit()
 
     def get_failed_attempts(self, username: str) -> List[Dict]:
         """Get list of failed exercise attempts for a user."""
@@ -373,7 +442,11 @@ class LanguageDB:
 
     def get_languages(self) -> List[str]:
         """Get all available languages."""
-        self.cursor.execute("SELECT language FROM languages")
+        self.cursor.execute(
+            """SELECT DISTINCT l.language
+               FROM languages l
+               JOIN exercises_info e ON l.id = e.language_id"""
+        )
         return [row["language"] for row in self.cursor.fetchall()]
 
     def get_difficulty_levels(self) -> List[str]:
