@@ -1,0 +1,6 @@
+include README.md
+include LICENSE
+include requirements.txt
+recursive-include AHLingo/assets *
+recursive-include AHLingo/database *.db
+recursive-include AHLingo/generation_data *
