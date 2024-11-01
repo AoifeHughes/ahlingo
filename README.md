@@ -21,13 +21,7 @@ AHLingo Translation Evaluator is a comprehensive tool designed to assist languag
 
 ## Installation
 
-You can install AHLingo directly from pip:
-
-```bash
-pip install ahlingo
-```
-
-Or install from source:
+You can install AHLingo directly:
 
 ```bash
 git clone https://github.com/ahughes/ahlingo.git
@@ -48,6 +42,18 @@ This will launch the main application interface where you can:
 2. Track your progress
 3. Review past mistakes
 4. Customize your learning experience
+
+## Setting up the Database
+You can setup the database by running the following command:
+
+```bash
+python create_exercise_db.py
+```
+
+For this to work you currently need an openai compatable server running on your
+local machine.
+
+See `generation_data` folder for more information on how to set this up.
 
 ## Development Setup
 
