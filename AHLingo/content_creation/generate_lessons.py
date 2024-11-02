@@ -3,7 +3,7 @@ import openai
 import json
 import re
 from tqdm import tqdm
-from typing import Generator, Dict, List, Any
+from typing import Generator, Dict, List, Any, AsyncGenerator
 from AHLingo.database.database_manager import LanguageDB
 from .assistants import (
     default_conversation_assistants,
@@ -11,10 +11,8 @@ from .assistants import (
     default_translation_assistants,
 )
 import uuid
-
-# import logging
-
-# logging.disable(logging.CRITICAL)
+import asyncio
+from concurrent.futures import ThreadPoolExecutor
 
 
 def clean_text(text: str) -> str:
@@ -229,27 +227,27 @@ def validate_json_structure(
     return True
 
 
-def generate_lessons_data(
+async def generate_lessons_data_async(
     language: str,
     level: str,
     topic: str,
     N_runs: int = 5,
     lesson_kinds: List[str] = ["conversations", "pairs", "translations"],
-) -> Generator[tuple[str, str, Dict], None, None]:
-    """Generate lesson data using the OpenAI API."""
+) -> AsyncGenerator[tuple[str, str, Dict], None]:
+    """Generate lesson data using the OpenAI API asynchronously."""
 
     def make_conversation_system(
         language: str, topic: str, level: str
     ) -> Dict[str, str]:
         return {
             "role": "system",
-            "content": f'You are a {language} language learning tool. Your task is to generate a JSON array containing {level} level {language} conversations related to the topic "{topic}". Each conversation should have a clear objective, specified roles for the speakers, and a conversation summary. The conversations should be engaging, natural, and aligned with the language level. Include a mix of questions, responses, and idiomatic expressions. Aim for 4-6 turns per conversation.',
+            "content": f'You are a {language} language learning tool. Your task is to generate a JSON array containing {level} level {language} conversations related to the topic "{topic}". Each conversation should have a clear objective, specified roles for the speakers, and a conversation summary. The conversations should be engaging, natural, and aligned with the language level. Include a mix of questions, responses, and idiomatic expressions. Aim for 4-6 turns per conversation. Respond only with valid JSON. Do not write an introduction to the task',
         }
 
     def make_pairs_system(language: str, topic: str, level: str) -> Dict[str, str]:
         return {
             "role": "system",
-            "content": f'You are a {language} language learning tool. Your task is to generate a JSON array containing pairs of {language} words and their English translations. Where possible use single words only. The words should be common and relevant to the topic "{topic}" at the {level} level. Include a mix of nouns, verbs, adjectives, and adverbs. Aim for 5-10 word pairs.',
+            "content": f'You are a {language} language learning tool. Your task is to generate a JSON array containing pairs of {language} words and their English translations. Where possible use single words only. The words should be common and relevant to the topic "{topic}" at the {level} level. Include a mix of nouns, verbs, adjectives, and adverbs. Aim for 5-10 word pairs.  Respond only with valid JSON. Do not write an introduction to the task',
         }
 
     def make_translation_system(
@@ -257,7 +255,7 @@ def generate_lessons_data(
     ) -> Dict[str, str]:
         return {
             "role": "system",
-            "content": f'You are a {language} language learning tool. Your task is to generate a JSON array containing {level} level {language} sentences and their English translations. The sentences should be focused on the topic "{topic}" and showcase relevant vocabulary and grammar structures. Vary the sentence structures and include a mix of statements, questions, and commands. Aim for 5 sentence pairs. These should be full sentences.',
+            "content": f'You are a {language} language learning tool. Your task is to generate a JSON array containing {level} level {language} sentences and their English translations. The sentences should be focused on the topic "{topic}" and showcase relevant vocabulary and grammar structures. Vary the sentence structures and include a mix of statements, questions, and commands. Aim for 5 sentence pairs. These should be full sentences.  Respond only with valid JSON. Do not write an introduction to the task',
         }
 
     client = openai.OpenAI(
@@ -304,8 +302,27 @@ def generate_lessons_data(
                 yield lesson_kind, lesson_id, raw_response, raw_response
 
 
-def populate_database():
-    """Main function to generate lessons and populate the database."""
+async def process_combination(language: str, level: str, topic: str, db: LanguageDB):
+    """Process a single language-level-topic combination."""
+    async for (
+        lesson_kind,
+        lesson_id,
+        raw_response,
+        json_response,
+    ) in generate_lessons_data_async(language, level, topic):
+        process_response(
+            db=db,
+            response=json_response,
+            language=language,
+            topic=topic,
+            level=level,
+            lesson_kind=lesson_kind,
+            lesson_id=lesson_id,
+        )
+
+
+async def populate_database_parallel(max_concurrent: int = 4):
+    """Main function to generate lessons and populate the database with parallel processing."""
     # Read configuration files
     with open("generation_data/topics.txt", "r") as file:
         topics = [line.strip() for line in file]
@@ -318,37 +335,62 @@ def populate_database():
     print("Languages:", ", ".join(languages))
     print("Levels:", ", ".join(levels))
     print("Topics:", ", ".join(topics))
+    print(f"Max concurrent requests: {max_concurrent}")
 
     db = LanguageDB("./database/languageLearningDatabase.db")
 
     try:
-        total = len(languages) * len(levels) * len(topics)
+        # Create all combinations
+        combinations = [
+            (language, level, topic)
+            for language in languages
+            for level in levels
+            for topic in topics
+        ]
+        total = len(combinations)
+
+        # Process combinations with progress bar
         with tqdm(total=total, desc="Overall Progress") as pbar:
-            for language in languages:
-                for level in levels:
-                    for topic in topics:
-                        tqdm.write(f"\nProcessing: {language} - {level} - {topic}")
-                        for (
-                            lesson_kind,
-                            lesson_id,
-                            raw_response,
-                            json_response,
-                        ) in generate_lessons_data(
-                            language,
-                            level,
-                            topic,
-                            N_runs=5,
-                            lesson_kinds=["conversations", "pairs", "translations"],
-                        ):
-                            process_response(
-                                db=db,
-                                response=json_response,
-                                language=language,
-                                topic=topic,
-                                level=level,
-                                lesson_kind=lesson_kind,
-                                lesson_id=lesson_id,
-                            )
-                        pbar.update(1)
+            # Create a set to track active tasks
+            active_tasks = set()
+            completed = 0
+
+            async def process_and_update(language: str, level: str, topic: str):
+                try:
+                    await process_combination(language, level, topic, db)
+                finally:
+                    nonlocal completed
+                    completed += 1
+                    pbar.update(1)
+
+            # Process all combinations while respecting max_concurrent limit
+            for language, level, topic in combinations:
+                # Wait if we've reached the maximum number of concurrent tasks
+                while len(active_tasks) >= max_concurrent:
+                    # Wait for any task to complete
+                    done, pending = await asyncio.wait(
+                        active_tasks, return_when=asyncio.FIRST_COMPLETED
+                    )
+                    active_tasks.difference_update(done)
+                    # Handle any exceptions from completed tasks
+                    for task in done:
+                        try:
+                            await task
+                        except Exception as e:
+                            print(f"Task failed: {str(e)}")
+
+                # Create and start a new task
+                task = asyncio.create_task(process_and_update(language, level, topic))
+                active_tasks.add(task)
+
+            # Wait for remaining tasks to complete
+            if active_tasks:
+                await asyncio.wait(active_tasks)
+
     finally:
         db.close()
+
+
+def populate_database(max_concurrent: int = 4):
+    """Wrapper function to run the async populate function."""
+    asyncio.run(populate_database_parallel(max_concurrent))
