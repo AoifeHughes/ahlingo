@@ -106,12 +106,6 @@ class LanguageDB:
             )""",
         ]
 
-        # Add last_login column to users table if it doesn't exist
-        try:
-            self.cursor.execute("SELECT last_login FROM users LIMIT 1")
-        except sqlite3.OperationalError:
-            self.cursor.execute("ALTER TABLE users ADD COLUMN last_login TIMESTAMP")
-
         for query in table_creation_queries:
             self.cursor.execute(query)
         self.conn.commit()
