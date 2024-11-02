@@ -14,6 +14,7 @@ import uuid
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
 
+
 def clean_text(text: str) -> str:
     """Clean and normalize text content with proper escaping."""
     if not text:
@@ -303,9 +304,12 @@ async def generate_lessons_data_async(
 
 async def process_combination(language: str, level: str, topic: str, db: LanguageDB):
     """Process a single language-level-topic combination."""
-    async for lesson_kind, lesson_id, raw_response, json_response in generate_lessons_data_async(
-        language, level, topic
-    ):
+    async for (
+        lesson_kind,
+        lesson_id,
+        raw_response,
+        json_response,
+    ) in generate_lessons_data_async(language, level, topic):
         process_response(
             db=db,
             response=json_response,
