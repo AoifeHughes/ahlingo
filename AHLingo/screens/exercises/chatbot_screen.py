@@ -293,6 +293,18 @@ class ChatbotExerciseScreen(BaseExerciseScreen):
         chat_id = row_data[2]
         self.select_chat(chat_id)
 
+    def return_to_topics(self):
+        """Override return_to_topics to properly handle table recreation."""
+        self.main_layout.clear_widgets()
+        self.topic_view = self.create_topic_view()  # Recreate the topic view
+        self.data_table = None  # Reset data table so it will be recreated
+        self.load_topics()  # This will recreate the table and reload data
+        self.main_layout.add_widget(self.topic_view)
+
+    def load_topics(self):
+        """Override load_topics to handle initial loading and reloading."""
+        self.display_topics([])  # Pass empty list since we don't use traditional topics
+
     def display_topics(self, topics):
         """Display previous conversations in a table format."""
         if not hasattr(self, 'topic_view') or not self.topic_view:
@@ -329,9 +341,24 @@ class ChatbotExerciseScreen(BaseExerciseScreen):
                         row_data.append((preview, date, str(chat["id"])))
                 self.data_table.row_data = row_data
             else:
-                # Show "No previous chats" message
+                # Show "No previous chats" message and create new chat button
                 self.data_table.row_data = [("No previous chats", "", "")]
+                new_chat_button = StandardButton(
+                    text="Start New Chat",
+                    on_release=lambda x: self.start_new_chat(),
+                    size_hint=(None, None),
+                    width=dp(200),
+                    height=dp(48),
+                    pos_hint={"center_x": 0.5}
+                )
+                self.topics_list.add_widget(new_chat_button)
 
+    def start_new_chat(self):
+        """Start a new chat session."""
+        self.chat_id = None
+        self.setup_chat_interface()
+        self.switch_to_exercise()
+            
     def select_chat(self, chat_id):
         """Load and display selected chat."""
         self.chat_id = chat_id
