@@ -21,7 +21,7 @@ setup(
         "Operating System :: OS Independent",
     ],
     python_requires=">=3.8",
-    install_requires=["kivy", "kivymd", "tqdm", "openai", "setuptools"],
+    install_requires=["kivy", "kivymd", "tqdm", "openai", "setuptools", "ollama"],
     entry_points={
         "console_scripts": [
             "ahlingo=AHLingo.run:main",

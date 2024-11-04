@@ -104,6 +104,24 @@ class LanguageDB:
                 FOREIGN KEY (user_id) REFERENCES users (id),
                 UNIQUE(user_id, setting_name)
             )""",
+            """CREATE TABLE IF NOT EXISTS chat_details (
+                id INTEGER PRIMARY KEY,
+                user_id INTEGER NOT NULL,
+                language TEXT NOT NULL,
+                difficulty TEXT NOT NULL,
+                model TEXT NOT NULL,
+                created_at TIMESTAMP NOT NULL,
+                last_updated TIMESTAMP NOT NULL,
+                FOREIGN KEY (user_id) REFERENCES users (id)
+            )""",
+            """CREATE TABLE IF NOT EXISTS chat_histories (
+                id INTEGER PRIMARY KEY,
+                chat_id INTEGER NOT NULL,
+                role TEXT NOT NULL,
+                content TEXT NOT NULL,
+                timestamp TIMESTAMP NOT NULL,
+                FOREIGN KEY (chat_id) REFERENCES chat_details (id)
+            )""",
         ]
 
         for query in table_creation_queries:
@@ -181,6 +199,61 @@ class LanguageDB:
         )
         self.conn.commit()
         return self.cursor.lastrowid
+
+    def create_chat_session(self, username: str, language: str, difficulty: str, model: str) -> int:
+        """Create a new chat session and return its ID."""
+        user_id = self._get_or_create_user(username)
+        now = datetime.now()
+        
+        self.cursor.execute(
+            """INSERT INTO chat_details 
+               (user_id, language, difficulty, model, created_at, last_updated)
+               VALUES (?, ?, ?, ?, ?, ?)""",
+            (user_id, language, difficulty, model, now, now)
+        )
+        self.conn.commit()
+        return self.cursor.lastrowid
+
+    def add_chat_message(self, chat_id: int, role: str, content: str):
+        """Add a message to an existing chat session."""
+        self.cursor.execute(
+            """INSERT INTO chat_histories 
+               (chat_id, role, content, timestamp)
+               VALUES (?, ?, ?, ?)""",
+            (chat_id, role, content, datetime.now())
+        )
+        
+        # Update last_updated timestamp in chat_details
+        self.cursor.execute(
+            """UPDATE chat_details 
+               SET last_updated = ? 
+               WHERE id = ?""",
+            (datetime.now(), chat_id)
+        )
+        self.conn.commit()
+
+    def get_chat_history(self, chat_id: int) -> List[Dict]:
+        """Get all messages from a chat session."""
+        self.cursor.execute(
+            """SELECT role, content, timestamp 
+               FROM chat_histories 
+               WHERE chat_id = ? 
+               ORDER BY timestamp ASC""",
+            (chat_id,)
+        )
+        return [dict(row) for row in self.cursor.fetchall()]
+
+    def get_user_chats(self, username: str) -> List[Dict]:
+        """Get all chat sessions for a user."""
+        user_id = self._get_or_create_user(username)
+        self.cursor.execute(
+            """SELECT id, language, difficulty, model, created_at, last_updated 
+               FROM chat_details 
+               WHERE user_id = ? 
+               ORDER BY last_updated DESC""",
+            (user_id,)
+        )
+        return [dict(row) for row in self.cursor.fetchall()]
 
     def get_user_settings(self, username: str = None) -> Dict[str, str]:
         """Get all settings for a user."""

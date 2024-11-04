@@ -3,6 +3,7 @@ from AHLingo.screens.exercises.base_exercise import BaseExerciseScreen
 from AHLingo.components.layouts import ContentLayout, ScrollableContent
 from AHLingo.components.messages import MessageBubble
 from AHLingo.content_creation.chatbot import ChatbotHandler
+from AHLingo.components.buttons import StandardButton
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.textfield import MDTextField
 from kivymd.uix.button import MDIconButton
@@ -85,63 +86,82 @@ class ChatbotExerciseScreen(BaseExerciseScreen):
         self.name = "chatbot"
         self.chatbot = ChatbotHandler()
         self.conversation_history = []
-        self.setup_chat_interface()
+        self.chat_id = None
+        self.exercise_view = None  # Will be created when needed
+        self.load_topics()  # Start by showing conversation list
 
     def setup_chat_interface(self):
-        """Setup the chat interface directly instead of using base exercise layout."""
-        # Main layout
-        self.main_layout = ContentLayout()
+        """Setup the chat interface."""
+        if self.exercise_view is None:
+            # Create exercise view with toolbar from base class
+            self.exercise_view = self.create_exercise_view()
+            self.exercise_view.children[-1].title = "Chat Exercise"  # Update toolbar title
 
-        # Create toolbar
-        toolbar = self.create_toolbar()
-        self.main_layout.add_widget(toolbar)
+            # Create messages area
+            self.messages_layout = ChatMessagesLayout()
+            self.messages_scroll = ScrollableContent(self.messages_layout)
+            self.exercise_view.add_widget(self.messages_scroll)
 
-        # Create messages area
-        self.messages_layout = ChatMessagesLayout()
-        self.messages_scroll = ScrollableContent(self.messages_layout)
-        self.main_layout.add_widget(self.messages_scroll)
-
-        # Create input area
-        self.input_layout = ChatInputLayout(submit_callback=self.send_message)
-        self.main_layout.add_widget(self.input_layout)
-
-        # Add main layout to screen
-        self.add_widget(self.main_layout)
+            # Create input area
+            self.input_layout = ChatInputLayout(submit_callback=self.send_message)
+            self.exercise_view.add_widget(self.input_layout)
 
         # Initialize chat with welcome message
         Clock.schedule_once(lambda dt: self.initialize_chat(), 0.1)
 
-    def create_toolbar(self):
-        """Create the toolbar with a back button and reset button."""
-        toolbar = MDBoxLayout(
-            orientation="horizontal",
-            size_hint_y=None,
-            height=dp(56),
-            padding=[dp(4), 0, dp(4), 0],
-            spacing=dp(4),
-        )
-
-        # Title spacer
-        title_spacer = MDBoxLayout(size_hint_x=1)
-        toolbar.add_widget(title_spacer)
-
-        # Reset button
-        reset_button = MDIconButton(
-            icon="refresh", on_release=lambda x: self.reset_chat()
-        )
-        toolbar.add_widget(reset_button)
-
-        return toolbar
-
     def initialize_chat(self):
-        """Initialize the chat with a welcome message."""
+        """Initialize the chat with a welcome message or load existing conversation."""
         self.conversation_history = []
         self.messages_layout.clear_widgets()
-        self.add_message(
-            "Bot",
-            "Hello! What would you like to talk about? If you don't understand something just ask!",
-            is_right=False,
-        )
+
+        settings = None
+        with self.db() as db:
+            settings = db.get_user_settings()
+            if not settings:
+                return
+
+            # Get most recent chat for this language
+            chats = db.get_user_chats(db.get_most_recent_user())
+            matching_chats = [
+                chat for chat in chats 
+                if chat["language"] == settings["language"] and 
+                   chat["difficulty"] == settings["difficulty"]
+            ]
+
+            if matching_chats:
+                # Load most recent chat
+                most_recent_chat = matching_chats[0]
+                self.chat_id = most_recent_chat["id"]
+                chat_history = db.get_chat_history(self.chat_id)
+                
+                # Restore conversation history and display messages
+                for msg in chat_history:
+                    self.conversation_history.append({
+                        "role": msg["role"],
+                        "content": msg["content"]
+                    })
+                    self.add_message(
+                        "You" if msg["role"] == "user" else "Bot",
+                        msg["content"],
+                        is_right=(msg["role"] == "user"),
+                        animate=False
+                    )
+            else:
+                # Create new chat session
+                self.chat_id = db.create_chat_session(
+                    db.get_most_recent_user(),
+                    settings["language"],
+                    settings["difficulty"],
+                    "gpt-3.5-turbo"  # Default model
+                )
+                # Add welcome message
+                welcome_msg = "Hello! What would you like to talk about? If you don't understand something just ask!"
+                self.add_message("Bot", welcome_msg, is_right=False)
+                db.add_chat_message(self.chat_id, "assistant", welcome_msg)
+                self.conversation_history.append({
+                    "role": "assistant",
+                    "content": welcome_msg
+                })
 
     def get_bot_response_in_thread(self, message):
         """Get bot response in a separate thread."""
@@ -175,6 +195,10 @@ class ChatbotExerciseScreen(BaseExerciseScreen):
         # Update conversation history with user message
         self.conversation_history.append({"role": "user", "content": message})
 
+        # Save user message to database
+        with self.db() as db:
+            db.add_chat_message(self.chat_id, "user", message)
+
         # Start a new thread for the API call
         threading.Thread(
             target=self.get_bot_response_in_thread, args=(message,), daemon=True
@@ -187,6 +211,10 @@ class ChatbotExerciseScreen(BaseExerciseScreen):
 
         # Update conversation history with bot response
         self.conversation_history.append({"role": "assistant", "content": response})
+
+        # Save bot response to database
+        with self.db() as db:
+            db.add_chat_message(self.chat_id, "assistant", response)
 
         # Add bot response with animation
         message_bubble = self.add_message("Bot", response, is_right=False, animate=True)
@@ -215,11 +243,56 @@ class ChatbotExerciseScreen(BaseExerciseScreen):
 
     def reset_chat(self, *args):
         """Reset the chat to initial state."""
+        self.chat_id = None
         self.initialize_chat()
 
-    # Override unused methods from BaseExerciseScreen
     def display_topics(self, topics):
-        pass
+        """Display previous conversations instead of topics."""
+        # Create topics view with toolbar from base class
+        if not hasattr(self, 'topics_view'):
+            self.topics_view = self.create_exercise_view()
+            self.topics_view.children[-1].title = "Previous Chats"  # Update toolbar title
+        
+        self.topics_list.clear_widgets()
+        
+        with self.db() as db:
+            settings = db.get_user_settings()
+            if not settings:
+                return
+            
+            # Get all chats for current user with matching language/difficulty
+            chats = db.get_user_chats(db.get_most_recent_user())
+            matching_chats = [
+                chat for chat in chats 
+                if chat["language"] == settings["language"] and 
+                   chat["difficulty"] == settings["difficulty"]
+            ]
+            
+            if not matching_chats:
+                # If no previous conversations, start a new one
+                self.chat_id = None
+                self.setup_chat_interface()
+                self.switch_to_exercise()
+                return
+                
+            # Add button for each chat, showing first message as preview
+            for chat in matching_chats:
+                chat_history = db.get_chat_history(chat["id"])
+                if chat_history:
+                    preview = chat_history[0]["content"][:50] + "..." if len(chat_history[0]["content"]) > 50 else chat_history[0]["content"]
+                    button = StandardButton(
+                        text=preview,
+                        on_release=lambda x, chat_id=chat["id"]: self.select_chat(chat_id)
+                    )
+                    self.topics_list.add_widget(button)
+
+    def select_chat(self, chat_id):
+        """Load and display selected chat."""
+        self.chat_id = chat_id
+        self.setup_chat_interface()
+        self.switch_to_exercise()
+        self.initialize_chat()
 
     def select_topic(self, topic):
+        """Not used in chatbot screen."""
         pass
