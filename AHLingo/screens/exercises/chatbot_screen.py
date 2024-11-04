@@ -7,9 +7,11 @@ from AHLingo.components.buttons import StandardButton
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.textfield import MDTextField
 from kivymd.uix.button import MDIconButton
+from kivymd.uix.datatables import MDDataTable
 from kivy.metrics import dp
 from kivy.clock import Clock
 import threading
+from datetime import datetime
 
 
 class ChatInputField(MDTextField):
@@ -87,8 +89,9 @@ class ChatbotExerciseScreen(BaseExerciseScreen):
         self.chatbot = ChatbotHandler()
         self.conversation_history = []
         self.chat_id = None
-        self.exercise_view = None  # Will be created when needed
-        self.load_topics()  # Start by showing conversation list
+        self.exercise_view = None
+        self.data_table = None
+        self.load_topics()
 
     def setup_chat_interface(self):
         """Setup the chat interface."""
@@ -246,14 +249,61 @@ class ChatbotExerciseScreen(BaseExerciseScreen):
         self.chat_id = None
         self.initialize_chat()
 
-    def display_topics(self, topics):
-        """Display previous conversations instead of topics."""
-        # Create topics view with toolbar from base class
-        if not hasattr(self, 'topics_view'):
-            self.topics_view = self.create_exercise_view()
-            self.topics_view.children[-1].title = "Previous Chats"  # Update toolbar title
+    def setup_views(self):
+        """Override setup_views to ensure proper initialization order."""
+        self.topic_view = self.create_topic_view()
+        self.main_layout.add_widget(self.topic_view)
+        self.add_widget(self.main_layout)
+
+    def create_topic_view(self):
+        """Override to create a customized topic view for chat."""
+        layout = super().create_topic_view()
+        # Update the toolbar title immediately after creation
+        layout.children[-1].title = "Previous Chats"
+        return layout
+
+    def create_data_table(self):
+        """Create the data table for displaying previous chats."""
+        self.data_table = MDDataTable(
+            size_hint=(1, 1),
+            pos_hint={"center_x": 0.5, "center_y": 0.5},
+            use_pagination=False,
+            column_data=[
+                ("Chat Preview", dp(60)),
+                ("Date", dp(40)),
+                ("ID", dp(20)),
+            ],
+            row_data=[],
+            rows_num=10,
+            elevation=1,
+            background_color_header="#EEEEEE",
+            background_color_cell="#FFFFFF",
+        )
+        self.data_table.bind(on_row_press=self.on_row_press)
+        return self.data_table
+
+    def on_row_press(self, instance_table, instance_row):
+        """Handle row press event."""
+        idx = int(instance_row.index / len(instance_table.column_data))
+        row_data = instance_table.row_data[idx]
         
+        if row_data[0] == "No previous chats":
+            return
+            
+        chat_id = row_data[2]
+        self.select_chat(chat_id)
+
+    def display_topics(self, topics):
+        """Display previous conversations in a table format."""
+        if not hasattr(self, 'topic_view') or not self.topic_view:
+            self.topic_view = self.create_topic_view()
+            
         self.topics_list.clear_widgets()
+        
+        # Create data table if it doesn't exist
+        if not self.data_table:
+            self.data_table = self.create_data_table()
+            self.topics_list.add_widget(self.data_table)
         
         with self.db() as db:
             settings = db.get_user_settings()
@@ -268,23 +318,19 @@ class ChatbotExerciseScreen(BaseExerciseScreen):
                    chat["difficulty"] == settings["difficulty"]
             ]
             
-            if not matching_chats:
-                # If no previous conversations, start a new one
-                self.chat_id = None
-                self.setup_chat_interface()
-                self.switch_to_exercise()
-                return
-                
-            # Add button for each chat, showing first message as preview
-            for chat in matching_chats:
-                chat_history = db.get_chat_history(chat["id"])
-                if chat_history:
-                    preview = chat_history[0]["content"][:50] + "..." if len(chat_history[0]["content"]) > 50 else chat_history[0]["content"]
-                    button = StandardButton(
-                        text=preview,
-                        on_release=lambda x, chat_id=chat["id"]: self.select_chat(chat_id)
-                    )
-                    self.topics_list.add_widget(button)
+            if matching_chats:
+                # Format the data for the table
+                row_data = []
+                for chat in matching_chats:
+                    chat_history = db.get_chat_history(chat["id"])
+                    if chat_history:
+                        preview = chat_history[0]["content"][:50] + "..." if len(chat_history[0]["content"]) > 50 else chat_history[0]["content"]
+                        date = datetime.fromisoformat(chat["created_at"]).strftime("%Y-%m-%d %H:%M")
+                        row_data.append((preview, date, str(chat["id"])))
+                self.data_table.row_data = row_data
+            else:
+                # Show "No previous chats" message
+                self.data_table.row_data = [("No previous chats", "", "")]
 
     def select_chat(self, chat_id):
         """Load and display selected chat."""
