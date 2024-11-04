@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 import openai
-from typing import Dict, List
+from typing import Dict, List, Literal
+try:
+    import ollama
+except ImportError:
+    ollama = None
 
 
 class ChatbotHandler:
@@ -80,9 +84,18 @@ class ChatbotHandler:
         self,
         base_url: str = "http://localhost:8080/v1",
         api_key: str = "sk-no-key-required",
+        backend: Literal["openai", "ollama"] = "openai",
     ):
         """Initialize the chatbot handler with API configuration."""
-        self.client = openai.OpenAI(base_url=base_url, api_key=api_key)
+        self.backend = backend
+        if backend == "openai":
+            self.client = openai.OpenAI(base_url=base_url, api_key=api_key)
+        elif backend == "ollama":
+            if ollama is None:
+                raise ImportError("Ollama package is not installed. Please install it with 'pip install ollama'")
+            self.client = ollama
+        else:
+            raise ValueError(f"Unsupported backend: {backend}")
 
     def create_system_prompt(self, language: str, difficulty: str) -> Dict[str, str]:
         """Create the system prompt for the chatbot."""
@@ -128,6 +141,7 @@ Remember:
         language: str,
         difficulty: str,
         conversation_history: List[Dict[str, str]] = None,
+        model: str = "llama3",
     ) -> str:
         """
         Get a response from the chatbot.
@@ -152,15 +166,22 @@ Remember:
         ]
 
         try:
-            # Get completion from API
-            completion = self.client.chat.completions.create(
-                model="llama",
-                messages=messages,
-                temperature=0.7,
-            )
-
-            # Return the response content
-            return completion.choices[0].message.content
+            if self.backend == "openai":
+                # Get completion from OpenAI API
+                completion = self.client.chat.completions.create(
+                    model="llama",
+                    messages=messages,
+                    temperature=0.7,
+                )
+                return completion.choices[0].message.content
+            else:  # ollama
+                # Get completion from Ollama API
+                completion = self.client.chat(
+                    model=model,  
+                    messages=messages,
+                    temperature=0.7,
+                )
+                return completion['message']['content']
 
         except Exception as e:
             print(f"Error getting chatbot response: {str(e)}")
@@ -182,27 +203,3 @@ Remember:
         if not response.startswith(f"[{language}]"):
             return f"[{language}]: Error formatting response\n[English]: Error formatting response"
         return response
-
-
-def main():
-    """Test the chatbot handler."""
-    handler = ChatbotHandler()
-    test_messages = [
-        ("Hello, how are you?", "French", "beginner"),
-        ("Guten Tag!", "German", "intermediate"),
-        ("¿Cómo estás?", "Spanish", "advanced"),
-        ("Привіт!", "Ukrainian", "beginner"),
-    ]
-
-    for message, language, difficulty in test_messages:
-        print(f"\nTesting {language} at {difficulty} level")
-        print(f"Message: {message}")
-        response = handler.get_chat_response(
-            message=message, language=language, difficulty=difficulty
-        )
-        print(f"Response: {response}\n")
-        print("-" * 50)
-
-
-if __name__ == "__main__":
-    main()
