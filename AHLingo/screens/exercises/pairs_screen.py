@@ -148,45 +148,44 @@ class PairsExerciseScreen(BaseExerciseScreen):
 
     def select_topic(self, topic):
         """Handle topic selection and load pairs."""
-        settings = self.get_user_settings()
-        if settings:
-            with self.db() as db:
-                # Get exercise ID and pairs
-                db.cursor.execute(
-                    """SELECT e.id, p.language_1_content, p.language_2_content
-                       FROM exercises_info e
-                       JOIN pair_exercises p ON e.id = p.exercise_id
-                       JOIN topics t ON e.topic_id = t.id
-                       JOIN languages l ON e.language_id = l.id
-                       JOIN difficulties d ON e.difficulty_id = d.id
-                       WHERE t.topic = ? AND l.language = ? AND
-                       d.difficulty_level = ?
-                       LIMIT ?""",
-                    (
-                        topic,
-                        settings["language"],
-                        settings["difficulty"],
-                        self.MAX_PAIRS,
-                    ),
-                )
-                exercises = db.cursor.fetchall()
+        with self.db() as db:
+            settings = db.get_user_settings()
+            # Get exercise ID and pairs
+            db.cursor.execute(
+                """SELECT e.id, p.language_1_content, p.language_2_content
+                    FROM exercises_info e
+                    JOIN pair_exercises p ON e.id = p.exercise_id
+                    JOIN topics t ON e.topic_id = t.id
+                    JOIN languages l ON e.language_id = l.id
+                    JOIN difficulties d ON e.difficulty_id = d.id
+                    WHERE t.topic = ? AND l.language = ? AND
+                    d.difficulty_level = ?
+                    LIMIT ?""",
+                (
+                    topic,
+                    settings["language"],
+                    settings["difficulty"],
+                    self.MAX_PAIRS,
+                ),
+            )
+            exercises = db.cursor.fetchall()
 
-                if exercises:
-                    self.all_pairs = []
-                    for exercise in exercises:
-                        self.all_pairs.append(
-                            {
-                                "id": exercise[0],
-                                "lang1": exercise[1],
-                                "lang2": exercise[2],
-                            }
-                        )
+            if exercises:
+                self.all_pairs = []
+                for exercise in exercises:
+                    self.all_pairs.append(
+                        {
+                            "id": exercise[0],
+                            "lang1": exercise[1],
+                            "lang2": exercise[2],
+                        }
+                    )
 
-                    random.shuffle(self.all_pairs)
-                    self.current_batch_index = 0
-                    self.load_next_batch()
-                    self.current_topic = topic
-                    self.switch_to_exercise()
+                random.shuffle(self.all_pairs)
+                self.current_batch_index = 0
+                self.load_next_batch()
+                self.current_topic = topic
+                self.switch_to_exercise()
 
     def load_next_batch(self):
         """Load the next batch of pairs."""
@@ -335,9 +334,9 @@ class PairsExerciseScreen(BaseExerciseScreen):
         if self.selected_button.pair_id == current_exercise_id:
             is_match = True
 
-        settings = self.get_user_settings()
-        if settings and current_exercise_id:
+        if current_exercise_id:
             with self.db() as db:
+                settings = db.get_user_settings()
                 if is_match:
                     # Correct match
                     self.selected_button.set_state("correct")

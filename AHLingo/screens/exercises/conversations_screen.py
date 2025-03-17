@@ -136,55 +136,53 @@ class ConversationExerciseScreen(BaseExerciseScreen):
 
     def select_topic(self, topic):
         """Handle topic selection and load conversation."""
-        settings = self.get_user_settings()
-        if settings:
-            with self.db() as db:
-                # Get a random exercise_id for the selected topic
-                db.cursor.execute(
-                    """
-                    SELECT DISTINCT ce.exercise_id
-                    FROM conversation_exercises ce
-                    JOIN exercises_info ei ON ce.exercise_id = ei.id
-                    JOIN topics t ON ei.topic_id = t.id
-                    JOIN languages l ON ei.language_id = l.id
-                    JOIN difficulties d ON ei.difficulty_id = d.id
-                    WHERE t.topic = ? AND l.language = ? AND d.difficulty_level = ?
-                    ORDER BY RANDOM() LIMIT 1
-                """,
-                    (topic, settings["language"], settings["difficulty"]),
-                )
+        with self.db() as db:
+            settings = db.get_user_settings()
+            # Get a random exercise_id for the selected topic
+            db.cursor.execute(
+                """
+                SELECT DISTINCT ce.exercise_id
+                FROM conversation_exercises ce
+                JOIN exercises_info ei ON ce.exercise_id = ei.id
+                JOIN topics t ON ei.topic_id = t.id
+                JOIN languages l ON ei.language_id = l.id
+                JOIN difficulties d ON ei.difficulty_id = d.id
+                WHERE t.topic = ? AND l.language = ? AND d.difficulty_level = ?
+                ORDER BY RANDOM() LIMIT 1
+            """,
+                (topic, settings["language"], settings["difficulty"]),
+            )
 
-                result = db.cursor.fetchone()
-                if result:
-                    self.current_exercise_id = result[0]
-                    self.current_topic = topic
-                    self.attempt_recorded = False
-                    self.load_conversation(self.current_exercise_id, settings)
-                    self.switch_to_exercise()
+            result = db.cursor.fetchone()
+            if result:
+                self.current_exercise_id = result[0]
+                self.current_topic = topic
+                self.attempt_recorded = False
+                self.load_conversation(self.current_exercise_id, settings)
+                self.switch_to_exercise()
 
     def load_specific_exercise(self, exercise_id):
         """Load a specific exercise by ID."""
-        settings = self.get_user_settings()
-        if settings:
-            with self.db() as db:
-                # Get exercise details
-                db.cursor.execute(
-                    """SELECT t.topic
-                       FROM exercises_info e
-                       JOIN topics t ON e.topic_id = t.id
-                       WHERE e.id = ?""",
-                    (exercise_id,),
-                )
-                exercise_info = db.cursor.fetchone()
+        with self.db() as db:
+            settings = db.get_user_settings()
+            # Get exercise details
+            db.cursor.execute(
+                """SELECT t.topic
+                    FROM exercises_info e
+                    JOIN topics t ON e.topic_id = t.id
+                    WHERE e.id = ?""",
+                (exercise_id,),
+            )
+            exercise_info = db.cursor.fetchone()
 
-                if exercise_info:
-                    self.current_topic = exercise_info[
-                        0
-                    ]  # Fixed: Changed from exercise_info["topic"] to exercise_info[0]
-                    self.current_exercise_id = exercise_id
-                    self.attempt_recorded = False
-                    self.load_conversation(exercise_id, settings)
-                    self.switch_to_exercise()
+            if exercise_info:
+                self.current_topic = exercise_info[
+                    0
+                ]  # Fixed: Changed from exercise_info["topic"] to exercise_info[0]
+                self.current_exercise_id = exercise_id
+                self.attempt_recorded = False
+                self.load_conversation(exercise_id, settings)
+                self.switch_to_exercise()
 
     def load_conversation(self, exercise_id, settings):
         """Load and display conversation and summary options."""
@@ -260,9 +258,9 @@ class ConversationExerciseScreen(BaseExerciseScreen):
             is_correct = selected_summary == self.current_summary
 
             # Record the attempt
-            settings = self.get_user_settings()
-            if settings and self.current_exercise_id:
+            if self.current_exercise_id:
                 with self.db() as db:
+                    settings = db.get_user_settings()
                     db.record_exercise_attempt(
                         settings["username"], self.current_exercise_id, is_correct
                     )

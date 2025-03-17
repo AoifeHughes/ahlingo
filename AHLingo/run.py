@@ -4,7 +4,6 @@ from kivymd.app import MDApp
 from kivymd.uix.screenmanager import MDScreenManager
 from kivy.core.window import Window
 from kivy.utils import platform
-from kivy.storage.jsonstore import JsonStore
 from kivy.config import Config
 import os
 import pkg_resources
@@ -39,10 +38,8 @@ def get_resource_path(relative_path):
 class AppSettings:
     """Manages application settings."""
 
-    def __init__(self):
-        self.settings_dir = "./"
-        os.makedirs(self.settings_dir, exist_ok=True)
-        self.SETTINGS_FILE = os.path.join(self.settings_dir, "settings.json")
+    def __init__(self, db):
+        self.db = db
         self.REQUIRED_SETTINGS = ["username", "language", "difficulty"]
 
     def check_settings(self) -> str:
@@ -50,21 +47,20 @@ class AppSettings:
         Check if settings exist and are complete.
         Returns: Initial screen name based on settings state.
         """
-        if not os.path.exists(self.SETTINGS_FILE):
-            return "settings"
-
-        settings = JsonStore(self.SETTINGS_FILE)
-        if not all(settings.exists(setting) for setting in self.REQUIRED_SETTINGS):
-            return "settings"
-
+        with self.db() as db:
+            # Get most recent user or default to "default_user"
+            username = db.get_most_recent_user() or "default_user"
+            settings = db.get_user_settings(username)
+            if not all(setting in settings for setting in self.REQUIRED_SETTINGS):
+                return "settings"
         return "home"
 
 
-class DatabaseManager:
+class DatabaseWrapper:
     """Manages database connection and initialization."""
 
     def __init__(self):
-        self.db_dir = os.path.expanduser("./database")
+        self.db_dir = "./database/"
         os.makedirs(self.db_dir, exist_ok=True)
         self.DB_PATH = os.path.join(self.db_dir, "languageLearningDatabase.db")
 
@@ -83,11 +79,12 @@ class LanguageLearningApp(MDApp):
         super().__init__(**kwargs)
         self.setup_window()
         self.setup_theme()
-        self.icon = get_resource_path("assets/logo.png")
+
         self.screen_manager = None
         self.db = None
-        self.settings = AppSettings()
-        self.db_manager = DatabaseManager()
+        self.db_manager = DatabaseWrapper()
+        self.db = self.db_manager.get_database()
+        self.settings = AppSettings(self.db)
 
     def setup_window(self):
         """Configure window properties."""
@@ -102,8 +99,7 @@ class LanguageLearningApp(MDApp):
 
     def build(self):
         """Build and return the application's root widget."""
-        # Initialize database
-        self.db = self.db_manager.get_database()
+        self.icon = get_resource_path("../assets/logo.png")
 
         # Create screen manager
         self.screen_manager = MDScreenManager()
@@ -141,17 +137,14 @@ class LanguageLearningApp(MDApp):
         print(
             f"Available Screens: {[screen.name for screen in self.screen_manager.screens]}"
         )
-        print(f"Settings File: {os.path.exists(self.settings.SETTINGS_FILE)}")
 
-        if os.path.exists(self.settings.SETTINGS_FILE):
-            settings = JsonStore(self.settings.SETTINGS_FILE)
-            print("\nCurrent Settings:")
+        print("\nCurrent Settings:")
+        with self.db() as db:
+            settings = db.get_user_settings()
+            username = settings.get("username", "Not Set")
+            print(f"Current User: {username}")
             for setting in self.settings.REQUIRED_SETTINGS:
-                value = (
-                    settings.get(setting)["value"]
-                    if settings.exists(setting)
-                    else "Not Set"
-                )
+                value = settings.get(setting, "Not Set")
                 print(f"{setting}: {value}")
 
         print("\nDatabase Information:")
