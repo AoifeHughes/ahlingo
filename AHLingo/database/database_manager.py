@@ -28,6 +28,17 @@ class LanguageDB:
     def _initialize(self):
         """Create all necessary tables if they don't exist."""
         table_creation_queries = [
+            """CREATE TABLE IF NOT EXISTS pronunciation_audio (
+                id INTEGER PRIMARY KEY,
+                text TEXT NOT NULL,
+                language TEXT NOT NULL,
+                audio_data BLOB NOT NULL,
+                exercise_type TEXT NOT NULL,
+                topic TEXT,
+                difficulty TEXT,
+                created_at TIMESTAMP NOT NULL,
+                UNIQUE(text, language)
+            )""",
             """CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY,
                 name TEXT NOT NULL UNIQUE,
@@ -565,6 +576,82 @@ class LanguageDB:
             ("English", language, topic, difficulty, limit),
         )
         return [dict(row) for row in self.cursor.fetchall()]
+
+    def store_pronunciation_audio(self, text: str, language: str, audio_data: bytes, 
+                                 exercise_type: str, topic: str = None, difficulty: str = None) -> int:
+        """Store pronunciation audio in the database.
+        
+        Args:
+            text: The text for which the audio was generated
+            language: The language of the audio
+            audio_data: The binary audio data
+            exercise_type: Type of exercise (pairs, translation, conversation)
+            topic: Optional topic of the exercise
+            difficulty: Optional difficulty level
+            
+        Returns:
+            The ID of the inserted audio record
+        """
+        try:
+            self.cursor.execute(
+                """INSERT INTO pronunciation_audio
+                   (text, language, audio_data, exercise_type, topic, difficulty, created_at)
+                   VALUES (?, ?, ?, ?, ?, ?, ?)
+                   ON CONFLICT(text, language)
+                   DO UPDATE SET audio_data = ?, exercise_type = ?, 
+                                 topic = ?, difficulty = ?, created_at = ?""",
+                (text, language, audio_data, exercise_type, topic, difficulty, datetime.now(),
+                 audio_data, exercise_type, topic, difficulty, datetime.now())
+            )
+            self.conn.commit()
+            return self.cursor.lastrowid
+        except Exception as e:
+            print(f"Error storing audio: {e}")
+            return -1
+    
+    def get_pronunciation_audio(self, text: str, language: str = None) -> Optional[bytes]:
+        """Retrieve pronunciation audio from the database.
+        
+        Args:
+            text: The text for which to retrieve audio
+            language: Optional language filter
+            
+        Returns:
+            Binary audio data if found, None otherwise
+        """
+        try:
+            if language:
+                self.cursor.execute(
+                    """SELECT audio_data FROM pronunciation_audio
+                       WHERE text = ? AND language = ?
+                       ORDER BY created_at DESC LIMIT 1""",
+                    (text, language)
+                )
+            else:
+                self.cursor.execute(
+                    """SELECT audio_data FROM pronunciation_audio
+                       WHERE text = ?
+                       ORDER BY created_at DESC LIMIT 1""",
+                    (text,)
+                )
+            
+            result = self.cursor.fetchone()
+            return result["audio_data"] if result else None
+        except Exception as e:
+            print(f"Error retrieving audio: {e}")
+            return None
+    
+    def get_audio_languages(self) -> List[str]:
+        """Get all languages that have audio recordings."""
+        self.cursor.execute(
+            """SELECT DISTINCT language FROM pronunciation_audio"""
+        )
+        return [row["language"] for row in self.cursor.fetchall()]
+    
+    def get_audio_count(self) -> int:
+        """Get the total number of audio recordings."""
+        self.cursor.execute("SELECT COUNT(*) FROM pronunciation_audio")
+        return self.cursor.fetchone()[0]
 
     def close(self):
         """Close the database connection."""
