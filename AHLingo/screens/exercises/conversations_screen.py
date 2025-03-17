@@ -7,6 +7,7 @@ from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.label import MDLabel
 from kivymd.uix.list import OneLineListItem
 from kivy.metrics import dp
+from .pairs_screen import AudioManager
 import random
 
 
@@ -102,6 +103,9 @@ class ConversationExerciseScreen(BaseExerciseScreen):
         self.current_summary = None
         self.current_exercise_id = None
         self.attempt_recorded = False
+        
+        # Initialize audio manager
+        self.audio_manager = AudioManager()
 
     def create_exercise_view(self):
         """Create the exercise view with conversation components."""
@@ -227,16 +231,36 @@ class ConversationExerciseScreen(BaseExerciseScreen):
             self.display_conversation(messages)
             self.display_summary_options(correct_summary, other_summaries)
 
+    def play_message_audio(self, instance):
+        """Play audio for the message when bubble is clicked."""
+        # Get the message text from the bubble
+        message_text = instance.full_message
+        # Play the audio using the audio manager
+        self.audio_manager.play_audio(message_text)
+        
+    def on_bubble_touch(self, instance, touch):
+        """Handle touch events on message bubbles."""
+        # Check if the touch is within this widget
+        if instance.collide_point(*touch.pos):
+            # Play the audio for this message
+            self.play_message_audio(instance)
+            # Return True to indicate the touch was handled
+            return True
+        # Return False to allow the touch to propagate to other widgets
+        return False
+        
     def display_conversation(self, messages):
         """Display conversation messages."""
         self.conversation_layout.clear_widgets()
         for msg in messages:
             is_right = "2" in msg["speaker"].lower()
-            self.conversation_layout.add_widget(
-                MessageBubble(
-                    speaker=msg["speaker"], message=msg["message"], is_right=is_right
-                )
+            bubble = MessageBubble(
+                speaker=msg["speaker"], message=msg["message"], is_right=is_right
             )
+            # Make the bubble clickable
+            bubble.bind(on_touch_down=lambda instance, touch, bubble=bubble: 
+                        self.on_bubble_touch(bubble, touch))
+            self.conversation_layout.add_widget(bubble)
 
     def display_summary_options(self, correct_summary, other_summaries):
         """Display summary options buttons."""
