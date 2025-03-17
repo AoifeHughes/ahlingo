@@ -52,13 +52,14 @@ class BaseExerciseScreen(BaseScreen):
 
     def load_topics(self):
         """Load topics based on user settings."""
-        settings = self.get_user_settings()
-        if settings:
-            with self.db() as db:
-                topics = db.get_topics_by_language_difficulty(
-                    settings["language"], settings["difficulty"]
-                )
-            self.display_topics(topics)
+        with self.db() as db:
+            settings = db.get_user_settings()
+            print(settings)
+            topics = db.get_topics_by_language_difficulty(
+                settings["language"], settings["difficulty"]
+            )
+            print(topics)
+        self.display_topics(topics)
 
     def display_topics(self, topics):
         """Display the list of topics."""

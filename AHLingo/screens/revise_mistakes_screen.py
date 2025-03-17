@@ -128,25 +128,24 @@ class ReviseMistakesScreen(BaseScreen):
 
     def on_pre_enter(self):
         """Load failed attempts when entering the screen."""
-        settings = self.get_user_settings()
-        if settings:
-            with self.db() as db:
-                failed_attempts = db.get_failed_attempts(settings["username"])
+        with self.db() as db:
+            settings = db.get_user_settings()
+            failed_attempts = db.get_failed_attempts(settings["username"])
 
-            if failed_attempts:
-                # Format the data for the table
-                row_data = [
-                    (
-                        attempt["exercise_topic"],
-                        attempt["exercise_type"],
-                        str(attempt["exercise_id"]),
-                        datetime.fromisoformat(attempt["attempt_date"]).strftime(
-                            "%Y-%m-%d %H:%M"
-                        ),
-                    )
-                    for attempt in failed_attempts
-                ]
-                self.data_table.row_data = row_data
-            else:
-                # Show "Nothing to cover" message
-                self.data_table.row_data = [("Nothing to cover", "", "", "")]
+        if failed_attempts:
+            # Format the data for the table
+            row_data = [
+                (
+                    attempt["exercise_topic"],
+                    attempt["exercise_type"],
+                    str(attempt["exercise_id"]),
+                    datetime.fromisoformat(attempt["attempt_date"]).strftime(
+                        "%Y-%m-%d %H:%M"
+                    ),
+                )
+                for attempt in failed_attempts
+            ]
+            self.data_table.row_data = row_data
+        else:
+            # Show "Nothing to cover" message
+            self.data_table.row_data = [("Nothing to cover", "", "", "")]
