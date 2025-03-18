@@ -132,7 +132,7 @@ class AudioManager:
         if self.temp_file and os.path.exists(self.temp_file):
             try:
                 os.unlink(self.temp_file)
-            except:
+            except Exception:
                 pass
 
         # Create a new temporary file
@@ -199,14 +199,14 @@ class AudioManager:
         if self.temp_file and os.path.exists(self.temp_file):
             try:
                 os.unlink(self.temp_file)
-            except:
+            except Exception:
                 pass
 
         # Close database connection
         if self.db:
             try:
                 self.db.close()
-            except:
+            except Exception:
                 pass
 
 

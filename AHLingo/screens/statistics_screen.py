@@ -7,7 +7,7 @@ from kivymd.uix.label import MDLabel
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.card import MDCard
 from kivy.metrics import dp
-from datetime import datetime
+from datetime import date
 
 
 class StatisticsScreen(BaseScreen):
