@@ -203,6 +203,54 @@ class HomeScreen(BaseScreen):
         revise_layout.add_widget(revise_card)
         content_layout.add_widget(revise_layout)
 
+        # Statistics button
+        stats_layout = MDBoxLayout(
+            padding=[dp(8), dp(8), dp(8), 0],
+            size_hint_y=None,
+            height=dp(80),
+            size_hint_x=0.95,
+            pos_hint={"center_x": 0.5},
+        )
+
+        stats_card = MDCard(
+            size_hint=(1, None),
+            height=dp(80),
+            padding=dp(8),
+            md_bg_color=self.theme_cls.primary_color,
+            radius=[dp(10)],
+            ripple_behavior=True,
+            on_release=self.go_to_statistics,
+        )
+
+        stats_content = MDBoxLayout(spacing=dp(8), padding=[dp(16), 0, dp(16), 0])
+
+        stats_icon = MDIconButton(
+            icon="chart-bar",
+            theme_icon_color="Custom",
+            icon_color="white",
+            size_hint=(None, None),
+            size=(dp(48), dp(48)),
+            pos_hint={"center_y": 0.5},
+            on_release=self.go_to_statistics,
+        )
+        stats_content.add_widget(stats_icon)
+
+        stats_button = StandardButton(
+            text="Statistics",
+            theme_text_color="Custom",
+            text_color="white",
+            size_hint=(1, None),
+            height=dp(48),
+            md_bg_color=[0, 0, 0, 0],
+            pos_hint={"center_y": 0.5},
+            on_release=self.go_to_statistics,
+        )
+        stats_content.add_widget(stats_button)
+
+        stats_card.add_widget(stats_content)
+        stats_layout.add_widget(stats_card)
+        content_layout.add_widget(stats_layout)
+
         # Add content layout to main layout
         content_container = MDBoxLayout(pos_hint={"center_x": 0.5}, size_hint_x=1)
         content_container.add_widget(content_layout)
@@ -240,3 +288,7 @@ class HomeScreen(BaseScreen):
     def go_to_revise_mistakes(self, *args):
         """Navigate to revise mistakes screen."""
         self.manager.current = "revise_mistakes"
+        
+    def go_to_statistics(self, *args):
+        """Navigate to statistics screen."""
+        self.manager.current = "statistics"

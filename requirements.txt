@@ -1,2 +1,5 @@
 llama-cpp-python
 lmql
+kivymd
+TTS
+tqdm
