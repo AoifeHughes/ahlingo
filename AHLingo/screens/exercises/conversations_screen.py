@@ -103,7 +103,7 @@ class ConversationExerciseScreen(BaseExerciseScreen):
         self.current_summary = None
         self.current_exercise_id = None
         self.attempt_recorded = False
-        
+
         # Initialize audio manager
         self.audio_manager = AudioManager()
 
@@ -237,7 +237,7 @@ class ConversationExerciseScreen(BaseExerciseScreen):
         message_text = instance.full_message
         # Play the audio using the audio manager
         self.audio_manager.play_audio(message_text)
-        
+
     def on_bubble_touch(self, instance, touch):
         """Handle touch events on message bubbles."""
         # Check if the touch is within this widget
@@ -248,7 +248,7 @@ class ConversationExerciseScreen(BaseExerciseScreen):
             return True
         # Return False to allow the touch to propagate to other widgets
         return False
-        
+
     def display_conversation(self, messages):
         """Display conversation messages."""
         self.conversation_layout.clear_widgets()
@@ -258,8 +258,11 @@ class ConversationExerciseScreen(BaseExerciseScreen):
                 speaker=msg["speaker"], message=msg["message"], is_right=is_right
             )
             # Make the bubble clickable
-            bubble.bind(on_touch_down=lambda instance, touch, bubble=bubble: 
-                        self.on_bubble_touch(bubble, touch))
+            bubble.bind(
+                on_touch_down=lambda instance, touch, bubble=bubble: self.on_bubble_touch(
+                    bubble, touch
+                )
+            )
             self.conversation_layout.add_widget(bubble)
 
     def display_summary_options(self, correct_summary, other_summaries):

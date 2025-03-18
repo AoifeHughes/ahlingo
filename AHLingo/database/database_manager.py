@@ -211,16 +211,18 @@ class LanguageDB:
         self.conn.commit()
         return self.cursor.lastrowid
 
-    def create_chat_session(self, username: str, language: str, difficulty: str, model: str) -> int:
+    def create_chat_session(
+        self, username: str, language: str, difficulty: str, model: str
+    ) -> int:
         """Create a new chat session and return its ID."""
         user_id = self._get_or_create_user(username)
         now = datetime.now()
-        
+
         self.cursor.execute(
-            """INSERT INTO chat_details 
+            """INSERT INTO chat_details
                (user_id, language, difficulty, model, created_at, last_updated)
                VALUES (?, ?, ?, ?, ?, ?)""",
-            (user_id, language, difficulty, model, now, now)
+            (user_id, language, difficulty, model, now, now),
         )
         self.conn.commit()
         return self.cursor.lastrowid
@@ -228,29 +230,29 @@ class LanguageDB:
     def add_chat_message(self, chat_id: int, role: str, content: str):
         """Add a message to an existing chat session."""
         self.cursor.execute(
-            """INSERT INTO chat_histories 
+            """INSERT INTO chat_histories
                (chat_id, role, content, timestamp)
                VALUES (?, ?, ?, ?)""",
-            (chat_id, role, content, datetime.now())
+            (chat_id, role, content, datetime.now()),
         )
-        
+
         # Update last_updated timestamp in chat_details
         self.cursor.execute(
-            """UPDATE chat_details 
-               SET last_updated = ? 
+            """UPDATE chat_details
+               SET last_updated = ?
                WHERE id = ?""",
-            (datetime.now(), chat_id)
+            (datetime.now(), chat_id),
         )
         self.conn.commit()
 
     def get_chat_history(self, chat_id: int) -> List[Dict]:
         """Get all messages from a chat session."""
         self.cursor.execute(
-            """SELECT role, content, timestamp 
-               FROM chat_histories 
-               WHERE chat_id = ? 
+            """SELECT role, content, timestamp
+               FROM chat_histories
+               WHERE chat_id = ?
                ORDER BY timestamp ASC""",
-            (chat_id,)
+            (chat_id,),
         )
         return [dict(row) for row in self.cursor.fetchall()]
 
@@ -258,11 +260,11 @@ class LanguageDB:
         """Get all chat sessions for a user."""
         user_id = self._get_or_create_user(username)
         self.cursor.execute(
-            """SELECT id, language, difficulty, model, created_at, last_updated 
-               FROM chat_details 
-               WHERE user_id = ? 
+            """SELECT id, language, difficulty, model, created_at, last_updated
+               FROM chat_details
+               WHERE user_id = ?
                ORDER BY last_updated DESC""",
-            (user_id,)
+            (user_id,),
         )
         return [dict(row) for row in self.cursor.fetchall()]
 
@@ -393,7 +395,7 @@ class LanguageDB:
     def get_user_streak(self, username: str) -> Dict:
         """Get the current and best streak for a user."""
         user_id = self._get_or_create_user(username)
-        
+
         # Get all dates when the user completed at least one exercise
         self.cursor.execute(
             """SELECT DISTINCT date(attempt_date) as attempt_day
@@ -402,48 +404,48 @@ class LanguageDB:
                ORDER BY attempt_day ASC""",
             (user_id,),
         )
-        
+
         days = [row["attempt_day"] for row in self.cursor.fetchall()]
-        
+
         if not days:
             return {"current_streak": 0, "best_streak": 0}
-        
+
         # Calculate streaks
         streaks = []
         current_streak = 1
-        
+
         for i in range(1, len(days)):
-            prev_day = datetime.strptime(days[i-1], "%Y-%m-%d").date()
+            prev_day = datetime.strptime(days[i - 1], "%Y-%m-%d").date()
             curr_day = datetime.strptime(days[i], "%Y-%m-%d").date()
-            
+
             if (curr_day - prev_day).days == 1:
                 current_streak += 1
             else:
                 streaks.append(current_streak)
                 current_streak = 1
-        
+
         streaks.append(current_streak)
-        
+
         # Check if the last day is today or yesterday to determine if streak is active
         last_day = datetime.strptime(days[-1], "%Y-%m-%d").date()
         today = datetime.now().date()
-        
+
         if last_day == today or last_day == today - timedelta(days=1):
             current_streak = streaks[-1]
         else:
             current_streak = 0
-            
+
         return {
             "current_streak": current_streak,
-            "best_streak": max(streaks) if streaks else 0
+            "best_streak": max(streaks) if streaks else 0,
         }
 
     def get_exercises_by_language(self, username: str) -> List[Dict]:
         """Get the number of exercises completed for each language."""
         user_id = self._get_or_create_user(username)
-        
+
         self.cursor.execute(
-            """SELECT 
+            """SELECT
                 l.language,
                 COUNT(DISTINCT uea.exercise_id) as completed_exercises,
                 SUM(CASE WHEN uea.is_correct THEN 1 ELSE 0 END) as correct_answers,
@@ -455,15 +457,15 @@ class LanguageDB:
                GROUP BY l.language""",
             (user_id,),
         )
-        
+
         return [dict(row) for row in self.cursor.fetchall()]
 
     def get_exercises_by_language_difficulty(self, username: str) -> List[Dict]:
         """Get the number of exercises completed for each language and difficulty level."""
         user_id = self._get_or_create_user(username)
-        
+
         self.cursor.execute(
-            """SELECT 
+            """SELECT
                 l.language,
                 d.difficulty_level,
                 COUNT(DISTINCT uea.exercise_id) as completed_exercises,
@@ -477,15 +479,15 @@ class LanguageDB:
                GROUP BY l.language, d.difficulty_level""",
             (user_id,),
         )
-        
+
         return [dict(row) for row in self.cursor.fetchall()]
 
     def get_exercises_by_language_topic(self, username: str) -> List[Dict]:
         """Get the number of exercises completed for each language and topic."""
         user_id = self._get_or_create_user(username)
-        
+
         self.cursor.execute(
-            """SELECT 
+            """SELECT
                 l.language,
                 t.topic,
                 COUNT(DISTINCT uea.exercise_id) as completed_exercises,
@@ -499,15 +501,15 @@ class LanguageDB:
                GROUP BY l.language, t.topic""",
             (user_id,),
         )
-        
+
         return [dict(row) for row in self.cursor.fetchall()]
 
     def get_exercises_by_type(self, username: str) -> List[Dict]:
         """Get the number of exercises completed for each exercise type."""
         user_id = self._get_or_create_user(username)
-        
+
         self.cursor.execute(
-            """SELECT 
+            """SELECT
                 CASE
                     WHEN pe.id IS NOT NULL THEN 'Pairs'
                     WHEN ce.id IS NOT NULL THEN 'Conversation'
@@ -526,7 +528,7 @@ class LanguageDB:
                GROUP BY exercise_type""",
             (user_id,),
         )
-        
+
         return [dict(row) for row in self.cursor.fetchall()]
 
     def add_conversation_exercise(
@@ -716,10 +718,17 @@ class LanguageDB:
         )
         return [dict(row) for row in self.cursor.fetchall()]
 
-    def store_pronunciation_audio(self, text: str, language: str, audio_data: bytes, 
-                                 exercise_type: str, topic: str = None, difficulty: str = None) -> int:
+    def store_pronunciation_audio(
+        self,
+        text: str,
+        language: str,
+        audio_data: bytes,
+        exercise_type: str,
+        topic: str = None,
+        difficulty: str = None,
+    ) -> int:
         """Store pronunciation audio in the database.
-        
+
         Args:
             text: The text for which the audio was generated
             language: The language of the audio
@@ -727,7 +736,7 @@ class LanguageDB:
             exercise_type: Type of exercise (pairs, translation, conversation)
             topic: Optional topic of the exercise
             difficulty: Optional difficulty level
-            
+
         Returns:
             The ID of the inserted audio record
         """
@@ -737,24 +746,38 @@ class LanguageDB:
                    (text, language, audio_data, exercise_type, topic, difficulty, created_at)
                    VALUES (?, ?, ?, ?, ?, ?, ?)
                    ON CONFLICT(text, language)
-                   DO UPDATE SET audio_data = ?, exercise_type = ?, 
+                   DO UPDATE SET audio_data = ?, exercise_type = ?,
                                  topic = ?, difficulty = ?, created_at = ?""",
-                (text, language, audio_data, exercise_type, topic, difficulty, datetime.now(),
-                 audio_data, exercise_type, topic, difficulty, datetime.now())
+                (
+                    text,
+                    language,
+                    audio_data,
+                    exercise_type,
+                    topic,
+                    difficulty,
+                    datetime.now(),
+                    audio_data,
+                    exercise_type,
+                    topic,
+                    difficulty,
+                    datetime.now(),
+                ),
             )
             self.conn.commit()
             return self.cursor.lastrowid
         except Exception as e:
             print(f"Error storing audio: {e}")
             return -1
-    
-    def get_pronunciation_audio(self, text: str, language: str = None) -> Optional[bytes]:
+
+    def get_pronunciation_audio(
+        self, text: str, language: str = None
+    ) -> Optional[bytes]:
         """Retrieve pronunciation audio from the database.
-        
+
         Args:
             text: The text for which to retrieve audio
             language: Optional language filter
-            
+
         Returns:
             Binary audio data if found, None otherwise
         """
@@ -764,29 +787,27 @@ class LanguageDB:
                     """SELECT audio_data FROM pronunciation_audio
                        WHERE text = ? AND language = ?
                        ORDER BY created_at DESC LIMIT 1""",
-                    (text, language)
+                    (text, language),
                 )
             else:
                 self.cursor.execute(
                     """SELECT audio_data FROM pronunciation_audio
                        WHERE text = ?
                        ORDER BY created_at DESC LIMIT 1""",
-                    (text,)
+                    (text,),
                 )
-            
+
             result = self.cursor.fetchone()
             return result["audio_data"] if result else None
         except Exception as e:
             print(f"Error retrieving audio: {e}")
             return None
-    
+
     def get_audio_languages(self) -> List[str]:
         """Get all languages that have audio recordings."""
-        self.cursor.execute(
-            """SELECT DISTINCT language FROM pronunciation_audio"""
-        )
+        self.cursor.execute("""SELECT DISTINCT language FROM pronunciation_audio""")
         return [row["language"] for row in self.cursor.fetchall()]
-    
+
     def get_audio_count(self) -> int:
         """Get the total number of audio recordings."""
         self.cursor.execute("SELECT COUNT(*) FROM pronunciation_audio")

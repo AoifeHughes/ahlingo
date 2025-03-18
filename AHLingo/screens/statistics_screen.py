@@ -224,7 +224,7 @@ class StatisticsScreen(BaseScreen):
         with self.db() as db:
             settings = db.get_user_settings()
             username = settings.get("username", "default_user")
-            
+
             # Get user stats
             user_stats = db.get_user_stats(username)
             streak_info = db.get_user_streak(username)
@@ -235,30 +235,30 @@ class StatisticsScreen(BaseScreen):
 
         # Update summary section
         self.update_summary_section(user_stats)
-        
+
         # Update streak section
         self.update_streak_section(streak_info)
-        
+
         # Update language statistics table
         self.update_language_table(language_stats)
-        
+
         # Update exercise type statistics table
         self.update_exercise_type_table(exercise_type_stats)
-        
+
         # Update difficulty statistics table
         self.update_difficulty_table(difficulty_stats)
-        
+
         # Update topic statistics table
         self.update_topic_table(topic_stats)
 
     def update_summary_section(self, user_stats):
         """Update the summary statistics section."""
         self.summary_layout.clear_widgets()
-        
+
         total_attempts = user_stats.get("total_attempts", 0)
         correct_answers = user_stats.get("correct_answers", 0)
         success_rate = user_stats.get("success_rate", 0)
-        
+
         # Add summary labels
         self.summary_layout.add_widget(
             MDLabel(
@@ -282,10 +282,10 @@ class StatisticsScreen(BaseScreen):
     def update_streak_section(self, streak_info):
         """Update the streak statistics section."""
         self.streak_layout.clear_widgets()
-        
+
         current_streak = streak_info.get("current_streak", 0)
         best_streak = streak_info.get("best_streak", 0)
-        
+
         # Add streak labels
         self.streak_layout.add_widget(
             MDLabel(
@@ -299,7 +299,7 @@ class StatisticsScreen(BaseScreen):
                 font_style="Body1",
             )
         )
-        
+
         # Add motivational message based on streak
         if current_streak == 0:
             message = "Start a streak today by completing exercises!"
@@ -309,7 +309,7 @@ class StatisticsScreen(BaseScreen):
             message = "Great consistency! You're making progress."
         else:
             message = "Impressive streak! Your dedication is paying off."
-            
+
         self.streak_layout.add_widget(
             MDLabel(
                 text=message,
@@ -323,7 +323,7 @@ class StatisticsScreen(BaseScreen):
         # Clear previous table if it exists
         if self.data_tables["language"]:
             self.language_container.remove_widget(self.data_tables["language"])
-        
+
         # Create new data table
         self.data_tables["language"] = MDDataTable(
             size_hint=(1, 1),
@@ -334,29 +334,35 @@ class StatisticsScreen(BaseScreen):
                 ("Correct Answers", dp(40)),
                 ("Total Attempts", dp(40)),
             ],
-            row_data=[
-                (
-                    stat["language"],
-                    str(stat["completed_exercises"]),
-                    str(stat["correct_answers"]),
-                    str(stat["total_attempts"]),
-                )
-                for stat in language_stats
-            ] if language_stats else [("No data available", "", "", "")],
+            row_data=(
+                [
+                    (
+                        stat["language"],
+                        str(stat["completed_exercises"]),
+                        str(stat["correct_answers"]),
+                        str(stat["total_attempts"]),
+                    )
+                    for stat in language_stats
+                ]
+                if language_stats
+                else [("No data available", "", "", "")]
+            ),
             rows_num=10,
             elevation=1,
             background_color_header="#EEEEEE",
             background_color_cell="#FFFFFF",
         )
-        
+
         self.language_container.add_widget(self.data_tables["language"])
 
     def update_exercise_type_table(self, exercise_type_stats):
         """Update the exercise type statistics table."""
         # Clear previous table if it exists
         if self.data_tables["exercise_type"]:
-            self.exercise_type_container.remove_widget(self.data_tables["exercise_type"])
-        
+            self.exercise_type_container.remove_widget(
+                self.data_tables["exercise_type"]
+            )
+
         # Create new data table
         self.data_tables["exercise_type"] = MDDataTable(
             size_hint=(1, 1),
@@ -367,21 +373,25 @@ class StatisticsScreen(BaseScreen):
                 ("Correct Answers", dp(40)),
                 ("Total Attempts", dp(40)),
             ],
-            row_data=[
-                (
-                    stat["exercise_type"],
-                    str(stat["completed_exercises"]),
-                    str(stat["correct_answers"]),
-                    str(stat["total_attempts"]),
-                )
-                for stat in exercise_type_stats
-            ] if exercise_type_stats else [("No data available", "", "", "")],
+            row_data=(
+                [
+                    (
+                        stat["exercise_type"],
+                        str(stat["completed_exercises"]),
+                        str(stat["correct_answers"]),
+                        str(stat["total_attempts"]),
+                    )
+                    for stat in exercise_type_stats
+                ]
+                if exercise_type_stats
+                else [("No data available", "", "", "")]
+            ),
             rows_num=10,
             elevation=1,
             background_color_header="#EEEEEE",
             background_color_cell="#FFFFFF",
         )
-        
+
         self.exercise_type_container.add_widget(self.data_tables["exercise_type"])
 
     def update_difficulty_table(self, difficulty_stats):
@@ -389,7 +399,7 @@ class StatisticsScreen(BaseScreen):
         # Clear previous table if it exists
         if self.data_tables["difficulty"]:
             self.difficulty_container.remove_widget(self.data_tables["difficulty"])
-        
+
         # Create new data table
         self.data_tables["difficulty"] = MDDataTable(
             size_hint=(1, 1),
@@ -401,22 +411,26 @@ class StatisticsScreen(BaseScreen):
                 ("Correct Answers", dp(40)),
                 ("Total Attempts", dp(30)),
             ],
-            row_data=[
-                (
-                    stat["language"],
-                    stat["difficulty_level"],
-                    str(stat["completed_exercises"]),
-                    str(stat["correct_answers"]),
-                    str(stat["total_attempts"]),
-                )
-                for stat in difficulty_stats
-            ] if difficulty_stats else [("No data available", "", "", "", "")],
+            row_data=(
+                [
+                    (
+                        stat["language"],
+                        stat["difficulty_level"],
+                        str(stat["completed_exercises"]),
+                        str(stat["correct_answers"]),
+                        str(stat["total_attempts"]),
+                    )
+                    for stat in difficulty_stats
+                ]
+                if difficulty_stats
+                else [("No data available", "", "", "", "")]
+            ),
             rows_num=10,
             elevation=1,
             background_color_header="#EEEEEE",
             background_color_cell="#FFFFFF",
         )
-        
+
         self.difficulty_container.add_widget(self.data_tables["difficulty"])
 
     def update_topic_table(self, topic_stats):
@@ -424,7 +438,7 @@ class StatisticsScreen(BaseScreen):
         # Clear previous table if it exists
         if self.data_tables["topic"]:
             self.topic_container.remove_widget(self.data_tables["topic"])
-        
+
         # Create new data table
         self.data_tables["topic"] = MDDataTable(
             size_hint=(1, 1),
@@ -436,20 +450,24 @@ class StatisticsScreen(BaseScreen):
                 ("Correct Answers", dp(30)),
                 ("Total Attempts", dp(30)),
             ],
-            row_data=[
-                (
-                    stat["language"],
-                    stat["topic"],
-                    str(stat["completed_exercises"]),
-                    str(stat["correct_answers"]),
-                    str(stat["total_attempts"]),
-                )
-                for stat in topic_stats
-            ] if topic_stats else [("No data available", "", "", "", "")],
+            row_data=(
+                [
+                    (
+                        stat["language"],
+                        stat["topic"],
+                        str(stat["completed_exercises"]),
+                        str(stat["correct_answers"]),
+                        str(stat["total_attempts"]),
+                    )
+                    for stat in topic_stats
+                ]
+                if topic_stats
+                else [("No data available", "", "", "", "")]
+            ),
             rows_num=10,
             elevation=1,
             background_color_header="#EEEEEE",
             background_color_cell="#FFFFFF",
         )
-        
+
         self.topic_container.add_widget(self.data_tables["topic"])
