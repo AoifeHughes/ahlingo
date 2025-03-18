@@ -2,7 +2,7 @@
 import sqlite3
 from typing import List, Dict, Optional
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 class LanguageDB:
@@ -389,6 +389,145 @@ class LanguageDB:
         result["success_rate"] = (correct / total * 100) if total > 0 else 0
 
         return result
+
+    def get_user_streak(self, username: str) -> Dict:
+        """Get the current and best streak for a user."""
+        user_id = self._get_or_create_user(username)
+        
+        # Get all dates when the user completed at least one exercise
+        self.cursor.execute(
+            """SELECT DISTINCT date(attempt_date) as attempt_day
+               FROM user_exercise_attempts
+               WHERE user_id = ?
+               ORDER BY attempt_day ASC""",
+            (user_id,),
+        )
+        
+        days = [row["attempt_day"] for row in self.cursor.fetchall()]
+        
+        if not days:
+            return {"current_streak": 0, "best_streak": 0}
+        
+        # Calculate streaks
+        streaks = []
+        current_streak = 1
+        
+        for i in range(1, len(days)):
+            prev_day = datetime.strptime(days[i-1], "%Y-%m-%d").date()
+            curr_day = datetime.strptime(days[i], "%Y-%m-%d").date()
+            
+            if (curr_day - prev_day).days == 1:
+                current_streak += 1
+            else:
+                streaks.append(current_streak)
+                current_streak = 1
+        
+        streaks.append(current_streak)
+        
+        # Check if the last day is today or yesterday to determine if streak is active
+        last_day = datetime.strptime(days[-1], "%Y-%m-%d").date()
+        today = datetime.now().date()
+        
+        if last_day == today or last_day == today - timedelta(days=1):
+            current_streak = streaks[-1]
+        else:
+            current_streak = 0
+            
+        return {
+            "current_streak": current_streak,
+            "best_streak": max(streaks) if streaks else 0
+        }
+
+    def get_exercises_by_language(self, username: str) -> List[Dict]:
+        """Get the number of exercises completed for each language."""
+        user_id = self._get_or_create_user(username)
+        
+        self.cursor.execute(
+            """SELECT 
+                l.language,
+                COUNT(DISTINCT uea.exercise_id) as completed_exercises,
+                SUM(CASE WHEN uea.is_correct THEN 1 ELSE 0 END) as correct_answers,
+                COUNT(uea.id) as total_attempts
+               FROM user_exercise_attempts uea
+               JOIN exercises_info ei ON uea.exercise_id = ei.id
+               JOIN languages l ON ei.language_id = l.id
+               WHERE uea.user_id = ?
+               GROUP BY l.language""",
+            (user_id,),
+        )
+        
+        return [dict(row) for row in self.cursor.fetchall()]
+
+    def get_exercises_by_language_difficulty(self, username: str) -> List[Dict]:
+        """Get the number of exercises completed for each language and difficulty level."""
+        user_id = self._get_or_create_user(username)
+        
+        self.cursor.execute(
+            """SELECT 
+                l.language,
+                d.difficulty_level,
+                COUNT(DISTINCT uea.exercise_id) as completed_exercises,
+                SUM(CASE WHEN uea.is_correct THEN 1 ELSE 0 END) as correct_answers,
+                COUNT(uea.id) as total_attempts
+               FROM user_exercise_attempts uea
+               JOIN exercises_info ei ON uea.exercise_id = ei.id
+               JOIN languages l ON ei.language_id = l.id
+               JOIN difficulties d ON ei.difficulty_id = d.id
+               WHERE uea.user_id = ?
+               GROUP BY l.language, d.difficulty_level""",
+            (user_id,),
+        )
+        
+        return [dict(row) for row in self.cursor.fetchall()]
+
+    def get_exercises_by_language_topic(self, username: str) -> List[Dict]:
+        """Get the number of exercises completed for each language and topic."""
+        user_id = self._get_or_create_user(username)
+        
+        self.cursor.execute(
+            """SELECT 
+                l.language,
+                t.topic,
+                COUNT(DISTINCT uea.exercise_id) as completed_exercises,
+                SUM(CASE WHEN uea.is_correct THEN 1 ELSE 0 END) as correct_answers,
+                COUNT(uea.id) as total_attempts
+               FROM user_exercise_attempts uea
+               JOIN exercises_info ei ON uea.exercise_id = ei.id
+               JOIN languages l ON ei.language_id = l.id
+               JOIN topics t ON ei.topic_id = t.id
+               WHERE uea.user_id = ?
+               GROUP BY l.language, t.topic""",
+            (user_id,),
+        )
+        
+        return [dict(row) for row in self.cursor.fetchall()]
+
+    def get_exercises_by_type(self, username: str) -> List[Dict]:
+        """Get the number of exercises completed for each exercise type."""
+        user_id = self._get_or_create_user(username)
+        
+        self.cursor.execute(
+            """SELECT 
+                CASE
+                    WHEN pe.id IS NOT NULL THEN 'Pairs'
+                    WHEN ce.id IS NOT NULL THEN 'Conversation'
+                    WHEN te.id IS NOT NULL THEN 'Translation'
+                    ELSE 'Unknown'
+                END as exercise_type,
+                COUNT(DISTINCT uea.exercise_id) as completed_exercises,
+                SUM(CASE WHEN uea.is_correct THEN 1 ELSE 0 END) as correct_answers,
+                COUNT(uea.id) as total_attempts
+               FROM user_exercise_attempts uea
+               JOIN exercises_info ei ON uea.exercise_id = ei.id
+               LEFT JOIN pair_exercises pe ON ei.id = pe.exercise_id
+               LEFT JOIN conversation_exercises ce ON ei.id = ce.exercise_id
+               LEFT JOIN translation_exercises te ON ei.id = te.exercise_id
+               WHERE uea.user_id = ?
+               GROUP BY exercise_type""",
+            (user_id,),
+        )
+        
+        return [dict(row) for row in self.cursor.fetchall()]
 
     def add_conversation_exercise(
         self,

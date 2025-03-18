@@ -302,16 +302,24 @@ class PronunciationAudioGenerator:
                         if self.output_dir and pair_id in self.metadata["pairs"]:
                             continue
                         
-                        # Generate audio and store in database
-                        eng_success = self._generate_audio(
-                            eng_text, "English", eng_file, 
-                            exercise_type="pairs", topic=topic, difficulty=difficulty
-                        )
+                        # Check if audio already exists in database
+                        eng_exists = self.db.get_pronunciation_audio(eng_text, "English")
+                        lang_exists = self.db.get_pronunciation_audio(lang_text, language)
                         
-                        lang_success = self._generate_audio(
-                            lang_text, language, lang_file,
-                            exercise_type="pairs", topic=topic, difficulty=difficulty
-                        )
+                        # Generate audio only if it doesn't exist in the database
+                        eng_success = True
+                        if not eng_exists:
+                            eng_success = self._generate_audio(
+                                eng_text, "English", eng_file, 
+                                exercise_type="pairs", topic=topic, difficulty=difficulty
+                            )
+                        
+                        lang_success = True
+                        if not lang_exists:
+                            lang_success = self._generate_audio(
+                                lang_text, language, lang_file,
+                                exercise_type="pairs", topic=topic, difficulty=difficulty
+                            )
                         
                         # Update metadata if output_dir is specified
                         if self.output_dir and eng_success and lang_success:
@@ -391,16 +399,24 @@ class PronunciationAudioGenerator:
                 eng_file = lang_dir / f"{topic}_{difficulty}_{eng_hash}_en.wav"
                 lang_file = lang_dir / f"{topic}_{difficulty}_{lang_hash}_{language.lower()}.wav"
             
-            # Generate audio and store in database
-            eng_success = self._generate_audio(
-                eng_text, "English", eng_file,
-                exercise_type="translation", topic=topic, difficulty=difficulty
-            )
+            # Check if audio already exists in database
+            eng_exists = self.db.get_pronunciation_audio(eng_text, "English")
+            lang_exists = self.db.get_pronunciation_audio(lang_text, language)
             
-            lang_success = self._generate_audio(
-                lang_text, language, lang_file,
-                exercise_type="translation", topic=topic, difficulty=difficulty
-            )
+            # Generate audio only if it doesn't exist in the database
+            eng_success = True
+            if not eng_exists:
+                eng_success = self._generate_audio(
+                    eng_text, "English", eng_file,
+                    exercise_type="translation", topic=topic, difficulty=difficulty
+                )
+            
+            lang_success = True
+            if not lang_exists:
+                lang_success = self._generate_audio(
+                    lang_text, language, lang_file,
+                    exercise_type="translation", topic=topic, difficulty=difficulty
+                )
             
             # Update metadata if output_dir is specified
             if self.output_dir and eng_success and lang_success:
@@ -497,11 +513,16 @@ class PronunciationAudioGenerator:
                 if lang_dir:
                     file_path = lang_dir / f"{topic}_{difficulty}_{exercise_id}_{order}_{msg_hash}.wav"
                 
-                # Generate audio and store in database
-                success = self._generate_audio(
-                    message, language, file_path,
-                    exercise_type="conversation", topic=topic, difficulty=difficulty
-                )
+                # Check if audio already exists in database
+                audio_exists = self.db.get_pronunciation_audio(message, language)
+                
+                # Generate audio only if it doesn't exist in the database
+                success = True
+                if not audio_exists:
+                    success = self._generate_audio(
+                        message, language, file_path,
+                        exercise_type="conversation", topic=topic, difficulty=difficulty
+                    )
                 
                 if success and self.output_dir:
                     conversation_files.append({
