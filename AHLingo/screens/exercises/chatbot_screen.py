@@ -312,10 +312,26 @@ class ChatbotExerciseScreen(BaseExerciseScreen):
             
         self.topics_list.clear_widgets()
         
+        # Create a container layout for all widgets
+        container = MDBoxLayout(
+            orientation='vertical',
+            spacing=dp(20),
+            padding=dp(10),
+            size_hint=(1, 1),  # Fill available space
+            pos_hint={'top': 1}  # Align to top
+        )
+        
         # Create data table if it doesn't exist
         if not self.data_table:
             self.data_table = self.create_data_table()
-            self.topics_list.add_widget(self.data_table)
+            
+        # Create a wrapper for the data table to control its size
+        table_wrapper = MDBoxLayout(
+            size_hint=(1, 0.9),  # Take 90% of container height
+            padding=dp(5)
+        )
+        table_wrapper.add_widget(self.data_table)
+        container.add_widget(table_wrapper)
         
         with self.db() as db:
             settings = db.get_user_settings()
@@ -343,15 +359,24 @@ class ChatbotExerciseScreen(BaseExerciseScreen):
             else:
                 # Show "No previous chats" message and create new chat button
                 self.data_table.row_data = [("No previous chats", "", "")]
+                # Create a wrapper for the button to control its position
+                button_wrapper = MDBoxLayout(
+                    size_hint=(1, 0.1),  # Take 10% of container height
+                    padding=dp(10)
+                )
                 new_chat_button = StandardButton(
                     text="Start New Chat",
                     on_release=lambda x: self.start_new_chat(),
                     size_hint=(None, None),
                     width=dp(200),
                     height=dp(48),
-                    pos_hint={"center_x": 0.5}
+                    pos_hint={"center_x": 0.5, "center_y": 0.5}
                 )
-                self.topics_list.add_widget(new_chat_button)
+                button_wrapper.add_widget(new_chat_button)
+                container.add_widget(button_wrapper)
+        
+        # Add the container to the ScrollView
+        self.topics_list.add_widget(container)
 
     def start_new_chat(self):
         """Start a new chat session."""
