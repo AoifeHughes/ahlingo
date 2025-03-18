@@ -23,7 +23,7 @@ import argparse
 import os
 import sqlite3
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Dict
 import json
 import hashlib
 from tqdm import tqdm
@@ -645,17 +645,17 @@ class PronunciationAudioGenerator:
             # Final save of metadata if output_dir is specified
             if self.output_dir:
                 self._save_metadata()
-                print(f"Audio files saved to {self.output_dir}")
-                print(f"Generated audio files for:")
-                print(f"  - {len(self.metadata['pairs'])} pair exercises")
-                print(f"  - {len(self.metadata['translations'])} translation exercises")
+                print("Audio files saved to {}".format(self.output_dir))
+                print("Generated audio files for:")
+                print("  - {} pair exercises".format(len(self.metadata['pairs'])))
+                print("  - {} translation exercises".format(len(self.metadata['translations'])))
                 print(
-                    f"  - {len(self.metadata['conversations'])} conversation exercises"
+                    "  - {} conversation exercises".format(len(self.metadata['conversations']))
                 )
 
             # Print database stats
-            print(f"Total audio recordings in database: {self.db.get_audio_count()}")
-            print(f"Audio generation complete.")
+            print("Total audio recordings in database: {}".format(self.db.get_audio_count()))
+            print("Audio generation complete.")
 
         except KeyboardInterrupt:
             print("\nProcess interrupted by user.")

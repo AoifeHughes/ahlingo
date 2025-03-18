@@ -3,7 +3,7 @@ import openai
 import json
 import re
 from tqdm import tqdm
-from typing import Generator, Dict, List, Any, AsyncGenerator
+from typing import Dict, List, Any, AsyncGenerator
 from AHLingo.database.database_manager import LanguageDB
 from .assistants import (
     default_conversation_assistants,
@@ -12,7 +12,6 @@ from .assistants import (
 )
 import uuid
 import asyncio
-from concurrent.futures import ThreadPoolExecutor
 
 
 def clean_text(text: str) -> str:

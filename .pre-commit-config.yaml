@@ -8,7 +8,7 @@ repos:
     rev: v1.2.3
     hooks:
       - id: flake8
-        args: ['--ignore=E501,W503,E203']  # This line ignores long line errors
+        args: ['--ignore=E501,W503,E203', '--per-file-ignores=create_exercise_database.py:E402']  # Ignores long line errors and E402 for specific files
         exclude: ^testing/
       - id: check-json
         exclude: ^test/
