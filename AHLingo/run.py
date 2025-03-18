@@ -16,6 +16,7 @@ from AHLingo.screens.exercises.conversations_screen import ConversationExerciseS
 from AHLingo.screens.exercises.chatbot_screen import ChatbotExerciseScreen
 from AHLingo.screens.exercises.translation_screen import TranslationExerciseScreen
 from AHLingo.screens.revise_mistakes_screen import ReviseMistakesScreen
+from AHLingo.screens.statistics_screen import StatisticsScreen
 
 # Import database
 from AHLingo.database.database_manager import LanguageDB
@@ -113,6 +114,7 @@ class LanguageLearningApp(MDApp):
             "chatbot": ChatbotExerciseScreen(self.db),
             "translation": TranslationExerciseScreen(self.db),
             "revise_mistakes": ReviseMistakesScreen(self.db),
+            "statistics": StatisticsScreen(self.db),
         }
 
         for screen in screens.values():

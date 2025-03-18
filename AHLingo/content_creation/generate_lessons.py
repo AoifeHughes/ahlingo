@@ -259,7 +259,7 @@ async def generate_lessons_data_async(
         }
 
     client = openai.OpenAI(
-        base_url="http://localhost:8080/v1", api_key="sk-no-key-required"
+        base_url="http://localhost:11434/v1", api_key="sk-no-key-required"
     )
 
     for lesson_kind in lesson_kinds:
