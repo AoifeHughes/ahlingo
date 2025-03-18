@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import openai
 from typing import Dict, List, Literal
+
 try:
     import ollama
 except ImportError:
@@ -85,11 +86,11 @@ class ChatbotHandler:
         base_url: str = "http://localhost:8080/v1",
         api_key: str = "sk-no-key-required",
         backend: Literal["openai", "ollama"] = "openai",
-        db = None
+        db=None,
     ):
         """Initialize the chatbot handler with API configuration."""
         self.backend = backend
-        
+
         # If a database connection is provided, try to get settings from it
         if db:
             with db() as db_conn:
@@ -98,12 +99,14 @@ class ChatbotHandler:
                     base_url = settings["openai_server"]
                 if settings and "api_key" in settings:
                     api_key = settings["api_key"]
-        
+
         if backend == "openai":
             self.client = openai.OpenAI(base_url=base_url, api_key=api_key)
         elif backend == "ollama":
             if ollama is None:
-                raise ImportError("Ollama package is not installed. Please install it with 'pip install ollama'")
+                raise ImportError(
+                    "Ollama package is not installed. Please install it with 'pip install ollama'"
+                )
             self.client = ollama
         else:
             raise ValueError(f"Unsupported backend: {backend}")
@@ -188,11 +191,11 @@ Remember:
             else:  # ollama
                 # Get completion from Ollama API
                 completion = self.client.chat(
-                    model=model,  
+                    model=model,
                     messages=messages,
                     temperature=0.7,
                 )
-                return completion['message']['content']
+                return completion["message"]["content"]
 
         except Exception as e:
             print(f"Error getting chatbot response: {str(e)}")

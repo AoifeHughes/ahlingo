@@ -15,115 +15,125 @@ from pathlib import Path
 
 class AudioManager:
     """Manages audio playback for pronunciation files from database or files."""
-    
+
     def __init__(self):
         self.current_sound = None
         self.audio_metadata = None
         self.audio_base_path = None
         self.db = None
         self.temp_file = None
-        
+
         # Try to connect to the database
         self._connect_to_database()
-        
+
         # For backward compatibility, also try to load metadata from file
         self._load_audio_metadata()
-    
+
     def _connect_to_database(self):
         """Connect to the language database."""
         try:
             from AHLingo.database.database_manager import LanguageDB
-            
+
             # Try different possible database paths
             possible_db_paths = [
                 "./database/languageLearningDatabase.db",
                 "../database/languageLearningDatabase.db",
-                os.path.join(os.path.dirname(os.path.abspath(__file__)), 
-                            "../../../database/languageLearningDatabase.db"),
+                os.path.join(
+                    os.path.dirname(os.path.abspath(__file__)),
+                    "../../../database/languageLearningDatabase.db",
+                ),
                 "./languageLearningDatabase.db",
                 "../languageLearningDatabase.db",
-                os.path.join(os.path.dirname(os.path.abspath(__file__)), 
-                            "../../../languageLearningDatabase.db")
+                os.path.join(
+                    os.path.dirname(os.path.abspath(__file__)),
+                    "../../../languageLearningDatabase.db",
+                ),
             ]
-            
+
             for db_path in possible_db_paths:
                 if os.path.exists(db_path):
                     self.db = LanguageDB(db_path)
                     print(f"Connected to database at {db_path}")
                     return
-            
+
             print("Warning: Could not find language database")
         except Exception as e:
             print(f"Error connecting to database: {e}")
-    
+
     def _load_audio_metadata(self):
         """Load audio metadata from the audio database (for backward compatibility)."""
         # Try to find the audio_metadata.json file
         possible_paths = [
             Path("./audio_database/audio_metadata.json"),
             Path("../audio_database/audio_metadata.json"),
-            Path(os.path.join(os.path.dirname(os.path.abspath(__file__)), 
-                             "../../../audio_database/audio_metadata.json"))
+            Path(
+                os.path.join(
+                    os.path.dirname(os.path.abspath(__file__)),
+                    "../../../audio_database/audio_metadata.json",
+                )
+            ),
         ]
-        
+
         for path in possible_paths:
             if path.exists():
                 try:
-                    with open(path, 'r', encoding='utf-8') as f:
+                    with open(path, "r", encoding="utf-8") as f:
                         self.audio_metadata = json.load(f)
                     self.audio_base_path = path.parent
                     print(f"Loaded audio metadata from {path}")
                     return
                 except Exception as e:
                     print(f"Error loading audio metadata from {path}: {e}")
-        
+
         if not self.db:
             print("Warning: Could not find audio metadata file or connect to database")
-    
+
     def find_audio_for_text(self, text, language=None):
         """Find the audio file path for the given text (for backward compatibility)."""
         if not self.audio_metadata:
             return None
-            
+
         # Search in pairs section of metadata
         for pair_id, pair_data in self.audio_metadata.get("pairs", {}).items():
             # Check English text
             if pair_data["english"]["text"] == text:
                 return os.path.join(self.audio_base_path, pair_data["english"]["file"])
-            
+
             # Check target language text
             if pair_data["target_language"]["text"] == text:
-                return os.path.join(self.audio_base_path, pair_data["target_language"]["file"])
-        
+                return os.path.join(
+                    self.audio_base_path, pair_data["target_language"]["file"]
+                )
+
         return None
-    
+
     def _create_temp_file(self, audio_data):
         """Create a temporary file with the audio data."""
         import tempfile
-        
+
         # Clean up previous temp file if it exists
         if self.temp_file and os.path.exists(self.temp_file):
             try:
                 os.unlink(self.temp_file)
             except:
                 pass
-        
+
         # Create a new temporary file
         fd, temp_path = tempfile.mkstemp(suffix=".wav")
         os.close(fd)
-        
+
         # Write audio data to the file
         with open(temp_path, "wb") as f:
             f.write(audio_data)
-        
+
         self.temp_file = temp_path
         return temp_path
-    
+
     def play_audio(self, text, language=None):
         """Play audio for the given text, stopping any currently playing audio."""
         # Stop current audio if playing
         self.stop_audio()
-        
+
         # First try to get audio from database
         if self.db:
             try:
@@ -131,7 +141,7 @@ class AudioManager:
                 if audio_data:
                     # Create a temporary file with the audio data
                     temp_path = self._create_temp_file(audio_data)
-                    
+
                     # Load and play the audio
                     sound = SoundLoader.load(temp_path)
                     if sound:
@@ -140,13 +150,13 @@ class AudioManager:
                         return True
             except Exception as e:
                 print(f"Error playing audio from database: {e}")
-        
+
         # If database approach failed, try file-based approach (backward compatibility)
         audio_path = self.find_audio_for_text(text, language)
         if not audio_path:
             print(f"No audio found for text: {text}")
             return False
-        
+
         # Load and play the audio
         try:
             sound = SoundLoader.load(audio_path)
@@ -160,13 +170,13 @@ class AudioManager:
         except Exception as e:
             print(f"Error playing audio: {e}")
             return False
-    
+
     def stop_audio(self):
         """Stop any currently playing audio."""
         if self.current_sound:
             self.current_sound.stop()
             self.current_sound = None
-    
+
     def __del__(self):
         """Clean up temporary files when the object is destroyed."""
         if self.temp_file and os.path.exists(self.temp_file):
@@ -174,7 +184,7 @@ class AudioManager:
                 os.unlink(self.temp_file)
             except:
                 pass
-        
+
         # Close database connection
         if self.db:
             try:
@@ -217,7 +227,7 @@ class WordButton(OptionButton):
         self.pair_id = pair_id
         self.original_color = self.md_bg_color
         self.lang_num = lang_num
-        
+
     def play_audio(self, audio_manager):
         """Play pronunciation audio for this word."""
         return audio_manager.play_audio(self.word)
@@ -276,7 +286,7 @@ class PairsExerciseScreen(BaseExerciseScreen):
         self.current_batch_index = 0
         self.lang1_is_selected = False
         self.lang2_is_selected = False
-        
+
         # Initialize audio manager
         self.audio_manager = AudioManager()
 
@@ -484,7 +494,7 @@ class PairsExerciseScreen(BaseExerciseScreen):
         """Handle button press in the game."""
         # Play audio for the button's word
         button.play_audio(self.audio_manager)
-        
+
         # If the same button is pressed again, deselect it
         if self.selected_button == button:
             button.set_state("default")
