@@ -647,14 +647,24 @@ class PronunciationAudioGenerator:
                 self._save_metadata()
                 print("Audio files saved to {}".format(self.output_dir))
                 print("Generated audio files for:")
-                print("  - {} pair exercises".format(len(self.metadata['pairs'])))
-                print("  - {} translation exercises".format(len(self.metadata['translations'])))
+                print("  - {} pair exercises".format(len(self.metadata["pairs"])))
                 print(
-                    "  - {} conversation exercises".format(len(self.metadata['conversations']))
+                    "  - {} translation exercises".format(
+                        len(self.metadata["translations"])
+                    )
+                )
+                print(
+                    "  - {} conversation exercises".format(
+                        len(self.metadata["conversations"])
+                    )
                 )
 
             # Print database stats
-            print("Total audio recordings in database: {}".format(self.db.get_audio_count()))
+            print(
+                "Total audio recordings in database: {}".format(
+                    self.db.get_audio_count()
+                )
+            )
             print("Audio generation complete.")
 
         except KeyboardInterrupt:
