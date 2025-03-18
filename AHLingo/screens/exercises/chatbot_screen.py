@@ -86,7 +86,7 @@ class ChatbotExerciseScreen(BaseExerciseScreen):
     def __init__(self, db, **kwargs):
         super().__init__(db, **kwargs)
         self.name = "chatbot"
-        self.chatbot = ChatbotHandler()
+        self.chatbot = ChatbotHandler(db=db)
         self.conversation_history = []
         self.chat_id = None
         self.exercise_view = None

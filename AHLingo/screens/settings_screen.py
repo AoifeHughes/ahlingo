@@ -80,6 +80,15 @@ class SettingsScreen(BaseScreen):
         content_layout.spacing = dp(16)
         content_layout.padding = [dp(16), dp(16), dp(16), dp(16)]
 
+        # Create a container for text fields with spacing
+        text_fields_container = MDBoxLayout(
+            orientation="vertical",
+            spacing=dp(24),  # Add more spacing between fields
+            size_hint=(1, None),
+            height=dp(200),  # Adjust height to accommodate fields with spacing
+            padding=[dp(0), dp(8), dp(0), dp(8)],  # Add padding top and bottom
+        )
+        
         # Username field
         self.username_field = SettingsTextField(
             hint_text="Username",
@@ -87,7 +96,29 @@ class SettingsScreen(BaseScreen):
             helper_text_mode="on_error",
             size_hint=(1, None),
         )
-        layout.add_widget(self.username_field)
+        text_fields_container.add_widget(self.username_field)
+        
+        # OpenAI Compatible Server field
+        self.server_field = SettingsTextField(
+            hint_text="OpenAI Compatible Server",
+            helper_text="Enter the server URL (e.g., http://localhost:8080/v1)",
+            helper_text_mode="on_focus",
+            size_hint=(1, None),
+        )
+        text_fields_container.add_widget(self.server_field)
+        
+        # API Key field
+        self.api_key_field = SettingsTextField(
+            hint_text="API Key",
+            helper_text="Enter your API key",
+            helper_text_mode="on_focus",
+            password=True,  # Hide the API key for security
+            size_hint=(1, None),
+        )
+        text_fields_container.add_widget(self.api_key_field)
+        
+        # Add the container to the layout
+        layout.add_widget(text_fields_container)
 
         # Required fields notice
         required_notice = MDLabel(
@@ -174,6 +205,16 @@ class SettingsScreen(BaseScreen):
                 self.language_button.text = settings["language"]
             if "difficulty" in settings:
                 self.difficulty_button.text = settings["difficulty"]
+            if "openai_server" in settings:
+                self.server_field.text = settings["openai_server"]
+            else:
+                # Default server
+                self.server_field.text = "http://localhost:8080/v1"
+            if "api_key" in settings:
+                self.api_key_field.text = settings["api_key"]
+            else:
+                # Default API key
+                self.api_key_field.text = "sk-no-key-required"
 
     def validate_settings(self):
         """Validate all required settings are provided."""
@@ -197,6 +238,8 @@ class SettingsScreen(BaseScreen):
                 db.set_user_setting(username, "username", username)
                 db.set_user_setting(username, "language", self.language_button.text)
                 db.set_user_setting(username, "difficulty", self.difficulty_button.text)
+                db.set_user_setting(username, "openai_server", self.server_field.text)
+                db.set_user_setting(username, "api_key", self.api_key_field.text)
 
     def on_leave(self, *args):
         """Save settings when leaving the screen."""
