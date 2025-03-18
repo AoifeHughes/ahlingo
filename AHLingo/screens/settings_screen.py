@@ -88,7 +88,7 @@ class SettingsScreen(BaseScreen):
             height=dp(200),  # Adjust height to accommodate fields with spacing
             padding=[dp(0), dp(8), dp(0), dp(8)],  # Add padding top and bottom
         )
-        
+
         # Username field
         self.username_field = SettingsTextField(
             hint_text="Username",
@@ -97,7 +97,7 @@ class SettingsScreen(BaseScreen):
             size_hint=(1, None),
         )
         text_fields_container.add_widget(self.username_field)
-        
+
         # OpenAI Compatible Server field
         self.server_field = SettingsTextField(
             hint_text="OpenAI Compatible Server",
@@ -106,7 +106,7 @@ class SettingsScreen(BaseScreen):
             size_hint=(1, None),
         )
         text_fields_container.add_widget(self.server_field)
-        
+
         # API Key field
         self.api_key_field = SettingsTextField(
             hint_text="API Key",
@@ -116,7 +116,7 @@ class SettingsScreen(BaseScreen):
             size_hint=(1, None),
         )
         text_fields_container.add_widget(self.api_key_field)
-        
+
         # Add the container to the layout
         layout.add_widget(text_fields_container)
 

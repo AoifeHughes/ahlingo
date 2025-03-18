@@ -14,7 +14,6 @@ class BaseExerciseScreen(BaseScreen):
         self.setup_views()
         self.current_topic = None
 
-
     def setup_views(self):
         """Setup topic and exercise views."""
         self.topic_view = self.create_topic_view()
