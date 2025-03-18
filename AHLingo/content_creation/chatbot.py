@@ -85,9 +85,20 @@ class ChatbotHandler:
         base_url: str = "http://localhost:8080/v1",
         api_key: str = "sk-no-key-required",
         backend: Literal["openai", "ollama"] = "openai",
+        db = None
     ):
         """Initialize the chatbot handler with API configuration."""
         self.backend = backend
+        
+        # If a database connection is provided, try to get settings from it
+        if db:
+            with db() as db_conn:
+                settings = db_conn.get_user_settings()
+                if settings and "openai_server" in settings:
+                    base_url = settings["openai_server"]
+                if settings and "api_key" in settings:
+                    api_key = settings["api_key"]
+        
         if backend == "openai":
             self.client = openai.OpenAI(base_url=base_url, api_key=api_key)
         elif backend == "ollama":
