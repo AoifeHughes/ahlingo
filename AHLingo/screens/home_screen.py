@@ -288,7 +288,7 @@ class HomeScreen(BaseScreen):
     def go_to_revise_mistakes(self, *args):
         """Navigate to revise mistakes screen."""
         self.manager.current = "revise_mistakes"
-        
+
     def go_to_statistics(self, *args):
         """Navigate to statistics screen."""
         self.manager.current = "statistics"
