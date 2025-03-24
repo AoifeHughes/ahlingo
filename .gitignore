@@ -31,3 +31,4 @@ yarn-error.log*
 *broken*
 *.egg-info
 *.db
+*.wav
