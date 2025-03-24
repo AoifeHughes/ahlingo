@@ -1,5 +1,0 @@
-kivymd
-llama-cpp-python
-lmql
-tqdm
-TTS

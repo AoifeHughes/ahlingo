@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 
 
 class LanguageDB:
-    def __init__(self, db_path: str = "./languageLearningDatabase.db"):
+    def __init__(self, db_path: str = "./database/languageLearningDatabase.db"):
         """Initialize the database connection and create tables if they don't exist."""
         self.db_path = Path(db_path)
         # Ensure directory exists

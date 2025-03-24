@@ -3,11 +3,11 @@ import json
 from pathlib import Path
 from typing import Dict
 import uuid
-from .database_manager import LanguageDB
+from database_manager import LanguageDB
 
 
 class DatabasePopulator:
-    def __init__(self, db_path: str = "./languageLearningDatabase.db"):
+    def __init__(self, db_path: str = "./database/languageLearningDatabase.db"):
         self.db_path = Path(db_path)
         self.content_dir = Path("content")
 

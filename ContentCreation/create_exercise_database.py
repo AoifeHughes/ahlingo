@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
-import os
 
-os.environ["KIVY_NO_CONSOLELOG"] = "1"
-
-from AHLingo import populate_database
-from AHLingo.database.database_manager import LanguageDB
+from database_manager import LanguageDB
+from generate_lessons import generate_lessons
+from generate_pronunciation_audio import run_with_defaults
 
 
 def initialize_default_settings():
@@ -24,5 +22,6 @@ def initialize_default_settings():
 
 
 if __name__ == "__main__":
-    populate_database()
+    generate_lessons()
+    run_with_defaults()
     initialize_default_settings()

@@ -47,7 +47,7 @@ except ImportError:
     print("Ukrainian TTS library not found. Install with:")
     print("pip install git+https://github.com/robinhad/ukrainian-tts.git")
 
-from AHLingo.database.database_manager import LanguageDB
+from database_manager import LanguageDB
 
 
 class PronunciationAudioGenerator:
@@ -719,6 +719,16 @@ def main():
 
     generator = PronunciationAudioGenerator(
         args.db_path, output_dir, args.reference_audio, args.speaker, args.ukr_voice
+    )
+    generator.run()
+
+
+def run_with_defaults():
+    """Run the audio generator with default settings."""
+    generator = PronunciationAudioGenerator(
+        db_path="./database/languageLearningDatabase.db",
+        reference_audio=None,
+        ukr_voice="Dmytro",
     )
     generator.run()
 

@@ -4,8 +4,8 @@ import json
 import re
 from tqdm import tqdm
 from typing import Dict, List, Any, AsyncGenerator
-from AHLingo.database.database_manager import LanguageDB
-from .assistants import (
+from database_manager import LanguageDB
+from assistants import (
     default_conversation_assistants,
     default_pairs_assistants,
     default_translation_assistants,
@@ -390,6 +390,6 @@ async def populate_database_parallel(max_concurrent: int = 4):
         db.close()
 
 
-def populate_database(max_concurrent: int = 4):
+def generate_lessons(max_concurrent: int = 4):
     """Wrapper function to run the async populate function."""
     asyncio.run(populate_database_parallel(max_concurrent))
