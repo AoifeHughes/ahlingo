@@ -8,6 +8,17 @@
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "assetBundlePatterns": [
+      "**/*",
+      "assets/language_learning_content/**/*"
+    ],
+    "packagerOpts": {
+      "assetExts": [
+        "json",
+        "wav",
+        "mp3"
+      ]
+    },
     "ios": {
       "supportsTablet": true
     },
@@ -32,7 +43,8 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
-      ]
+      ],
+      "expo-asset"
     ],
     "experiments": {
       "typedRoutes": true

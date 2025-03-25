@@ -1,16 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Language Learning Content Extractor
+Language Learning Content Extractor with Structured Index
 
 This script extracts all language learning lessons and their associated audio files from the database,
 organizes them into a structured filesystem, and creates JSON files for each lesson and a master index.
 
 The script:
-1. Extracts all lessons (pairs, translations, conversations) by language, topic, and difficulty
+1. Extracts all lessons (pairs, translations, conversations) with structure:
+   language/difficulty/type of exercise/topic/exercise id
 2. Extracts associated audio files and places them alongside the lessons
 3. Creates JSON files for each lesson with all relevant content
-4. Creates a master index.json with metadata about all lessons, languages, topics, etc.
+4. Creates a master index.json with hierarchical structure matching the filesystem organization
 
 Usage:
     python extract_lessons.py --db_path PATH --output_dir PATH
@@ -47,20 +48,14 @@ class LanguageLearningExtractor:
         self.conn.row_factory = sqlite3.Row
         self.cursor = self.conn.cursor()
         
-        # Master index data
+        # Master index data - structured to match filesystem hierarchy
         self.master_index = {
-            "languages": [],
-            "topics": [],
-            "difficulties": [],
-            "lessons": {
-                "pairs": [],
-                "translations": [],
-                "conversations": []
-            },
-            "stats": {
+            "languages": {},
+            "metadata": {
+                "creation_date": datetime.now().isoformat(),
+                "database_source": str(self.db_path),
                 "total_lessons": 0,
-                "total_audio_files": 0,
-                "extraction_date": datetime.now().isoformat()
+                "total_audio_files": 0
             }
         }
         
@@ -148,6 +143,32 @@ class LanguageLearningExtractor:
         
         return None
     
+    def _ensure_index_structure(self, language, difficulty, exercise_type, topic):
+        """Ensure the hierarchical structure exists in the index."""
+        # Add language if it doesn't exist
+        if language not in self.master_index["languages"]:
+            self.master_index["languages"][language] = {
+                "difficulties": {}
+            }
+        
+        # Add difficulty if it doesn't exist
+        if difficulty not in self.master_index["languages"][language]["difficulties"]:
+            self.master_index["languages"][language]["difficulties"][difficulty] = {
+                "exercise_types": {}
+            }
+        
+        # Add exercise type if it doesn't exist
+        if exercise_type not in self.master_index["languages"][language]["difficulties"][difficulty]["exercise_types"]:
+            self.master_index["languages"][language]["difficulties"][difficulty]["exercise_types"][exercise_type] = {
+                "topics": {}
+            }
+        
+        # Add topic if it doesn't exist
+        if topic not in self.master_index["languages"][language]["difficulties"][difficulty]["exercise_types"][exercise_type]["topics"]:
+            self.master_index["languages"][language]["difficulties"][difficulty]["exercise_types"][exercise_type]["topics"][topic] = {
+                "exercises": []
+            }
+    
     def get_all_metadata(self):
         """Get all languages, topics, and difficulties from the database."""
         print("Getting metadata...")
@@ -155,17 +176,14 @@ class LanguageLearningExtractor:
         # Get all languages
         self.cursor.execute("SELECT DISTINCT language FROM languages")
         self.unique_languages = {row["language"] for row in self.cursor.fetchall()}
-        self.master_index["languages"] = sorted(list(self.unique_languages))
         
         # Get all topics
         self.cursor.execute("SELECT DISTINCT topic FROM topics")
         self.unique_topics = {row["topic"] for row in self.cursor.fetchall()}
-        self.master_index["topics"] = sorted(list(self.unique_topics))
         
         # Get all difficulties
         self.cursor.execute("SELECT DISTINCT difficulty_level FROM difficulties")
         self.unique_difficulties = {row["difficulty_level"] for row in self.cursor.fetchall()}
-        self.master_index["difficulties"] = sorted(list(self.unique_difficulties))
         
         print(f"Found {len(self.unique_languages)} languages, {len(self.unique_topics)} topics, and {len(self.unique_difficulties)} difficulty levels")
     
@@ -202,8 +220,8 @@ class LanguageLearningExtractor:
             eng_text = pair["english_content"]
             target_text = pair["target_language_content"]
             
-            # Create directory structure: language/topic/difficulty/pairs/exercise_id
-            lesson_dir = self.output_dir / language / topic / difficulty / "pairs" / str(exercise_id)
+            # Create directory structure: language/difficulty/pairs/topic/exercise_id
+            lesson_dir = self.output_dir / language / difficulty / "pairs" / topic / str(exercise_id)
             audio_dir = lesson_dir / "audio"
             audio_dir.mkdir(parents=True, exist_ok=True)
             
@@ -234,19 +252,20 @@ class LanguageLearningExtractor:
             # Save lesson JSON
             self._save_json_file(lesson_data, lesson_dir / "lesson.json")
             
-            # Add to master index
-            index_entry = {
+            # Add to master index (hierarchical structure)
+            self._ensure_index_structure(language, difficulty, "pairs", topic)
+            
+            # Add exercise to the index
+            exercise_entry = {
                 "id": exercise_id,
                 "name": pair["exercise_name"],
-                "language": language,
-                "topic": topic,
-                "difficulty": difficulty,
-                "path": f"{language}/{topic}/{difficulty}/pairs/{exercise_id}/lesson.json"
+                "path": f"{language}/{difficulty}/pairs/{topic}/{exercise_id}/lesson.json"
             }
-            self.master_index["lessons"]["pairs"].append(index_entry)
+            
+            self.master_index["languages"][language]["difficulties"][difficulty]["exercise_types"]["pairs"]["topics"][topic]["exercises"].append(exercise_entry)
             
             # Update stats
-            self.master_index["stats"]["total_lessons"] += 1
+            self.master_index["metadata"]["total_lessons"] += 1
     
     def extract_translation_exercises(self):
         """Extract all translation exercises."""
@@ -281,8 +300,8 @@ class LanguageLearningExtractor:
             eng_text = translation["english_content"]
             target_text = translation["target_language_content"]
             
-            # Create directory structure: language/topic/difficulty/translations/exercise_id
-            lesson_dir = self.output_dir / language / topic / difficulty / "translations" / str(exercise_id)
+            # Create directory structure: language/difficulty/translations/topic/exercise_id
+            lesson_dir = self.output_dir / language / difficulty / "translations" / topic / str(exercise_id)
             audio_dir = lesson_dir / "audio"
             audio_dir.mkdir(parents=True, exist_ok=True)
             
@@ -313,19 +332,20 @@ class LanguageLearningExtractor:
             # Save lesson JSON
             self._save_json_file(lesson_data, lesson_dir / "lesson.json")
             
-            # Add to master index
-            index_entry = {
+            # Add to master index (hierarchical structure)
+            self._ensure_index_structure(language, difficulty, "translations", topic)
+            
+            # Add exercise to the index
+            exercise_entry = {
                 "id": exercise_id,
                 "name": translation["exercise_name"],
-                "language": language,
-                "topic": topic,
-                "difficulty": difficulty,
-                "path": f"{language}/{topic}/{difficulty}/translations/{exercise_id}/lesson.json"
+                "path": f"{language}/{difficulty}/translations/{topic}/{exercise_id}/lesson.json"
             }
-            self.master_index["lessons"]["translations"].append(index_entry)
+            
+            self.master_index["languages"][language]["difficulties"][difficulty]["exercise_types"]["translations"]["topics"][topic]["exercises"].append(exercise_entry)
             
             # Update stats
-            self.master_index["stats"]["total_lessons"] += 1
+            self.master_index["metadata"]["total_lessons"] += 1
     
     def extract_conversation_exercises(self):
         """Extract all conversation exercises."""
@@ -379,8 +399,8 @@ class LanguageLearningExtractor:
             summary_row = self.cursor.fetchone()
             summary = summary_row["summary"] if summary_row else None
             
-            # Create directory structure: language/topic/difficulty/conversations/exercise_id
-            lesson_dir = self.output_dir / language / topic / difficulty / "conversations" / str(exercise_id)
+            # Create directory structure: language/difficulty/conversations/topic/exercise_id
+            lesson_dir = self.output_dir / language / difficulty / "conversations" / topic / str(exercise_id)
             audio_dir = lesson_dir / "audio"
             audio_dir.mkdir(parents=True, exist_ok=True)
             
@@ -418,52 +438,68 @@ class LanguageLearningExtractor:
             # Save lesson JSON
             self._save_json_file(lesson_data, lesson_dir / "lesson.json")
             
-            # Add to master index
-            index_entry = {
+            # Add to master index (hierarchical structure)
+            self._ensure_index_structure(language, difficulty, "conversations", topic)
+            
+            # Add exercise to the index
+            exercise_entry = {
                 "id": exercise_id,
                 "name": conversation["exercise_name"],
-                "language": language,
-                "topic": topic,
-                "difficulty": difficulty,
-                "path": f"{language}/{topic}/{difficulty}/conversations/{exercise_id}/lesson.json",
+                "path": f"{language}/{difficulty}/conversations/{topic}/{exercise_id}/lesson.json",
                 "message_count": len(conversation_messages)
             }
-            self.master_index["lessons"]["conversations"].append(index_entry)
+            
+            self.master_index["languages"][language]["difficulties"][difficulty]["exercise_types"]["conversations"]["topics"][topic]["exercises"].append(exercise_entry)
             
             # Update stats
-            self.master_index["stats"]["total_lessons"] += 1
+            self.master_index["metadata"]["total_lessons"] += 1
+    
+    def add_stats_to_index(self):
+        """Add statistics to each level of the index structure."""
+        print("Adding statistics to index...")
+        
+        # Update audio file count
+        self.master_index["metadata"]["total_audio_files"] = self.extracted_audio_files
+        
+        # Add counts for each language
+        for language in self.master_index["languages"]:
+            language_total = 0
+            
+            # Add counts for each difficulty
+            for difficulty in self.master_index["languages"][language]["difficulties"]:
+                difficulty_total = 0
+                
+                # Add counts for each exercise type
+                for ex_type in self.master_index["languages"][language]["difficulties"][difficulty]["exercise_types"]:
+                    type_total = 0
+                    
+                    # Add counts for each topic
+                    for topic in self.master_index["languages"][language]["difficulties"][difficulty]["exercise_types"][ex_type]["topics"]:
+                        exercises = self.master_index["languages"][language]["difficulties"][difficulty]["exercise_types"][ex_type]["topics"][topic]["exercises"]
+                        
+                        # Add count to topic level
+                        self.master_index["languages"][language]["difficulties"][difficulty]["exercise_types"][ex_type]["topics"][topic]["count"] = len(exercises)
+                        
+                        # Add to running totals
+                        type_total += len(exercises)
+                    
+                    # Add count to exercise type level
+                    self.master_index["languages"][language]["difficulties"][difficulty]["exercise_types"][ex_type]["count"] = type_total
+                    difficulty_total += type_total
+                
+                # Add count to difficulty level
+                self.master_index["languages"][language]["difficulties"][difficulty]["count"] = difficulty_total
+                language_total += difficulty_total
+            
+            # Add count to language level
+            self.master_index["languages"][language]["count"] = language_total
     
     def create_master_index(self):
         """Create and save the master index file."""
         print("Creating master index...")
         
-        # Update final stats
-        self.master_index["stats"]["total_audio_files"] = self.extracted_audio_files
-        
-        # Add language-specific stats
-        language_stats = {}
-        for language in self.unique_languages:
-            pair_count = len([
-                lesson for lesson in self.master_index["lessons"]["pairs"]
-                if lesson["language"] == language
-            ])
-            translation_count = len([
-                lesson for lesson in self.master_index["lessons"]["translations"]
-                if lesson["language"] == language
-            ])
-            conversation_count = len([
-                lesson for lesson in self.master_index["lessons"]["conversations"]
-                if lesson["language"] == language
-            ])
-            
-            language_stats[language] = {
-                "pairs": pair_count,
-                "translations": translation_count,
-                "conversations": conversation_count,
-                "total": pair_count + translation_count + conversation_count
-            }
-        
-        self.master_index["language_stats"] = language_stats
+        # Add statistics to each level
+        self.add_stats_to_index()
         
         # Save the master index
         self._save_json_file(self.master_index, self.output_dir / "index.json")
@@ -475,29 +511,77 @@ This directory contains extracted language learning content in a structured form
 
 ## Structure
 
-- `index.json`: Master index of all content
-- `/<language>/<topic>/<difficulty>/<exercise_type>/<exercise_id>/lesson.json`: Individual lesson files
-- `/<language>/<topic>/<difficulty>/<exercise_type>/<exercise_id>/audio/`: Audio files for the lesson
+- `index.json`: Master index of all content, organized hierarchically
+- `/<language>/<difficulty>/<exercise_type>/<topic>/<exercise_id>/lesson.json`: Individual lesson files
+- `/<language>/<difficulty>/<exercise_type>/<topic>/<exercise_id>/audio/`: Audio files for the lesson
+
+## Index Structure
+
+The index.json file follows the same hierarchical structure as the filesystem:
+
+```
+{
+  "languages": {
+    "<language>": {
+      "difficulties": {
+        "<difficulty>": {
+          "exercise_types": {
+            "<exercise_type>": {
+              "topics": {
+                "<topic>": {
+                  "exercises": [
+                    {
+                      "id": 123,
+                      "name": "Exercise Name",
+                      "path": "path/to/lesson.json"
+                    }
+                  ],
+                  "count": 10
+                }
+              },
+              "count": 25
+            }
+          },
+          "count": 50
+        }
+      },
+      "count": 100
+    }
+  },
+  "metadata": {
+    "total_lessons": 500,
+    "total_audio_files": 1000,
+    "creation_date": "..."
+  }
+}
+```
 
 ## Usage
 
-1. Load the master index to get an overview of available content:
+1. Load the master index to browse available content:
    ```python
    with open('index.json', 'r', encoding='utf-8') as f:
        index = json.load(f)
    ```
 
-2. Access individual lessons by following the paths in the index:
+2. Navigate the hierarchical structure:
    ```python
-   lesson_path = index['lessons']['pairs'][0]['path']
+   # Get all Spanish beginner pair exercises
+   spanish_beginner_pairs = index['languages']['Spanish']['difficulties']['Beginner']['exercise_types']['pairs']
+   ```
+
+3. Access individual lessons:
+   ```python
+   # Get the first exercise path
+   lesson_path = spanish_beginner_pairs['topics']['Greetings']['exercises'][0]['path']
    with open(lesson_path, 'r', encoding='utf-8') as f:
        lesson = json.load(f)
    ```
 
-3. Audio files are referenced relative to the lesson file:
+4. Access audio files:
    ```python
-   # Assuming 'lesson' is loaded as above
-   audio_path = os.path.join(os.path.dirname(lesson_path), lesson['content']['english']['audio'])
+   # Get the English audio for a pair exercise
+   english_audio = os.path.join(os.path.dirname(lesson_path), lesson['content']['english']['audio'])
    ```
 
 ## Content Types
@@ -526,7 +610,7 @@ This directory contains extracted language learning content in a structured form
             
             # Print summary
             print("\nExtraction complete!")
-            print(f"Total lessons extracted: {self.master_index['stats']['total_lessons']}")
+            print(f"Total lessons extracted: {self.master_index['metadata']['total_lessons']}")
             print(f"Total audio files extracted: {self.extracted_audio_files}")
             print(f"Content saved to: {self.output_dir}")
             print(f"Master index saved to: {self.output_dir / 'index.json'}")
