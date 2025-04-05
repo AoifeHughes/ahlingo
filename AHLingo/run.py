@@ -6,7 +6,9 @@ from kivy.core.window import Window
 from kivy.utils import platform
 from kivy.config import Config
 import os
-import pkg_resources
+from kivy.utils import platform
+
+
 
 # Import screens
 from AHLingo.screens.home_screen import HomeScreen
@@ -31,7 +33,11 @@ def get_resource_path(relative_path):
         # PyInstaller creates a temp folder and stores path in _MEIPASS
         base_path = sys._MEIPASS
     except Exception:
-        base_path = pkg_resources.resource_filename("AHLingo", "")
+        if platform == "android" or platform == "ios":
+            pass
+        else:
+            import pkg_resources
+            base_path = pkg_resources.resource_filename("AHLingo", "")
 
     return os.path.join(base_path, relative_path)
 

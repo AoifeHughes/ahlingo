@@ -230,7 +230,7 @@ async def generate_lessons_data_async(
     language: str,
     level: str,
     topic: str,
-    N_runs: int = 5,
+    N_runs: int = 2,
     lesson_kinds: List[str] = ["conversations", "pairs", "translations"],
 ) -> AsyncGenerator[tuple[str, str, Dict], None]:
     """Generate lesson data using the OpenAI API asynchronously."""
@@ -240,13 +240,13 @@ async def generate_lessons_data_async(
     ) -> Dict[str, str]:
         return {
             "role": "system",
-            "content": f'You are a {language} language learning tool. Your task is to generate a JSON array containing {level} level {language} conversations related to the topic "{topic}". Each conversation should have a clear objective, specified roles for the speakers, and a conversation summary. The conversations should be engaging, natural, and aligned with the language level. Include a mix of questions, responses, and idiomatic expressions. Aim for 4-6 turns per conversation. Respond only with valid JSON. Do not write an introduction to the task',
+            "content": f'You are a {language} language learning tool. Your task is to generate a JSON array containing {level} level {language} conversations related to the topic "{topic}". Each conversation should have a clear objective, specified roles for the speakers, and a conversation summary. The conversations should be engaging, natural, and aligned with the language level. Include a mix of questions, responses, and idiomatic expressions. Aim for 4-6 turns per conversation. Respond only with valid JSON and you must conform to the structure given in the example. Do not write an introduction to the task',
         }
 
     def make_pairs_system(language: str, topic: str, level: str) -> Dict[str, str]:
         return {
             "role": "system",
-            "content": f'You are a {language} language learning tool. Your task is to generate a JSON array containing pairs of {language} words and their English translations. Where possible use single words only. The words should be common and relevant to the topic "{topic}" at the {level} level. Include a mix of nouns, verbs, adjectives, and adverbs. Aim for 5-10 word pairs.  Respond only with valid JSON. Do not write an introduction to the task',
+            "content": f'You are a {language} language learning tool. Your task is to generate a JSON array containing pairs of {language} words and their English translations. Where possible use single words only. The words should be common and relevant to the topic "{topic}" at the {level} level. Include a mix of nouns, verbs, adjectives, and adverbs. Aim for 5-10 word pairs.  Respond only with valid JSON you must conform to the structure given in the example. Do not write an introduction to the task',
         }
 
     def make_translation_system(
@@ -254,7 +254,7 @@ async def generate_lessons_data_async(
     ) -> Dict[str, str]:
         return {
             "role": "system",
-            "content": f'You are a {language} language learning tool. Your task is to generate a JSON array containing {level} level {language} sentences and their English translations. The sentences should be focused on the topic "{topic}" and showcase relevant vocabulary and grammar structures. Vary the sentence structures and include a mix of statements, questions, and commands. Aim for 5 sentence pairs. These should be full sentences.  Respond only with valid JSON. Do not write an introduction to the task',
+            "content": f'You are a {language} language learning tool. Your task is to generate a JSON array containing {level} level {language} sentences and their English translations. The sentences should be focused on the topic "{topic}" and showcase relevant vocabulary and grammar structures. Vary the sentence structures and include a mix of statements, questions, and commands. Aim for 5 sentence pairs. These should be full sentences.  Respond only with valid JSON and you must conform to the structure given in the example. Do not write an introduction to the task',
         }
 
     client = openai.OpenAI(
