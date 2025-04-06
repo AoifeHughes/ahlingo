@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
-import openai
 from typing import Dict, List, Literal
+from kivy.utils import platform
 
 try:
     import ollama
+    import openai
 except ImportError:
     ollama = None
+    openai = None
 
 
 class ChatbotHandler:
@@ -90,6 +92,9 @@ class ChatbotHandler:
     ):
         """Initialize the chatbot handler with API configuration."""
         self.backend = backend
+
+        if platform == "android" or platform == "ios":
+            return None
 
         # If a database connection is provided, try to get settings from it
         if db:
