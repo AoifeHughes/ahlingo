@@ -11,7 +11,8 @@ from app.screens.common.settings_item import SettingsItem
 
 # Import screens
 from app.screens.main_menu import MainMenuScreen, KV_MAIN_MENU
-from app.screens.pairs_exercises import PairsExercisesScreen, KV_PAIRS_EXERCISES
+from app.screens.topic_selection_screen import TopicSelectionScreen, KV_TOPIC_SELECTION
+from app.screens.pairs_game_screen import PairsGameScreen, KV_PAIRS_GAME
 from app.screens.conversation_exercises import ConversationExercisesScreen, KV_CONVERSATION_EXERCISES
 from app.screens.translation_exercises import TranslationExercisesScreen, KV_TRANSLATION_EXERCISES
 from app.screens.chatbot import ChatbotScreen, KV_CHATBOT
@@ -58,9 +59,13 @@ ScreenManager:
         name: 'main_menu'
         id: main_menu
     
-    PairsExercisesScreen:
-        name: 'pairs_exercises'
-        id: pairs_exercises
+    TopicSelectionScreen:
+        name: 'topic_selection'
+        id: topic_selection
+    
+    PairsGameScreen:
+        name: 'pairs_game'
+        id: pairs_game
     
     ConversationExercisesScreen:
         name: 'conversation_exercises'
@@ -105,7 +110,8 @@ class AHLingo(MDApp):
         """Load all KV strings for screens."""
         # Load KV strings for each screen
         Builder.load_string(KV_MAIN_MENU)
-        Builder.load_string(KV_PAIRS_EXERCISES)
+        Builder.load_string(KV_TOPIC_SELECTION)
+        Builder.load_string(KV_PAIRS_GAME)
         Builder.load_string(KV_CONVERSATION_EXERCISES)
         Builder.load_string(KV_TRANSLATION_EXERCISES)
         Builder.load_string(KV_CHATBOT)

@@ -45,7 +45,7 @@ KV_MAIN_MENU = '''
             
             MenuButton:
                 text: "Pairs Exercises"
-                on_release: app.change_screen('pairs_exercises')
+                on_release: app.change_screen('topic_selection')
                 pos_hint: {"center_x": 0.5}
             
             MenuButton:
