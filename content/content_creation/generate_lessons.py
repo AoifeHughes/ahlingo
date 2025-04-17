@@ -4,7 +4,7 @@ import json
 import re
 from tqdm import tqdm
 from typing import Dict, List, Any, AsyncGenerator
-from AHLingo.database.database_manager import LanguageDB
+from database.database_manager import LanguageDB
 from .assistants import (
     default_conversation_assistants,
     default_pairs_assistants,
