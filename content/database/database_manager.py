@@ -62,6 +62,8 @@ class LanguageDB:
                 topic_id INTEGER NOT NULL,
                 difficulty_id INTEGER NOT NULL,
                 language_id INTEGER NOT NULL,
+                exercise_type TEXT NOT NULL,
+                lesson_id TEXT,
                 FOREIGN KEY (topic_id) REFERENCES topics (id),
                 FOREIGN KEY (difficulty_id) REFERENCES difficulties (id),
                 FOREIGN KEY (language_id) REFERENCES languages (id)
@@ -539,19 +541,35 @@ class LanguageDB:
         difficulty_level: str,
         conversations: List[Dict[str, str]],
         summary: str,
+        lesson_id: str = None,
     ) -> int:
         """Add a conversation exercise to the database."""
         language_id = self._get_or_create_language(language)
         topic_id = self._get_or_create_topic(topic)
         difficulty_id = self._get_or_create_difficulty(difficulty_level)
 
-        self.cursor.execute(
-            """INSERT INTO exercises_info
-               (exercise_name, language_id, topic_id, difficulty_id)
-               VALUES (?, ?, ?, ?)""",
-            (exercise_name, language_id, topic_id, difficulty_id),
-        )
-        exercise_id = self.cursor.lastrowid
+        # Check if an exercise with this lesson_id already exists
+        exercise_id = None
+        if lesson_id:
+            self.cursor.execute(
+                """SELECT id FROM exercises_info
+                   WHERE lesson_id = ? AND exercise_type = ? AND language_id = ? 
+                   AND topic_id = ? AND difficulty_id = ?""",
+                (lesson_id, "conversation", language_id, topic_id, difficulty_id),
+            )
+            result = self.cursor.fetchone()
+            if result:
+                exercise_id = result[0]
+
+        # If no existing exercise found, create a new one
+        if not exercise_id:
+            self.cursor.execute(
+                """INSERT INTO exercises_info
+                   (exercise_name, language_id, topic_id, difficulty_id, exercise_type, lesson_id)
+                   VALUES (?, ?, ?, ?, ?, ?)""",
+                (exercise_name, language_id, topic_id, difficulty_id, "conversation", lesson_id),
+            )
+            exercise_id = self.cursor.lastrowid
 
         for idx, conv in enumerate(conversations):
             self.cursor.execute(
@@ -580,6 +598,7 @@ class LanguageDB:
         language_2: str,
         language_1_content: str,
         language_2_content: str,
+        lesson_id: str = None,
     ) -> int:
         """Add a pair exercise to the database."""
         # Check if pair exercise already exists
@@ -595,13 +614,28 @@ class LanguageDB:
         topic_id = self._get_or_create_topic(topic)
         difficulty_id = self._get_or_create_difficulty(difficulty_level)
 
-        self.cursor.execute(
-            """INSERT INTO exercises_info
-               (exercise_name, language_id, topic_id, difficulty_id)
-               VALUES (?, ?, ?, ?)""",
-            (exercise_name, language_id, topic_id, difficulty_id),
-        )
-        exercise_id = self.cursor.lastrowid
+        # Check if an exercise with this lesson_id already exists
+        exercise_id = None
+        if lesson_id:
+            self.cursor.execute(
+                """SELECT id FROM exercises_info
+                   WHERE lesson_id = ? AND exercise_type = ? AND language_id = ? 
+                   AND topic_id = ? AND difficulty_id = ?""",
+                (lesson_id, "pairs", language_id, topic_id, difficulty_id),
+            )
+            result = self.cursor.fetchone()
+            if result:
+                exercise_id = result[0]
+
+        # If no existing exercise found, create a new one
+        if not exercise_id:
+            self.cursor.execute(
+                """INSERT INTO exercises_info
+                   (exercise_name, language_id, topic_id, difficulty_id, exercise_type, lesson_id)
+                   VALUES (?, ?, ?, ?, ?, ?)""",
+                (exercise_name, language_id, topic_id, difficulty_id, "pairs", lesson_id),
+            )
+            exercise_id = self.cursor.lastrowid
 
         self.cursor.execute(
             """INSERT INTO pair_exercises
@@ -629,19 +663,35 @@ class LanguageDB:
         language_2: str,
         language_1_content: str,
         language_2_content: str,
+        lesson_id: str = None,
     ) -> int:
         """Add a translation exercise to the database."""
         language_id = self._get_or_create_language(language)
         topic_id = self._get_or_create_topic(topic)
         difficulty_id = self._get_or_create_difficulty(difficulty_level)
 
-        self.cursor.execute(
-            """INSERT INTO exercises_info
-               (exercise_name, language_id, topic_id, difficulty_id)
-               VALUES (?, ?, ?, ?)""",
-            (exercise_name, language_id, topic_id, difficulty_id),
-        )
-        exercise_id = self.cursor.lastrowid
+        # Check if an exercise with this lesson_id already exists
+        exercise_id = None
+        if lesson_id:
+            self.cursor.execute(
+                """SELECT id FROM exercises_info
+                   WHERE lesson_id = ? AND exercise_type = ? AND language_id = ? 
+                   AND topic_id = ? AND difficulty_id = ?""",
+                (lesson_id, "translation", language_id, topic_id, difficulty_id),
+            )
+            result = self.cursor.fetchone()
+            if result:
+                exercise_id = result[0]
+
+        # If no existing exercise found, create a new one
+        if not exercise_id:
+            self.cursor.execute(
+                """INSERT INTO exercises_info
+                   (exercise_name, language_id, topic_id, difficulty_id, exercise_type, lesson_id)
+                   VALUES (?, ?, ?, ?, ?, ?)""",
+                (exercise_name, language_id, topic_id, difficulty_id, "translation", lesson_id),
+            )
+            exercise_id = self.cursor.lastrowid
 
         self.cursor.execute(
             """INSERT INTO translation_exercises
@@ -703,10 +753,10 @@ class LanguageDB:
     def get_random_pair_exercise(
         self, language: str, difficulty: str, topic: str, limit: int = 10
     ) -> List[Dict]:
-        """Get random pair exercises for given criteria."""
+        """Get random pair exercises for given criteria, grouped by lesson_id."""
+        # First, get random lesson_ids that match the criteria
         self.cursor.execute(
-            """SELECT e.exercise_name, p.language_1, p.language_2,
-                      p.language_1_content, p.language_2_content
+            """SELECT DISTINCT e.lesson_id
                FROM exercises_info e
                JOIN pair_exercises p ON e.id = p.exercise_id
                JOIN topics t ON e.topic_id = t.id
@@ -714,9 +764,210 @@ class LanguageDB:
                WHERE p.language_1 = ? AND p.language_2 = ?
                AND t.topic = ? AND d.difficulty_level = ?
                ORDER BY RANDOM() LIMIT ?""",
-            ("English", language, topic, difficulty, limit),
+            ("English", language, topic, difficulty, (limit + 9) // 10),  # Estimate number of lessons needed
         )
+        lesson_ids = [row["lesson_id"] for row in self.cursor.fetchall() if row["lesson_id"]]
+        
+        # If no lesson_ids with non-null values found, fall back to original random selection
+        if not lesson_ids:
+            self.cursor.execute(
+                """SELECT e.exercise_name, p.language_1, p.language_2,
+                          p.language_1_content, p.language_2_content
+                   FROM exercises_info e
+                   JOIN pair_exercises p ON e.id = p.exercise_id
+                   JOIN topics t ON e.topic_id = t.id
+                   JOIN difficulties d ON e.difficulty_id = d.id
+                   WHERE p.language_1 = ? AND p.language_2 = ?
+                   AND t.topic = ? AND d.difficulty_level = ?
+                   ORDER BY RANDOM() LIMIT ?""",
+                ("English", language, topic, difficulty, limit),
+            )
+            return [dict(row) for row in self.cursor.fetchall()]
+        
+        # Get exercises for the selected lesson_ids
+        placeholders = ','.join(['?'] * len(lesson_ids))
+        query = f"""SELECT e.exercise_name, p.language_1, p.language_2,
+                          p.language_1_content, p.language_2_content
+                   FROM exercises_info e
+                   JOIN pair_exercises p ON e.id = p.exercise_id
+                   JOIN topics t ON e.topic_id = t.id
+                   JOIN difficulties d ON e.difficulty_id = d.id
+                   WHERE p.language_1 = ? AND p.language_2 = ?
+                   AND t.topic = ? AND d.difficulty_level = ?
+                   AND e.lesson_id IN ({placeholders})
+                   ORDER BY e.lesson_id, e.id
+                   LIMIT ?"""
+        
+        params = ["English", language, topic, difficulty] + lesson_ids + [limit]
+        self.cursor.execute(query, params)
         return [dict(row) for row in self.cursor.fetchall()]
+        
+    def get_random_translation_exercise(
+        self, language: str, difficulty: str, topic: str, limit: int = 10
+    ) -> List[Dict]:
+        """Get random translation exercises for given criteria, grouped by lesson_id."""
+        # First, get random lesson_ids that match the criteria
+        self.cursor.execute(
+            """SELECT DISTINCT e.lesson_id
+               FROM exercises_info e
+               JOIN translation_exercises t_ex ON e.id = t_ex.exercise_id
+               JOIN topics t ON e.topic_id = t.id
+               JOIN difficulties d ON e.difficulty_id = d.id
+               WHERE t_ex.language_1 = ? AND t_ex.language_2 = ?
+               AND t.topic = ? AND d.difficulty_level = ?
+               ORDER BY RANDOM() LIMIT ?""",
+            ("English", language, topic, difficulty, (limit + 9) // 10),  # Estimate number of lessons needed
+        )
+        lesson_ids = [row["lesson_id"] for row in self.cursor.fetchall() if row["lesson_id"]]
+        
+        # If no lesson_ids with non-null values found, fall back to original random selection
+        if not lesson_ids:
+            self.cursor.execute(
+                """SELECT e.exercise_name, t_ex.language_1, t_ex.language_2,
+                          t_ex.language_1_content, t_ex.language_2_content
+                   FROM exercises_info e
+                   JOIN translation_exercises t_ex ON e.id = t_ex.exercise_id
+                   JOIN topics t ON e.topic_id = t.id
+                   JOIN difficulties d ON e.difficulty_id = d.id
+                   WHERE t_ex.language_1 = ? AND t_ex.language_2 = ?
+                   AND t.topic = ? AND d.difficulty_level = ?
+                   ORDER BY RANDOM() LIMIT ?""",
+                ("English", language, topic, difficulty, limit),
+            )
+            return [dict(row) for row in self.cursor.fetchall()]
+        
+        # Get exercises for the selected lesson_ids
+        placeholders = ','.join(['?'] * len(lesson_ids))
+        query = f"""SELECT e.exercise_name, t_ex.language_1, t_ex.language_2,
+                          t_ex.language_1_content, t_ex.language_2_content
+                   FROM exercises_info e
+                   JOIN translation_exercises t_ex ON e.id = t_ex.exercise_id
+                   JOIN topics t ON e.topic_id = t.id
+                   JOIN difficulties d ON e.difficulty_id = d.id
+                   WHERE t_ex.language_1 = ? AND t_ex.language_2 = ?
+                   AND t.topic = ? AND d.difficulty_level = ?
+                   AND e.lesson_id IN ({placeholders})
+                   ORDER BY e.lesson_id, e.id
+                   LIMIT ?"""
+        
+        params = ["English", language, topic, difficulty] + lesson_ids + [limit]
+        self.cursor.execute(query, params)
+        return [dict(row) for row in self.cursor.fetchall()]
+        
+    def get_random_conversation_exercise(
+        self, language: str, difficulty: str, topic: str, limit: int = 5
+    ) -> List[Dict]:
+        """Get random conversation exercises for given criteria, grouped by lesson_id."""
+        # First, get random lesson_ids that match the criteria
+        self.cursor.execute(
+            """SELECT DISTINCT e.lesson_id
+               FROM exercises_info e
+               JOIN conversation_exercises c ON e.id = c.exercise_id
+               JOIN topics t ON e.topic_id = t.id
+               JOIN difficulties d ON e.difficulty_id = d.id
+               JOIN languages l ON e.language_id = l.id
+               WHERE l.language = ? AND t.topic = ? AND d.difficulty_level = ?
+               ORDER BY RANDOM() LIMIT ?""",
+            (language, topic, difficulty, (limit + 4) // 5),  # Estimate number of lessons needed
+        )
+        lesson_ids = [row["lesson_id"] for row in self.cursor.fetchall() if row["lesson_id"]]
+        
+        # If no lesson_ids with non-null values found, fall back to original random selection
+        if not lesson_ids:
+            # Get exercise IDs first
+            self.cursor.execute(
+                """SELECT DISTINCT e.id as exercise_id, e.exercise_name
+                   FROM exercises_info e
+                   JOIN conversation_exercises c ON e.id = c.exercise_id
+                   JOIN topics t ON e.topic_id = t.id
+                   JOIN difficulties d ON e.difficulty_id = d.id
+                   JOIN languages l ON e.language_id = l.id
+                   WHERE l.language = ? AND t.topic = ? AND d.difficulty_level = ?
+                   ORDER BY RANDOM() LIMIT ?""",
+                (language, topic, difficulty, limit),
+            )
+            exercise_data = [dict(row) for row in self.cursor.fetchall()]
+            
+            # For each exercise, get the conversation messages and summary
+            result = []
+            for ex in exercise_data:
+                # Get conversation messages
+                self.cursor.execute(
+                    """SELECT speaker, message
+                       FROM conversation_exercises
+                       WHERE exercise_id = ?
+                       ORDER BY conversation_order""",
+                    (ex["exercise_id"],),
+                )
+                conversation = [dict(row) for row in self.cursor.fetchall()]
+                
+                # Get summary
+                self.cursor.execute(
+                    """SELECT summary
+                       FROM conversation_summaries
+                       WHERE exercise_id = ?""",
+                    (ex["exercise_id"],),
+                )
+                summary_row = self.cursor.fetchone()
+                summary = summary_row["summary"] if summary_row else ""
+                
+                result.append({
+                    "exercise_name": ex["exercise_name"],
+                    "conversation": conversation,
+                    "summary": summary
+                })
+                
+            return result
+        
+        # Get exercises for the selected lesson_ids
+        placeholders = ','.join(['?'] * len(lesson_ids))
+        
+        # Get exercise IDs first
+        query = f"""SELECT DISTINCT e.id as exercise_id, e.exercise_name
+                   FROM exercises_info e
+                   JOIN conversation_exercises c ON e.id = c.exercise_id
+                   JOIN topics t ON e.topic_id = t.id
+                   JOIN difficulties d ON e.difficulty_id = d.id
+                   JOIN languages l ON e.language_id = l.id
+                   WHERE l.language = ? AND t.topic = ? AND d.difficulty_level = ?
+                   AND e.lesson_id IN ({placeholders})
+                   ORDER BY e.lesson_id, e.id
+                   LIMIT ?"""
+        
+        params = [language, topic, difficulty] + lesson_ids + [limit]
+        self.cursor.execute(query, params)
+        exercise_data = [dict(row) for row in self.cursor.fetchall()]
+        
+        # For each exercise, get the conversation messages and summary
+        result = []
+        for ex in exercise_data:
+            # Get conversation messages
+            self.cursor.execute(
+                """SELECT speaker, message
+                   FROM conversation_exercises
+                   WHERE exercise_id = ?
+                   ORDER BY conversation_order""",
+                (ex["exercise_id"],),
+            )
+            conversation = [dict(row) for row in self.cursor.fetchall()]
+            
+            # Get summary
+            self.cursor.execute(
+                """SELECT summary
+                   FROM conversation_summaries
+                   WHERE exercise_id = ?""",
+                (ex["exercise_id"],),
+            )
+            summary_row = self.cursor.fetchone()
+            summary = summary_row["summary"] if summary_row else ""
+            
+            result.append({
+                "exercise_name": ex["exercise_name"],
+                "conversation": conversation,
+                "summary": summary
+            })
+            
+        return result
 
     def store_pronunciation_audio(
         self,

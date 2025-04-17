@@ -7,7 +7,7 @@ from .database_manager import LanguageDB
 
 
 class DatabasePopulator:
-    def __init__(self, db_path: str = "./languageLearningDatabase.db"):
+    def __init__(self, db_path: str = "../languageLearningDatabase.db"):
         self.db_path = Path(db_path)
         self.content_dir = Path("content")
 

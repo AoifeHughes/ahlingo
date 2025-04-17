@@ -135,6 +135,7 @@ def process_response(
                         difficulty_level=level,
                         conversations=cleaned_conversations,
                         summary=clean_text(exercise["conversation_summary"]),
+                        lesson_id=lesson_id,
                     )
                 elif lesson_kind == "pairs":
                     db.add_pair_exercise(
@@ -146,6 +147,7 @@ def process_response(
                         language_2=language,
                         language_1_content=clean_text(exercise["English"]),
                         language_2_content=clean_text(exercise[language]),
+                        lesson_id=lesson_id,
                     )
                 elif lesson_kind == "translations":
                     db.add_translation_exercise(
@@ -157,6 +159,7 @@ def process_response(
                         language_2=language,
                         language_1_content=clean_text(exercise["English"]),
                         language_2_content=clean_text(exercise[language]),
+                        lesson_id=lesson_id,
                     )
             except Exception as e:
                 print(
@@ -320,7 +323,7 @@ async def process_combination(language: str, level: str, topic: str, db: Languag
         )
 
 
-async def populate_database_parallel(max_concurrent: int = 4):
+async def populate_database_parallel(max_concurrent: int = 4, db_loc: str = "../database/languageLearningDatabase.db"):
     """Main function to generate lessons and populate the database with parallel processing."""
     # Read configuration files
     with open("generation_data/topics.txt", "r") as file:
@@ -336,7 +339,7 @@ async def populate_database_parallel(max_concurrent: int = 4):
     print("Topics:", ", ".join(topics))
     print(f"Max concurrent requests: {max_concurrent}")
 
-    db = LanguageDB("./database/languageLearningDatabase.db")
+    db = LanguageDB(db_loc)
 
     try:
         # Create all combinations

@@ -1,6 +1,7 @@
 {
     "version": "0.2.0",
     "configurations": [
+        
         {
             "name": "Python Debugger: Current File",
             "type": "debugpy",
@@ -8,7 +9,14 @@
             "program": "main.py",
             "console": "integratedTerminal",
             "args": " "
-
+        },
+        {
+            "name": "Python: Create Exercise Database",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "create_exercise_database.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}/content"
         }
     ]
 }
