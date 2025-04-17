@@ -24,5 +24,5 @@ def initialize_default_settings():
 
 
 if __name__ == "__main__":
-    populate_database(max_concurrent=1)
+    populate_database(max_concurrent=4)
     initialize_default_settings()

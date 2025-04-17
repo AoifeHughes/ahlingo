@@ -2,7 +2,6 @@
 from typing import Optional
 from .database_manager import LanguageDB
 
-
 class DatabaseManager:
     """
     Singleton class for managing database connections.
@@ -21,7 +20,7 @@ class DatabaseManager:
             cls._instance._db = None
         return cls._instance
 
-    def get_db(self, db_path: str = "./database/languageLearningDatabase.db") -> LanguageDB:
+    def get_db(self, db_path: str = "database/languageLearningDatabase.db") -> LanguageDB:
         """
         Get the database instance. Initialize it if it doesn't exist.
         
