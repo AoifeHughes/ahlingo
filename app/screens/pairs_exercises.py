@@ -32,10 +32,10 @@ KV_PAIRS_EXERCISES = '''
         font_style: "H6"
 
 <PairButton>:
-    size_hint: None, None
-    size: "200dp", "60dp"
-    pos_hint: {"center_x": 0.5}
-    md_bg_color: get_color_from_hex("#E0E0E0") if not root.selected and not root.matched else get_color_from_hex("#81C784") if root.matched else get_color_from_hex("#64B5F6")
+    size_hint: 1, None
+    height: "60dp"
+    size_hint_min_y: "60dp"
+    md_bg_color: get_color_from_hex("#2196F3") if not root.selected and not root.matched else get_color_from_hex("#81C784") if root.matched else get_color_from_hex("#E0E0E0")
     on_release: root.on_button_press()
     disabled: root.matched
     line_color: get_color_from_hex("#CCCCCC")
@@ -44,6 +44,7 @@ KV_PAIRS_EXERCISES = '''
     valign: "center"
     text_size: self.width - dp(16), None
     padding: [8, 8, 8, 8]
+    text_halign: "center"
 
 <PairsExercisesScreen>:
     MDBoxLayout:
@@ -67,6 +68,7 @@ KV_PAIRS_EXERCISES = '''
             elevation: 0
             pos_hint: {"top": 1}
             left_action_items: [["arrow-left", lambda x: root.go_back()]]
+            right_action_items: [["refresh", lambda x: root.refresh_exercise()]] if root.current_topic != "" else []
             md_bg_color: get_color_from_hex("#1976D2")
             specific_text_color: get_color_from_hex("#FFFFFF")
         
@@ -274,6 +276,7 @@ class PairsExercisesScreen(MDScreen):
         random.shuffle(left_items)
         random.shuffle(right_items)
         
+
         # Add items to columns
         for text, pair_id in left_items:
             btn = PairButton(
@@ -353,3 +356,15 @@ class PairsExercisesScreen(MDScreen):
             # If in topic selection, go back to previous screen
             app = MDApp.get_running_app()
             app.go_back()
+            
+    def refresh_exercise(self):
+        """Refresh the current exercise with a new random one for the same topic."""
+        if self.current_topic:
+            # Reset stats
+            self.correct_count = 0
+            self.incorrect_count = 0
+            self.selected_left = None
+            self.selected_right = None
+            
+            # Load new pairs for the same topic
+            self.load_pairs()
