@@ -1,0 +1,84 @@
+{
+  "name": "@ahlingo/desktop",
+  "version": "1.0.0",
+  "description": "Electron desktop app for AHLingo language learning",
+  "main": "public/electron.js",
+  "homepage": "./",
+  "private": true,
+  "scripts": {
+    "start": "react-scripts start",
+    "dev": "concurrently \"npm run dev:react\" \"npm run dev:electron\"",
+    "dev:react": "cross-env BROWSER=none react-scripts start",
+    "dev:electron": "wait-on http://localhost:3000 && electron public/electron.js",
+    "build": "npm run build:react && npm run build:electron",
+    "build:react": "react-scripts build",
+    "build:electron": "tsc",
+    "test": "react-scripts test",
+    "lint": "eslint src/**/*.{js,jsx,ts,tsx}",
+    "clean": "rm -rf build dist",
+    "pack": "electron-builder --dir",
+    "dist": "npm run build && electron-builder",
+    "dist:mac": "npm run build && electron-builder --mac",
+    "dist:win": "npm run build && electron-builder --win",
+    "dist:linux": "npm run build && electron-builder --linux"
+  },
+  "dependencies": {
+    "@ahlingo/core": "*",
+    "@emotion/react": "^11.11.0",
+    "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.14.0",
+    "@mui/material": "^5.14.0",
+    "@reduxjs/toolkit": "^1.9.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-redux": "^8.1.0",
+    "react-router-dom": "^6.0.0",
+    "react-refresh": "^0.14.2",
+    "web-vitals": "^2.1.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "concurrently": "^8.2.0",
+    "cross-env": "^7.0.3",
+    "electron": "^26.0.0",
+    "electron-builder": "^24.6.0",
+    "electron-is-dev": "^2.0.0",
+    "react-scripts": "5.0.1",
+    "typescript": "^4.9.5",
+    "wait-on": "^7.0.0"
+  },
+  "build": {
+    "appId": "com.ahlingo.desktop",
+    "productName": "AHLingo",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "build/**/*",
+      "dist/**/*",
+      "node_modules/**/*"
+    ],
+    "mac": {
+      "category": "public.app-category.education"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "linux": {
+      "target": "AppImage"
+    }
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

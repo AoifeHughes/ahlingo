@@ -1,33 +1,197 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# dependencies
-/node_modules
+# Dependencies
+node_modules/
+packages/*/node_modules/
 /.pnp
 .pnp.js
 /app-js/node_modules
-# testing
-/coverage
 
-# production
+# Production builds
 /build
+/dist
+packages/*/build/
+packages/*/dist/
+packages/core/dist/
+packages/mobile/android/app/build/
+packages/mobile/ios/build/
+packages/desktop/build/
+packages/desktop/release/
 
-# misc
-.DS_Store
+# Development
+.env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
+packages/*/.env
+packages/*/.env.local
 
+# Testing
+/coverage
+packages/*/coverage/
+
+# React Native
+packages/mobile/android/.gradle/
+packages/mobile/android/app/build/
+packages/mobile/ios/build/
+packages/mobile/ios/Pods/
+packages/mobile/ios/*.xcworkspace/xcuserdata/
+packages/mobile/ios/*.xcodeproj/xcuserdata/
+packages/mobile/metro.config.js.bak
+
+# Electron
+packages/desktop/dist/
+packages/desktop/release/
+packages/desktop/app/
+packages/desktop/*.dmg
+packages/desktop/*.exe
+packages/desktop/*.deb
+packages/desktop/*.rpm
+packages/desktop/*.tar.gz
+
+# Logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-/dist
-/llama
+lerna-debug.log*
 *.log
-*prompt*.txt
 
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# nyc test coverage
+.nyc_output
+
+# Dependency directories
+jspm_packages/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Microbundle cache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# parcel-bundler cache (https://parceljs.org/)
+.cache
+.parcel-cache
+
+# Next.js build output
+.next
+
+# Nuxt.js build / generate output
+.nuxt
+
+# Gatsby files
+.cache/
+public
+
+# Storybook build outputs
+.out
+.storybook-out
+
+# Temporary folders
+tmp/
+temp/
+
+# Editor directories and files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Python (original project files)
 *.pyc
+__pycache__/
+*.egg-info/
+venv/
+env/
+
+# Original project specific
+database/languageLearningDatabase.db
 *settings.json
 *broken*
-*.egg-info
-database/languageLearningDatabase.db
+*prompt*.txt
+/llama
+
+# Monorepo specific
+.turbo/
+.rush/
+lerna-debug.log
+.lerna/
+
+# Mobile platform specific
+packages/mobile/android/app/src/main/assets/index.android.bundle
+packages/mobile/android/app/src/main/res/drawable-*
+packages/mobile/android/app/src/main/res/raw/
+packages/mobile/ios/main.jsbundle
+packages/mobile/ios/main.jsbundle.map
+
+# React Native debugging
+.flipper/
+flipper-plugin-*/
+
+# Xcode
+packages/mobile/ios/build/
+packages/mobile/ios/DerivedData/
+packages/mobile/ios/*.hmap
+packages/mobile/ios/*.ipa
+packages/mobile/ios/*.dSYM.zip
+packages/mobile/ios/*.dSYM
+
+# Android
+packages/mobile/android/.gradle
+packages/mobile/android/captures/
+packages/mobile/android/gradlew
+packages/mobile/android/gradlew.bat
+packages/mobile/android/local.properties
+packages/mobile/android/**/build/
+
+# Bundle artifacts
+*.jsbundle
+
+# CocoaPods
+packages/mobile/ios/Pods/
+
+# Expo
+.expo/
+dist/
+web-build/
+
+# Temporary React development files
+packages/desktop/node_modules/react-refresh/index.js

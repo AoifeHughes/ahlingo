@@ -1,0 +1,45 @@
+{
+  "name": "ahlingo-language-learning",
+  "version": "1.0.0",
+  "description": "Language learning application with React Native mobile and Electron desktop apps",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "dev": "concurrently \"npm run dev:core\" \"npm run dev:mobile\" \"npm run dev:desktop\"",
+    "dev:core": "npm run dev --workspace=packages/core",
+    "dev:mobile": "npm run dev --workspace=packages/mobile",
+    "dev:desktop": "npm run dev --workspace=packages/desktop",
+    "test": "npm run test --workspaces",
+    "lint": "npm run lint --workspaces",
+    "clean": "npm run clean --workspaces && rm -rf node_modules",
+    "install:all": "npm install",
+    "reset": "npm run clean && npm run install:all"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "concurrently": "^8.2.0",
+    "typescript": "^5.0.0",
+    "eslint": "^8.0.0",
+    "prettier": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "keywords": [
+    "language-learning",
+    "react-native",
+    "electron",
+    "education",
+    "multilingual"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/your-username/ahlingo-language-learning.git"
+  },
+  "author": "AHLingo Team"
+}

@@ -1,0 +1,12 @@
+node_modules
+dist
+build
+coverage
+*.log
+.git
+.DS_Store
+packages/mobile/android
+packages/mobile/ios
+*.lock
+package-lock.json
+yarn.lock
