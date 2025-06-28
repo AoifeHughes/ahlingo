@@ -127,7 +127,7 @@ export interface PairGameState {
   pairs: PairExercise[];
   selectedLeft?: number;
   selectedRight?: number;
-  matchedPairs: Set<number>;
+  matchedPairs: number[];
   score: {
     correct: number;
     incorrect: number;

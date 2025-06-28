@@ -47,7 +47,7 @@ export class PairsGameLogic {
       pairs: pairExercises,
       selectedLeft: undefined,
       selectedRight: undefined,
-      matchedPairs: new Set(),
+      matchedPairs: [],
       score: {
         correct: 0,
         incorrect: 0,
@@ -95,7 +95,9 @@ export class PairsGameLogic {
       if (newState.selectedLeft === newState.selectedRight) {
         // Match found!
         isMatch = true;
-        newState.matchedPairs.add(pairId);
+        if (!newState.matchedPairs.includes(pairId)) {
+          newState.matchedPairs.push(pairId);
+        }
         newState.score.correct += 1;
         newState.selectedLeft = undefined;
         newState.selectedRight = undefined;
@@ -125,7 +127,7 @@ export class PairsGameLogic {
    * Check if the game is completed
    */
   static isGameComplete(gameState: PairGameState): boolean {
-    return gameState.matchedPairs.size === gameState.pairs.length;
+    return gameState.matchedPairs.length === gameState.pairs.length;
   }
 
   /**
@@ -133,7 +135,7 @@ export class PairsGameLogic {
    */
   static getGameProgress(gameState: PairGameState): number {
     if (gameState.pairs.length === 0) return 0;
-    return (gameState.matchedPairs.size / gameState.pairs.length) * 100;
+    return (gameState.matchedPairs.length / gameState.pairs.length) * 100;
   }
 
   /**
@@ -157,7 +159,7 @@ export class PairsGameLogic {
       pairs: newPairs || gameState.pairs,
       selectedLeft: undefined,
       selectedRight: undefined,
-      matchedPairs: new Set(),
+      matchedPairs: [],
       score: {
         correct: 0,
         incorrect: 0,
@@ -166,6 +168,17 @@ export class PairsGameLogic {
       isLoading: false,
       error: undefined,
     };
+  }
+
+  /**
+   * Check if two selected pairs match
+   */
+  static checkMatch(
+    leftId: number,
+    rightId: number,
+    pairs: PairExercise[]
+  ): boolean {
+    return leftId === rightId;
   }
 
   /**

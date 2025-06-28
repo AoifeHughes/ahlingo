@@ -18,7 +18,7 @@ const initialState: MobileGameState = {
   pairs: [],
   selectedLeft: undefined,
   selectedRight: undefined,
-  matchedPairs: new Set(),
+  matchedPairs: [],
   score: {
     correct: 0,
     incorrect: 0,
@@ -56,7 +56,7 @@ const mobileGameSlice = createSlice({
       const { pairId, isLeftSide } = action.payload;
       
       // Don't allow selection of already matched pairs
-      if (state.matchedPairs.has(pairId)) return;
+      if (state.matchedPairs.includes(pairId)) return;
       
       const currentGameState: PairGameState = {
         pairs: state.pairs,
@@ -85,13 +85,13 @@ const mobileGameSlice = createSlice({
       state.leftPairs = state.leftPairs.map(pair => ({
         ...pair,
         leftSelected: pair.id === state.selectedLeft,
-        matched: state.matchedPairs.has(pair.id),
+        matched: state.matchedPairs.includes(pair.id),
       }));
       
       state.rightPairs = state.rightPairs.map(pair => ({
         ...pair,
         rightSelected: pair.id === state.selectedRight,
-        matched: state.matchedPairs.has(pair.id),
+        matched: state.matchedPairs.includes(pair.id),
       }));
       
       if (shouldDelay) {

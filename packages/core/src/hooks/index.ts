@@ -1,0 +1,1 @@
+export { usePairsGame } from './usePairsGame';

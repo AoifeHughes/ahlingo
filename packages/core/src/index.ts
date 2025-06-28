@@ -21,3 +21,6 @@ export * from './store';
 
 // Export theme
 export * from './theme';
+
+// Export hooks
+export * from './hooks';

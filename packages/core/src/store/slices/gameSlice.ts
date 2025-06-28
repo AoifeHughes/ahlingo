@@ -10,7 +10,7 @@ const initialState: CoreGameState = {
   pairs: [],
   selectedLeft: undefined,
   selectedRight: undefined,
-  matchedPairs: new Set(),
+  matchedPairs: [],
   score: {
     correct: 0,
     incorrect: 0,
@@ -33,7 +33,7 @@ const gameSlice = createSlice({
       const { pairId, isLeftSide } = action.payload;
       
       // Don't allow selection of already matched pairs
-      if (state.matchedPairs.has(pairId)) return;
+      if (state.matchedPairs.includes(pairId)) return;
       
       const currentGameState: PairGameState = {
         pairs: state.pairs,

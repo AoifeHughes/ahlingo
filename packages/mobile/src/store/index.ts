@@ -24,7 +24,6 @@ export const store = configureStore({
     getDefaultMiddleware({
       serializableCheck: {
         ignoredActions: ['persist/PERSIST'],
-        ignoredPaths: ['game.matchedPairs'], // Set is not serializable
       },
     }),
   devTools: __DEV__,
