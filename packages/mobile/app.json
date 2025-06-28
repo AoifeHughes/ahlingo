@@ -1,31 +1,4 @@
 {
-  "name": "AHLingo",
-  "displayName": "AHLingo - Language Learning",
-  "expo": {
-    "name": "AHLingo",
-    "slug": "ahlingo-mobile",
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#2196F3"
-    },
-    "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.ahlingo.mobile"
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#2196F3"
-      },
-      "package": "com.ahlingo.mobile"
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    }
-  }
+  "name": "mobile",
+  "displayName": "mobile"
 }

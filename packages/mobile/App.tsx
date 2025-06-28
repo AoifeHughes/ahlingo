@@ -1,31 +1,28 @@
 /**
- * AHLingo Mobile App
- * React Native Language Learning Application
+ * Sample React Native App
+ * https://github.com/facebook/react-native
+ *
+ * @format
  */
 
-import React from 'react';
-import {StatusBar} from 'react-native';
-import {NavigationContainer} from '@react-navigation/native';
-import {Provider} from 'react-redux';
-import {store} from './src/store';
-import {AppNavigator} from './src/navigation/AppNavigator';
-import {ThemeProvider} from './src/components/ThemeProvider';
+import { NewAppScreen } from '@react-native/new-app-screen';
+import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
 
-function App(): JSX.Element {
+function App() {
+  const isDarkMode = useColorScheme() === 'dark';
+
   return (
-    <Provider store={store}>
-      <ThemeProvider>
-        <NavigationContainer>
-          <StatusBar 
-            barStyle="light-content" 
-            backgroundColor="#1976D2" 
-            translucent={false}
-          />
-          <AppNavigator />
-        </NavigationContainer>
-      </ThemeProvider>
-    </Provider>
+    <View style={styles.container}>
+      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
+      <NewAppScreen templateFileName="App.tsx" />
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+});
 
 export default App;

@@ -1,26 +1,11 @@
-const {getDefaultConfig, mergeConfig} = require('@react-native/metro-config');
-const path = require('path');
+const { getDefaultConfig, mergeConfig } = require('@react-native/metro-config');
 
 /**
  * Metro configuration
- * https://facebook.github.io/metro/docs/configuration
+ * https://reactnative.dev/docs/metro
+ *
+ * @type {import('@react-native/metro-config').MetroConfig}
  */
-
-const config = {
-  watchFolders: [
-    // Include the core package in the watch folders for monorepo support
-    path.resolve(__dirname, '../core'),
-    path.resolve(__dirname, '../..'),
-  ],
-  resolver: {
-    alias: {
-      '@ahlingo/core': path.resolve(__dirname, '../core/src'),
-    },
-    nodeModulesPaths: [
-      path.resolve(__dirname, '../../node_modules'),
-      path.resolve(__dirname, 'node_modules'),
-    ],
-  },
-};
+const config = {};
 
 module.exports = mergeConfig(getDefaultConfig(__dirname), config);
