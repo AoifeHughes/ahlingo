@@ -35,6 +35,31 @@ export const DatabaseDebugInfo: React.FC = () => {
       if (!info.sqliteReady) {
         const connectionTest = await sqliteManager.testConnection();
         info.connectionTest = connectionTest;
+      } else {
+        // Get detailed database information
+        const tablesResult = await sqliteManager.getAllTables();
+        if (tablesResult.success) {
+          info.tables = tablesResult.data;
+          
+          // Get table details for important tables
+          const tableDetails = {};
+          for (const table of ['topics', 'exercises_info', 'pair_exercises', 'conversation_exercises', 'translation_exercises']) {
+            const countResult = await sqliteManager.getTableRowCount(table);
+            if (countResult.success) {
+              tableDetails[table] = {
+                rowCount: countResult.data[0].count,
+                exists: true
+              };
+            } else {
+              tableDetails[table] = {
+                rowCount: 0,
+                exists: false,
+                error: countResult.error
+              };
+            }
+          }
+          info.tableDetails = tableDetails;
+        }
       }
     } catch (error: any) {
       info.sqliteManagerError = error.message;
@@ -131,6 +156,35 @@ export const DatabaseDebugInfo: React.FC = () => {
           )}
         </View>
 
+        {/* Database Tables */}
+        {debugInfo.tables && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Database Tables</Text>
+            {debugInfo.tables.map((table: any, index: number) => (
+              <Text key={index} style={styles.infoText}>• {table.name}</Text>
+            ))}
+          </View>
+        )}
+
+        {/* Table Details */}
+        {debugInfo.tableDetails && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Table Details</Text>
+            {Object.entries(debugInfo.tableDetails).map(([tableName, details]: [string, any]) => (
+              <View key={tableName}>
+                <Text style={styles.infoText}>
+                  {tableName}: <Text style={{color: getStatusColor(details.exists)}}>
+                    {details.exists ? `${details.rowCount} rows` : 'NOT FOUND'}
+                  </Text>
+                </Text>
+                {details.error && (
+                  <Text style={styles.errorText}>  Error: {details.error}</Text>
+                )}
+              </View>
+            ))}
+          </View>
+        )}
+
         {/* Recommendations */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Recommendations</Text>
@@ -145,6 +199,12 @@ export const DatabaseDebugInfo: React.FC = () => {
           )}
           {!debugInfo.sqliteReady && (
             <Text style={styles.warningText}>• SQLite module not ready - check native module linking</Text>
+          )}
+          {debugInfo.tableDetails && !debugInfo.tableDetails.pair_exercises?.exists && (
+            <Text style={styles.warningText}>• pair_exercises table missing - check database schema</Text>
+          )}
+          {debugInfo.tableDetails && !debugInfo.tableDetails.exercises_info?.exists && (
+            <Text style={styles.warningText}>• exercises_info table missing - check database schema</Text>
           )}
         </View>
       </ScrollView>

@@ -58,7 +58,7 @@ function App(): JSX.Element {
       
       // Step 3: Initialize data adapters now that database is ready
       console.log('Step 3: Initializing data adapters...');
-      initializeDataAdapters();
+      await initializeDataAdapters();
       
       // Step 4: Get database info for logging
       const dbInfo = await DatabaseValidator.getDatabaseInfo();

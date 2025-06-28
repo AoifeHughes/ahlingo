@@ -44,10 +44,11 @@ export class SQLiteManager {
       
     } catch (error: any) {
       console.error('Failed to load SQLite module:', error);
-      this.initializationError = `SQLite module load failed: ${error.message}`;
+      const errorMessage = error?.message || error?.toString() || 'Unknown module error';
+      this.initializationError = `SQLite module load failed: ${errorMessage}`;
       
       // Check for specific NativeEventEmitter error
-      if (error.message && error.message.includes('NativeEventEmitter')) {
+      if (errorMessage.includes('NativeEventEmitter')) {
         this.initializationError = 'SQLite native module linking issue. Please run "cd ios && pod install" and rebuild the app.';
       }
       
@@ -103,7 +104,7 @@ export class SQLiteManager {
     } catch (error: any) {
       console.error('SQLite database initialization failed:', error);
       
-      const errorMessage = error.message || 'Unknown database error';
+      const errorMessage = error?.message || error?.toString() || 'Unknown database error';
       this.initializationError = errorMessage;
       
       // Determine if this is a native module error
@@ -148,6 +149,16 @@ export class SQLiteManager {
               resolve(rows);
             },
             (tx: any, error: any) => {
+              if (__DEV__) {
+                console.error('SQL execution error details:', {
+                  query: query,
+                  params: params,
+                  message: error?.message,
+                  code: error?.code,
+                  details: error?.details,
+                  error: error
+                });
+              }
               reject(error);
               return false;
             }
@@ -162,9 +173,10 @@ export class SQLiteManager {
       
     } catch (error: any) {
       console.error('Query execution failed:', error);
+      const errorMessage = error?.message || error?.toString() || 'Unknown database error';
       return { 
         success: false, 
-        error: `Query failed: ${error.message}` 
+        error: `Query failed: ${errorMessage}` 
       };
     }
   }
@@ -199,9 +211,10 @@ export class SQLiteManager {
       
     } catch (error: any) {
       console.error('SQLite connection test failed:', error);
+      const errorMessage = error?.message || error?.toString() || 'Unknown connection error';
       return { 
         success: false, 
-        error: `Connection test failed: ${error.message}` 
+        error: `Connection test failed: ${errorMessage}` 
       };
     }
   }
@@ -225,5 +238,75 @@ export class SQLiteManager {
 
   isReady(): boolean {
     return this.isInitialized && this.db !== null && this.initializationError === null;
+  }
+
+  // Database debugging helper functions
+  async getAllTables(): Promise<SQLiteResult> {
+    try {
+      const result = await this.executeQuery(
+        "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name"
+      );
+      return result;
+    } catch (error: any) {
+      const errorMessage = error?.message || error?.toString() || 'Unknown error';
+      return {
+        success: false,
+        error: `Failed to get tables: ${errorMessage}`
+      };
+    }
+  }
+
+  async getTableSchema(tableName: string): Promise<SQLiteResult> {
+    try {
+      const result = await this.executeQuery(`PRAGMA table_info(${tableName})`);
+      return result;
+    } catch (error: any) {
+      const errorMessage = error?.message || error?.toString() || 'Unknown error';
+      return {
+        success: false,
+        error: `Failed to get schema for ${tableName}: ${errorMessage}`
+      };
+    }
+  }
+
+  async getTableRowCount(tableName: string): Promise<SQLiteResult> {
+    try {
+      const result = await this.executeQuery(`SELECT COUNT(*) as count FROM ${tableName}`);
+      return result;
+    } catch (error: any) {
+      const errorMessage = error?.message || error?.toString() || 'Unknown error';
+      return {
+        success: false,
+        error: `Failed to count rows in ${tableName}: ${errorMessage}`
+      };
+    }
+  }
+
+  async getSampleData(tableName: string, limit: number = 5): Promise<SQLiteResult> {
+    try {
+      const result = await this.executeQuery(`SELECT * FROM ${tableName} LIMIT ${limit}`);
+      return result;
+    } catch (error: any) {
+      const errorMessage = error?.message || error?.toString() || 'Unknown error';
+      return {
+        success: false,
+        error: `Failed to get sample data from ${tableName}: ${errorMessage}`
+      };
+    }
+  }
+
+  async testQuery(query: string, params: any[] = []): Promise<SQLiteResult> {
+    if (__DEV__) {
+      console.log('Testing query:', query);
+      console.log('With params:', params);
+    }
+    
+    const result = await this.executeQuery(query, params);
+    
+    if (__DEV__) {
+      console.log('Test query result:', result);
+    }
+    
+    return result;
   }
 }

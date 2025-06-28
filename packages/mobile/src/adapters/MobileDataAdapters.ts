@@ -31,12 +31,7 @@ export class MobileExerciseDataAdapter implements ExerciseDataAdapter {
         
         // Check if database needs initialization
         if (result.error?.includes('not initialized')) {
-          // Try to initialize database first
-          const initResult = await this.sqliteManager.initializeDatabase();
-          if (initResult.success) {
-            // Retry the query after initialization
-            return this.loadTopics();
-          }
+          throw new Error('Database not properly initialized. Please restart the app.');
         }
         
         if (result.isNativeModuleError) {
@@ -67,10 +62,63 @@ export class MobileExerciseDataAdapter implements ExerciseDataAdapter {
       if (__DEV__) {
         console.log('Loading pair exercises for topic', topicId);
       }
-      
+
+      // Progressive testing: First check what tables exist
+      if (__DEV__) {
+        console.log('Debug: Checking database tables...');
+        const tablesResult = await this.sqliteManager.getAllTables();
+        if (tablesResult.success) {
+          console.log('Available tables:', tablesResult.data?.map(t => t.name));
+        } else {
+          console.error('Could not get tables:', tablesResult.error);
+        }
+      }
+
+      // Test if pair_exercises table exists
+      const pairExercisesCount = await this.sqliteManager.getTableRowCount('pair_exercises');
+      if (!pairExercisesCount.success) {
+        console.error('pair_exercises table issue:', pairExercisesCount.error);
+        // Try alternative table names
+        const altResult = await this.sqliteManager.testQuery("SELECT name FROM sqlite_master WHERE type='table' AND name LIKE '%pair%'");
+        console.log('Tables containing "pair":', altResult.data);
+        throw new Error(`pair_exercises table not found or inaccessible: ${pairExercisesCount.error}`);
+      }
+
+      if (__DEV__) {
+        console.log('pair_exercises table has', pairExercisesCount.data?.[0]?.count, 'rows');
+      }
+
+      // Test if exercises_info table exists (corrected table name)
+      const exercisesCount = await this.sqliteManager.getTableRowCount('exercises_info');
+      if (!exercisesCount.success) {
+        console.error('exercises_info table issue:', exercisesCount.error);
+        throw new Error(`exercises_info table not found or inaccessible: ${exercisesCount.error}`);
+      }
+
+      if (__DEV__) {
+        console.log('exercises_info table has', exercisesCount.data?.[0]?.count, 'rows');
+      }
+
+      // Test simple query first
+      const simpleTest = await this.sqliteManager.testQuery('SELECT * FROM pair_exercises LIMIT 1');
+      if (!simpleTest.success) {
+        throw new Error(`Cannot query pair_exercises table: ${simpleTest.error}`);
+      }
+
+      // Test exercises_info table for the specific topic
+      const topicExercises = await this.sqliteManager.testQuery('SELECT * FROM exercises_info WHERE topic_id = ?', [topicId]);
+      if (!topicExercises.success) {
+        throw new Error(`Cannot query exercises_info for topic ${topicId}: ${topicExercises.error}`);
+      }
+
+      if (__DEV__) {
+        console.log(`Found ${topicExercises.data?.length} exercises_info records for topic ${topicId}`);
+      }
+
+      // Now try the full JOIN query with correct table name
       const query = `
         SELECT pe.* FROM pair_exercises pe
-        JOIN exercises e ON pe.exercise_id = e.id
+        JOIN exercises_info e ON pe.exercise_id = e.id
         WHERE e.topic_id = ?
         ORDER BY pe.id
       `;
@@ -78,6 +126,11 @@ export class MobileExerciseDataAdapter implements ExerciseDataAdapter {
       
       if (!result.success) {
         console.error('Failed to load pair exercises:', result.error);
+        
+        // Check if database needs initialization
+        if (result.error?.includes('not initialized')) {
+          throw new Error('Database not properly initialized. Please restart the app.');
+        }
         
         if (result.isNativeModuleError) {
           throw new Error(`Database connection failed: ${result.error}. This appears to be a native module issue.`);
@@ -114,7 +167,7 @@ export class MobileExerciseDataAdapter implements ExerciseDataAdapter {
       
       const query = `
         SELECT ce.* FROM conversation_exercises ce
-        JOIN exercises e ON ce.exercise_id = e.id
+        JOIN exercises_info e ON ce.exercise_id = e.id
         WHERE e.topic_id = ?
         ORDER BY ce.conversation_order
       `;
@@ -122,6 +175,12 @@ export class MobileExerciseDataAdapter implements ExerciseDataAdapter {
       
       if (!result.success) {
         console.error('Failed to load conversation exercises:', result.error);
+        
+        // Check if database needs initialization
+        if (result.error?.includes('not initialized')) {
+          throw new Error('Database not properly initialized. Please restart the app.');
+        }
+        
         throw new Error(`Database unavailable: Unable to load conversation exercises. ${result.error}`);
       }
 
@@ -152,7 +211,7 @@ export class MobileExerciseDataAdapter implements ExerciseDataAdapter {
       
       const query = `
         SELECT te.* FROM translation_exercises te
-        JOIN exercises e ON te.exercise_id = e.id
+        JOIN exercises_info e ON te.exercise_id = e.id
         WHERE e.topic_id = ?
         ORDER BY te.id
       `;
@@ -160,6 +219,12 @@ export class MobileExerciseDataAdapter implements ExerciseDataAdapter {
       
       if (!result.success) {
         console.error('Failed to load translation exercises:', result.error);
+        
+        // Check if database needs initialization
+        if (result.error?.includes('not initialized')) {
+          throw new Error('Database not properly initialized. Please restart the app.');
+        }
+        
         throw new Error(`Database unavailable: Unable to load translation exercises. ${result.error}`);
       }
 

@@ -15,7 +15,7 @@ import {
 // Lazy initialize data adapters (called when first needed)
 let adaptersInitialized = false;
 
-const initializeDataAdapters = () => {
+const initializeDataAdapters = async (): Promise<void> => {
   if (adaptersInitialized) {
     return;
   }
@@ -23,6 +23,17 @@ const initializeDataAdapters = () => {
   try {
     console.log('Setting up mobile data adapters...');
     
+    // First, ensure SQLiteManager is initialized
+    const { SQLiteManager } = await import('../utils/SQLiteManager');
+    const sqliteManager = SQLiteManager.getInstance();
+    
+    console.log('Initializing SQLite database...');
+    const dbResult = await sqliteManager.initializeDatabase();
+    if (!dbResult.success) {
+      throw new Error(`Failed to initialize database: ${dbResult.error}`);
+    }
+    
+    console.log('Creating data adapters...');
     const exerciseAdapter = new MobileExerciseDataAdapter();
     const userSettingsAdapter = new MobileUserSettingsDataAdapter();
     
@@ -34,7 +45,7 @@ const initializeDataAdapters = () => {
     console.log('Mobile data adapters configured successfully');
   } catch (error) {
     console.error('Failed to configure data adapters:', error);
-    // Don't throw - let the app continue and handle errors when data is accessed
+    throw error; // Re-throw so app can handle the error properly
   }
 };
 
