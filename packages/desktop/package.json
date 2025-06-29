@@ -6,14 +6,14 @@
   "homepage": "./",
   "private": true,
   "scripts": {
-    "start": "react-scripts start",
+    "start": "craco start",
     "dev": "concurrently \"npm run dev:react\" \"npm run dev:electron\"",
-    "dev:react": "cross-env BROWSER=none react-scripts start",
+    "dev:react": "cross-env BROWSER=none craco start",
     "dev:electron": "wait-on http://localhost:3000 && electron public/electron.js",
     "build": "npm run build:react && npm run build:electron",
-    "build:react": "react-scripts build",
+    "build:react": "craco build",
     "build:electron": "tsc",
-    "test": "react-scripts test",
+    "test": "craco test",
     "lint": "eslint src/**/*.{js,jsx,ts,tsx}",
     "clean": "rm -rf build dist",
     "pack": "electron-builder --dir",
@@ -39,6 +39,7 @@
     "web-vitals": "^2.1.0"
   },
   "devDependencies": {
+    "@craco/craco": "^7.1.0",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
     "concurrently": "^8.2.0",

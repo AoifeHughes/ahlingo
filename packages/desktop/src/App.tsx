@@ -94,12 +94,12 @@ function App(): JSX.Element {
     // Handle Electron menu events
     const handleMenuEvents = () => {
       if (window.electronAPI) {
-        window.electronAPI.on('menu-new-game', () => {
+        window.electronAPI.onMenuNewGame(() => {
           console.log('New game triggered from menu');
           // Navigate to topic selection or reset current game
         });
 
-        window.electronAPI.on('menu-about', () => {
+        window.electronAPI.onMenuAbout(() => {
           console.log('About triggered from menu');
           // Show about dialog
         });

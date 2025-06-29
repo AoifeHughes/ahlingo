@@ -1,22 +1,34 @@
 // Electron API types for renderer process
 
 export interface ElectronAPI {
-  // IPC Communication
-  invoke(channel: string, ...args: any[]): Promise<any>;
-  send(channel: string, ...args: any[]): void;
-  on(channel: string, callback: (...args: any[]) => void): void;
-  off(channel: string, callback: (...args: any[]) => void): void;
+  // Database operations
+  database: {
+    getTopics: () => Promise<any[]>;
+    getPairExercisesByTopic: (topicId: number) => Promise<any[]>;
+    getConversationExercisesByTopic: (topicId: number) => Promise<any[]>;
+    getTranslationExercisesByTopic: (topicId: number) => Promise<any[]>;
+    getLanguages: () => Promise<any[]>;
+    getDifficulties: () => Promise<any[]>;
+  };
   
-  // App Information
-  getVersion(): Promise<string>;
-  getPlatform(): Promise<string>;
+  // User settings
+  getMostRecentUser: () => Promise<string>;
+  getUserSetting: (userId: string, settingName: string) => Promise<any>;
+  setUserSetting: (userId: string, settingName: string, settingValue: any) => Promise<void>;
   
-  // Database Operations
-  databaseOperation(operation: string, ...args: any[]): Promise<{
-    success: boolean;
-    data?: any;
-    error?: string;
-  }>;
+  // Database path
+  getDatabasePath: () => Promise<string>;
+  
+  // App info
+  getAppVersion: () => Promise<string>;
+  getPlatform: () => Promise<string>;
+  
+  // Menu events
+  onMenuNewGame: (callback: () => void) => void;
+  onMenuAbout: (callback: () => void) => void;
+  
+  // Remove listeners
+  removeAllListeners: (channel: string) => void;
 }
 
 declare global {

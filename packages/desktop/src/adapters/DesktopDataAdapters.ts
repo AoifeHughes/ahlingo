@@ -1,7 +1,6 @@
 import { 
   ExerciseDataAdapter, 
   UserSettingsDataAdapter,
-  DatabaseManager,
   Topic,
   PairExercise,
   ConversationExercise,
@@ -10,26 +9,18 @@ import {
   Language,
   Difficulty
 } from '@ahlingo/core';
-import { getDatabasePath } from '../utils/databasePath';
+import { IPCDatabaseProxy } from '../utils/ipcDatabase';
 
 export class DesktopExerciseDataAdapter implements ExerciseDataAdapter {
-  private dbManager: DatabaseManager;
+  private dbProxy: IPCDatabaseProxy;
 
   constructor() {
-    this.dbManager = DatabaseManager.getInstance();
-  }
-
-  private getDatabase() {
-    return this.dbManager.getDatabase({
-      path: getDatabasePath(),
-      isReadOnly: false
-    });
+    this.dbProxy = new IPCDatabaseProxy();
   }
 
   async loadTopics(): Promise<Topic[]> {
     try {
-      const db = this.getDatabase();
-      return await db.getTopics();
+      return await this.dbProxy.getTopics();
     } catch (error) {
       console.error('Failed to load topics:', error);
       // Fallback to mock data if database fails
@@ -45,8 +36,7 @@ export class DesktopExerciseDataAdapter implements ExerciseDataAdapter {
 
   async loadPairExercises(topicId: number): Promise<PairExercise[]> {
     try {
-      const db = this.getDatabase();
-      return await db.getPairExercisesByTopic(topicId);
+      return await this.dbProxy.getPairExercisesByTopic(topicId);
     } catch (error) {
       console.error('Failed to load pair exercises:', error);
       // Fallback to mock data
@@ -89,8 +79,7 @@ export class DesktopExerciseDataAdapter implements ExerciseDataAdapter {
 
   async loadConversationExercises(topicId: number): Promise<ConversationExercise[]> {
     try {
-      const db = this.getDatabase();
-      return await db.getConversationExercisesByTopic(topicId);
+      return await this.dbProxy.getConversationExercisesByTopic(topicId);
     } catch (error) {
       console.error('Failed to load conversation exercises:', error);
       return [];
@@ -99,8 +88,7 @@ export class DesktopExerciseDataAdapter implements ExerciseDataAdapter {
 
   async loadTranslationExercises(topicId: number): Promise<TranslationExercise[]> {
     try {
-      const db = this.getDatabase();
-      return await db.getTranslationExercisesByTopic(topicId);
+      return await this.dbProxy.getTranslationExercisesByTopic(topicId);
     } catch (error) {
       console.error('Failed to load translation exercises:', error);
       return [];
@@ -109,25 +97,17 @@ export class DesktopExerciseDataAdapter implements ExerciseDataAdapter {
 }
 
 export class DesktopUserSettingsDataAdapter implements UserSettingsDataAdapter {
-  private dbManager: DatabaseManager;
+  private dbProxy: IPCDatabaseProxy;
 
   constructor() {
-    this.dbManager = DatabaseManager.getInstance();
-  }
-
-  private getDatabase() {
-    return this.dbManager.getDatabase({
-      path: getDatabasePath(),
-      isReadOnly: false
-    });
+    this.dbProxy = new IPCDatabaseProxy();
   }
 
   async loadUserSettings(): Promise<UserSettings> {
     try {
-      const db = this.getDatabase();
       // For now, return default settings - can be extended to load from database
-      const languages = await db.getLanguages();
-      const difficulties = await db.getDifficulties();
+      const languages = await this.dbProxy.getLanguages();
+      const difficulties = await this.dbProxy.getDifficulties();
       
       return {
         language: languages[0] || { id: 1, language: 'French' },
@@ -157,10 +137,9 @@ export class DesktopUserSettingsDataAdapter implements UserSettingsDataAdapter {
 
   async loadReferenceData(): Promise<{ languages: Language[]; difficulties: Difficulty[] }> {
     try {
-      const db = this.getDatabase();
       const [languages, difficulties] = await Promise.all([
-        db.getLanguages(),
-        db.getDifficulties()
+        this.dbProxy.getLanguages(),
+        this.dbProxy.getDifficulties()
       ]);
       
       return { languages, difficulties };

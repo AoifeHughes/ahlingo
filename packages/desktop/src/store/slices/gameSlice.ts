@@ -13,7 +13,7 @@ const initialState: DesktopGameState = {
   pairs: [],
   selectedLeft: undefined,
   selectedRight: undefined,
-  matchedPairs: new Set(),
+  matchedPairs: [], // Array instead of Set for Redux
   score: {
     correct: 0,
     incorrect: 0,
@@ -49,7 +49,7 @@ const gameSlice = createSlice({
       const { pairId, isLeftSide } = action.payload;
       
       // Don't allow selection of already matched pairs
-      if (state.matchedPairs.has(pairId)) return;
+      if (state.matchedPairs.includes(pairId)) return;
       
       const currentGameState: PairGameState = {
         pairs: state.pairs,
@@ -78,13 +78,13 @@ const gameSlice = createSlice({
       state.leftPairs = state.leftPairs.map(pair => ({
         ...pair,
         leftSelected: pair.id === state.selectedLeft,
-        matched: state.matchedPairs.has(pair.id),
+        matched: state.matchedPairs.includes(pair.id),
       }));
       
       state.rightPairs = state.rightPairs.map(pair => ({
         ...pair,
         rightSelected: pair.id === state.selectedRight,
-        matched: state.matchedPairs.has(pair.id),
+        matched: state.matchedPairs.includes(pair.id),
       }));
       
       if (shouldDelay) {

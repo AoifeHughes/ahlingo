@@ -204,13 +204,31 @@ export class LanguageLearningDatabase {
     return this.mockData.pairExercises;
   }
 
+  getPairExercisesByTopic(topicId: number): PairExercise[] {
+    // For mock implementation, return all pair exercises
+    // In a real implementation, this would filter by topicId
+    return this.mockData.pairExercises;
+  }
+
   // Conversation exercise operations
   getConversationExercises(exerciseId: number): ConversationExercise[] {
     return [];
   }
 
+  getConversationExercisesByTopic(topicId: number): ConversationExercise[] {
+    // For mock implementation, return empty array
+    // In a real implementation, this would filter by topicId
+    return [];
+  }
+
   // Translation exercise operations
   getTranslationExercises(exerciseId: number): TranslationExercise[] {
+    return [];
+  }
+
+  getTranslationExercisesByTopic(topicId: number): TranslationExercise[] {
+    // For mock implementation, return empty array
+    // In a real implementation, this would filter by topicId
     return [];
   }
 
