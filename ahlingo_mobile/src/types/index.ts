@@ -94,6 +94,10 @@ export interface AppSettings {
   language: string;
   difficulty: string;
   userId: number;
+  apiKey?: string;
+  apiUrl?: string;
+  hostname?: string;
+  username?: string;
 }
 
 // Navigation types

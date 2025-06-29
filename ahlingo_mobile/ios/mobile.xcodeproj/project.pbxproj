@@ -12,7 +12,7 @@
 		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		845C351700F0D4DF2BAA96BD /* libPods-mobile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 495186323FD14DEDCE363B18 /* libPods-mobile.a */; };
-		A117CA9978724956BF566E4D /* languagelearningdatabase.db in Resources */ = {isa = PBXBuildFile; fileRef = 756920927353411DB78280CF /* languagelearningdatabase.db */; };
+		61353B449AC74147BF1E8067 /* languageLearningDatabase.db in Resources */ = {isa = PBXBuildFile; fileRef = C513A007AB8A44859224942C /* languageLearningDatabase.db */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -23,10 +23,10 @@
 		13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = PrivacyInfo.xcprivacy; path = mobile/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		495186323FD14DEDCE363B18 /* libPods-mobile.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-mobile.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5097668A3EDB3DDA04F586F0 /* Pods-mobile.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-mobile.debug.xcconfig"; path = "Target Support Files/Pods-mobile/Pods-mobile.debug.xcconfig"; sourceTree = "<group>"; };
-		756920927353411DB78280CF /* languagelearningdatabase.db */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = languagelearningdatabase.db; path = ../assets/databases/languagelearningdatabase.db; sourceTree = "<group>"; };
 		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = mobile/AppDelegate.swift; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = mobile/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		C513A007AB8A44859224942C /* languageLearningDatabase.db */ = {isa = PBXFileReference; name = "languageLearningDatabase.db"; path = "../assets/databases/languageLearningDatabase.db"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,7 +95,7 @@
 		B9F7B0DC1D0F4095A195CE7E /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				756920927353411DB78280CF /* languagelearningdatabase.db */,
+				C513A007AB8A44859224942C /* languageLearningDatabase.db */,
 			);
 			name = Resources;
 			path = "";
@@ -173,7 +173,7 @@
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				31F070B7A76AA688C3401979 /* PrivacyInfo.xcprivacy in Resources */,
-				A117CA9978724956BF566E4D /* languagelearningdatabase.db in Resources */,
+				61353B449AC74147BF1E8067 /* languageLearningDatabase.db in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

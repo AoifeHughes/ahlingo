@@ -1,9 +1,8 @@
 import React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet, Text, StatusBar } from 'react-native';
 import { Button } from 'react-native-elements';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types';
-import { useLanguages, useTopics, useDifficulties } from '../services/useDatabaseService';
 
 type MainMenuScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -15,52 +14,74 @@ interface Props {
 }
 
 const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
-  const { languages } = useLanguages();
-  const { topics } = useTopics();
-  const { difficulties } = useDifficulties();
-
   const menuItems = [
-    { title: 'Pairs', screen: 'TopicSelection' as keyof RootStackParamList },
-    { title: 'Conversation', screen: 'ConversationExercises' as keyof RootStackParamList },
-    { title: 'Translation', screen: 'TranslationExercises' as keyof RootStackParamList },
-    { title: 'Chatbot', screen: 'Chatbot' as keyof RootStackParamList },
-    { title: 'Settings', screen: 'Settings' as keyof RootStackParamList },
+    { 
+      title: 'Pairs Exercises', 
+      screen: 'TopicSelection' as keyof RootStackParamList,
+      icon: '🎯'
+    },
+    { 
+      title: 'Conversation Exercises', 
+      screen: 'ConversationExercises' as keyof RootStackParamList,
+      icon: '💬'
+    },
+    { 
+      title: 'Translation Exercises', 
+      screen: 'TranslationExercises' as keyof RootStackParamList,
+      icon: '📝'
+    },
+    { 
+      title: 'Chatbot', 
+      screen: 'Chatbot' as keyof RootStackParamList,
+      icon: '🤖'
+    },
+    { 
+      title: 'Settings', 
+      screen: 'Settings' as keyof RootStackParamList,
+      icon: '⚙️'
+    },
   ];
 
   return (
-    <View style={styles.container}>
-      <View style={styles.titleContainer}>
-        <Text style={styles.title}>AHLingo</Text>
-        <Text style={styles.subtitle}>French Language Learning</Text>
-        {/* Display database stats for testing */}
-        <Text style={styles.dbStats}>
-          {languages.length} languages, {topics.length} topics, {difficulties.length} difficulties
-        </Text>
+    <>
+      <StatusBar backgroundColor="#1976D2" barStyle="light-content" />
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.title}>AHLingo</Text>
+          <Text style={styles.subtitle}>Language Learning App</Text>
+        </View>
+        
+        <View style={styles.menuContainer}>
+          {menuItems.map((item, index) => (
+            <Button
+              key={index}
+              title={`${item.icon}  ${item.title}`}
+              buttonStyle={[
+                styles.menuButton,
+                { backgroundColor: index % 2 === 0 ? '#1976D2' : '#2196F3' }
+              ]}
+              titleStyle={styles.menuButtonText}
+              onPress={() => {
+                if (item.screen === 'TopicSelection') {
+                  navigation.navigate('TopicSelection');
+                } else {
+                  // For other screens, pass a default topicId for now
+                  navigation.navigate(item.screen as any, 
+                    item.screen === 'ConversationExercises' || item.screen === 'TranslationExercises' 
+                      ? { topicId: 1 } 
+                      : undefined
+                  );
+                }
+              }}
+            />
+          ))}
+        </View>
+        
+        <View style={styles.footer}>
+          <Text style={styles.footerText}>Start your French learning journey</Text>
+        </View>
       </View>
-      
-      <View style={styles.menuContainer}>
-        {menuItems.map((item, index) => (
-          <Button
-            key={index}
-            title={item.title}
-            buttonStyle={styles.menuButton}
-            titleStyle={styles.menuButtonText}
-            onPress={() => {
-              if (item.screen === 'TopicSelection') {
-                navigation.navigate('TopicSelection');
-              } else {
-                // For other screens, pass a default topicId for now
-                navigation.navigate(item.screen as any, 
-                  item.screen === 'ConversationExercises' || item.screen === 'TranslationExercises' 
-                    ? { topicId: 1 } 
-                    : undefined
-                );
-              }
-            }}
-          />
-        ))}
-      </View>
-    </View>
+    </>
   );
 };
 
@@ -68,42 +89,45 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f5f5f5',
-    padding: 20,
   },
-  titleContainer: {
+  header: {
+    backgroundColor: '#1976D2',
+    paddingTop: 60,
+    paddingBottom: 40,
+    paddingHorizontal: 20,
     alignItems: 'center',
-    marginTop: 40,
-    marginBottom: 60,
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
   title: {
-    fontSize: 32,
+    fontSize: 36,
     fontWeight: 'bold',
-    color: '#1976D2',
+    color: '#FFFFFF',
     marginBottom: 8,
+    textAlign: 'center',
   },
   subtitle: {
-    fontSize: 16,
-    color: '#666',
-  },
-  dbStats: {
-    fontSize: 12,
-    color: '#888',
-    marginTop: 4,
-    fontStyle: 'italic',
+    fontSize: 18,
+    color: '#E3F2FD',
+    textAlign: 'center',
   },
   menuContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingHorizontal: 32,
+    paddingVertical: 40,
   },
   menuButton: {
-    backgroundColor: '#2196F3',
-    borderRadius: 8,
-    paddingVertical: 16,
-    paddingHorizontal: 32,
-    marginVertical: 12,
-    minWidth: 200,
-    elevation: 3,
+    borderRadius: 12,
+    paddingVertical: 18,
+    paddingHorizontal: 40,
+    marginVertical: 10,
+    minWidth: 280,
+    elevation: 4,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
@@ -111,7 +135,19 @@ const styles = StyleSheet.create({
   },
   menuButtonText: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  footer: {
+    paddingVertical: 20,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+  },
+  footerText: {
+    fontSize: 16,
+    color: '#666',
+    fontStyle: 'italic',
+    textAlign: 'center',
   },
 });
 

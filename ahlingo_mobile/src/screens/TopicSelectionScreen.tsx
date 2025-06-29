@@ -1,7 +1,23 @@
-import React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  FlatList,
+  StyleSheet,
+  Text,
+  ActivityIndicator,
+  Alert,
+  RefreshControl,
+} from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../types';
+import { useSelector } from 'react-redux';
+import { RootStackParamList, Topic } from '../types';
+import { RootState } from '../store';
+import TopicCard from '../components/TopicCard';
+import {
+  getTopicsForPairs,
+  getUserSettings,
+  getMostRecentUser,
+} from '../services/SimpleDatabaseService';
 
 type TopicSelectionScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -13,10 +29,103 @@ interface Props {
 }
 
 const TopicSelectionScreen: React.FC<Props> = ({ navigation }) => {
+  const { settings } = useSelector((state: RootState) => state.settings);
+  const [topics, setTopics] = useState<Topic[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [userLanguage, setUserLanguage] = useState<string>('French');
+  const [userDifficulty, setUserDifficulty] = useState<string>('Beginner');
+
+  useEffect(() => {
+    loadUserSettingsAndTopics();
+  }, []);
+
+  const loadUserSettingsAndTopics = async () => {
+    try {
+      setLoading(true);
+      
+      // Get current user settings from database
+      const username = await getMostRecentUser();
+      const userSettings = await getUserSettings(username);
+      
+      const language = userSettings.language || settings.language || 'French';
+      const difficulty = userSettings.difficulty || settings.difficulty || 'Beginner';
+      
+      setUserLanguage(language);
+      setUserDifficulty(difficulty);
+      
+      // Load topics for pairs exercises based on user settings
+      const availableTopics = await getTopicsForPairs(language, difficulty);
+      setTopics(availableTopics);
+      
+    } catch (error) {
+      console.error('Failed to load topics:', error);
+      Alert.alert('Error', 'Failed to load topics. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleTopicPress = (topic: Topic) => {
+    navigation.navigate('PairsGame', { topicId: topic.id });
+  };
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await loadUserSettingsAndTopics();
+    setRefreshing(false);
+  };
+
+  const renderTopicCard = ({ item }: { item: Topic }) => (
+    <TopicCard topic={item} onPress={handleTopicPress} />
+  );
+
+  const renderEmptyState = () => (
+    <View style={styles.emptyContainer}>
+      <Text style={styles.emptyTitle}>No Topics Available</Text>
+      <Text style={styles.emptyText}>
+        No pairs exercises found for {userLanguage} at {userDifficulty} level.
+      </Text>
+      <Text style={styles.emptyHint}>
+        Try changing your language or difficulty in Settings.
+      </Text>
+    </View>
+  );
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#1976D2" />
+        <Text style={styles.loadingText}>Loading topics...</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
-      <Text style={styles.placeholder}>Topic Selection Screen</Text>
-      <Text style={styles.subtext}>To be implemented</Text>
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Choose a Topic</Text>
+        <Text style={styles.headerSubtitle}>
+          {userLanguage} • {userDifficulty}
+        </Text>
+      </View>
+      
+      <FlatList
+        data={topics}
+        renderItem={renderTopicCard}
+        keyExtractor={(item) => item.id.toString()}
+        contentContainerStyle={styles.listContainer}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
+            colors={['#1976D2']}
+            tintColor="#1976D2"
+          />
+        }
+        ListEmptyComponent={renderEmptyState}
+      />
     </View>
   );
 };
@@ -24,19 +133,66 @@ const TopicSelectionScreen: React.FC<Props> = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#f5f5f5',
+  },
+  loadingContainer: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#f5f5f5',
   },
-  placeholder: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#1976D2',
-    marginBottom: 8,
-  },
-  subtext: {
+  loadingText: {
+    marginTop: 16,
     fontSize: 16,
     color: '#666',
+  },
+  header: {
+    backgroundColor: '#fff',
+    paddingVertical: 20,
+    paddingHorizontal: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0e0e0',
+  },
+  headerTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#333',
+    textAlign: 'center',
+  },
+  headerSubtitle: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+    marginTop: 4,
+  },
+  listContainer: {
+    paddingVertical: 16,
+    flexGrow: 1,
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 32,
+  },
+  emptyTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  emptyText: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  emptyHint: {
+    fontSize: 14,
+    color: '#999',
+    textAlign: 'center',
+    fontStyle: 'italic',
   },
 });
 

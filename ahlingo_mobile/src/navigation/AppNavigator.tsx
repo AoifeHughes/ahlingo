@@ -32,7 +32,7 @@ const AppNavigator: React.FC = () => {
         <Stack.Screen
           name="MainMenu"
           component={MainMenuScreen}
-          options={{ title: 'AHLingo' }}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="TopicSelection"

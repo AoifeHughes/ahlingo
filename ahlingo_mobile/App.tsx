@@ -7,7 +7,7 @@
  */
 
 import React, { useEffect } from 'react';
-import { StatusBar, useColorScheme, View, Text, StyleSheet } from 'react-native';
+import { StatusBar, useColorScheme } from 'react-native';
 import { Provider } from 'react-redux';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
@@ -19,20 +19,31 @@ function AppContent(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
 
   useEffect(() => {
-    // Add a small delay to ensure component is mounted
-    const timer = setTimeout(() => {
-      logDatabaseTables();
-    }, 100);
-    
-    return () => clearTimeout(timer);
+    // Initialize database when app starts
+    const initializeApp = async () => {
+      try {
+        // The database will be automatically initialized when first accessed
+        // by any SimpleDatabaseService function. Let's log the tables to verify.
+        console.log('App starting - database will initialize on first access');
+        
+        // Add a small delay then log database tables to verify everything works
+        setTimeout(() => {
+          logDatabaseTables();
+        }, 1000);
+        
+        console.log('App initialized successfully');
+      } catch (error) {
+        console.error('Failed to initialize app:', error);
+      }
+    };
+
+    initializeApp();
   }, []);
 
   return (
     <>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <View style={styles.centerContainer}>
-        <Text>Check console for database tables</Text>
-      </View>
+      <StatusBar barStyle="light-content" backgroundColor="#1976D2" />
+      <AppNavigator />
     </>
   );
 }
@@ -47,31 +58,5 @@ function App(): React.JSX.Element {
   );
 }
 
-const styles = StyleSheet.create({
-  centerContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f5f5f5',
-    padding: 20,
-  },
-  loadingText: {
-    fontSize: 18,
-    color: '#1976D2',
-    fontWeight: 'bold',
-  },
-  errorText: {
-    fontSize: 18,
-    color: '#d32f2f',
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 8,
-  },
-  errorSubtext: {
-    fontSize: 14,
-    color: '#666',
-    textAlign: 'center',
-  },
-});
 
 export default App;
