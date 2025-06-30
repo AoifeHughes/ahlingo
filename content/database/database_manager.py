@@ -548,28 +548,14 @@ class LanguageDB:
         topic_id = self._get_or_create_topic(topic)
         difficulty_id = self._get_or_create_difficulty(difficulty_level)
 
-        # Check if an exercise with this lesson_id already exists
-        exercise_id = None
-        if lesson_id:
-            self.cursor.execute(
-                """SELECT id FROM exercises_info
-                   WHERE lesson_id = ? AND exercise_type = ? AND language_id = ? 
-                   AND topic_id = ? AND difficulty_id = ?""",
-                (lesson_id, "conversation", language_id, topic_id, difficulty_id),
-            )
-            result = self.cursor.fetchone()
-            if result:
-                exercise_id = result[0]
-
-        # If no existing exercise found, create a new one
-        if not exercise_id:
-            self.cursor.execute(
-                """INSERT INTO exercises_info
-                   (exercise_name, language_id, topic_id, difficulty_id, exercise_type, lesson_id)
-                   VALUES (?, ?, ?, ?, ?, ?)""",
-                (exercise_name, language_id, topic_id, difficulty_id, "conversation", lesson_id),
-            )
-            exercise_id = self.cursor.lastrowid
+        # Always create a new exercise - lesson_id is just for grouping
+        self.cursor.execute(
+            """INSERT INTO exercises_info
+               (exercise_name, language_id, topic_id, difficulty_id, exercise_type, lesson_id)
+               VALUES (?, ?, ?, ?, ?, ?)""",
+            (exercise_name, language_id, topic_id, difficulty_id, "conversation", lesson_id),
+        )
+        exercise_id = self.cursor.lastrowid
 
         for idx, conv in enumerate(conversations):
             self.cursor.execute(
@@ -614,28 +600,14 @@ class LanguageDB:
         topic_id = self._get_or_create_topic(topic)
         difficulty_id = self._get_or_create_difficulty(difficulty_level)
 
-        # Check if an exercise with this lesson_id already exists
-        exercise_id = None
-        if lesson_id:
-            self.cursor.execute(
-                """SELECT id FROM exercises_info
-                   WHERE lesson_id = ? AND exercise_type = ? AND language_id = ? 
-                   AND topic_id = ? AND difficulty_id = ?""",
-                (lesson_id, "pairs", language_id, topic_id, difficulty_id),
-            )
-            result = self.cursor.fetchone()
-            if result:
-                exercise_id = result[0]
-
-        # If no existing exercise found, create a new one
-        if not exercise_id:
-            self.cursor.execute(
-                """INSERT INTO exercises_info
-                   (exercise_name, language_id, topic_id, difficulty_id, exercise_type, lesson_id)
-                   VALUES (?, ?, ?, ?, ?, ?)""",
-                (exercise_name, language_id, topic_id, difficulty_id, "pairs", lesson_id),
-            )
-            exercise_id = self.cursor.lastrowid
+        # Always create a new exercise - lesson_id is just for grouping
+        self.cursor.execute(
+            """INSERT INTO exercises_info
+               (exercise_name, language_id, topic_id, difficulty_id, exercise_type, lesson_id)
+               VALUES (?, ?, ?, ?, ?, ?)""",
+            (exercise_name, language_id, topic_id, difficulty_id, "pairs", lesson_id),
+        )
+        exercise_id = self.cursor.lastrowid
 
         self.cursor.execute(
             """INSERT INTO pair_exercises
@@ -670,28 +642,14 @@ class LanguageDB:
         topic_id = self._get_or_create_topic(topic)
         difficulty_id = self._get_or_create_difficulty(difficulty_level)
 
-        # Check if an exercise with this lesson_id already exists
-        exercise_id = None
-        if lesson_id:
-            self.cursor.execute(
-                """SELECT id FROM exercises_info
-                   WHERE lesson_id = ? AND exercise_type = ? AND language_id = ? 
-                   AND topic_id = ? AND difficulty_id = ?""",
-                (lesson_id, "translation", language_id, topic_id, difficulty_id),
-            )
-            result = self.cursor.fetchone()
-            if result:
-                exercise_id = result[0]
-
-        # If no existing exercise found, create a new one
-        if not exercise_id:
-            self.cursor.execute(
-                """INSERT INTO exercises_info
-                   (exercise_name, language_id, topic_id, difficulty_id, exercise_type, lesson_id)
-                   VALUES (?, ?, ?, ?, ?, ?)""",
-                (exercise_name, language_id, topic_id, difficulty_id, "translation", lesson_id),
-            )
-            exercise_id = self.cursor.lastrowid
+        # Always create a new exercise - lesson_id is just for grouping
+        self.cursor.execute(
+            """INSERT INTO exercises_info
+               (exercise_name, language_id, topic_id, difficulty_id, exercise_type, lesson_id)
+               VALUES (?, ?, ?, ?, ?, ?)""",
+            (exercise_name, language_id, topic_id, difficulty_id, "translation", lesson_id),
+        )
+        exercise_id = self.cursor.lastrowid
 
         self.cursor.execute(
             """INSERT INTO translation_exercises

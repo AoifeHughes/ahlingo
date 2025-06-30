@@ -243,7 +243,7 @@ async def generate_lessons_data_async(
     ) -> Dict[str, str]:
         return {
             "role": "system",
-            "content": f'You are a {language} language learning tool. Your task is to generate a JSON array containing {level} level {language} conversations related to the topic "{topic}". Each conversation should have a clear objective, specified roles for the speakers, and a conversation summary. The conversations should be engaging, natural, and aligned with the language level. Include a mix of questions, responses, and idiomatic expressions. Aim for 4-6 turns per conversation. Respond only with valid JSON and you must conform to the structure given in the example. Do not write an introduction to the task',
+            "content": f'You are a {language} language learning tool. Your task is to generate a JSON array containing {level} level {language} conversations related to the topic "{topic}". Each conversation should have a clear objective, specified roles for the speakers, and a conversation summary. The conversations should be engaging, natural, and aligned with the language level. Include a mix of questions, responses, and idiomatic expressions. Aim for 2-6 turns per conversation. Respond only with valid JSON and you must conform to the structure given in the example. Do not write an introduction to the task',
         }
 
     def make_pairs_system(language: str, topic: str, level: str) -> Dict[str, str]:
@@ -286,10 +286,22 @@ async def generate_lessons_data_async(
                 "content": f"Generate a variety of {level} level {language} {lesson_kind} exercises related to the topic '{topic}'. The exercises should be engaging, contextually relevant, and designed to improve vocabulary, grammar, and communication skills. Please provide the responses in the specified JSON format.",
             }
 
-            user2 = {
-                "role": "user",
-                "content": f"Perfect! Now, generate 5 more varied examples for {lesson_kind} exercises at the {level} level, focusing on the topic '{topic}'. Ensure that the exercises are well-structured, cover different aspects of the language, and maintain the JSON format in your response. Use the exact same naming convention for your JSON keys, do not create new ones.",
-            }
+            # Create exercise-specific follow-up prompts
+            if lesson_kind == "conversations":
+                user2 = {
+                    "role": "user",
+                    "content": f"Perfect! Now, generate another conversation exercise using the same JSON template format as shown above. Each conversation should have at least 3 dialogue turns, but add more when useful to make a realistic conversation and be at the {level} level, focusing on the topic '{topic}'. Ensure the conversations are well-structured, natural, and maintain the exact same JSON structure and ensure realistic language appropriate names are used.",
+                }
+            elif lesson_kind == "pairs":
+                user2 = {
+                    "role": "user", 
+                    "content": f"Perfect! Now, generate 8-12 more word pairs using the same JSON template format as shown above. Focus on single words at the {level} level related to the topic '{topic}'. Ensure you use the exact same JSON structure and key names, with simple word-to-word translations.",
+                }
+            else:  # translations
+                user2 = {
+                    "role": "user",
+                    "content": f"Perfect! Now, generate 5-7 more sentence translation pairs using the same JSON template format as shown above. Create full sentences at the {level} level focused on the topic '{topic}'. Ensure the sentences are well-structured and maintain the exact same JSON structure and key names.",
+                }
 
             completion = client.chat.completions.create(
                 model="llama",
