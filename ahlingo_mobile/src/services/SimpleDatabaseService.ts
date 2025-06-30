@@ -1,7 +1,7 @@
 import SQLite from 'react-native-sqlite-storage';
 import RNFS from 'react-native-fs';
 import { Platform } from 'react-native';
-import { Language, Topic, Difficulty, PairExercise, ExerciseInfo } from '../types';
+import { Language, Topic, Difficulty, PairExercise, ExerciseInfo, ConversationExercise, TranslationExercise } from '../types';
 
 // Enable debug mode to see SQL logs
 SQLite.DEBUG(true);
@@ -605,6 +605,306 @@ export const getExercisesByLesson = async (lessonId: string): Promise<ExerciseIn
     return exercises;
   } catch (error) {
     console.error('Failed to get exercises by lesson:', error);
+    return [];
+  } finally {
+    if (db) {
+      try {
+        await db.close();
+      } catch (closeError) {
+        console.error('Error closing database:', closeError);
+      }
+    }
+  }
+};
+
+// Conversation exercise specific database operations
+export const getTopicsForConversation = async (language: string, difficulty: string): Promise<Topic[]> => {
+  let db = null;
+  
+  try {
+    await ensureDatabaseCopied();
+    
+    db = await SQLite.openDatabase({
+      name: 'languageLearningDatabase.db',
+      location: 'Documents'
+    });
+    
+    const query = `
+      SELECT DISTINCT t.id, t.topic 
+      FROM topics t
+      JOIN exercises_info ei ON t.id = ei.topic_id
+      JOIN languages l ON ei.language_id = l.id
+      JOIN difficulties d ON ei.difficulty_id = d.id
+      WHERE l.language = ? 
+        AND d.difficulty_level = ?
+        AND ei.exercise_type = 'conversation'
+      ORDER BY t.topic
+    `;
+    
+    const results = await db.executeSql(query, [language, difficulty]);
+    
+    const topics: Topic[] = [];
+    if (results && results[0]) {
+      for (let i = 0; i < results[0].rows.length; i++) {
+        topics.push(results[0].rows.item(i));
+      }
+    }
+    
+    return topics;
+  } catch (error) {
+    console.error('Failed to get topics for conversation:', error);
+    return [];
+  } finally {
+    if (db) {
+      try {
+        await db.close();
+      } catch (closeError) {
+        console.error('Error closing database:', closeError);
+      }
+    }
+  }
+};
+
+export const getRandomConversationExerciseForTopic = async (topicId: number, language: string, difficulty: string): Promise<ExerciseInfo | null> => {
+  let db = null;
+  
+  try {
+    await ensureDatabaseCopied();
+    
+    db = await SQLite.openDatabase({
+      name: 'languageLearningDatabase.db',
+      location: 'Documents'
+    });
+    
+    const query = `
+      SELECT ei.* FROM exercises_info ei
+      JOIN languages l ON ei.language_id = l.id
+      JOIN difficulties d ON ei.difficulty_id = d.id
+      WHERE ei.topic_id = ? 
+        AND l.language = ?
+        AND d.difficulty_level = ?
+        AND ei.exercise_type = 'conversation'
+      ORDER BY RANDOM() 
+      LIMIT 1
+    `;
+    
+    const results = await db.executeSql(query, [topicId, language, difficulty]);
+    
+    if (results && results[0] && results[0].rows.length > 0) {
+      return results[0].rows.item(0);
+    }
+    
+    return null;
+  } catch (error) {
+    console.error('Failed to get random conversation exercise for topic:', error);
+    return null;
+  } finally {
+    if (db) {
+      try {
+        await db.close();
+      } catch (closeError) {
+        console.error('Error closing database:', closeError);
+      }
+    }
+  }
+};
+
+export const getConversationExerciseData = async (exerciseId: number): Promise<any[]> => {
+  let db = null;
+  
+  try {
+    await ensureDatabaseCopied();
+    
+    db = await SQLite.openDatabase({
+      name: 'languageLearningDatabase.db',
+      location: 'Documents'
+    });
+    
+    // First, try to get from conversation_exercises table if it exists
+    try {
+      const results = await db.executeSql(
+        'SELECT * FROM conversation_exercises WHERE exercise_id = ? ORDER BY id',
+        [exerciseId]
+      );
+      
+      const conversations: any[] = [];
+      if (results && results[0]) {
+        for (let i = 0; i < results[0].rows.length; i++) {
+          conversations.push(results[0].rows.item(i));
+        }
+      }
+      
+      return conversations;
+    } catch (tableError) {
+      console.log('conversation_exercises table not found, trying chat_details...');
+      
+      // Fallback: try to get from chat_details if conversation_exercises doesn't exist
+      const results = await db.executeSql(
+        'SELECT * FROM chat_details WHERE id = ?',
+        [exerciseId]
+      );
+      
+      const chatDetails: any[] = [];
+      if (results && results[0]) {
+        for (let i = 0; i < results[0].rows.length; i++) {
+          chatDetails.push(results[0].rows.item(i));
+        }
+      }
+      
+      return chatDetails;
+    }
+  } catch (error) {
+    console.error('Failed to get conversation exercise data:', error);
+    return [];
+  } finally {
+    if (db) {
+      try {
+        await db.close();
+      } catch (closeError) {
+        console.error('Error closing database:', closeError);
+      }
+    }
+  }
+};
+
+// Translation exercise specific database operations
+export const getTopicsForTranslation = async (language: string, difficulty: string): Promise<Topic[]> => {
+  let db = null;
+  
+  try {
+    await ensureDatabaseCopied();
+    
+    db = await SQLite.openDatabase({
+      name: 'languageLearningDatabase.db',
+      location: 'Documents'
+    });
+    
+    const query = `
+      SELECT DISTINCT t.id, t.topic 
+      FROM topics t
+      JOIN exercises_info ei ON t.id = ei.topic_id
+      JOIN languages l ON ei.language_id = l.id
+      JOIN difficulties d ON ei.difficulty_id = d.id
+      WHERE l.language = ? 
+        AND d.difficulty_level = ?
+        AND ei.exercise_type = 'translation'
+      ORDER BY t.topic
+    `;
+    
+    const results = await db.executeSql(query, [language, difficulty]);
+    
+    const topics: Topic[] = [];
+    if (results && results[0]) {
+      for (let i = 0; i < results[0].rows.length; i++) {
+        topics.push(results[0].rows.item(i));
+      }
+    }
+    
+    return topics;
+  } catch (error) {
+    console.error('Failed to get topics for translation:', error);
+    return [];
+  } finally {
+    if (db) {
+      try {
+        await db.close();
+      } catch (closeError) {
+        console.error('Error closing database:', closeError);
+      }
+    }
+  }
+};
+
+export const getRandomTranslationExerciseForTopic = async (topicId: number, language: string, difficulty: string): Promise<ExerciseInfo | null> => {
+  let db = null;
+  
+  try {
+    await ensureDatabaseCopied();
+    
+    db = await SQLite.openDatabase({
+      name: 'languageLearningDatabase.db',
+      location: 'Documents'
+    });
+    
+    const query = `
+      SELECT ei.* FROM exercises_info ei
+      JOIN languages l ON ei.language_id = l.id
+      JOIN difficulties d ON ei.difficulty_id = d.id
+      WHERE ei.topic_id = ? 
+        AND l.language = ?
+        AND d.difficulty_level = ?
+        AND ei.exercise_type = 'translation'
+      ORDER BY RANDOM() 
+      LIMIT 1
+    `;
+    
+    const results = await db.executeSql(query, [topicId, language, difficulty]);
+    
+    if (results && results[0] && results[0].rows.length > 0) {
+      return results[0].rows.item(0);
+    }
+    
+    return null;
+  } catch (error) {
+    console.error('Failed to get random translation exercise for topic:', error);
+    return null;
+  } finally {
+    if (db) {
+      try {
+        await db.close();
+      } catch (closeError) {
+        console.error('Error closing database:', closeError);
+      }
+    }
+  }
+};
+
+export const getTranslationExerciseData = async (exerciseId: number): Promise<any[]> => {
+  let db = null;
+  
+  try {
+    await ensureDatabaseCopied();
+    
+    db = await SQLite.openDatabase({
+      name: 'languageLearningDatabase.db',
+      location: 'Documents'
+    });
+    
+    // First, try to get from translation_exercises table if it exists
+    try {
+      const results = await db.executeSql(
+        'SELECT * FROM translation_exercises WHERE exercise_id = ? ORDER BY id',
+        [exerciseId]
+      );
+      
+      const translations: any[] = [];
+      if (results && results[0]) {
+        for (let i = 0; i < results[0].rows.length; i++) {
+          translations.push(results[0].rows.item(i));
+        }
+      }
+      
+      return translations;
+    } catch (tableError) {
+      console.log('translation_exercises table not found, trying pair_exercises as fallback...');
+      
+      // Fallback: try to get from pair_exercises if translation_exercises doesn't exist
+      const results = await db.executeSql(
+        'SELECT * FROM pair_exercises WHERE exercise_id = ? ORDER BY id',
+        [exerciseId]
+      );
+      
+      const pairData: any[] = [];
+      if (results && results[0]) {
+        for (let i = 0; i < results[0].rows.length; i++) {
+          pairData.push(results[0].rows.item(i));
+        }
+      }
+      
+      return pairData;
+    }
+  } catch (error) {
+    console.error('Failed to get translation exercise data:', error);
     return [];
   } finally {
     if (db) {
