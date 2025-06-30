@@ -103,7 +103,7 @@ export interface AppSettings {
 // Navigation types
 export type RootStackParamList = {
   MainMenu: undefined;
-  TopicSelection: undefined;
+  TopicSelection: { exerciseType?: 'pairs' | 'conversation' | 'translation' };
   PairsGame: { topicId: number };
   ConversationExercises: { topicId: number };
   TranslationExercises: { topicId: number };

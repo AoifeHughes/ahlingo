@@ -63,14 +63,13 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
               titleStyle={styles.menuButtonText}
               onPress={() => {
                 if (item.screen === 'TopicSelection') {
-                  navigation.navigate('TopicSelection');
+                  navigation.navigate('TopicSelection', { exerciseType: 'pairs' });
+                } else if (item.screen === 'ConversationExercises') {
+                  navigation.navigate('TopicSelection', { exerciseType: 'conversation' });
+                } else if (item.screen === 'TranslationExercises') {
+                  navigation.navigate('TopicSelection', { exerciseType: 'translation' });
                 } else {
-                  // For other screens, pass a default topicId for now
-                  navigation.navigate(item.screen as any, 
-                    item.screen === 'ConversationExercises' || item.screen === 'TranslationExercises' 
-                      ? { topicId: 1 } 
-                      : undefined
-                  );
+                  navigation.navigate(item.screen as any);
                 }
               }}
             />

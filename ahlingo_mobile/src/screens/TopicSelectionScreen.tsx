@@ -9,12 +9,14 @@ import {
   RefreshControl,
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RouteProp } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import { RootStackParamList, Topic } from '../types';
 import { RootState } from '../store';
 import TopicCard from '../components/TopicCard';
 import {
   getTopicsForPairs,
+  getTopicsForConversations,
   getUserSettings,
   getMostRecentUser,
 } from '../services/SimpleDatabaseService';
@@ -24,21 +26,26 @@ type TopicSelectionScreenNavigationProp = NativeStackNavigationProp<
   'TopicSelection'
 >;
 
+type TopicSelectionScreenRouteProp = RouteProp<RootStackParamList, 'TopicSelection'>;
+
 interface Props {
   navigation: TopicSelectionScreenNavigationProp;
+  route: TopicSelectionScreenRouteProp;
 }
 
-const TopicSelectionScreen: React.FC<Props> = ({ navigation }) => {
+const TopicSelectionScreen: React.FC<Props> = ({ navigation, route }) => {
   const { settings } = useSelector((state: RootState) => state.settings);
   const [topics, setTopics] = useState<Topic[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [userLanguage, setUserLanguage] = useState<string>('French');
   const [userDifficulty, setUserDifficulty] = useState<string>('Beginner');
+  
+  const exerciseType = route.params?.exerciseType || 'pairs';
 
   useEffect(() => {
     loadUserSettingsAndTopics();
-  }, []);
+  }, [exerciseType]);
 
   const loadUserSettingsAndTopics = async () => {
     try {
@@ -54,8 +61,17 @@ const TopicSelectionScreen: React.FC<Props> = ({ navigation }) => {
       setUserLanguage(language);
       setUserDifficulty(difficulty);
       
-      // Load topics for pairs exercises based on user settings
-      const availableTopics = await getTopicsForPairs(language, difficulty);
+      // Load topics based on exercise type
+      let availableTopics: Topic[] = [];
+      if (exerciseType === 'pairs') {
+        availableTopics = await getTopicsForPairs(language, difficulty);
+      } else if (exerciseType === 'conversation') {
+        availableTopics = await getTopicsForConversations(language, difficulty);
+      } else {
+        // For translation exercises, use pairs for now (you can add getTopicsForTranslation later)
+        availableTopics = await getTopicsForPairs(language, difficulty);
+      }
+      
       setTopics(availableTopics);
       
     } catch (error) {
@@ -67,7 +83,26 @@ const TopicSelectionScreen: React.FC<Props> = ({ navigation }) => {
   };
 
   const handleTopicPress = (topic: Topic) => {
-    navigation.navigate('PairsGame', { topicId: topic.id });
+    if (exerciseType === 'pairs') {
+      navigation.navigate('PairsGame', { topicId: topic.id });
+    } else if (exerciseType === 'conversation') {
+      navigation.navigate('ConversationExercises', { topicId: topic.id });
+    } else if (exerciseType === 'translation') {
+      navigation.navigate('TranslationExercises', { topicId: topic.id });
+    }
+  };
+
+  const getExerciseTypeTitle = () => {
+    switch (exerciseType) {
+      case 'pairs':
+        return 'Pairs Exercises';
+      case 'conversation':
+        return 'Conversation Exercises';
+      case 'translation':
+        return 'Translation Exercises';
+      default:
+        return 'Choose a Topic';
+    }
   };
 
   const handleRefresh = async () => {
@@ -84,7 +119,7 @@ const TopicSelectionScreen: React.FC<Props> = ({ navigation }) => {
     <View style={styles.emptyContainer}>
       <Text style={styles.emptyTitle}>No Topics Available</Text>
       <Text style={styles.emptyText}>
-        No pairs exercises found for {userLanguage} at {userDifficulty} level.
+        No {exerciseType} exercises found for {userLanguage} at {userDifficulty} level.
       </Text>
       <Text style={styles.emptyHint}>
         Try changing your language or difficulty in Settings.
@@ -104,7 +139,7 @@ const TopicSelectionScreen: React.FC<Props> = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Choose a Topic</Text>
+        <Text style={styles.headerTitle}>{getExerciseTypeTitle()}</Text>
         <Text style={styles.headerSubtitle}>
           {userLanguage} • {userDifficulty}
         </Text>
