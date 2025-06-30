@@ -19,6 +19,44 @@ const withTimeout = <T>(promise: Promise<T>, timeoutMs: number = 5000): Promise<
   ]);
 };
 
+// Safe database cleanup helper
+const safeCloseDatabase = async (db: any): Promise<void> => {
+  if (!db) return;
+  
+  try {
+    // First, check if database is still open
+    // Some databases might already be closed due to errors
+    
+    // Try to rollback any pending transactions
+    try {
+      await withTimeout(db.executeSql('ROLLBACK'), 2000);
+    } catch (rollbackError) {
+      // Rollback might fail if:
+      // 1. No transaction is active (normal)
+      // 2. Database is already closed (normal)
+      // 3. Database is corrupted (we'll still try to close)
+      const errorMsg = rollbackError instanceof Error ? rollbackError.message : String(rollbackError);
+      if (!errorMsg.includes('database is locked') && !errorMsg.includes('not an error')) {
+        console.log('Rollback not needed or failed (this is usually normal):', errorMsg);
+      }
+    }
+    
+    // Wait a brief moment for any pending operations to complete
+    await new Promise(resolve => setTimeout(resolve, 50));
+    
+    // Now try to close the database with timeout
+    await withTimeout(db.close(), 3000);
+    console.log('✅ Database closed safely');
+    
+  } catch (closeError) {
+    const errorMsg = closeError instanceof Error ? closeError.message : String(closeError);
+    // Only log errors that aren't "already closed" type errors
+    if (!errorMsg.includes('database is closed') && !errorMsg.includes('invalid connection')) {
+      console.error('Error during safe database close:', errorMsg);
+    }
+  }
+};
+
 // First, ensure the database is copied from bundle to Documents
 async function ensureDatabaseCopied() {
   try {
@@ -138,15 +176,8 @@ export const logDatabaseTables = async () => {
     console.error('❌ Database Error:', error);
     console.error('Details:', error instanceof Error ? error.message : error);
   } finally {
-    // Always close the database
-    if (db) {
-      try {
-        await db.close();
-        console.log('✅ Database closed');
-      } catch (closeError) {
-        console.error('Error closing database:', closeError);
-      }
-    }
+    // Always close the database safely
+    await safeCloseDatabase(db);
   }
 };
 
@@ -176,13 +207,7 @@ export const getLanguages = async (): Promise<Language[]> => {
     console.error('Failed to get languages:', error);
     return [];
   } finally {
-    if (db) {
-      try {
-        await db.close();
-      } catch (closeError) {
-        console.error('Error closing database:', closeError);
-      }
-    }
+    await safeCloseDatabase(db);
   }
 };
 
@@ -211,13 +236,7 @@ export const getDifficulties = async (): Promise<Difficulty[]> => {
     console.error('Failed to get difficulties:', error);
     return [];
   } finally {
-    if (db) {
-      try {
-        await db.close();
-      } catch (closeError) {
-        console.error('Error closing database:', closeError);
-      }
-    }
+    await safeCloseDatabase(db);
   }
 };
 
@@ -246,13 +265,7 @@ export const getTopics = async (): Promise<Topic[]> => {
     console.error('Failed to get topics:', error);
     return [];
   } finally {
-    if (db) {
-      try {
-        await db.close();
-      } catch (closeError) {
-        console.error('Error closing database:', closeError);
-      }
-    }
+    await safeCloseDatabase(db);
   }
 };
 
@@ -282,13 +295,7 @@ export const getMostRecentUser = async (): Promise<string> => {
     console.error('Failed to get most recent user:', error);
     return 'default_user';
   } finally {
-    if (db) {
-      try {
-        await db.close();
-      } catch (closeError) {
-        console.error('Error closing database:', closeError);
-      }
-    }
+    await safeCloseDatabase(db);
   }
 };
 
@@ -310,13 +317,7 @@ const createDefaultUser = async (): Promise<void> => {
   } catch (error) {
     console.error('Failed to create default user:', error);
   } finally {
-    if (db) {
-      try {
-        await db.close();
-      } catch (closeError) {
-        console.error('Error closing database:', closeError);
-      }
-    }
+    await safeCloseDatabase(db);
   }
 };
 
@@ -372,13 +373,7 @@ export const getUserSettings = async (username: string): Promise<{ [key: string]
     console.error('Failed to get user settings:', error);
     return {};
   } finally {
-    if (db) {
-      try {
-        await db.close();
-      } catch (closeError) {
-        console.error('Error closing database:', closeError);
-      }
-    }
+    await safeCloseDatabase(db);
   }
 };
 
@@ -423,13 +418,7 @@ export const setUserSetting = async (username: string, settingName: string, sett
     console.error('Failed to set user setting:', error);
     throw error;
   } finally {
-    if (db) {
-      try {
-        await db.close();
-      } catch (closeError) {
-        console.error('Error closing database:', closeError);
-      }
-    }
+    await safeCloseDatabase(db);
   }
 };
 
@@ -451,13 +440,7 @@ export const updateUserLogin = async (username: string): Promise<void> => {
   } catch (error) {
     console.error('Failed to update user login:', error);
   } finally {
-    if (db) {
-      try {
-        await db.close();
-      } catch (closeError) {
-        console.error('Error closing database:', closeError);
-      }
-    }
+    await safeCloseDatabase(db);
   }
 };
 
@@ -499,13 +482,7 @@ export const getTopicsForPairs = async (language: string, difficulty: string): P
     console.error('Failed to get topics for pairs:', error);
     return [];
   } finally {
-    if (db) {
-      try {
-        await db.close();
-      } catch (closeError) {
-        console.error('Error closing database:', closeError);
-      }
-    }
+    await safeCloseDatabase(db);
   }
 };
 
@@ -543,13 +520,7 @@ export const getRandomExerciseForTopic = async (topicId: number, language: strin
     console.error('Failed to get random exercise for topic:', error);
     return null;
   } finally {
-    if (db) {
-      try {
-        await db.close();
-      } catch (closeError) {
-        console.error('Error closing database:', closeError);
-      }
-    }
+    await safeCloseDatabase(db);
   }
 };
 
@@ -581,13 +552,7 @@ export const getPairExercises = async (exerciseId: number): Promise<PairExercise
     console.error('Failed to get pair exercises:', error);
     return [];
   } finally {
-    if (db) {
-      try {
-        await db.close();
-      } catch (closeError) {
-        console.error('Error closing database:', closeError);
-      }
-    }
+    await safeCloseDatabase(db);
   }
 };
 
@@ -619,13 +584,7 @@ export const getExercisesByLesson = async (lessonId: string): Promise<ExerciseIn
     console.error('Failed to get exercises by lesson:', error);
     return [];
   } finally {
-    if (db) {
-      try {
-        await db.close();
-      } catch (closeError) {
-        console.error('Error closing database:', closeError);
-      }
-    }
+    await safeCloseDatabase(db);
   }
 };
 
@@ -667,13 +626,7 @@ export const getTopicsForConversation = async (language: string, difficulty: str
     console.error('Failed to get topics for conversation:', error);
     return [];
   } finally {
-    if (db) {
-      try {
-        await db.close();
-      } catch (closeError) {
-        console.error('Error closing database:', closeError);
-      }
-    }
+    await safeCloseDatabase(db);
   }
 };
 
@@ -711,13 +664,7 @@ export const getRandomConversationExerciseForTopic = async (topicId: number, lan
     console.error('Failed to get random conversation exercise for topic:', error);
     return null;
   } finally {
-    if (db) {
-      try {
-        await db.close();
-      } catch (closeError) {
-        console.error('Error closing database:', closeError);
-      }
-    }
+    await safeCloseDatabase(db);
   }
 };
 
@@ -769,13 +716,7 @@ export const getConversationExerciseData = async (exerciseId: number): Promise<a
     console.error('Failed to get conversation exercise data:', error);
     return [];
   } finally {
-    if (db) {
-      try {
-        await db.close();
-      } catch (closeError) {
-        console.error('Error closing database:', closeError);
-      }
-    }
+    await safeCloseDatabase(db);
   }
 };
 
@@ -817,13 +758,7 @@ export const getTopicsForTranslation = async (language: string, difficulty: stri
     console.error('Failed to get topics for translation:', error);
     return [];
   } finally {
-    if (db) {
-      try {
-        await db.close();
-      } catch (closeError) {
-        console.error('Error closing database:', closeError);
-      }
-    }
+    await safeCloseDatabase(db);
   }
 };
 
@@ -861,13 +796,7 @@ export const getRandomTranslationExerciseForTopic = async (topicId: number, lang
     console.error('Failed to get random translation exercise for topic:', error);
     return null;
   } finally {
-    if (db) {
-      try {
-        await db.close();
-      } catch (closeError) {
-        console.error('Error closing database:', closeError);
-      }
-    }
+    await safeCloseDatabase(db);
   }
 };
 
@@ -919,13 +848,7 @@ export const getTranslationExerciseData = async (exerciseId: number): Promise<an
     console.error('Failed to get translation exercise data:', error);
     return [];
   } finally {
-    if (db) {
-      try {
-        await db.close();
-      } catch (closeError) {
-        console.error('Error closing database:', closeError);
-      }
-    }
+    await safeCloseDatabase(db);
   }
 };
 
@@ -955,13 +878,7 @@ export const getConversationSummary = async (exerciseId: number): Promise<string
     console.error('Failed to get conversation summary:', error);
     return null;
   } finally {
-    if (db) {
-      try {
-        await db.close();
-      } catch (closeError) {
-        console.error('Error closing database:', closeError);
-      }
-    }
+    await safeCloseDatabase(db);
   }
 };
 
@@ -994,13 +911,7 @@ export const getRandomConversationSummaries = async (currentExerciseId: number, 
     console.error('Failed to get random conversation summaries:', error);
     return [];
   } finally {
-    if (db) {
-      try {
-        await db.close();
-      } catch (closeError) {
-        console.error('Error closing database:', closeError);
-      }
-    }
+    await safeCloseDatabase(db);
   }
 };
 
@@ -1030,13 +941,7 @@ export const getTopicNameForExercise = async (exerciseId: number): Promise<strin
     console.error('Failed to get topic name for exercise:', error);
     return null;
   } finally {
-    if (db) {
-      try {
-        await db.close();
-      } catch (closeError) {
-        console.error('Error closing database:', closeError);
-      }
-    }
+    await safeCloseDatabase(db);
   }
 };
 
@@ -1060,13 +965,7 @@ export const recordExerciseAttempt = async (userId: number, exerciseId: number, 
     console.error('Failed to record exercise attempt:', error);
     throw error;
   } finally {
-    if (db) {
-      try {
-        await db.close();
-      } catch (closeError) {
-        console.error('Error closing database:', closeError);
-      }
-    }
+    await safeCloseDatabase(db);
   }
 };
 
@@ -1113,13 +1012,7 @@ export const getUserId = async (username: string): Promise<number | null> => {
     console.error('Failed to get user ID:', error);
     return null;
   } finally {
-    if (db) {
-      try {
-        await db.close();
-      } catch (closeError) {
-        console.error('Error closing database:', closeError);
-      }
-    }
+    await safeCloseDatabase(db);
   }
 };
 
@@ -1171,13 +1064,7 @@ export const getUserStatsByTopic = async (userId: number): Promise<any[]> => {
     console.error('Failed to get user stats by topic:', error);
     return [];
   } finally {
-    if (db) {
-      try {
-        await db.close();
-      } catch (closeError) {
-        console.error('Error closing database:', closeError);
-      }
-    }
+    await safeCloseDatabase(db);
   }
 };
 
@@ -1237,17 +1124,120 @@ export const getUserFailedExercises = async (userId: number): Promise<any[]> => 
     console.error('Failed to get user failed exercises:', error);
     return [];
   } finally {
-    if (db) {
-      try {
-        await db.close();
-      } catch (closeError) {
-        console.error('Error closing database:', closeError);
-      }
-    }
+    await safeCloseDatabase(db);
   }
 };
 
 // Get user progress summary
+// Batched function to get both stats and summary in one connection
+export const getUserStatsAndSummary = async (userId: number): Promise<{
+  stats: any[],
+  summary: any
+}> => {
+  let db = null;
+  
+  try {
+    // Validate input
+    if (!userId || userId <= 0) {
+      console.error('Invalid userId provided to getUserStatsAndSummary:', userId);
+      return {
+        stats: [],
+        summary: {
+          total_attempted: 0,
+          total_correct: 0,
+          total_available: 0,
+          overall_completion_percentage: 0,
+          success_rate: 0
+        }
+      };
+    }
+    
+    await ensureDatabaseCopied();
+    
+    db = await withTimeout(SQLite.openDatabase({
+      name: 'languageLearningDatabase.db',
+      location: 'Documents'
+    }), 3000);
+    
+    // Execute both queries in parallel using the same connection
+    const [statsResults, summaryResults] = await Promise.all([
+      withTimeout(db.executeSql(`
+        SELECT 
+          t.topic,
+          t.id as topic_id,
+          COUNT(DISTINCT uea.exercise_id) as attempted_exercises,
+          COUNT(DISTINCT CASE WHEN uea.is_correct = 1 THEN uea.exercise_id END) as correct_exercises,
+          COUNT(DISTINCT ei.id) as total_exercises,
+          ROUND(
+            CAST(COUNT(DISTINCT CASE WHEN uea.is_correct = 1 THEN uea.exercise_id END) AS FLOAT) / 
+            CAST(COUNT(DISTINCT ei.id) AS FLOAT) * 100, 1
+          ) as completion_percentage
+        FROM topics t
+        LEFT JOIN exercises_info ei ON t.id = ei.topic_id
+        LEFT JOIN user_exercise_attempts uea ON ei.id = uea.exercise_id AND uea.user_id = ?
+        GROUP BY t.id, t.topic
+        ORDER BY t.topic
+      `, [userId]), 7000),
+      
+      withTimeout(db.executeSql(`
+        SELECT 
+          COUNT(DISTINCT uea.exercise_id) as total_attempted,
+          COUNT(DISTINCT CASE WHEN uea.is_correct = 1 THEN uea.exercise_id END) as total_correct,
+          COUNT(DISTINCT ei.id) as total_available,
+          ROUND(
+            CAST(COUNT(DISTINCT CASE WHEN uea.is_correct = 1 THEN uea.exercise_id END) AS FLOAT) / 
+            CAST(COUNT(DISTINCT ei.id) AS FLOAT) * 100, 1
+          ) as overall_completion_percentage,
+          ROUND(
+            CAST(COUNT(DISTINCT CASE WHEN uea.is_correct = 1 THEN uea.exercise_id END) AS FLOAT) / 
+            CAST(COUNT(DISTINCT uea.exercise_id) AS FLOAT) * 100, 1
+          ) as success_rate
+        FROM exercises_info ei
+        LEFT JOIN user_exercise_attempts uea ON ei.id = uea.exercise_id AND uea.user_id = ?
+      `, [userId]), 7000)
+    ]);
+    
+    // Process stats results
+    const stats: any[] = [];
+    if (statsResults && statsResults[0]) {
+      for (let i = 0; i < statsResults[0].rows.length; i++) {
+        stats.push(statsResults[0].rows.item(i));
+      }
+    }
+    
+    // Process summary results
+    let summary;
+    if (summaryResults && summaryResults[0] && summaryResults[0].rows.length > 0) {
+      summary = summaryResults[0].rows.item(0);
+    } else {
+      summary = {
+        total_attempted: 0,
+        total_correct: 0,
+        total_available: 0,
+        overall_completion_percentage: 0,
+        success_rate: 0
+      };
+    }
+    
+    return { stats, summary };
+    
+  } catch (error) {
+    console.error('Failed to get user stats and summary:', error);
+    return {
+      stats: [],
+      summary: {
+        total_attempted: 0,
+        total_correct: 0,
+        total_available: 0,
+        overall_completion_percentage: 0,
+        success_rate: 0
+      }
+    };
+  } finally {
+    await safeCloseDatabase(db);
+  }
+};
+
 export const getUserProgressSummary = async (userId: number): Promise<any> => {
   let db = null;
   
@@ -1309,13 +1299,7 @@ export const getUserProgressSummary = async (userId: number): Promise<any> => {
       success_rate: 0
     };
   } finally {
-    if (db) {
-      try {
-        await db.close();
-      } catch (closeError) {
-        console.error('Error closing database:', closeError);
-      }
-    }
+    await safeCloseDatabase(db);
   }
 };
 

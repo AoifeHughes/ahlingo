@@ -13,6 +13,7 @@ import { RootStackParamList } from '../types';
 import {
   getUserStatsByTopic,
   getUserProgressSummary,
+  getUserStatsAndSummary,
   getMostRecentUser,
   getUserSettings,
   getUserId,
@@ -49,12 +50,22 @@ const StatsScreen: React.FC<Props> = ({ navigation }) => {
   const [topicStats, setTopicStats] = useState<TopicStats[]>([]);
   const [progressSummary, setProgressSummary] = useState<ProgressSummary | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
+  const isLoadingRef = useRef(false);
 
   const loadUserStats = useCallback(async () => {
+    // Prevent multiple concurrent requests
+    if (isLoadingRef.current) {
+      console.log('Stats loading already in progress, skipping duplicate request');
+      return;
+    }
+
     // Cancel any previous request
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
     }
+
+    // Set loading guard
+    isLoadingRef.current = true;
 
     // Create new abort controller
     abortControllerRef.current = new AbortController();
@@ -98,12 +109,9 @@ const StatsScreen: React.FC<Props> = ({ navigation }) => {
         return;
       }
 
-      // Load topic stats and progress summary with timeout
-      const [topicData, summaryData] = await Promise.race([
-        Promise.all([
-          getUserStatsByTopic(userId),
-          getUserProgressSummary(userId)
-        ]),
+      // Load topic stats and progress summary with timeout using batched function
+      const { stats: topicData, summary: summaryData } = await Promise.race([
+        getUserStatsAndSummary(userId),
         timeoutPromise
       ]);
 
@@ -125,6 +133,9 @@ const StatsScreen: React.FC<Props> = ({ navigation }) => {
         Alert.alert('Error', 'Failed to load statistics. Please try again.');
       }
     } finally {
+      // Always clear the loading guard
+      isLoadingRef.current = false;
+      
       if (!signal.aborted) {
         setLoading(false);
       }
@@ -141,10 +152,12 @@ const StatsScreen: React.FC<Props> = ({ navigation }) => {
           abortControllerRef.current.abort();
           abortControllerRef.current = null;
         }
+        // Clear loading guard
+        isLoadingRef.current = false;
         // Reset loading state when leaving screen
         setLoading(true);
       };
-    }, [loadUserStats])
+    }, []) // Remove loadUserStats dependency to prevent re-creation
   );
 
   const renderProgressBar = (percentage: number) => {
