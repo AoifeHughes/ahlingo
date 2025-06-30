@@ -16,7 +16,6 @@ import { RootState } from '../store';
 import TopicCard from '../components/TopicCard';
 import {
   getTopicsForPairs,
-  getTopicsForConversations,
   getUserSettings,
   getMostRecentUser,
 } from '../services/SimpleDatabaseService';
@@ -65,8 +64,6 @@ const TopicSelectionScreen: React.FC<Props> = ({ navigation, route }) => {
       let availableTopics: Topic[] = [];
       if (exerciseType === 'pairs') {
         availableTopics = await getTopicsForPairs(language, difficulty);
-      } else if (exerciseType === 'conversation') {
-        availableTopics = await getTopicsForConversations(language, difficulty);
       } else {
         // For translation exercises, use pairs for now (you can add getTopicsForTranslation later)
         availableTopics = await getTopicsForPairs(language, difficulty);
@@ -85,8 +82,6 @@ const TopicSelectionScreen: React.FC<Props> = ({ navigation, route }) => {
   const handleTopicPress = (topic: Topic) => {
     if (exerciseType === 'pairs') {
       navigation.navigate('PairsGame', { topicId: topic.id });
-    } else if (exerciseType === 'conversation') {
-      navigation.navigate('ConversationExercises', { topicId: topic.id });
     } else if (exerciseType === 'translation') {
       navigation.navigate('TranslationExercises', { topicId: topic.id });
     }
@@ -96,8 +91,6 @@ const TopicSelectionScreen: React.FC<Props> = ({ navigation, route }) => {
     switch (exerciseType) {
       case 'pairs':
         return 'Pairs Exercises';
-      case 'conversation':
-        return 'Conversation Exercises';
       case 'translation':
         return 'Translation Exercises';
       default:

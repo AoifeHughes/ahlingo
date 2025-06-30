@@ -64,8 +64,6 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
               onPress={() => {
                 if (item.screen === 'TopicSelection') {
                   navigation.navigate('TopicSelection', { exerciseType: 'pairs' });
-                } else if (item.screen === 'ConversationExercises') {
-                  navigation.navigate('TopicSelection', { exerciseType: 'conversation' });
                 } else if (item.screen === 'TranslationExercises') {
                   navigation.navigate('TopicSelection', { exerciseType: 'translation' });
                 } else {

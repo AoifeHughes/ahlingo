@@ -26,7 +26,7 @@ export interface ExerciseInfo {
   topic_id: number;
   difficulty_id: number;
   language_id: number;
-  exercise_type: 'pairs' | 'conversation' | 'translation';
+  exercise_type: 'pairs' | 'translation';
   lesson_id?: string;
 }
 
@@ -39,13 +39,6 @@ export interface PairExercise {
   language_2_content: string;
 }
 
-export interface ConversationExercise {
-  id: number;
-  exercise_id: number;
-  conversation_order: number;
-  speaker: string;
-  message: string;
-}
 
 export interface TranslationExercise {
   id: number;
