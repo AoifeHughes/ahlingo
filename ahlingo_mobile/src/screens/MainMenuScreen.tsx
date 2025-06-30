@@ -1,6 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Text, StatusBar } from 'react-native';
-import { Button } from 'react-native-elements';
+import { View, StyleSheet, Text, StatusBar, TouchableOpacity, Dimensions } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types';
 
@@ -13,34 +12,48 @@ interface Props {
   navigation: MainMenuScreenNavigationProp;
 }
 
+const { width } = Dimensions.get('window');
+const cardSize = (width - 60) / 2; // 2 cards per row with padding
+
 const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
-  const menuItems = [
+  const exerciseItems = [
     { 
-      title: 'Pairs Exercises', 
+      title: 'Match Words', 
       screen: 'TopicSelection' as keyof RootStackParamList,
-      icon: '🎯'
+      icon: '🎯',
+      exerciseType: 'pairs',
+      color: '#FF6B6B'
     },
     { 
-      title: 'Conversation Exercises', 
-      screen: 'ConversationExercises' as keyof RootStackParamList,
-      icon: '💬'
+      title: 'Conversations', 
+      screen: 'TopicSelection' as keyof RootStackParamList,
+      icon: '💬',
+      exerciseType: 'conversation',
+      color: '#4ECDC4'
     },
     { 
-      title: 'Translation Exercises', 
-      screen: 'TranslationExercises' as keyof RootStackParamList,
-      icon: '📝'
+      title: 'Translate', 
+      screen: 'TopicSelection' as keyof RootStackParamList,
+      icon: '📝',
+      exerciseType: 'translation',
+      color: '#45B7D1'
     },
     { 
-      title: 'Chatbot', 
+      title: 'Chat Practice', 
       screen: 'Chatbot' as keyof RootStackParamList,
-      icon: '🤖'
-    },
-    { 
-      title: 'Settings', 
-      screen: 'Settings' as keyof RootStackParamList,
-      icon: '⚙️'
+      icon: '🤖',
+      exerciseType: null,
+      color: '#96CEB4'
     },
   ];
+
+  const handleExercisePress = (item: typeof exerciseItems[0]) => {
+    if (item.exerciseType) {
+      navigation.navigate('TopicSelection', { exerciseType: item.exerciseType });
+    } else {
+      navigation.navigate(item.screen as any);
+    }
+  };
 
   return (
     <>
@@ -48,36 +61,32 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.title}>AHLingo</Text>
-          <Text style={styles.subtitle}>Language Learning App</Text>
+          <TouchableOpacity 
+            style={styles.settingsButton}
+            onPress={() => navigation.navigate('Settings')}
+          >
+            <Text style={styles.settingsIcon}>⚙️</Text>
+          </TouchableOpacity>
         </View>
         
-        <View style={styles.menuContainer}>
-          {menuItems.map((item, index) => (
-            <Button
+        <View style={styles.cardsContainer}>
+          {exerciseItems.map((item, index) => (
+            <TouchableOpacity
               key={index}
-              title={`${item.icon}  ${item.title}`}
-              buttonStyle={[
-                styles.menuButton,
-                { backgroundColor: index % 2 === 0 ? '#1976D2' : '#2196F3' }
-              ]}
-              titleStyle={styles.menuButtonText}
-              onPress={() => {
-                if (item.screen === 'TopicSelection') {
-                  navigation.navigate('TopicSelection', { exerciseType: 'pairs' });
-                } else if (item.screen === 'ConversationExercises') {
-                  navigation.navigate('TopicSelection', { exerciseType: 'conversation' });
-                } else if (item.screen === 'TranslationExercises') {
-                  navigation.navigate('TopicSelection', { exerciseType: 'translation' });
-                } else {
-                  navigation.navigate(item.screen as any);
-                }
-              }}
-            />
+              style={[styles.exerciseCard, { backgroundColor: item.color }]}
+              onPress={() => handleExercisePress(item)}
+              activeOpacity={0.8}
+            >
+              <View style={styles.cardContent}>
+                <Text style={styles.cardIcon}>{item.icon}</Text>
+                <Text style={styles.cardTitle}>{item.title}</Text>
+              </View>
+            </TouchableOpacity>
           ))}
         </View>
         
         <View style={styles.footer}>
-          <Text style={styles.footerText}>Start your French learning journey</Text>
+          <Text style={styles.footerText}>Start your language learning journey</Text>
         </View>
       </View>
     </>
@@ -92,9 +101,11 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: '#1976D2',
     paddingTop: 60,
-    paddingBottom: 40,
+    paddingBottom: 30,
     paddingHorizontal: 20,
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     elevation: 4,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -102,40 +113,65 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
   },
   title: {
-    fontSize: 36,
+    fontSize: 32,
     fontWeight: 'bold',
     color: '#FFFFFF',
-    marginBottom: 8,
     textAlign: 'center',
-  },
-  subtitle: {
-    fontSize: 18,
-    color: '#E3F2FD',
-    textAlign: 'center',
-  },
-  menuContainer: {
     flex: 1,
+  },
+  settingsButton: {
+    position: 'absolute',
+    right: 20,
+    top: 60,
+    width: 40,
+    height: 40,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 32,
-    paddingVertical: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
   },
-  menuButton: {
-    borderRadius: 12,
-    paddingVertical: 18,
-    paddingHorizontal: 40,
-    marginVertical: 10,
-    minWidth: 280,
-    elevation: 4,
+  settingsIcon: {
+    fontSize: 20,
+    color: '#FFFFFF',
+  },
+  cardsContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingVertical: 30,
+    alignContent: 'center',
+  },
+  exerciseCard: {
+    width: cardSize,
+    height: cardSize,
+    borderRadius: 20,
+    marginBottom: 20,
+    elevation: 8,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  menuButtonText: {
-    fontSize: 18,
+  cardContent: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  cardIcon: {
+    fontSize: 48,
+    marginBottom: 12,
+  },
+  cardTitle: {
+    fontSize: 16,
     fontWeight: '600',
+    color: '#FFFFFF',
     textAlign: 'center',
+    textShadowColor: 'rgba(0, 0, 0, 0.3)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
   },
   footer: {
     paddingVertical: 20,

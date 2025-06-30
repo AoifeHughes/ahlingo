@@ -625,6 +625,69 @@ class LanguageDB:
         self.conn.commit()
         return exercise_id
 
+    def add_pair_exercise_batch(
+        self,
+        exercise_name: str,
+        language: str,
+        topic: str,
+        difficulty_level: str,
+        language_1: str,
+        language_2: str,
+        pairs: List[Dict[str, str]],
+        lesson_id: str = None,
+    ) -> int:
+        """Add a batch of word pairs as a single exercise to the database."""
+        if not pairs:
+            return -1
+            
+        language_id = self._get_or_create_language(language)
+        topic_id = self._get_or_create_topic(topic)
+        difficulty_id = self._get_or_create_difficulty(difficulty_level)
+
+        # Create a single exercise for all pairs
+        self.cursor.execute(
+            """INSERT INTO exercises_info
+               (exercise_name, language_id, topic_id, difficulty_id, exercise_type, lesson_id)
+               VALUES (?, ?, ?, ?, ?, ?)""",
+            (exercise_name, language_id, topic_id, difficulty_id, "pairs", lesson_id),
+        )
+        exercise_id = self.cursor.lastrowid
+
+        # Insert all pairs under the same exercise_id
+        for pair in pairs:
+            # Check for duplicates within this batch (skip if duplicate)
+            language_1_content = pair.get(language_1, "")
+            language_2_content = pair.get(language_2, "")
+            
+            if not language_1_content or not language_2_content:
+                continue  # Skip invalid pairs
+                
+            # Check if this specific pair already exists in the database
+            self.cursor.execute(
+                """SELECT COUNT(*) FROM pair_exercises
+                   WHERE language_1_content = ? AND language_2_content = ?""",
+                (language_1_content, language_2_content),
+            )
+            existing_count = self.cursor.fetchone()[0]
+            if existing_count > 0:
+                continue  # Skip duplicate pairs
+                
+            self.cursor.execute(
+                """INSERT INTO pair_exercises
+                   (exercise_id, language_1, language_2, language_1_content, language_2_content)
+                   VALUES (?, ?, ?, ?, ?)""",
+                (
+                    exercise_id,
+                    language_1,
+                    language_2,
+                    language_1_content,
+                    language_2_content,
+                ),
+            )
+
+        self.conn.commit()
+        return exercise_id
+
     def add_translation_exercise(
         self,
         exercise_name: str,

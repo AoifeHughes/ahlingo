@@ -91,7 +91,7 @@ Focus on practical situations related to {topic}. Make conversations realistic a
 
 
 def generate_pairs(model, language: str, level: str, topic: str):
-    """Generate word pairs with guaranteed structure."""
+    """Generate word pairs with guaranteed structure - creates exactly 10 pairs per exercise."""
     from .assistants import default_pairs_assistants
     
     # JSON schema for word pairs as string
@@ -117,12 +117,17 @@ def generate_pairs(model, language: str, level: str, topic: str):
     
     prompt = f"""You are a {language} language learning tool. Generate vocabulary pairs for "{topic}".
 
-Create 8-12 word pairs at {level} level:
+Create EXACTLY 10 word pairs at {level} level:
 - English word paired with {language} translation
-- Mix of nouns, verbs, adjectives
+- Mix of nouns, verbs, adjectives, and adverbs
 - Common, practical vocabulary related to {topic}
 - Single words only (avoid phrases)
-- Ensure variety in word types and avoid repetition{assistant_examples}"""
+- Each pair must be unique and different from the others
+- Ensure variety in word types and avoid any repetition or duplicates
+- Do not repeat any English words or {language} words within this set
+- Create diverse vocabulary covering different aspects of {topic}{assistant_examples}
+
+IMPORTANT: Generate exactly 10 unique pairs. Each English word and each {language} word should appear only once in the entire set."""
 
     result = generator(prompt)
     # result is already a JSON string, parse it to return as list

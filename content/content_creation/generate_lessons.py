@@ -96,17 +96,30 @@ def process_response(
                         lesson_id=lesson_id,
                     )
                 elif lesson_kind == "pairs":
-                    db.add_pair_exercise(
-                        exercise_name=exercise_name,
-                        language=language,
-                        topic=topic,
-                        difficulty_level=level,
-                        language_1="English",
-                        language_2=language,
-                        language_1_content=clean_text(exercise["English"]),
-                        language_2_content=clean_text(exercise[language]),
-                        lesson_id=lesson_id,
-                    )
+                    # For pairs, we want to process the entire batch at once rather than individual pairs
+                    # This should only execute once per response since we're handling all pairs together
+                    if idx == 0:  # Only process on the first iteration
+                        # Clean all pairs in the response
+                        cleaned_pairs = []
+                        for pair_exercise in cleaned_response:
+                            cleaned_pairs.append({
+                                "English": clean_text(pair_exercise["English"]),
+                                language: clean_text(pair_exercise[language])
+                            })
+                        
+                        # Add all pairs as a single exercise
+                        db.add_pair_exercise_batch(
+                            exercise_name=f"{lesson_name} - Exercise 1",
+                            language=language,
+                            topic=topic,
+                            difficulty_level=level,
+                            language_1="English",
+                            language_2=language,
+                            pairs=cleaned_pairs,
+                            lesson_id=lesson_id,
+                        )
+                        # Skip the rest of the loop for pairs
+                        break
                 elif lesson_kind == "translations":
                     db.add_translation_exercise(
                         exercise_name=exercise_name,

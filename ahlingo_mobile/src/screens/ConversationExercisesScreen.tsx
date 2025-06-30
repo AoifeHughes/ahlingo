@@ -85,6 +85,17 @@ const ConversationExercisesScreen: React.FC<Props> = ({ navigation, route }) => 
     }
   }, [topicId]);
 
+  // Clean text to handle spacing issues around punctuation
+  const cleanText = (text: string): string => {
+    return text
+      // Attach punctuation to the preceding word (remove spaces before punctuation)
+      .replace(/\s+([.,!?;:])/g, '$1')
+      // Normalize multiple spaces to single space
+      .replace(/\s+/g, ' ')
+      // Trim leading and trailing spaces
+      .trim();
+  };
+
   const loadConversationData = async () => {
     try {
       setLoading(true);
@@ -111,7 +122,15 @@ const ConversationExercisesScreen: React.FC<Props> = ({ navigation, route }) => 
       
       // Get conversation data for this exercise
       const exerciseData = await getConversationExerciseData(exercise.id);
-      setConversationData(exerciseData);
+      
+      // Clean the conversation messages
+      const cleanedData = exerciseData.map(msg => ({
+        ...msg,
+        message: cleanText(msg.message),
+        speaker: cleanText(msg.speaker),
+      }));
+      
+      setConversationData(cleanedData);
       
       // Get topic name
       const topicNameResult = await getTopicNameForExercise(exercise.id);
@@ -122,13 +141,17 @@ const ConversationExercisesScreen: React.FC<Props> = ({ navigation, route }) => 
       const wrongSummaries = await getRandomConversationSummaries(exercise.id, 2);
       
       if (correctSummary && wrongSummaries.length >= 2) {
+        // Clean all summaries
+        const cleanCorrectSummary = cleanText(correctSummary);
+        const cleanWrongSummaries = wrongSummaries.map(summary => cleanText(summary));
+        
         // Create options array with correct answer in random position
-        const options = [correctSummary, ...wrongSummaries];
+        const options = [cleanCorrectSummary, ...cleanWrongSummaries];
         const shuffledOptions = options.sort(() => Math.random() - 0.5);
         
         setQuizState(prev => ({
           ...prev,
-          correctAnswer: correctSummary,
+          correctAnswer: cleanCorrectSummary,
           options: shuffledOptions,
           selectedOption: null,
           hasAnswered: false,

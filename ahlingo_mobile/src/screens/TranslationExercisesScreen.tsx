@@ -13,6 +13,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useSelector } from 'react-redux';
 import { RootStackParamList, ExerciseInfo } from '../types';
 import { RootState } from '../store';
+import { WordButton, AnswerBox } from '../components';
 import {
   getRandomTranslationExerciseForTopic,
   getTranslationExerciseData,
@@ -31,6 +32,27 @@ interface Props {
   navigation: TranslationExercisesScreenNavigationProp;
 }
 
+interface TranslationExercise {
+  language_1_content: string;
+  language_2_content: string;
+}
+
+interface WordState {
+  word: string;
+  originalIndex: number;
+  isUsed: boolean;
+}
+
+interface GameState {
+  sourceText: string;
+  targetWords: WordState[];
+  selectedWords: Array<{ word: string; originalIndex: number }>;
+  correctAnswer: string;
+  hasSubmitted: boolean;
+  isCorrect: boolean | null;
+  score: number;
+}
+
 const TranslationExercisesScreen: React.FC<Props> = ({ route, navigation }) => {
   const { topicId } = route.params || {};
   const { settings } = useSelector((state: RootState) => state.settings);
@@ -46,7 +68,16 @@ const TranslationExercisesScreen: React.FC<Props> = ({ route, navigation }) => {
   
   const [loading, setLoading] = useState(true);
   const [currentExercise, setCurrentExercise] = useState<ExerciseInfo | null>(null);
-  const [translationData, setTranslationData] = useState<any[]>([]);
+  const [translationData, setTranslationData] = useState<TranslationExercise[]>([]);
+  const [gameState, setGameState] = useState<GameState>({
+    sourceText: '',
+    targetWords: [],
+    selectedWords: [],
+    correctAnswer: '',
+    hasSubmitted: false,
+    isCorrect: null,
+    score: 0,
+  });
   const [userLanguage, setUserLanguage] = useState<string>('French');
   const [userDifficulty, setUserDifficulty] = useState<string>('Beginner');
 
@@ -84,6 +115,11 @@ const TranslationExercisesScreen: React.FC<Props> = ({ route, navigation }) => {
       const exerciseData = await getTranslationExerciseData(exercise.id);
       setTranslationData(exerciseData);
       
+      // Set up the game with the first translation pair
+      if (exerciseData.length > 0) {
+        setupGame(exerciseData[0]);
+      }
+      
     } catch (error) {
       console.error('Failed to load translation data:', error);
       Alert.alert('Error', 'Failed to load translation exercise. Please try again.');
@@ -93,7 +129,106 @@ const TranslationExercisesScreen: React.FC<Props> = ({ route, navigation }) => {
     }
   };
 
+  // Clean text to handle spacing issues around punctuation
+  const cleanText = (text: string): string => {
+    return text
+      // Attach punctuation to the preceding word (remove spaces before punctuation)
+      .replace(/\s+([.,!?;:])/g, '$1')
+      // Normalize multiple spaces to single space
+      .replace(/\s+/g, ' ')
+      // Trim leading and trailing spaces
+      .trim();
+  };
+
+  const setupGame = (translation: TranslationExercise) => {
+    const sourceText = cleanText(translation.language_1_content);
+    const correctAnswer = cleanText(translation.language_2_content);
+    
+    // Split the target sentence into words and shuffle them
+    const words = correctAnswer.split(' ').filter(word => word.trim() !== '');
+    const wordStates: WordState[] = words.map((word, index) => ({
+      word: cleanText(word), // Keep punctuation as part of the word
+      originalIndex: index,
+      isUsed: false,
+    }));
+    
+    // Shuffle the words
+    const shuffledWords = [...wordStates].sort(() => Math.random() - 0.5);
+    
+    setGameState({
+      sourceText,
+      targetWords: shuffledWords,
+      selectedWords: [],
+      correctAnswer,
+      hasSubmitted: false,
+      isCorrect: null,
+      score: 0,
+    });
+  };
+
   const handleRefresh = () => {
+    loadTranslationData();
+  };
+
+  const handleWordPress = (word: string, originalIndex: number) => {
+    setGameState(prev => {
+      const wordInSelected = prev.selectedWords.find(w => w.originalIndex === originalIndex);
+      
+      if (wordInSelected) {
+        // Remove word from selected
+        return {
+          ...prev,
+          selectedWords: prev.selectedWords.filter(w => w.originalIndex !== originalIndex),
+          targetWords: prev.targetWords.map(w => 
+            w.originalIndex === originalIndex ? { ...w, isUsed: false } : w
+          ),
+        };
+      } else {
+        // Add word to selected
+        return {
+          ...prev,
+          selectedWords: [...prev.selectedWords, { word, originalIndex }],
+          targetWords: prev.targetWords.map(w => 
+            w.originalIndex === originalIndex ? { ...w, isUsed: true } : w
+          ),
+        };
+      }
+    });
+  };
+
+  const handleSubmit = () => {
+    const userAnswer = gameState.selectedWords.map(w => w.word).join(' ');
+    const correctAnswer = gameState.correctAnswer;
+    
+    // Clean both answers for comparison (punctuation is now part of words)
+    const cleanUserAnswer = cleanText(userAnswer);
+    const cleanCorrectAnswer = cleanText(correctAnswer);
+    
+    const isCorrect = cleanUserAnswer.toLowerCase().trim() === cleanCorrectAnswer.toLowerCase().trim();
+    
+    setGameState(prev => ({
+      ...prev,
+      hasSubmitted: true,
+      isCorrect,
+      score: isCorrect ? prev.score + 1 : prev.score,
+    }));
+  };
+
+  const handleNextExercise = () => {
+    if (translationData.length > 1) {
+      // Get a random different exercise from the current data
+      const otherExercises = translationData.filter((_, index) => 
+        index !== translationData.findIndex(t => t.language_1_content === gameState.sourceText)
+      );
+      
+      if (otherExercises.length > 0) {
+        const nextExercise = otherExercises[Math.floor(Math.random() * otherExercises.length)];
+        setupGame(nextExercise);
+        return;
+      }
+    }
+    
+    // If no other exercises in current data, load new data
     loadTranslationData();
   };
 
@@ -115,43 +250,73 @@ const TranslationExercisesScreen: React.FC<Props> = ({ route, navigation }) => {
         </TouchableOpacity>
       </View>
       
-      {/* Exercise info */}
-      <View style={styles.infoContainer}>
-        <Text style={styles.infoTitle}>
-          {currentExercise?.exercise_name || 'Translation Exercise'}
-        </Text>
-        <Text style={styles.infoSubtitle}>
-          {userLanguage} • {userDifficulty}
-        </Text>
+      {/* Source text */}
+      <View style={styles.sourceContainer}>
+        <Text style={styles.sourceTitle}>Translate this sentence:</Text>
+        <Text style={styles.sourceText}>{gameState.sourceText}</Text>
       </View>
       
-      {/* Raw data display for testing */}
-      <ScrollView style={styles.dataContainer} contentContainerStyle={styles.dataContent}>
-        <Text style={styles.dataTitle}>Raw Exercise Data (for testing):</Text>
+      {/* Answer box */}
+      <View style={styles.answerSection}>
+        <AnswerBox 
+          selectedWords={gameState.selectedWords}
+          onWordRemove={handleWordPress}
+        />
         
-        <View style={styles.exerciseInfoSection}>
-          <Text style={styles.sectionTitle}>Exercise Info:</Text>
-          <Text style={styles.dataText}>
-            {JSON.stringify(currentExercise, null, 2)}
+        {/* Feedback */}
+        {gameState.hasSubmitted && (
+          <View style={styles.feedbackContainer}>
+            <Text style={[
+              styles.feedbackText,
+              gameState.isCorrect ? styles.correctFeedback : styles.incorrectFeedback
+            ]}>
+              {gameState.isCorrect ? '✅ Correct!' : '❌ Incorrect. Try again!'}
+            </Text>
+            {!gameState.isCorrect && (
+              <Text style={styles.correctAnswerText}>
+                Correct answer: {gameState.correctAnswer}
+              </Text>
+            )}
+            <TouchableOpacity style={styles.nextButton} onPress={handleNextExercise}>
+              <Text style={styles.nextButtonText}>Next Exercise</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </View>
+      
+      {/* Word selection area */}
+      <View style={styles.wordsContainer}>
+        <Text style={styles.wordsTitle}>Tap words to build your translation:</Text>
+        <View style={styles.wordsGrid}>
+          {gameState.targetWords.map((wordState, index) => (
+            <WordButton
+              key={`${wordState.originalIndex}-${index}`}
+              word={wordState.word}
+              index={wordState.originalIndex}
+              isSelected={wordState.isUsed}
+              onPress={handleWordPress}
+              disabled={gameState.hasSubmitted}
+            />
+          ))}
+        </View>
+        
+        {/* Submit button - always visible */}
+        <TouchableOpacity 
+          style={[
+            styles.submitButton,
+            (gameState.targetWords.length === 0 || gameState.targetWords.some(word => !word.isUsed) || gameState.hasSubmitted) && styles.submitButtonDisabled
+          ]} 
+          onPress={handleSubmit}
+          disabled={gameState.targetWords.length === 0 || gameState.targetWords.some(word => !word.isUsed) || gameState.hasSubmitted}
+        >
+          <Text style={[
+            styles.submitButtonText,
+            (gameState.targetWords.length === 0 || gameState.targetWords.some(word => !word.isUsed) || gameState.hasSubmitted) && styles.submitButtonTextDisabled
+          ]}>
+            Submit Translation
           </Text>
-        </View>
-        
-        <View style={styles.translationDataSection}>
-          <Text style={styles.sectionTitle}>Translation Data:</Text>
-          {translationData.length > 0 ? (
-            <Text style={styles.dataText}>
-              {JSON.stringify(translationData, null, 2)}
-            </Text>
-          ) : (
-            <Text style={styles.noDataText}>
-              No translation data found. This might mean:
-              {'\n'}• No translation_exercises table exists
-              {'\n'}• No data for this exercise ID
-              {'\n'}• Using pair_exercises as fallback data
-            </Text>
-          )}
-        </View>
-      </ScrollView>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -191,68 +356,105 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
   },
-  infoContainer: {
+  sourceContainer: {
     backgroundColor: '#fff',
-    paddingVertical: 16,
-    paddingHorizontal: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
-  },
-  infoTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
-    textAlign: 'center',
-    marginBottom: 4,
-  },
-  infoSubtitle: {
-    fontSize: 16,
-    color: '#666',
-    textAlign: 'center',
-  },
-  dataContainer: {
-    flex: 1,
-  },
-  dataContent: {
     padding: 16,
-  },
-  dataTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 16,
-    textAlign: 'center',
-  },
-  exerciseInfoSection: {
-    marginBottom: 24,
-  },
-  translationDataSection: {
-    marginBottom: 24,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#1976D2',
     marginBottom: 8,
   },
-  dataText: {
-    fontSize: 12,
-    fontFamily: 'monospace',
-    backgroundColor: '#f8f8f8',
-    padding: 12,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
+  sourceTitle: {
+    fontSize: 16,
+    fontWeight: '600',
     color: '#333',
+    textAlign: 'center',
+    marginBottom: 12,
   },
-  noDataText: {
-    fontSize: 14,
+  sourceText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#1976D2',
+    textAlign: 'center',
+    backgroundColor: '#f0f8ff',
+    padding: 16,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: '#e3f2fd',
+  },
+  answerSection: {
+    backgroundColor: '#fff',
+    padding: 16,
+    marginBottom: 8,
+  },
+  submitButton: {
+    backgroundColor: '#4caf50',
+    paddingVertical: 14,
+    paddingHorizontal: 24,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginTop: 16,
+  },
+  submitButtonDisabled: {
+    backgroundColor: '#ccc',
+    opacity: 0.6,
+  },
+  submitButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  submitButtonTextDisabled: {
+    color: '#999',
+  },
+  feedbackContainer: {
+    marginTop: 16,
+    alignItems: 'center',
+  },
+  feedbackText: {
+    fontSize: 18,
+    fontWeight: '600',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  correctFeedback: {
+    color: '#4caf50',
+  },
+  incorrectFeedback: {
+    color: '#f44336',
+  },
+  correctAnswerText: {
+    fontSize: 16,
     color: '#666',
-    backgroundColor: '#fff3cd',
-    padding: 12,
+    textAlign: 'center',
+    marginBottom: 12,
+    fontStyle: 'italic',
+  },
+  nextButton: {
+    backgroundColor: '#1976D2',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
     borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#ffeaa7',
+  },
+  nextButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  wordsContainer: {
+    flex: 1,
+    backgroundColor: '#fff',
+    padding: 16,
+  },
+  wordsTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  wordsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    alignItems: 'flex-start',
   },
 });
 
