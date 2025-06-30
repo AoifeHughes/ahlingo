@@ -917,3 +917,114 @@ export const getTranslationExerciseData = async (exerciseId: number): Promise<an
   }
 };
 
+// Get conversation summary for a specific exercise
+export const getConversationSummary = async (exerciseId: number): Promise<string | null> => {
+  let db = null;
+  
+  try {
+    await ensureDatabaseCopied();
+    
+    db = await SQLite.openDatabase({
+      name: 'languageLearningDatabase.db',
+      location: 'Documents'
+    });
+    
+    const results = await db.executeSql(
+      'SELECT summary FROM conversation_summaries WHERE exercise_id = ?',
+      [exerciseId]
+    );
+    
+    if (results && results[0] && results[0].rows.length > 0) {
+      return results[0].rows.item(0).summary;
+    }
+    
+    return null;
+  } catch (error) {
+    console.error('Failed to get conversation summary:', error);
+    return null;
+  } finally {
+    if (db) {
+      try {
+        await db.close();
+      } catch (closeError) {
+        console.error('Error closing database:', closeError);
+      }
+    }
+  }
+};
+
+// Get random conversation summaries for multiple choice options (excluding current exercise)
+export const getRandomConversationSummaries = async (currentExerciseId: number, count: number = 2): Promise<string[]> => {
+  let db = null;
+  
+  try {
+    await ensureDatabaseCopied();
+    
+    db = await SQLite.openDatabase({
+      name: 'languageLearningDatabase.db',
+      location: 'Documents'
+    });
+    
+    const results = await db.executeSql(
+      'SELECT summary FROM conversation_summaries WHERE exercise_id != ? ORDER BY RANDOM() LIMIT ?',
+      [currentExerciseId, count]
+    );
+    
+    const summaries: string[] = [];
+    if (results && results[0]) {
+      for (let i = 0; i < results[0].rows.length; i++) {
+        summaries.push(results[0].rows.item(i).summary);
+      }
+    }
+    
+    return summaries;
+  } catch (error) {
+    console.error('Failed to get random conversation summaries:', error);
+    return [];
+  } finally {
+    if (db) {
+      try {
+        await db.close();
+      } catch (closeError) {
+        console.error('Error closing database:', closeError);
+      }
+    }
+  }
+};
+
+// Get topic name for an exercise
+export const getTopicNameForExercise = async (exerciseId: number): Promise<string | null> => {
+  let db = null;
+  
+  try {
+    await ensureDatabaseCopied();
+    
+    db = await SQLite.openDatabase({
+      name: 'languageLearningDatabase.db',
+      location: 'Documents'
+    });
+    
+    const results = await db.executeSql(
+      'SELECT t.topic FROM exercises_info ei JOIN topics t ON ei.topic_id = t.id WHERE ei.id = ?',
+      [exerciseId]
+    );
+    
+    if (results && results[0] && results[0].rows.length > 0) {
+      return results[0].rows.item(0).topic;
+    }
+    
+    return null;
+  } catch (error) {
+    console.error('Failed to get topic name for exercise:', error);
+    return null;
+  } finally {
+    if (db) {
+      try {
+        await db.close();
+      } catch (closeError) {
+        console.error('Error closing database:', closeError);
+      }
+    }
+  }
+};
+

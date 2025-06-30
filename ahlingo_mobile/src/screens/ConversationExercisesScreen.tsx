@@ -13,9 +13,13 @@ import { RouteProp } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import { RootStackParamList, ExerciseInfo } from '../types';
 import { RootState } from '../store';
+import { ConversationView } from '../components';
 import {
   getRandomConversationExerciseForTopic,
   getConversationExerciseData,
+  getConversationSummary,
+  getRandomConversationSummaries,
+  getTopicNameForExercise,
   getUserSettings,
   getMostRecentUser,
 } from '../services/SimpleDatabaseService';
@@ -30,6 +34,21 @@ type ConversationExercisesScreenRouteProp = RouteProp<RootStackParamList, 'Conve
 interface Props {
   navigation: ConversationExercisesScreenNavigationProp;
   route: ConversationExercisesScreenRouteProp;
+}
+
+interface ConversationMessage {
+  speaker: string;
+  message: string;
+  conversation_order: number;
+}
+
+interface QuizState {
+  correctAnswer: string;
+  options: string[];
+  selectedOption: number | null;
+  hasAnswered: boolean;
+  isCorrect: boolean | null;
+  score: number;
 }
 
 const ConversationExercisesScreen: React.FC<Props> = ({ navigation, route }) => {
@@ -47,9 +66,18 @@ const ConversationExercisesScreen: React.FC<Props> = ({ navigation, route }) => 
   
   const [loading, setLoading] = useState(true);
   const [currentExercise, setCurrentExercise] = useState<ExerciseInfo | null>(null);
-  const [conversationData, setConversationData] = useState<any[]>([]);
+  const [conversationData, setConversationData] = useState<ConversationMessage[]>([]);
+  const [quizState, setQuizState] = useState<QuizState>({
+    correctAnswer: '',
+    options: [],
+    selectedOption: null,
+    hasAnswered: false,
+    isCorrect: null,
+    score: 0,
+  });
   const [userLanguage, setUserLanguage] = useState<string>('French');
   const [userDifficulty, setUserDifficulty] = useState<string>('Beginner');
+  const [topicName, setTopicName] = useState<string>('');
 
   useEffect(() => {
     if (topicId) {
@@ -85,6 +113,29 @@ const ConversationExercisesScreen: React.FC<Props> = ({ navigation, route }) => 
       const exerciseData = await getConversationExerciseData(exercise.id);
       setConversationData(exerciseData);
       
+      // Get topic name
+      const topicNameResult = await getTopicNameForExercise(exercise.id);
+      setTopicName(topicNameResult || 'Unknown Topic');
+      
+      // Get the correct answer and wrong options
+      const correctSummary = await getConversationSummary(exercise.id);
+      const wrongSummaries = await getRandomConversationSummaries(exercise.id, 2);
+      
+      if (correctSummary && wrongSummaries.length >= 2) {
+        // Create options array with correct answer in random position
+        const options = [correctSummary, ...wrongSummaries];
+        const shuffledOptions = options.sort(() => Math.random() - 0.5);
+        
+        setQuizState(prev => ({
+          ...prev,
+          correctAnswer: correctSummary,
+          options: shuffledOptions,
+          selectedOption: null,
+          hasAnswered: false,
+          isCorrect: null,
+        }));
+      }
+      
     } catch (error) {
       console.error('Failed to load conversation data:', error);
       Alert.alert('Error', 'Failed to load conversation exercise. Please try again.');
@@ -95,6 +146,25 @@ const ConversationExercisesScreen: React.FC<Props> = ({ navigation, route }) => 
   };
 
   const handleRefresh = () => {
+    loadConversationData();
+  };
+
+  const handleOptionPress = (optionIndex: number) => {
+    if (quizState.hasAnswered) return;
+    
+    const selectedAnswer = quizState.options[optionIndex];
+    const isCorrect = selectedAnswer === quizState.correctAnswer;
+    
+    setQuizState(prev => ({
+      ...prev,
+      selectedOption: optionIndex,
+      hasAnswered: true,
+      isCorrect,
+      score: isCorrect ? prev.score + 1 : prev.score,
+    }));
+  };
+
+  const handleNextExercise = () => {
     loadConversationData();
   };
 
@@ -116,43 +186,61 @@ const ConversationExercisesScreen: React.FC<Props> = ({ navigation, route }) => 
         </TouchableOpacity>
       </View>
       
-      {/* Exercise info */}
-      <View style={styles.infoContainer}>
-        <Text style={styles.infoTitle}>
-          {currentExercise?.exercise_name || 'Conversation Exercise'}
-        </Text>
-        <Text style={styles.infoSubtitle}>
-          {userLanguage} • {userDifficulty}
-        </Text>
+      {/* Conversation display */}
+      <View style={styles.conversationContainer}>
+        {conversationData.length > 0 ? (
+          <ConversationView messages={conversationData} />
+        ) : (
+          <View style={styles.noDataContainer}>
+            <Text style={styles.noDataText}>No conversation data available</Text>
+          </View>
+        )}
       </View>
       
-      {/* Raw data display for testing */}
-      <ScrollView style={styles.dataContainer} contentContainerStyle={styles.dataContent}>
-        <Text style={styles.dataTitle}>Raw Exercise Data (for testing):</Text>
+      {/* Quiz section */}
+      <View style={styles.quizContainer}>
+        <Text style={styles.quizTitle}>What is this conversation about?</Text>
+        <Text style={styles.quizSubtitle}>Choose the best summary:</Text>
         
-        <View style={styles.exerciseInfoSection}>
-          <Text style={styles.sectionTitle}>Exercise Info:</Text>
-          <Text style={styles.dataText}>
-            {JSON.stringify(currentExercise, null, 2)}
-          </Text>
-        </View>
+        <ScrollView style={styles.optionsContainer} showsVerticalScrollIndicator={false}>
+          {quizState.options.map((option, index) => (
+            <TouchableOpacity
+              key={index}
+              style={[
+                styles.optionButton,
+                quizState.selectedOption === index && styles.selectedOption,
+                quizState.hasAnswered && option === quizState.correctAnswer && styles.correctOption,
+                quizState.hasAnswered && quizState.selectedOption === index && option !== quizState.correctAnswer && styles.incorrectOption,
+              ]}
+              onPress={() => handleOptionPress(index)}
+              disabled={quizState.hasAnswered}
+            >
+              <Text style={[
+                styles.optionText,
+                quizState.selectedOption === index && styles.selectedOptionText,
+                quizState.hasAnswered && option === quizState.correctAnswer && styles.correctOptionText,
+              ]}>
+                {option}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
         
-        <View style={styles.conversationDataSection}>
-          <Text style={styles.sectionTitle}>Conversation Data:</Text>
-          {conversationData.length > 0 ? (
-            <Text style={styles.dataText}>
-              {JSON.stringify(conversationData, null, 2)}
+        {/* Feedback */}
+        {quizState.hasAnswered && (
+          <View style={styles.feedbackContainer}>
+            <Text style={[
+              styles.feedbackText,
+              quizState.isCorrect ? styles.correctFeedback : styles.incorrectFeedback
+            ]}>
+              {quizState.isCorrect ? '✅ Correct!' : '❌ Incorrect. Try again!'}
             </Text>
-          ) : (
-            <Text style={styles.noDataText}>
-              No conversation data found. This might mean:
-              {'\n'}• No conversation_exercises table exists
-              {'\n'}• No data for this exercise ID
-              {'\n'}• Different table structure than expected
-            </Text>
-          )}
-        </View>
-      </ScrollView>
+            <TouchableOpacity style={styles.nextButton} onPress={handleNextExercise}>
+              <Text style={styles.nextButtonText}>Next Exercise</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </View>
     </View>
   );
 };
@@ -192,68 +280,103 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
   },
-  infoContainer: {
+  conversationContainer: {
+    flex: 1.2,
     backgroundColor: '#fff',
-    paddingVertical: 16,
-    paddingHorizontal: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
+    marginBottom: 8,
   },
-  infoTitle: {
-    fontSize: 20,
+  quizContainer: {
+    flex: 1.8,
+    backgroundColor: '#fff',
+    paddingHorizontal: 16,
+    paddingTop: 8,
+  },
+  quizTitle: {
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#333',
     textAlign: 'center',
     marginBottom: 4,
   },
-  infoSubtitle: {
-    fontSize: 16,
-    color: '#666',
-    textAlign: 'center',
-  },
-  dataContainer: {
-    flex: 1,
-  },
-  dataContent: {
-    padding: 16,
-  },
-  dataTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 16,
-    textAlign: 'center',
-  },
-  exerciseInfoSection: {
-    marginBottom: 24,
-  },
-  conversationDataSection: {
-    marginBottom: 24,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#1976D2',
-    marginBottom: 8,
-  },
-  dataText: {
-    fontSize: 12,
-    fontFamily: 'monospace',
-    backgroundColor: '#f8f8f8',
-    padding: 12,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
-    color: '#333',
-  },
-  noDataText: {
+  quizSubtitle: {
     fontSize: 14,
     color: '#666',
-    backgroundColor: '#fff3cd',
+    textAlign: 'center',
+    marginBottom: 12,
+  },
+  optionsContainer: {
+    flex: 1,
+  },
+  optionButton: {
+    backgroundColor: '#f8f9fa',
+    borderWidth: 2,
+    borderColor: '#e0e0e0',
+    borderRadius: 12,
     padding: 12,
+    marginBottom: 8,
+  },
+  selectedOption: {
+    borderColor: '#1976D2',
+    backgroundColor: '#e3f2fd',
+  },
+  correctOption: {
+    borderColor: '#4caf50',
+    backgroundColor: '#e8f5e8',
+  },
+  incorrectOption: {
+    borderColor: '#f44336',
+    backgroundColor: '#ffebee',
+  },
+  optionText: {
+    fontSize: 16,
+    color: '#333',
+    lineHeight: 22,
+  },
+  selectedOptionText: {
+    color: '#1976D2',
+    fontWeight: '600',
+  },
+  correctOptionText: {
+    color: '#4caf50',
+    fontWeight: '600',
+  },
+  feedbackContainer: {
+    paddingVertical: 12,
+    alignItems: 'center',
+  },
+  feedbackText: {
+    fontSize: 18,
+    fontWeight: '600',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  correctFeedback: {
+    color: '#4caf50',
+  },
+  incorrectFeedback: {
+    color: '#f44336',
+  },
+  nextButton: {
+    backgroundColor: '#1976D2',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
     borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#ffeaa7',
+  },
+  nextButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  noDataContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 32,
+  },
+  noDataText: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
   },
 });
 
