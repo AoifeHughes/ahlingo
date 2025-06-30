@@ -44,17 +44,34 @@ This will launch the main application interface where you can:
 3. Review past mistakes
 4. Customize your learning experience
 
-## Setting up the Database
+## Content Generation System
+
+AHLingo includes a sophisticated AI-powered content generation system that creates language learning exercises using local language models. The system generates three types of exercises:
+
+- **Conversation Exercises**: Interactive dialogues with culturally appropriate speaker names
+- **Word Pair Exercises**: Vocabulary matching between English and target languages  
+- **Translation Exercises**: Sentence translation practice with varied structures
+
+### Setting up the Database
+
 You can setup the database by running the following command:
 
 ```bash
-python create_exercise_db.py
+python content/create_exercise_database.py
 ```
 
-For this to work you currently need an openai compatable server running on your
-local machine.
+**Requirements:**
+- An OpenAI-compatible server running locally (default: `http://localhost:11434/v1`)
+- Ollama or similar local LLM server with a model named "llama"
 
-See `generation_data` folder for more information on how to set this up.
+### Content Generation Configuration
+
+The generation system is configured through files in the `content/generation_data/` directory:
+- `languages.txt` - Target languages to generate content for
+- `levels.txt` - Difficulty levels (Beginner, Intermediate, Advanced)
+- `topics.txt` - Learning topics and themes
+
+For detailed information about the content generation architecture, see [Content Generation Documentation](content/content_creation/CONTENT_GENERATION.md).
 
 ## Development Setup
 
