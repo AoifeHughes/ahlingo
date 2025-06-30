@@ -111,4 +111,6 @@ export type RootStackParamList = {
   TranslationExercises: { topicId: number };
   Chatbot: undefined;
   Settings: undefined;
+  Stats: undefined;
+  RetryMistakes: undefined;
 };

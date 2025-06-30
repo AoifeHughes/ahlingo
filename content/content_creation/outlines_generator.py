@@ -178,7 +178,7 @@ def generate_lessons_data_structured(
     language: str,
     level: str,
     topic: str,
-    N_runs: int = 2,
+    N_runs: int = 10,
     lesson_kinds: List[str] = ["conversations", "pairs", "translations"],
     model=None  # Allow passing model to reuse it
 ):

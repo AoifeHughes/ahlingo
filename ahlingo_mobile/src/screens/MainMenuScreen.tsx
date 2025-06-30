@@ -45,6 +45,20 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
       exerciseType: null,
       color: '#96CEB4'
     },
+    { 
+      title: 'Your Stats', 
+      screen: 'Stats' as keyof RootStackParamList,
+      icon: '📊',
+      exerciseType: null,
+      color: '#9C27B0'
+    },
+    { 
+      title: 'Retry Mistakes', 
+      screen: 'RetryMistakes' as keyof RootStackParamList,
+      icon: '🔄',
+      exerciseType: null,
+      color: '#FF9800'
+    },
   ];
 
   const handleExercisePress = (item: typeof exerciseItems[0]) => {
@@ -70,19 +84,22 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
         </View>
         
         <View style={styles.cardsContainer}>
-          {exerciseItems.map((item, index) => (
-            <TouchableOpacity
-              key={index}
-              style={[styles.exerciseCard, { backgroundColor: item.color }]}
-              onPress={() => handleExercisePress(item)}
-              activeOpacity={0.8}
-            >
-              <View style={styles.cardContent}>
-                <Text style={styles.cardIcon}>{item.icon}</Text>
-                <Text style={styles.cardTitle}>{item.title}</Text>
-              </View>
-            </TouchableOpacity>
-          ))}
+          {/* All exercise cards (3x2 grid) */}
+          <View style={styles.exercisesGrid}>
+            {exerciseItems.map((item, index) => (
+              <TouchableOpacity
+                key={index}
+                style={[styles.exerciseCard, { backgroundColor: item.color }]}
+                onPress={() => handleExercisePress(item)}
+                activeOpacity={0.8}
+              >
+                <View style={styles.cardContent}>
+                  <Text style={styles.cardIcon}>{item.icon}</Text>
+                  <Text style={styles.cardTitle}>{item.title}</Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </View>
         </View>
         
         <View style={styles.footer}>
@@ -136,18 +153,19 @@ const styles = StyleSheet.create({
   },
   cardsContainer: {
     flex: 1,
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+  },
+  exercisesGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingVertical: 30,
-    alignContent: 'center',
   },
   exerciseCard: {
     width: cardSize,
     height: cardSize,
     borderRadius: 20,
-    marginBottom: 20,
+    marginBottom: 12,
     elevation: 8,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },

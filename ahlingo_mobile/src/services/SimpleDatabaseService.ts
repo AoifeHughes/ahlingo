@@ -1028,3 +1028,241 @@ export const getTopicNameForExercise = async (exerciseId: number): Promise<strin
   }
 };
 
+// Record exercise attempt
+export const recordExerciseAttempt = async (userId: number, exerciseId: number, isCorrect: boolean): Promise<void> => {
+  let db = null;
+  
+  try {
+    await ensureDatabaseCopied();
+    
+    db = await SQLite.openDatabase({
+      name: 'languageLearningDatabase.db',
+      location: 'Documents'
+    });
+    
+    await db.executeSql(
+      'INSERT INTO user_exercise_attempts (user_id, exercise_id, is_correct, attempt_date) VALUES (?, ?, ?, datetime("now"))',
+      [userId, exerciseId, isCorrect ? 1 : 0]
+    );
+  } catch (error) {
+    console.error('Failed to record exercise attempt:', error);
+    throw error;
+  } finally {
+    if (db) {
+      try {
+        await db.close();
+      } catch (closeError) {
+        console.error('Error closing database:', closeError);
+      }
+    }
+  }
+};
+
+// Get user ID by username
+export const getUserId = async (username: string): Promise<number | null> => {
+  let db = null;
+  
+  try {
+    await ensureDatabaseCopied();
+    
+    db = await SQLite.openDatabase({
+      name: 'languageLearningDatabase.db',
+      location: 'Documents'
+    });
+    
+    const results = await db.executeSql(
+      'SELECT id FROM users WHERE name = ?',
+      [username]
+    );
+    
+    if (results && results[0] && results[0].rows.length > 0) {
+      return results[0].rows.item(0).id;
+    }
+    
+    return null;
+  } catch (error) {
+    console.error('Failed to get user ID:', error);
+    return null;
+  } finally {
+    if (db) {
+      try {
+        await db.close();
+      } catch (closeError) {
+        console.error('Error closing database:', closeError);
+      }
+    }
+  }
+};
+
+// Get user stats by topic
+export const getUserStatsByTopic = async (userId: number): Promise<any[]> => {
+  let db = null;
+  
+  try {
+    await ensureDatabaseCopied();
+    
+    db = await SQLite.openDatabase({
+      name: 'languageLearningDatabase.db',
+      location: 'Documents'
+    });
+    
+    const results = await db.executeSql(`
+      SELECT 
+        t.topic,
+        t.id as topic_id,
+        COUNT(DISTINCT uea.exercise_id) as attempted_exercises,
+        COUNT(DISTINCT CASE WHEN uea.is_correct = 1 THEN uea.exercise_id END) as correct_exercises,
+        COUNT(DISTINCT ei.id) as total_exercises,
+        ROUND(
+          CAST(COUNT(DISTINCT CASE WHEN uea.is_correct = 1 THEN uea.exercise_id END) AS FLOAT) / 
+          CAST(COUNT(DISTINCT ei.id) AS FLOAT) * 100, 1
+        ) as completion_percentage
+      FROM topics t
+      LEFT JOIN exercises_info ei ON t.id = ei.topic_id
+      LEFT JOIN user_exercise_attempts uea ON ei.id = uea.exercise_id AND uea.user_id = ?
+      GROUP BY t.id, t.topic
+      ORDER BY t.topic
+    `, [userId]);
+    
+    const stats: any[] = [];
+    if (results && results[0]) {
+      for (let i = 0; i < results[0].rows.length; i++) {
+        stats.push(results[0].rows.item(i));
+      }
+    }
+    
+    return stats;
+  } catch (error) {
+    console.error('Failed to get user stats by topic:', error);
+    return [];
+  } finally {
+    if (db) {
+      try {
+        await db.close();
+      } catch (closeError) {
+        console.error('Error closing database:', closeError);
+      }
+    }
+  }
+};
+
+// Get user failed exercises
+export const getUserFailedExercises = async (userId: number): Promise<any[]> => {
+  let db = null;
+  
+  try {
+    await ensureDatabaseCopied();
+    
+    db = await SQLite.openDatabase({
+      name: 'languageLearningDatabase.db',
+      location: 'Documents'
+    });
+    
+    const results = await db.executeSql(`
+      SELECT DISTINCT
+        ei.id as exercise_id,
+        ei.exercise_name,
+        ei.exercise_type,
+        t.topic,
+        t.id as topic_id,
+        d.difficulty_level,
+        l.language,
+        MAX(uea.attempt_date) as last_failed_date
+      FROM user_exercise_attempts uea
+      JOIN exercises_info ei ON uea.exercise_id = ei.id
+      JOIN topics t ON ei.topic_id = t.id
+      JOIN difficulties d ON ei.difficulty_id = d.id
+      JOIN languages l ON ei.language_id = l.id
+      WHERE uea.user_id = ? 
+        AND uea.is_correct = 0
+        AND ei.id NOT IN (
+          SELECT exercise_id 
+          FROM user_exercise_attempts 
+          WHERE user_id = ? AND is_correct = 1
+        )
+      GROUP BY ei.id, ei.exercise_name, ei.exercise_type, t.topic, t.id, d.difficulty_level, l.language
+      ORDER BY last_failed_date DESC
+    `, [userId, userId]);
+    
+    const failedExercises: any[] = [];
+    if (results && results[0]) {
+      for (let i = 0; i < results[0].rows.length; i++) {
+        failedExercises.push(results[0].rows.item(i));
+      }
+    }
+    
+    return failedExercises;
+  } catch (error) {
+    console.error('Failed to get user failed exercises:', error);
+    return [];
+  } finally {
+    if (db) {
+      try {
+        await db.close();
+      } catch (closeError) {
+        console.error('Error closing database:', closeError);
+      }
+    }
+  }
+};
+
+// Get user progress summary
+export const getUserProgressSummary = async (userId: number): Promise<any> => {
+  let db = null;
+  
+  try {
+    await ensureDatabaseCopied();
+    
+    db = await SQLite.openDatabase({
+      name: 'languageLearningDatabase.db',
+      location: 'Documents'
+    });
+    
+    const results = await db.executeSql(`
+      SELECT 
+        COUNT(DISTINCT uea.exercise_id) as total_attempted,
+        COUNT(DISTINCT CASE WHEN uea.is_correct = 1 THEN uea.exercise_id END) as total_correct,
+        COUNT(DISTINCT ei.id) as total_available,
+        ROUND(
+          CAST(COUNT(DISTINCT CASE WHEN uea.is_correct = 1 THEN uea.exercise_id END) AS FLOAT) / 
+          CAST(COUNT(DISTINCT ei.id) AS FLOAT) * 100, 1
+        ) as overall_completion_percentage,
+        ROUND(
+          CAST(COUNT(DISTINCT CASE WHEN uea.is_correct = 1 THEN uea.exercise_id END) AS FLOAT) / 
+          CAST(COUNT(DISTINCT uea.exercise_id) AS FLOAT) * 100, 1
+        ) as success_rate
+      FROM exercises_info ei
+      LEFT JOIN user_exercise_attempts uea ON ei.id = uea.exercise_id AND uea.user_id = ?
+    `, [userId]);
+    
+    if (results && results[0] && results[0].rows.length > 0) {
+      return results[0].rows.item(0);
+    }
+    
+    return {
+      total_attempted: 0,
+      total_correct: 0,
+      total_available: 0,
+      overall_completion_percentage: 0,
+      success_rate: 0
+    };
+  } catch (error) {
+    console.error('Failed to get user progress summary:', error);
+    return {
+      total_attempted: 0,
+      total_correct: 0,
+      total_available: 0,
+      overall_completion_percentage: 0,
+      success_rate: 0
+    };
+  } finally {
+    if (db) {
+      try {
+        await db.close();
+      } catch (closeError) {
+        console.error('Error closing database:', closeError);
+      }
+    }
+  }
+};
+

@@ -11,6 +11,8 @@ import ConversationExercisesScreen from '../screens/ConversationExercisesScreen'
 import TranslationExercisesScreen from '../screens/TranslationExercisesScreen';
 import ChatbotScreen from '../screens/ChatbotScreen';
 import SettingsScreen from '../screens/SettingsScreen';
+import StatsScreen from '../screens/StatsScreen';
+import RetryMistakesScreen from '../screens/RetryMistakesScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -63,6 +65,16 @@ const AppNavigator: React.FC = () => {
           name="Settings"
           component={SettingsScreen}
           options={{ title: 'Settings' }}
+        />
+        <Stack.Screen
+          name="Stats"
+          component={StatsScreen}
+          options={{ title: 'Your Progress' }}
+        />
+        <Stack.Screen
+          name="RetryMistakes"
+          component={RetryMistakesScreen}
+          options={{ title: 'Retry Mistakes' }}
         />
       </Stack.Navigator>
     </NavigationContainer>

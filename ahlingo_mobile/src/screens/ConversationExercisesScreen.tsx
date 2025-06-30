@@ -22,6 +22,8 @@ import {
   getTopicNameForExercise,
   getUserSettings,
   getMostRecentUser,
+  getUserId,
+  recordExerciseAttempt,
 } from '../services/SimpleDatabaseService';
 
 type ConversationExercisesScreenNavigationProp = NativeStackNavigationProp<
@@ -172,11 +174,22 @@ const ConversationExercisesScreen: React.FC<Props> = ({ navigation, route }) => 
     loadConversationData();
   };
 
-  const handleOptionPress = (optionIndex: number) => {
+  const handleOptionPress = async (optionIndex: number) => {
     if (quizState.hasAnswered) return;
     
     const selectedAnswer = quizState.options[optionIndex];
     const isCorrect = selectedAnswer === quizState.correctAnswer;
+    
+    // Record the exercise attempt
+    try {
+      const username = await getMostRecentUser();
+      const userId = await getUserId(username);
+      if (userId && currentExercise) {
+        await recordExerciseAttempt(userId, currentExercise.id, isCorrect);
+      }
+    } catch (error) {
+      console.error('Failed to record exercise attempt:', error);
+    }
     
     setQuizState(prev => ({
       ...prev,

@@ -87,10 +87,7 @@ if __name__ == "__main__":
         print("SUCCESS: Outlines integration is working!")
         print("\nTo use this for full database population:")
         print("from content_creation.generate_lessons import populate_database")
-        print("populate_database()  # Now uses Outlines by default!")
-        print("\nIf you need the original method:")
-        print("from content_creation.generate_lessons import populate_database_legacy")
-        print("populate_database_legacy()")
+        print("populate_database()  # Uses Outlines structured generation with 10 exercises per topic!")
         
     except Exception as e:
         print(f"Error: {e}")

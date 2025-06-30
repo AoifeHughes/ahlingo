@@ -19,6 +19,8 @@ import {
   getPairExercises,
   getUserSettings,
   getMostRecentUser,
+  getUserId,
+  recordExerciseAttempt,
 } from '../services/SimpleDatabaseService';
 
 type PairsGameScreenRouteProp = RouteProp<RootStackParamList, 'PairsGame'>;
@@ -197,13 +199,30 @@ const PairsGameScreen: React.FC<Props> = ({ route, navigation }) => {
     
     if (gameState.selectedLeft === gameState.selectedRight) {
       // Correct match!
+      const newMatchedPairs = [...gameState.matchedPairs, gameState.selectedLeft!];
+      
       setGameState(prevState => ({
         ...prevState,
-        matchedPairs: [...prevState.matchedPairs, gameState.selectedLeft!],
+        matchedPairs: newMatchedPairs,
         correctCount: prevState.correctCount + 1,
         selectedLeft: null,
         selectedRight: null,
       }));
+      
+      // Check if all pairs are matched (exercise completed)
+      if (newMatchedPairs.length === pairs.length) {
+        // Record exercise completion
+        try {
+          const username = await getMostRecentUser();
+          const userId = await getUserId(username);
+          if (userId && currentExercise) {
+            // Exercise is considered successful if user completed it
+            await recordExerciseAttempt(userId, currentExercise.id, true);
+          }
+        } catch (error) {
+          console.error('Failed to record exercise completion:', error);
+        }
+      }
     } else {
       // Incorrect match
       setGameState(prevState => ({
