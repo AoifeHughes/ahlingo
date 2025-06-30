@@ -1,4 +1,4 @@
-# AHLingo Translation Evaluator
+# AHLingo Language Learning Platform
 <p align="left">
   <a href="https://results.pre-commit.ci/latest/github/AoifeHughes/ahlingo/main">
     <img src="https://results.pre-commit.ci/badge/github/AoifeHughes/ahlingo/main.svg" alt="pre-commit.ci status">
@@ -10,7 +10,13 @@
 
 ![logo](./assets/logo.png)
 
-AHLingo Translation Evaluator is a comprehensive tool designed to assist language learners in improving their translation skills. By evaluating translations against source texts, users gain insight into their proficiency and areas of improvement.
+AHLingo is a comprehensive language learning platform that combines AI-powered content generation with a modern React Native mobile application. The platform helps users improve their language skills through interactive exercises and personalized learning experiences.
+
+## Project Structure
+
+- **`/content`** - AI-powered content generation system for creating language exercises
+- **`/ahlingo_mobile`** - React Native mobile application
+- **`/database`** - SQLite database with pre-generated exercises
 
 ## Features
 
@@ -18,31 +24,8 @@ AHLingo Translation Evaluator is a comprehensive tool designed to assist languag
 - **Conversation Practice**: Engage in language learning through interactive conversations
 - **Pair Matching**: Test your vocabulary with pair matching exercises
 - **Progress Tracking**: Track your learning progress and review past mistakes
-- **Local Database**: All progress and exercises are stored locally
-
-## Installation
-
-You can install AHLingo directly:
-
-```bash
-git clone https://github.com/ahughes/ahlingo.git
-cd ahlingo
-pip install -e .
-```
-
-## Usage
-
-After installation, you can run AHLingo from the command line:
-
-```bash
-ahlingo
-```
-
-This will launch the main application interface where you can:
-1. Select different exercise types (Translation, Conversations, Pairs)
-2. Track your progress
-3. Review past mistakes
-4. Customize your learning experience
+- **AI Content Generation**: Generate new exercises using local language models
+- **Offline Support**: All exercises work without internet connection
 
 ## Content Generation System
 
@@ -73,9 +56,13 @@ The generation system is configured through files in the `content/generation_dat
 
 For detailed information about the content generation architecture, see [Content Generation Documentation](content/content_creation/CONTENT_GENERATION.md).
 
-## Development Setup
+## Mobile App Development
 
-For development:
+The React Native application is located in `/ahlingo_mobile`. See the [Mobile App README](ahlingo_mobile/README.md) for setup instructions.
+
+## Content Generation Development
+
+To work on the content generation system:
 
 1. Clone the repository:
 ```bash
@@ -83,14 +70,15 @@ git clone https://github.com/ahughes/ahlingo.git
 cd ahlingo
 ```
 
-2. Install in development mode:
+2. Install dependencies:
 ```bash
-pip install -e .
+pip install -r requirements.txt
 ```
 
-3. Run tests:
+3. Run content generation:
 ```bash
-pytest
+cd content
+python create_exercise_database.py
 ```
 
 ## Contributing

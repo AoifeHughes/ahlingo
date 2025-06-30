@@ -232,8 +232,8 @@ def process_combination(language: str, level: str, topic: str, db: LanguageDB):
         )
 
 
-def populate_database(db_loc: str = "../database/languageLearningDatabase.db"):
-    """Main function to generate lessons and populate the database."""
+def populate_database_legacy(db_loc: str = "../database/languageLearningDatabase.db"):
+    """Original lesson generation method (kept as backup)."""
     # Read configuration files
     with open("generation_data/topics.txt", "r") as file:
         topics = [line.strip() for line in file]
@@ -242,7 +242,7 @@ def populate_database(db_loc: str = "../database/languageLearningDatabase.db"):
     with open("generation_data/levels.txt", "r") as file:
         levels = [line.strip() for line in file]
 
-    print("Running with the following parameters:")
+    print("Running with legacy generation method:")
     print("Languages:", ", ".join(languages))
     print("Levels:", ", ".join(levels))
     print("Topics:", ", ".join(topics))
@@ -260,7 +260,7 @@ def populate_database(db_loc: str = "../database/languageLearningDatabase.db"):
         total = len(combinations)
 
         # Process combinations with progress bar
-        with tqdm(total=total, desc="Overall Progress") as pbar:
+        with tqdm(total=total, desc="Legacy Generation Progress") as pbar:
             for language, level, topic in combinations:
                 try:
                     process_combination(language, level, topic, db)
@@ -271,3 +271,65 @@ def populate_database(db_loc: str = "../database/languageLearningDatabase.db"):
 
     finally:
         db.close()
+
+
+def populate_database(db_loc: str = "../database/languageLearningDatabase.db"):
+    """Main function to generate lessons and populate the database using Outlines."""
+    from .outlines_generator import generate_lessons_data_structured, setup_outlines_model
+    
+    # Read configuration files
+    with open("generation_data/topics.txt", "r") as file:
+        topics = [line.strip() for line in file]
+    with open("generation_data/languages.txt", "r") as file:
+        languages = [line.strip() for line in file]
+    with open("generation_data/levels.txt", "r") as file:
+        levels = [line.strip() for line in file]
+    
+    print("Running with Outlines structured generation:")
+    print("Languages:", ", ".join(languages))
+    print("Levels:", ", ".join(levels))
+    print("Topics:", ", ".join(topics))
+    
+    # Setup model once for reuse
+    model = setup_outlines_model()
+    
+    db = LanguageDB(db_loc)
+    
+    try:
+        combinations = [
+            (language, level, topic)
+            for language in languages
+            for level in levels
+            for topic in topics
+        ]
+        total = len(combinations)
+        
+        with tqdm(total=total, desc="Outlines Generation Progress") as pbar:
+            for language, level, topic in combinations:
+                try:
+                    # Use Outlines generation with shared model
+                    for lesson_kind, lesson_id, json_response in generate_lessons_data_structured(
+                        language, level, topic, model=model
+                    ):
+                        # Use existing process_response function
+                        process_response(
+                            db=db,
+                            response=json_response,
+                            language=language,
+                            topic=topic,
+                            level=level,
+                            lesson_kind=lesson_kind,
+                            lesson_id=lesson_id
+                        )
+                except Exception as e:
+                    print(f"Error processing {language}_{level}_{topic}: {str(e)}")
+                    import traceback
+                    traceback.print_exc()
+                finally:
+                    pbar.update(1)
+    
+    finally:
+        db.close()
+        print("Database generation complete!")
+
+

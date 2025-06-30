@@ -1,5 +1,3 @@
-kivymd
-llama-cpp-python
-lmql
+openai
 tqdm
-TTS
+pydantic
