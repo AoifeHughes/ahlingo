@@ -106,6 +106,7 @@ const TranslationExercisesScreen: React.FC<Props> = ({ route, navigation }) => {
       const exercise = await getRandomTranslationExerciseForTopic(topicId, language, difficulty);
       
       if (!exercise) {
+        setLoading(false);
         Alert.alert('Error', 'No translation exercises found for this topic.');
         navigation.goBack();
         return;

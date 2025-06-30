@@ -7,6 +7,18 @@ import { Language, Topic, Difficulty, PairExercise, ExerciseInfo, ConversationEx
 SQLite.DEBUG(true);
 SQLite.enablePromise(true);
 
+// Connection timeout wrapper
+const withTimeout = <T>(promise: Promise<T>, timeoutMs: number = 5000): Promise<T> => {
+  return Promise.race([
+    promise,
+    new Promise<never>((_, reject) => {
+      setTimeout(() => {
+        reject(new Error(`Database operation timed out after ${timeoutMs}ms`));
+      }, timeoutMs);
+    })
+  ]);
+};
+
 // First, ensure the database is copied from bundle to Documents
 async function ensureDatabaseCopied() {
   try {
@@ -250,14 +262,14 @@ export const getMostRecentUser = async (): Promise<string> => {
   try {
     await ensureDatabaseCopied();
     
-    db = await SQLite.openDatabase({
+    db = await withTimeout(SQLite.openDatabase({
       name: 'languageLearningDatabase.db',
       location: 'Documents'
-    });
+    }), 3000);
     
-    const results = await db.executeSql(
+    const results = await withTimeout(db.executeSql(
       'SELECT name FROM users ORDER BY last_login DESC LIMIT 1'
-    );
+    ), 5000);
     
     if (results && results[0] && results[0].rows.length > 0) {
       return results[0].rows.item(0).name;
@@ -314,38 +326,38 @@ export const getUserSettings = async (username: string): Promise<{ [key: string]
   try {
     await ensureDatabaseCopied();
     
-    db = await SQLite.openDatabase({
+    db = await withTimeout(SQLite.openDatabase({
       name: 'languageLearningDatabase.db',
       location: 'Documents'
-    });
+    }), 3000);
     
     // First ensure user exists
-    const userResults = await db.executeSql(
+    const userResults = await withTimeout(db.executeSql(
       'SELECT id FROM users WHERE name = ?',
       [username]
-    );
+    ), 5000);
 
     let userId: number;
     if (!userResults || !userResults[0] || userResults[0].rows.length === 0) {
       // Create user if doesn't exist
-      await db.executeSql(
+      await withTimeout(db.executeSql(
         'INSERT INTO users (name, last_login) VALUES (?, datetime("now"))',
         [username]
-      );
-      const newUserResults = await db.executeSql(
+      ), 5000);
+      const newUserResults = await withTimeout(db.executeSql(
         'SELECT id FROM users WHERE name = ?',
         [username]
-      );
+      ), 5000);
       userId = newUserResults[0].rows.item(0).id;
     } else {
       userId = userResults[0].rows.item(0).id;
     }
 
     // Get user settings
-    const settingsResults = await db.executeSql(
+    const settingsResults = await withTimeout(db.executeSql(
       'SELECT setting_name, setting_value FROM user_settings WHERE user_id = ?',
       [userId]
-    );
+    ), 5000);
 
     const settings: { [key: string]: string } = {};
     if (settingsResults && settingsResults[0]) {
@@ -1065,18 +1077,35 @@ export const getUserId = async (username: string): Promise<number | null> => {
   try {
     await ensureDatabaseCopied();
     
-    db = await SQLite.openDatabase({
+    db = await withTimeout(SQLite.openDatabase({
       name: 'languageLearningDatabase.db',
       location: 'Documents'
-    });
+    }), 3000);
     
-    const results = await db.executeSql(
+    const results = await withTimeout(db.executeSql(
+      'SELECT id FROM users WHERE name = ?',
+      [username]
+    ), 5000);
+    
+    if (results && results[0] && results[0].rows.length > 0) {
+      return results[0].rows.item(0).id;
+    }
+    
+    // User doesn't exist, create them (fallback behavior)
+    console.log('User not found, creating user:', username);
+    await db.executeSql(
+      'INSERT INTO users (name, last_login) VALUES (?, datetime("now"))',
+      [username]
+    );
+    
+    // Get the newly created user's ID
+    const newUserResults = await db.executeSql(
       'SELECT id FROM users WHERE name = ?',
       [username]
     );
     
-    if (results && results[0] && results[0].rows.length > 0) {
-      return results[0].rows.item(0).id;
+    if (newUserResults && newUserResults[0] && newUserResults[0].rows.length > 0) {
+      return newUserResults[0].rows.item(0).id;
     }
     
     return null;
@@ -1099,14 +1128,20 @@ export const getUserStatsByTopic = async (userId: number): Promise<any[]> => {
   let db = null;
   
   try {
+    // Validate input
+    if (!userId || userId <= 0) {
+      console.error('Invalid userId provided to getUserStatsByTopic:', userId);
+      return [];
+    }
+    
     await ensureDatabaseCopied();
     
-    db = await SQLite.openDatabase({
+    db = await withTimeout(SQLite.openDatabase({
       name: 'languageLearningDatabase.db',
       location: 'Documents'
-    });
+    }), 3000);
     
-    const results = await db.executeSql(`
+    const results = await withTimeout(db.executeSql(`
       SELECT 
         t.topic,
         t.id as topic_id,
@@ -1122,7 +1157,7 @@ export const getUserStatsByTopic = async (userId: number): Promise<any[]> => {
       LEFT JOIN user_exercise_attempts uea ON ei.id = uea.exercise_id AND uea.user_id = ?
       GROUP BY t.id, t.topic
       ORDER BY t.topic
-    `, [userId]);
+    `, [userId]), 7000);
     
     const stats: any[] = [];
     if (results && results[0]) {
@@ -1151,6 +1186,12 @@ export const getUserFailedExercises = async (userId: number): Promise<any[]> => 
   let db = null;
   
   try {
+    // Validate input
+    if (!userId || userId <= 0) {
+      console.error('Invalid userId provided to getUserFailedExercises:', userId);
+      return [];
+    }
+    
     await ensureDatabaseCopied();
     
     db = await SQLite.openDatabase({
@@ -1211,14 +1252,26 @@ export const getUserProgressSummary = async (userId: number): Promise<any> => {
   let db = null;
   
   try {
+    // Validate input
+    if (!userId || userId <= 0) {
+      console.error('Invalid userId provided to getUserProgressSummary:', userId);
+      return {
+        total_attempted: 0,
+        total_correct: 0,
+        total_available: 0,
+        overall_completion_percentage: 0,
+        success_rate: 0
+      };
+    }
+    
     await ensureDatabaseCopied();
     
-    db = await SQLite.openDatabase({
+    db = await withTimeout(SQLite.openDatabase({
       name: 'languageLearningDatabase.db',
       location: 'Documents'
-    });
+    }), 3000);
     
-    const results = await db.executeSql(`
+    const results = await withTimeout(db.executeSql(`
       SELECT 
         COUNT(DISTINCT uea.exercise_id) as total_attempted,
         COUNT(DISTINCT CASE WHEN uea.is_correct = 1 THEN uea.exercise_id END) as total_correct,
@@ -1233,7 +1286,7 @@ export const getUserProgressSummary = async (userId: number): Promise<any> => {
         ) as success_rate
       FROM exercises_info ei
       LEFT JOIN user_exercise_attempts uea ON ei.id = uea.exercise_id AND uea.user_id = ?
-    `, [userId]);
+    `, [userId]), 7000);
     
     if (results && results[0] && results[0].rows.length > 0) {
       return results[0].rows.item(0);

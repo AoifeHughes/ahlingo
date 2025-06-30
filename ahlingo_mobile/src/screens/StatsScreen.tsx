@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import {
   View,
   StyleSheet,
@@ -8,11 +8,13 @@ import {
   Alert,
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useFocusEffect } from '@react-navigation/native';
 import { RootStackParamList } from '../types';
 import {
   getUserStatsByTopic,
   getUserProgressSummary,
   getMostRecentUser,
+  getUserSettings,
   getUserId,
 } from '../services/SimpleDatabaseService';
 
@@ -46,39 +48,104 @@ const StatsScreen: React.FC<Props> = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
   const [topicStats, setTopicStats] = useState<TopicStats[]>([]);
   const [progressSummary, setProgressSummary] = useState<ProgressSummary | null>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
-  useEffect(() => {
-    loadUserStats();
-  }, []);
+  const loadUserStats = useCallback(async () => {
+    // Cancel any previous request
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
 
-  const loadUserStats = async () => {
+    // Create new abort controller
+    abortControllerRef.current = new AbortController();
+    const signal = abortControllerRef.current.signal;
+
     try {
       setLoading(true);
       
-      const username = await getMostRecentUser();
-      const userId = await getUserId(username);
+      // Add timeout promise
+      const timeoutPromise = new Promise<never>((_, reject) => {
+        const timeoutId = setTimeout(() => {
+          reject(new Error('Database operation timed out'));
+        }, 10000); // 10 second timeout
+        
+        // Clear timeout if request is aborted
+        signal.addEventListener('abort', () => {
+          clearTimeout(timeoutId);
+          reject(new Error('Request was cancelled'));
+        });
+      });
+
+      // Get user settings (this creates user if doesn't exist)
+      const username = await Promise.race([getMostRecentUser(), timeoutPromise]);
+      
+      if (signal.aborted) return;
+      
+      const userSettings = await Promise.race([getUserSettings(username), timeoutPromise]);
+      
+      if (signal.aborted) return;
+      
+      // Now get the user ID
+      const userId = await Promise.race([getUserId(username), timeoutPromise]);
+      
+      if (signal.aborted) return;
       
       if (!userId) {
-        Alert.alert('Error', 'User not found. Please check your settings.');
+        if (!signal.aborted) {
+          setLoading(false);
+          Alert.alert('Error', 'Failed to initialize user. Please try again.');
+        }
         return;
       }
 
-      // Load topic stats and progress summary
-      const [topicData, summaryData] = await Promise.all([
-        getUserStatsByTopic(userId),
-        getUserProgressSummary(userId)
+      // Load topic stats and progress summary with timeout
+      const [topicData, summaryData] = await Promise.race([
+        Promise.all([
+          getUserStatsByTopic(userId),
+          getUserProgressSummary(userId)
+        ]),
+        timeoutPromise
       ]);
+
+      if (signal.aborted) return;
 
       setTopicStats(topicData);
       setProgressSummary(summaryData);
       
     } catch (error) {
+      if (signal.aborted) return;
+      
       console.error('Failed to load user stats:', error);
-      Alert.alert('Error', 'Failed to load statistics. Please try again.');
+      if (error instanceof Error && error.message === 'Database operation timed out') {
+        Alert.alert('Timeout', 'Loading statistics is taking too long. Please try again.');
+      } else if (error instanceof Error && error.message === 'Request was cancelled') {
+        // Don't show alert for cancelled requests
+        return;
+      } else {
+        Alert.alert('Error', 'Failed to load statistics. Please try again.');
+      }
     } finally {
-      setLoading(false);
+      if (!signal.aborted) {
+        setLoading(false);
+      }
     }
-  };
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      loadUserStats();
+      
+      // Cleanup function - runs when screen loses focus or unmounts
+      return () => {
+        if (abortControllerRef.current) {
+          abortControllerRef.current.abort();
+          abortControllerRef.current = null;
+        }
+        // Reset loading state when leaving screen
+        setLoading(true);
+      };
+    }, [loadUserStats])
+  );
 
   const renderProgressBar = (percentage: number) => {
     return (

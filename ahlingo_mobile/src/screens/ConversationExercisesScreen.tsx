@@ -115,6 +115,7 @@ const ConversationExercisesScreen: React.FC<Props> = ({ navigation, route }) => 
       const exercise = await getRandomConversationExerciseForTopic(topicId, language, difficulty);
       
       if (!exercise) {
+        setLoading(false);
         Alert.alert('Error', 'No conversation exercises found for this topic.');
         navigation.goBack();
         return;

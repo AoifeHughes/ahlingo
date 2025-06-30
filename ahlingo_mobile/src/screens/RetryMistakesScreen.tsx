@@ -13,6 +13,7 @@ import { RootStackParamList } from '../types';
 import {
   getUserFailedExercises,
   getMostRecentUser,
+  getUserSettings,
   getUserId,
 } from '../services/SimpleDatabaseService';
 
@@ -48,11 +49,16 @@ const RetryMistakesScreen: React.FC<Props> = ({ navigation }) => {
     try {
       setLoading(true);
       
+      // Get user settings (this creates user if doesn't exist)
       const username = await getMostRecentUser();
+      const userSettings = await getUserSettings(username);
+      
+      // Now get the user ID
       const userId = await getUserId(username);
       
       if (!userId) {
-        Alert.alert('Error', 'User not found. Please check your settings.');
+        setLoading(false);
+        Alert.alert('Error', 'Failed to initialize user. Please try again.');
         return;
       }
 

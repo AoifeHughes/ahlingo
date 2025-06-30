@@ -89,6 +89,7 @@ const PairsGameScreen: React.FC<Props> = ({ route, navigation }) => {
       const exercise = await getRandomExerciseForTopic(topicId, language, difficulty);
       
       if (!exercise) {
+        setLoading(false);
         Alert.alert('Error', 'No exercises found for this topic.');
         navigation.goBack();
         return;
@@ -100,6 +101,7 @@ const PairsGameScreen: React.FC<Props> = ({ route, navigation }) => {
       const exercisePairs = await getPairExercises(exercise.id);
       
       if (exercisePairs.length === 0) {
+        setLoading(false);
         Alert.alert('Error', 'No pairs found for this exercise.');
         navigation.goBack();
         return;
