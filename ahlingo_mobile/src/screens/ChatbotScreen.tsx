@@ -30,7 +30,8 @@ import {
 } from '../services/ChatService';
 import { 
   OpenAIService, 
-  APISettings 
+  APISettings,
+  StreamingCallbacks
 } from '../services/OpenAIService';
 import { ModelService, ModelInfo } from '../services/ModelService';
 import { getUserSettings, getUserId } from '../services/SimpleDatabaseService';
@@ -56,6 +57,9 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
   const [availableModels, setAvailableModels] = useState<ModelInfo[]>([]);
   const [selectedModel, setSelectedModel] = useState('qwen/qwen3-4b');
   const [showModelDropdown, setShowModelDropdown] = useState(false);
+  const [isStreaming, setIsStreaming] = useState(false);
+  const [streamingContent, setStreamingContent] = useState('');
+  const [streamController, setStreamController] = useState<AbortController | null>(null);
 
   const loadUserChats = useCallback(async () => {
     try {
@@ -187,6 +191,7 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
     setIsLoading(true);
 
     try {
+      // Add user message to database
       await addChatMessage(currentChat.id, 'user', content);
       const updatedMessages = await getChatMessages(currentChat.id);
       setMessages(updatedMessages);
@@ -220,23 +225,75 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
         systemPrompt
       );
 
-      const assistantResponse = await OpenAIService.sendMessage(
+      // Start streaming
+      setIsLoading(false);
+      setIsStreaming(true);
+      setStreamingContent('');
+
+      console.log('🌊 Starting streaming response...');
+
+      const streamingCallbacks: StreamingCallbacks = {
+        onContent: (chunk: string) => {
+          console.log('📝 Streaming chunk:', chunk);
+          setStreamingContent(prev => prev + chunk);
+        },
+        onComplete: async (fullContent: string) => {
+          console.log('✅ Streaming completed. Full content length:', fullContent.length);
+          try {
+            // Save the complete assistant message to database
+            await addChatMessage(currentChat.id, 'assistant', fullContent);
+            
+            // Reload messages from database
+            const finalMessages = await getChatMessages(currentChat.id);
+            setMessages(finalMessages);
+            
+            // Clear streaming state
+            setIsStreaming(false);
+            setStreamingContent('');
+            setStreamController(null);
+          } catch (error) {
+            console.error('Failed to save streaming message:', error);
+            Alert.alert('Error', 'Failed to save message');
+            setIsStreaming(false);
+            setStreamingContent('');
+          }
+        },
+        onError: (error: Error) => {
+          console.error('Streaming error:', error);
+          Alert.alert('Error', error.message);
+          setIsStreaming(false);
+          setStreamingContent('');
+          setStreamController(null);
+        }
+      };
+
+      const controller = await OpenAIService.sendMessageStream(
         openAIMessages,
         apiSettings,
+        streamingCallbacks,
         currentChat.model
       );
 
-      await addChatMessage(currentChat.id, 'assistant', assistantResponse);
-      const finalMessages = await getChatMessages(currentChat.id);
-      setMessages(finalMessages);
+      setStreamController(controller);
 
     } catch (error) {
       console.error('Failed to send message:', error);
       const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
       Alert.alert('Error', errorMessage);
-    } finally {
       setIsLoading(false);
+      setIsStreaming(false);
+      setStreamingContent('');
     }
+  };
+
+  const stopGeneration = () => {
+    console.log('🛑 Stopping generation...');
+    if (streamController) {
+      streamController.abort();
+      setStreamController(null);
+    }
+    setIsStreaming(false);
+    setStreamingContent('');
   };
 
   const handleModelChange = async (newModel: string) => {
@@ -360,7 +417,7 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
         contentContainerStyle={styles.messagesContent}
         showsVerticalScrollIndicator={false}
       >
-        {messages.length === 0 ? (
+        {messages.length === 0 && !isStreaming ? (
           <View style={styles.emptyState}>
             <Text style={styles.emptyStateText}>Start a conversation!</Text>
             <Text style={styles.emptyStateSubtext}>
@@ -368,14 +425,24 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
             </Text>
           </View>
         ) : (
-          messages.map((message, index) => (
-            <ChatMessage
-              key={`${message.id}-${index}`}
-              role={message.role}
-              content={message.content}
-              timestamp={message.timestamp}
-            />
-          ))
+          <>
+            {messages.map((message, index) => (
+              <ChatMessage
+                key={`${message.id}-${index}`}
+                role={message.role}
+                content={message.content}
+                timestamp={message.timestamp}
+              />
+            ))}
+            {isStreaming && (
+              <ChatMessage
+                key="streaming-message"
+                role="assistant"
+                content={streamingContent}
+                isStreaming={true}
+              />
+            )}
+          </>
         )}
         {isLoading && (
           <View style={styles.loadingMessage}>
@@ -387,7 +454,9 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
 
       <ChatInput
         onSendMessage={sendMessage}
+        onStopGeneration={stopGeneration}
         isLoading={isLoading}
+        isStreaming={isStreaming}
         placeholder="Type your message..."
       />
 

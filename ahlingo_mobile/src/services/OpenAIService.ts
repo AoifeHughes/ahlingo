@@ -10,6 +10,7 @@ export interface OpenAICompletionRequest {
   messages: OpenAIMessage[];
   temperature?: number;
   max_tokens?: number;
+  stream?: boolean;
 }
 
 export interface OpenAICompletionResponse {
@@ -35,6 +36,12 @@ export interface OpenAICompletionResponse {
 export interface APISettings {
   apiKey: string;
   apiUrl?: string;
+}
+
+export interface StreamingCallbacks {
+  onContent: (content: string) => void;
+  onComplete: (fullContent: string) => void;
+  onError: (error: Error) => void;
 }
 
 export class OpenAIService {
@@ -160,6 +167,289 @@ export class OpenAIService {
       throw new Error('An unexpected error occurred while communicating with the API.');
     }
   }
+
+  static async sendMessageStream(
+    messages: OpenAIMessage[],
+    settings: APISettings,
+    callbacks: StreamingCallbacks,
+    model: string = 'qwen/qwen3-4b'
+  ): Promise<AbortController> {
+    const controller = new AbortController();
+    
+    try {
+      let apiUrl = settings.apiUrl || this.DEFAULT_API_URL;
+      
+      // If the URL doesn't end with the chat completions endpoint, add it
+      if (apiUrl !== this.DEFAULT_API_URL && !apiUrl.includes('/chat/completions')) {
+        // Remove trailing slash if present
+        apiUrl = apiUrl.replace(/\/$/, '');
+        // Add the OpenAI-compatible endpoint for Ollama
+        apiUrl = `${apiUrl}/v1/chat/completions`;
+      }
+      
+      // Log API connection details (without exposing the full API key)
+      console.log('🔗 OpenAI API Streaming Connection Details:');
+      console.log('  URL:', apiUrl);
+      console.log('  Model:', model);
+      console.log('  API Key:', settings.apiKey ? `${settings.apiKey.substring(0, 10)}...` : 'NOT SET');
+      console.log('  Messages count:', messages.length);
+      
+      const requestBody: OpenAICompletionRequest = {
+        model,
+        messages,
+        temperature: 0.7,
+        max_tokens: 1000,
+        stream: true, // Enable streaming
+      };
+
+      const timeoutId = setTimeout(() => {
+        controller.abort();
+        callbacks.onError(new Error('Request timed out'));
+      }, this.REQUEST_TIMEOUT);
+
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${settings.apiKey}`,
+          'Accept': 'text/event-stream',
+          'Cache-Control': 'no-cache',
+        },
+        body: JSON.stringify(requestBody),
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('❌ API request failed:', {
+          status: response.status,
+          statusText: response.statusText,
+          error: errorText,
+          url: apiUrl
+        });
+        throw new Error(`API request failed: ${response.status} ${response.statusText}. ${errorText}`);
+      }
+
+      console.log('✅ Received response:', {
+        status: response.status,
+        headers: Object.fromEntries(response.headers.entries()),
+        hasBody: !!response.body
+      });
+
+      // React Native's fetch doesn't support ReadableStream, use XMLHttpRequest for streaming
+      if (!response.body) {
+        console.log('📱 Using XMLHttpRequest for React Native streaming compatibility');
+        
+        return new Promise<AbortController>((resolve) => {
+          const xhr = new XMLHttpRequest();
+          let fullContent = '';
+          let buffer = '';
+          
+          // Set up abort controller integration
+          const abortHandler = () => {
+            xhr.abort();
+            console.log('🛑 XMLHttpRequest aborted');
+          };
+          
+          controller.signal.addEventListener('abort', abortHandler);
+          
+          xhr.open('POST', apiUrl, true);
+          xhr.setRequestHeader('Content-Type', 'application/json');
+          xhr.setRequestHeader('Authorization', `Bearer ${settings.apiKey}`);
+          xhr.setRequestHeader('Accept', 'text/event-stream');
+          xhr.setRequestHeader('Cache-Control', 'no-cache');
+          
+          xhr.onreadystatechange = () => {
+            if (xhr.readyState === XMLHttpRequest.HEADERS_RECEIVED) {
+              if (xhr.status !== 200) {
+                const error = new Error(`API request failed: ${xhr.status} ${xhr.statusText}`);
+                callbacks.onError(error);
+                return;
+              }
+            }
+            
+            if (xhr.readyState === XMLHttpRequest.LOADING || xhr.readyState === XMLHttpRequest.DONE) {
+              const newText = xhr.responseText;
+              const newChunk = newText.slice(buffer.length);
+              
+              if (newChunk) {
+                console.log('📥 XHR chunk received:', newChunk.length, 'chars');
+                buffer = newText;
+                
+                // Process complete lines
+                const lines = newChunk.split('\n');
+                
+                for (const line of lines) {
+                  if (line.startsWith('data: ')) {
+                    const data = line.slice(6).trim();
+                    
+                    if (data === '[DONE]') {
+                      console.log('✅ Stream finished with [DONE]');
+                      callbacks.onComplete(fullContent);
+                      controller.signal.removeEventListener('abort', abortHandler);
+                      resolve(controller);
+                      return;
+                    }
+
+                    if (data === '') continue;
+
+                    try {
+                      const parsed = JSON.parse(data);
+                      console.log('📦 Received streaming data:', parsed);
+                      
+                      const delta = parsed.choices?.[0]?.delta;
+                      if (delta?.content) {
+                        fullContent += delta.content;
+                        callbacks.onContent(delta.content);
+                        continue;
+                      }
+
+                      const finishReason = parsed.choices?.[0]?.finish_reason;
+                      if (finishReason) {
+                        console.log('✅ Stream finished with reason:', finishReason);
+                        callbacks.onComplete(fullContent);
+                        controller.signal.removeEventListener('abort', abortHandler);
+                        resolve(controller);
+                        return;
+                      }
+
+                      if (parsed.error) {
+                        console.error('❌ API Error:', parsed.error);
+                        const errorMsg = parsed.error.message || 'API request failed';
+                        callbacks.onError(new Error(errorMsg));
+                        controller.signal.removeEventListener('abort', abortHandler);
+                        resolve(controller);
+                        return;
+                      }
+                    } catch (parseError) {
+                      console.warn('Failed to parse SSE data:', data, parseError);
+                    }
+                  }
+                }
+              }
+              
+              if (xhr.readyState === XMLHttpRequest.DONE) {
+                console.log('✅ XHR completed, final content length:', fullContent.length);
+                if (fullContent.length === 0) {
+                  console.warn('⚠️ Stream completed but no content received');
+                }
+                callbacks.onComplete(fullContent);
+                controller.signal.removeEventListener('abort', abortHandler);
+                resolve(controller);
+              }
+            }
+          };
+          
+          xhr.onerror = () => {
+            console.error('❌ XHR Error');
+            callbacks.onError(new Error('Network error occurred'));
+            controller.signal.removeEventListener('abort', abortHandler);
+            resolve(controller);
+          };
+          
+          xhr.ontimeout = () => {
+            console.error('❌ XHR Timeout');
+            callbacks.onError(new Error('Request timed out'));
+            controller.signal.removeEventListener('abort', abortHandler);
+            resolve(controller);
+          };
+          
+          xhr.timeout = this.REQUEST_TIMEOUT;
+          xhr.send(JSON.stringify(requestBody));
+          resolve(controller);
+        });
+      }
+
+      // Fallback for environments that support ReadableStream (shouldn't reach here in React Native)
+      console.log('📡 Using ReadableStream (likely not React Native)');
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let fullContent = '';
+      let buffer = '';
+
+      try {
+        while (true) {
+          const { done, value } = await reader.read();
+          
+          if (done) {
+            console.log('✅ Stream completed, final content length:', fullContent.length);
+            callbacks.onComplete(fullContent);
+            break;
+          }
+
+          const chunk = decoder.decode(value, { stream: true });
+          buffer += chunk;
+          
+          const lines = buffer.split('\n');
+          buffer = lines.pop() || '';
+
+          for (const line of lines) {
+            if (line.startsWith('data: ')) {
+              const data = line.slice(6).trim();
+              
+              if (data === '[DONE]') {
+                callbacks.onComplete(fullContent);
+                return controller;
+              }
+
+              if (data === '') continue;
+
+              try {
+                const parsed = JSON.parse(data);
+                const delta = parsed.choices?.[0]?.delta;
+                if (delta?.content) {
+                  fullContent += delta.content;
+                  callbacks.onContent(delta.content);
+                }
+              } catch (parseError) {
+                console.warn('Failed to parse SSE data:', data, parseError);
+              }
+            }
+          }
+        }
+      } finally {
+        reader.releaseLock();
+      }
+    } catch (error) {
+      console.error('OpenAI Streaming API Error:', error);
+      
+      if (error instanceof Error) {
+        if (error.name === 'AbortError') {
+          callbacks.onError(new Error('Request was cancelled'));
+          return controller;
+        }
+        
+        if (error.message.includes('401')) {
+          callbacks.onError(new Error('Invalid API key. Please check your API key in settings.'));
+          return controller;
+        }
+        
+        if (error.message.includes('429')) {
+          callbacks.onError(new Error('Rate limit exceeded. Please wait a moment and try again.'));
+          return controller;
+        }
+        
+        if (error.message.includes('500') || error.message.includes('502') || error.message.includes('503')) {
+          callbacks.onError(new Error('Server error. Please try again later.'));
+          return controller;
+        }
+        
+        if (error.message.includes('NetworkError') || error.message.includes('Failed to fetch')) {
+          callbacks.onError(new Error('Network error. Please check your internet connection.'));
+          return controller;
+        }
+        
+        callbacks.onError(error);
+      } else {
+        callbacks.onError(new Error('An unexpected error occurred while communicating with the API.'));
+      }
+    }
+    
+    return controller;
+  }
+
 
   static validateAPISettings(settings: APISettings): { isValid: boolean; error?: string } {
     if (!settings.apiKey || settings.apiKey.trim() === '') {

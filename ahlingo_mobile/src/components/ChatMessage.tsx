@@ -5,12 +5,14 @@ interface ChatMessageProps {
   role: 'user' | 'assistant' | 'system';
   content: string;
   timestamp?: string;
+  isStreaming?: boolean;
 }
 
 const ChatMessage: React.FC<ChatMessageProps> = ({
   role,
   content,
   timestamp,
+  isStreaming = false,
 }) => {
   const isUser = role === 'user';
   const isSystem = role === 'system';
@@ -34,6 +36,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
       <View style={[styles.bubble, isUser ? styles.userBubble : styles.assistantBubble]}>
         <Text style={[styles.messageText, isUser ? styles.userText : styles.assistantText]}>
           {content}
+          {isStreaming && !isUser && <Text style={styles.streamingCursor}>▊</Text>}
         </Text>
         {timestamp && (
           <Text style={[styles.timestamp, isUser ? styles.userTimestamp : styles.assistantTimestamp]}>
@@ -116,6 +119,11 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     borderRadius: 12,
     overflow: 'hidden',
+  },
+  streamingCursor: {
+    fontSize: 16,
+    color: '#1976D2',
+    fontWeight: 'bold',
   },
 });
 

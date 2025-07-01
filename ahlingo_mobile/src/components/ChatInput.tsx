@@ -3,25 +3,36 @@ import { View, TextInput, TouchableOpacity, StyleSheet, Text } from 'react-nativ
 
 interface ChatInputProps {
   onSendMessage: (message: string) => void;
+  onStopGeneration?: () => void;
   isLoading?: boolean;
+  isStreaming?: boolean;
   placeholder?: string;
 }
 
 const ChatInput: React.FC<ChatInputProps> = ({
   onSendMessage,
+  onStopGeneration,
   isLoading = false,
+  isStreaming = false,
   placeholder = 'Type your message...',
 }) => {
   const [message, setMessage] = useState('');
 
   const handleSend = () => {
-    console.log('🔘 ChatInput handleSend called:', { message: message.trim(), isLoading });
-    if (message.trim() && !isLoading) {
+    console.log('🔘 ChatInput handleSend called:', { message: message.trim(), isLoading, isStreaming });
+    if (message.trim() && !isLoading && !isStreaming) {
       console.log('✅ Calling onSendMessage with:', message.trim());
       onSendMessage(message.trim());
       setMessage('');
     } else {
-      console.log('❌ Send blocked - empty message or loading');
+      console.log('❌ Send blocked - empty message, loading, or streaming');
+    }
+  };
+
+  const handleStop = () => {
+    if (onStopGeneration) {
+      console.log('🛑 Stop generation requested');
+      onStopGeneration();
     }
   };
 
@@ -36,27 +47,36 @@ const ChatInput: React.FC<ChatInputProps> = ({
           placeholderTextColor="#999"
           multiline
           maxLength={1000}
-          editable={!isLoading}
-          onSubmitEditing={handleSend}
+          editable={!isLoading && !isStreaming}
+          onSubmitEditing={isStreaming ? undefined : handleSend}
           blurOnSubmit={false}
         />
-        <TouchableOpacity
-          style={[
-            styles.sendButton,
-            (!message.trim() || isLoading) && styles.sendButtonDisabled,
-          ]}
-          onPress={handleSend}
-          disabled={!message.trim() || isLoading}
-        >
-          <Text
-            style={[
-              styles.sendButtonText,
-              (!message.trim() || isLoading) && styles.sendButtonTextDisabled,
-            ]}
+        {isStreaming ? (
+          <TouchableOpacity
+            style={styles.stopButton}
+            onPress={handleStop}
           >
-            {isLoading ? '...' : 'Send'}
-          </Text>
-        </TouchableOpacity>
+            <Text style={styles.stopButtonText}>Stop</Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            style={[
+              styles.sendButton,
+              (!message.trim() || isLoading) && styles.sendButtonDisabled,
+            ]}
+            onPress={handleSend}
+            disabled={!message.trim() || isLoading}
+          >
+            <Text
+              style={[
+                styles.sendButtonText,
+                (!message.trim() || isLoading) && styles.sendButtonTextDisabled,
+              ]}
+            >
+              {isLoading ? '...' : 'Send'}
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );
@@ -106,6 +126,20 @@ const styles = StyleSheet.create({
   },
   sendButtonTextDisabled: {
     color: '#999',
+  },
+  stopButton: {
+    backgroundColor: '#f44336',
+    borderRadius: 20,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    minWidth: 60,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  stopButtonText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '600',
   },
 });
 
