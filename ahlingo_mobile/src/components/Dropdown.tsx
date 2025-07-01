@@ -8,6 +8,7 @@ import {
   StyleSheet,
   ViewStyle,
 } from 'react-native';
+import { useTheme } from '../contexts/ThemeContext';
 
 export interface DropdownItem {
   label: string;
@@ -29,7 +30,9 @@ const Dropdown: React.FC<DropdownProps> = ({
   placeholder = 'Select an option',
   style,
 }) => {
+  const { theme } = useTheme();
   const [isVisible, setIsVisible] = useState(false);
+  const styles = createStyles(theme);
 
   const selectedItem = items.find(item => item.value === selectedValue);
   const displayText = selectedItem ? selectedItem.label : placeholder;
@@ -97,31 +100,31 @@ const Dropdown: React.FC<DropdownProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) => StyleSheet.create({
   dropdown: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#f5f5f5',
+    backgroundColor: currentTheme.colors.surface,
     borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    borderColor: currentTheme.colors.border,
+    borderRadius: currentTheme.borderRadius.base,
+    paddingHorizontal: currentTheme.spacing.lg,
+    paddingVertical: currentTheme.spacing.md,
     minHeight: 48,
   },
   dropdownText: {
-    fontSize: 16,
-    color: '#333',
+    fontSize: currentTheme.typography.fontSizes.lg,
+    color: currentTheme.colors.text,
     flex: 1,
   },
   placeholderText: {
-    color: '#999',
+    color: currentTheme.colors.textSecondary,
   },
   arrow: {
-    fontSize: 12,
-    color: '#666',
-    marginLeft: 8,
+    fontSize: currentTheme.typography.fontSizes.sm,
+    color: currentTheme.colors.textSecondary,
+    marginLeft: currentTheme.spacing.base,
   },
   modalOverlay: {
     flex: 1,
@@ -130,12 +133,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalContent: {
-    backgroundColor: 'white',
-    borderRadius: 8,
+    backgroundColor: currentTheme.colors.surface,
+    borderRadius: currentTheme.borderRadius.base,
     maxHeight: 300,
     width: '80%',
     elevation: 5,
-    shadowColor: '#000',
+    shadowColor: currentTheme.colors.text,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
@@ -144,21 +147,21 @@ const styles = StyleSheet.create({
     maxHeight: 250,
   },
   modalItem: {
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingHorizontal: currentTheme.spacing.lg,
+    paddingVertical: currentTheme.spacing.md,
     borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    borderBottomColor: currentTheme.colors.borderLight,
   },
   modalItemText: {
-    fontSize: 16,
-    color: '#333',
+    fontSize: currentTheme.typography.fontSizes.lg,
+    color: currentTheme.colors.text,
   },
   selectedItem: {
-    backgroundColor: '#e3f2fd',
+    backgroundColor: currentTheme.colors.secondary,
   },
   selectedItemText: {
-    color: '#1976d2',
-    fontWeight: '600',
+    color: currentTheme.colors.primary,
+    fontWeight: currentTheme.typography.fontWeights.semibold,
   },
 });
 
