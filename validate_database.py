@@ -1,0 +1,53 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""
+Wrapper script to run database validation from the root directory.
+This script can be run from the project root and will properly handle paths.
+"""
+import os
+import sys
+from pathlib import Path
+import argparse
+
+# Add content directory to Python path
+content_dir = Path(__file__).parent / "content"
+sys.path.insert(0, str(content_dir))
+
+# Now import and run the actual validation script
+from content_creation.database_validator import run_validation
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Validate language learning database exercises")
+    parser.add_argument("--db-path", 
+                       help="Path to database file (default: content/database/languageLearningDatabase.db)")
+    parser.add_argument("--threshold", type=int, default=6,
+                       help="Quality threshold (1-10, default: 6)")
+    parser.add_argument("--max-exercises", type=int,
+                       help="Limit number of exercises to validate (for testing)")
+    parser.add_argument("--remove-failed", action="store_true",
+                       help="Remove exercises that fail validation")
+    parser.add_argument("--no-dry-run", action="store_true",
+                       help="Actually remove exercises (not just show what would be removed)")
+    parser.add_argument("--report", type=str,
+                       help="Path to save validation report JSON file")
+    
+    args = parser.parse_args()
+    
+    # Set up database path relative to content directory if not provided
+    if args.db_path is None:
+        db_path = str(content_dir / "database" / "languageLearningDatabase.db")
+    else:
+        db_path = args.db_path
+    
+    print(f"Validating database at: {db_path}")
+    print(f"Running from: {os.getcwd()}")
+    
+    # Run validation
+    run_validation(
+        db_path=db_path,
+        quality_threshold=args.threshold,
+        max_exercises=args.max_exercises,
+        remove_failed=args.remove_failed,
+        dry_run=not args.no_dry_run,
+        report_path=args.report
+    )

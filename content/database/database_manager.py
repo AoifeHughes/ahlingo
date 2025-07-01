@@ -1126,6 +1126,171 @@ class LanguageDB:
         self.cursor.execute("SELECT COUNT(*) FROM pronunciation_audio")
         return self.cursor.fetchone()[0]
 
+    def get_all_conversation_exercises(self) -> List[Dict]:
+        """Get all conversation exercises from the database."""
+        query = """
+        SELECT DISTINCT e.id, e.exercise_name, l.language, t.topic, 
+               d.difficulty_level, e.lesson_id
+        FROM exercises_info e
+        JOIN conversation_exercises c ON e.id = c.exercise_id
+        JOIN languages l ON e.language_id = l.id
+        JOIN topics t ON e.topic_id = t.id
+        JOIN difficulties d ON e.difficulty_id = d.id
+        ORDER BY e.id
+        """
+        self.cursor.execute(query)
+        exercises = []
+        
+        for row in self.cursor.fetchall():
+            exercise_data = dict(row)
+            
+            # Get conversation messages
+            self.cursor.execute(
+                """SELECT speaker, message FROM conversation_exercises
+                   WHERE exercise_id = ? ORDER BY conversation_order""",
+                (exercise_data['id'],)
+            )
+            conversations = [dict(conv_row) for conv_row in self.cursor.fetchall()]
+            
+            # Get summary
+            self.cursor.execute(
+                """SELECT summary FROM conversation_summaries WHERE exercise_id = ?""",
+                (exercise_data['id'],)
+            )
+            summary_row = self.cursor.fetchone()
+            summary = summary_row['summary'] if summary_row else ''
+            
+            exercise_data['conversations'] = conversations
+            exercise_data['summary'] = summary
+            exercises.append(exercise_data)
+            
+        return exercises
+
+    def get_all_pair_exercises(self) -> List[Dict]:
+        """Get all pair exercises from the database."""
+        query = """
+        SELECT DISTINCT e.id, e.exercise_name, l.language, t.topic, 
+               d.difficulty_level, e.lesson_id
+        FROM exercises_info e
+        JOIN pair_exercises p ON e.id = p.exercise_id
+        JOIN languages l ON e.language_id = l.id
+        JOIN topics t ON e.topic_id = t.id
+        JOIN difficulties d ON e.difficulty_id = d.id
+        ORDER BY e.id
+        """
+        self.cursor.execute(query)
+        exercises = []
+        
+        for row in self.cursor.fetchall():
+            exercise_data = dict(row)
+            
+            # Get pairs
+            self.cursor.execute(
+                """SELECT language_1_content, language_2_content 
+                   FROM pair_exercises WHERE exercise_id = ?""",
+                (exercise_data['id'],)
+            )
+            pairs = []
+            for pair_row in self.cursor.fetchall():
+                pairs.append({
+                    'English': pair_row['language_1_content'],
+                    exercise_data['language']: pair_row['language_2_content']
+                })
+            
+            exercise_data['pairs'] = pairs
+            exercises.append(exercise_data)
+            
+        return exercises
+
+    def get_all_translation_exercises(self) -> List[Dict]:
+        """Get all translation exercises from the database."""
+        query = """
+        SELECT e.id, e.exercise_name, l.language, t.topic, 
+               d.difficulty_level, e.lesson_id,
+               tr.language_1, tr.language_2, 
+               tr.language_1_content, tr.language_2_content
+        FROM exercises_info e
+        JOIN translation_exercises tr ON e.id = tr.exercise_id
+        JOIN languages l ON e.language_id = l.id
+        JOIN topics t ON e.topic_id = t.id
+        JOIN difficulties d ON e.difficulty_id = d.id
+        ORDER BY e.id
+        """
+        self.cursor.execute(query)
+        return [dict(row) for row in self.cursor.fetchall()]
+
+    def remove_conversation_exercises(self, exercise_ids: List[int]) -> int:
+        """Remove conversation exercises by IDs."""
+        if not exercise_ids:
+            return 0
+            
+        placeholders = ','.join(['?'] * len(exercise_ids))
+        
+        # Remove from conversation_exercises table
+        self.cursor.execute(
+            f"DELETE FROM conversation_exercises WHERE exercise_id IN ({placeholders})",
+            exercise_ids
+        )
+        
+        # Remove from conversation_summaries table
+        self.cursor.execute(
+            f"DELETE FROM conversation_summaries WHERE exercise_id IN ({placeholders})",
+            exercise_ids
+        )
+        
+        # Remove from exercises_info table
+        self.cursor.execute(
+            f"DELETE FROM exercises_info WHERE id IN ({placeholders})",
+            exercise_ids
+        )
+        
+        self.conn.commit()
+        return len(exercise_ids)
+
+    def remove_pair_exercises(self, exercise_ids: List[int]) -> int:
+        """Remove pair exercises by IDs."""
+        if not exercise_ids:
+            return 0
+            
+        placeholders = ','.join(['?'] * len(exercise_ids))
+        
+        # Remove from pair_exercises table
+        self.cursor.execute(
+            f"DELETE FROM pair_exercises WHERE exercise_id IN ({placeholders})",
+            exercise_ids
+        )
+        
+        # Remove from exercises_info table
+        self.cursor.execute(
+            f"DELETE FROM exercises_info WHERE id IN ({placeholders})",
+            exercise_ids
+        )
+        
+        self.conn.commit()
+        return len(exercise_ids)
+
+    def remove_translation_exercises(self, exercise_ids: List[int]) -> int:
+        """Remove translation exercises by IDs."""
+        if not exercise_ids:
+            return 0
+            
+        placeholders = ','.join(['?'] * len(exercise_ids))
+        
+        # Remove from translation_exercises table
+        self.cursor.execute(
+            f"DELETE FROM translation_exercises WHERE exercise_id IN ({placeholders})",
+            exercise_ids
+        )
+        
+        # Remove from exercises_info table
+        self.cursor.execute(
+            f"DELETE FROM exercises_info WHERE id IN ({placeholders})",
+            exercise_ids
+        )
+        
+        self.conn.commit()
+        return len(exercise_ids)
+
     def close(self):
         """Close the database connection."""
         self.conn.close()

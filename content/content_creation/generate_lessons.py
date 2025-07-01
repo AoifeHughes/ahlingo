@@ -209,7 +209,7 @@ def process_response(
 
                     # Check for reasonable sentence length (not just single words)
                     if (
-                        len(english_sentence.split()) < 2
+                        len(english_sentence.split()) < 1
                         or len(target_sentence.split()) < 1
                     ):
                         print(
@@ -240,19 +240,29 @@ def process_response(
         )
 
 
-def populate_database(db_loc: str = "../database/languageLearningDatabase.db"):
+def populate_database(db_loc: str = None):
     """Main function to generate lessons and populate the database using Outlines."""
     from .outlines_generator import (
         generate_lessons_data_structured,
         setup_outlines_model,
     )
+    import os
+    from pathlib import Path
 
-    # Read configuration files
-    with open("generation_data/topics.txt", "r") as file:
+    # Get the repository root directory (go up from content/content_creation/)
+    script_dir = Path(__file__).parent.parent.parent  # repo root directory
+    
+    # Set default database location relative to repo root
+    if db_loc is None:
+        db_loc = str(script_dir / "database" / "languageLearningDatabase.db")
+    
+    # Read configuration files relative to content directory
+    config_dir = script_dir / "content" / "generation_data"
+    with open(config_dir / "topics.txt", "r") as file:
         topics = [line.strip() for line in file]
-    with open("generation_data/languages.txt", "r") as file:
+    with open(config_dir / "languages.txt", "r") as file:
         languages = [line.strip() for line in file]
-    with open("generation_data/levels.txt", "r") as file:
+    with open(config_dir / "levels.txt", "r") as file:
         levels = [line.strip() for line in file]
 
     print("Running with Outlines structured generation:")

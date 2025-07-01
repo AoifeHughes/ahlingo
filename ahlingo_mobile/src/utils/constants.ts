@@ -148,4 +148,48 @@ export const SQL_QUERIES = {
     GROUP BY ei.id, ei.exercise_name, ei.exercise_type, t.topic, t.id, d.difficulty_level, l.language
     ORDER BY last_failed_date DESC
   `,
+
+  // Chat queries
+  CREATE_CHAT:
+    'INSERT INTO chat_details (user_id, language, difficulty, model, created_at, last_updated) VALUES (?, ?, ?, ?, datetime("now"), datetime("now"))',
+  
+  GET_USER_CHATS: `
+    SELECT id, user_id, language, difficulty, model, created_at, last_updated
+    FROM chat_details
+    WHERE user_id = ?
+    ORDER BY last_updated DESC
+  `,
+
+  GET_CHAT_BY_ID:
+    'SELECT id, user_id, language, difficulty, model, created_at, last_updated FROM chat_details WHERE id = ?',
+
+  UPDATE_CHAT_TIMESTAMP:
+    'UPDATE chat_details SET last_updated = datetime("now") WHERE id = ?',
+
+  UPDATE_CHAT_MODEL:
+    'UPDATE chat_details SET model = ?, last_updated = datetime("now") WHERE id = ?',
+
+  DELETE_CHAT:
+    'DELETE FROM chat_details WHERE id = ? AND user_id = ?',
+
+  ADD_CHAT_MESSAGE:
+    'INSERT INTO chat_histories (chat_id, role, content, timestamp) VALUES (?, ?, ?, datetime("now"))',
+
+  GET_CHAT_MESSAGES: `
+    SELECT id, chat_id, role, content, timestamp
+    FROM chat_histories
+    WHERE chat_id = ?
+    ORDER BY timestamp ASC
+  `,
+
+  DELETE_CHAT_MESSAGES:
+    'DELETE FROM chat_histories WHERE chat_id = ?',
+
+  GET_RECENT_CHAT_FOR_USER: `
+    SELECT id, user_id, language, difficulty, model, created_at, last_updated
+    FROM chat_details
+    WHERE user_id = ?
+    ORDER BY last_updated DESC
+    LIMIT 1
+  `,
 } as const;

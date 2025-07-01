@@ -43,8 +43,7 @@ interface FormData {
   language: string;
   difficulty: string;
   apiKey: string;
-  apiUrl: string;
-  hostname: string;
+  serverUrl: string;
   username: string;
 }
 
@@ -58,8 +57,7 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
     language: 'French',
     difficulty: 'Beginner',
     apiKey: '',
-    apiUrl: '',
-    hostname: '',
+    serverUrl: '',
     username: 'default_user',
   });
 
@@ -132,8 +130,7 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
         language: userSettings.language || 'French',
         difficulty: userSettings.difficulty || 'Beginner',
         apiKey: userSettings.api_key || '',
-        apiUrl: userSettings.api_url || '',
-        hostname: userSettings.hostname || '',
+        serverUrl: userSettings.server_url || '',
         username: username,
       });
 
@@ -159,8 +156,7 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
       await setUserSetting(username, 'language', formData.language);
       await setUserSetting(username, 'difficulty', formData.difficulty);
       await setUserSetting(username, 'api_key', formData.apiKey);
-      await setUserSetting(username, 'api_url', formData.apiUrl);
-      await setUserSetting(username, 'hostname', formData.hostname);
+      await setUserSetting(username, 'server_url', formData.serverUrl);
 
       // Update user login timestamp
       await updateUserLogin(username);
@@ -230,25 +226,18 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
             />
           </SettingsItem>
 
-          <SettingsItem title="API URL">
+          <SettingsItem title="AI Server URL (include port)">
             <TextInput
               style={styles.textInput}
-              value={formData.apiUrl}
-              onChangeText={value => updateFormData('apiUrl', value)}
-              placeholder="Enter API URL"
+              value={formData.serverUrl}
+              onChangeText={value => updateFormData('serverUrl', value)}
+              placeholder="e.g., http://192.168.1.100:11434"
               keyboardType="url"
               autoCapitalize="none"
             />
-          </SettingsItem>
-
-          <SettingsItem title="Hostname">
-            <TextInput
-              style={styles.textInput}
-              value={formData.hostname}
-              onChangeText={value => updateFormData('hostname', value)}
-              placeholder="Enter Hostname"
-              autoCapitalize="none"
-            />
+            <Text style={styles.helpText}>
+              Enter the full URL including port number for your AI server (Ollama, etc.)
+            </Text>
           </SettingsItem>
 
           <SettingsItem title="Username">
@@ -327,6 +316,12 @@ const styles = StyleSheet.create({
   saveButtonText: {
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  helpText: {
+    fontSize: 12,
+    color: '#666',
+    marginTop: 4,
+    fontStyle: 'italic',
   },
 });
 

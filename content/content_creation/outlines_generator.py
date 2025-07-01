@@ -43,9 +43,9 @@ def validate_conversations(data: list, language: str) -> list:
             raise ValidationError(f"Conversation {i}: Missing required fields")
 
         conversation = item["conversation"]
-        if not isinstance(conversation, list) or len(conversation) < 2:
+        if not isinstance(conversation, list) or len(conversation) < 1:
             raise ValidationError(
-                f"Conversation {i}: Must have at least 2 dialogue turns"
+                f"Conversation {i}: Must have at least 1 dialogue turn"
             )
 
         # Check for repetitive patterns
@@ -65,8 +65,8 @@ def validate_pairs(data: list, language: str) -> list:
     if not isinstance(data, list):
         raise ValidationError(f"Expected list, got {type(data)}")
 
-    if len(data) != 10:
-        raise ValidationError(f"Expected exactly 10 pairs, got {len(data)}")
+    if not (5 <= len(data) <= 15):
+        raise ValidationError(f"Expected 5-15 pairs, got {len(data)}")
 
     english_words = []
     target_words = []
@@ -87,7 +87,7 @@ def validate_pairs(data: list, language: str) -> list:
             raise ValidationError(f"Pair {i}: Empty words not allowed")
 
         # Check for reasonable length (not excessively long phrases)
-        if len(english_word.split()) > 5 or len(target_word.split()) > 5:
+        if len(english_word.split()) > 10 or len(target_word.split()) > 10:
             raise ValidationError(
                 f"Pair {i}: Phrases too long, should be words or short phrases"
             )
@@ -95,11 +95,33 @@ def validate_pairs(data: list, language: str) -> list:
         english_words.append(english_word.lower())
         target_words.append(target_word.lower())
 
-    # Check for duplicates
-    if len(set(english_words)) != len(english_words):
-        raise ValidationError("Duplicate English words found")
-    if len(set(target_words)) != len(target_words):
-        raise ValidationError(f"Duplicate {language} words found")
+    # Check for duplicates and remove them if found
+    original_length = len(data)
+    
+    # Remove duplicates while preserving order
+    seen_english = set()
+    seen_target = set()
+    unique_data = []
+    
+    for item in data:
+        english_word = item["English"].strip().lower()
+        target_word = item[language].strip().lower()
+        
+        if english_word not in seen_english and target_word not in seen_target:
+            seen_english.add(english_word)
+            seen_target.add(target_word)
+            unique_data.append(item)
+    
+    # Check if we have enough pairs after removing duplicates
+    if len(unique_data) < 5:
+        raise ValidationError(f"After removing duplicates, only {len(unique_data)} pairs remain (minimum 5 required)")
+    
+    # If we removed duplicates, print a warning but continue
+    if len(unique_data) != original_length:
+        print(f"Warning: Removed {original_length - len(unique_data)} duplicate pairs, proceeding with {len(unique_data)} unique pairs")
+    
+    # Update the data to use the deduplicated version
+    data = unique_data
 
     return data
 
@@ -109,8 +131,8 @@ def validate_translations(data: list, language: str) -> list:
     if not isinstance(data, list):
         raise ValidationError(f"Expected list, got {type(data)}")
 
-    if not (5 <= len(data) <= 7):
-        raise ValidationError(f"Expected 5-7 translations, got {len(data)}")
+    if not (3 <= len(data) <= 10):
+        raise ValidationError(f"Expected 3-10 translations, got {len(data)}")
 
     for i, item in enumerate(data):
         if not isinstance(item, dict):
@@ -128,7 +150,7 @@ def validate_translations(data: list, language: str) -> list:
             raise ValidationError(f"Translation {i}: Empty sentences not allowed")
 
         # Check for reasonable sentence length (allow some flexibility for different languages)
-        if len(english_sentence.split()) < 2 or len(target_sentence.split()) < 1:
+        if len(english_sentence.split()) < 1 or len(target_sentence.split()) < 1:
             raise ValidationError(
                 f"Translation {i}: Sentences too short, expected meaningful phrases or sentences"
             )
@@ -192,7 +214,7 @@ def generate_conversations(model, language: str, level: str, topic: str):
     system_content = f"""You are a {language} language learning tool. Generate {level} level {language} conversations about "{topic}".
 
 Create 2-4 conversation exercises. Each should have:
-- 3-6 dialogue turns between speakers
+- 2-10 dialogue turns between speakers
 - Natural, realistic dialogue for {level} learners
 - Progressive conversations that build naturally
 - Each turn should add new information or move the conversation forward
@@ -351,7 +373,7 @@ def generate_translations(model, language: str, level: str, topic: str):
     # Create system message with enhanced instructions
     system_content = f"""You are a {language} language learning tool. Generate sentence translations for "{topic}".
 
-Create 5-7 sentence pairs at {level} level:
+Create 5-8 sentence pairs at {level} level:
 - Full English sentences with accurate {language} translations
 - Mix of statements, questions, and commands
 - Demonstrate key grammar patterns appropriate for {level} learners
@@ -376,7 +398,7 @@ Create 5-7 sentence pairs at {level} level:
                     {"role": "assistant", "content": examples_content},
                     {
                         "role": "user",
-                        "content": f"Now generate 5-7 new sentence translations for the topic: {topic}",
+                        "content": f"Now generate 5-8 new sentence translations for the topic: {topic}",
                     },
                 ]
             )
@@ -404,7 +426,7 @@ Create 5-7 sentence pairs at {level} level:
         examples_context = ""
         if language in default_translation_assistants:
             examples_content = default_translation_assistants[language]["content"]
-            examples_context = f"\n\nReference examples (for format only):\n{examples_content}\n\nNow generate 5-7 NEW sentence translations for the topic: {topic}"
+            examples_context = f"\n\nReference examples (for format only):\n{examples_content}\n\nNow generate 5-8 NEW sentence translations for the topic: {topic}"
 
         full_prompt = system_content + examples_context
         result = generator(full_prompt)

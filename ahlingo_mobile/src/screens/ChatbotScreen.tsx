@@ -1,7 +1,39 @@
-import React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { 
+  View, 
+  StyleSheet, 
+  Text, 
+  Alert, 
+  ScrollView,
+  TouchableOpacity,
+  ActivityIndicator,
+  SafeAreaView
+} from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useSelector } from 'react-redux';
 import { RootStackParamList } from '../types';
+import { RootState } from '../store';
+import ChatInput from '../components/ChatInput';
+import ChatMessage from '../components/ChatMessage';
+import ConversationsList from '../components/ConversationsList';
+import { 
+  ChatDetail, 
+  ChatMessage as ChatMessageType,
+  createChat,
+  getUserChats,
+  getChatMessages,
+  addChatMessage,
+  deleteChat,
+  getRecentChatForUser,
+  getChatById,
+  updateChatModel
+} from '../services/ChatService';
+import { 
+  OpenAIService, 
+  APISettings 
+} from '../services/OpenAIService';
+import { ModelService, ModelInfo } from '../services/ModelService';
+import { getUserSettings, getUserId } from '../services/SimpleDatabaseService';
 
 type ChatbotScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -13,30 +45,512 @@ interface Props {
 }
 
 const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
+  const settings = useSelector((state: RootState) => state.settings.settings);
+  
+  const [messages, setMessages] = useState<ChatMessageType[]>([]);
+  const [currentChat, setCurrentChat] = useState<ChatDetail | null>(null);
+  const [conversations, setConversations] = useState<ChatDetail[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [showConversations, setShowConversations] = useState(false);
+  const [isInitializing, setIsInitializing] = useState(true);
+  const [availableModels, setAvailableModels] = useState<ModelInfo[]>([]);
+  const [selectedModel, setSelectedModel] = useState('qwen/qwen3-4b');
+  const [showModelDropdown, setShowModelDropdown] = useState(false);
+
+  const loadUserChats = useCallback(async () => {
+    try {
+      const userId = await getUserId(settings.username || 'default_user');
+      if (userId) {
+        const userChats = await getUserChats(userId);
+        setConversations(userChats);
+        return userId;
+      }
+      return null;
+    } catch (error) {
+      console.error('Failed to load user chats:', error);
+      return null;
+    }
+  }, [settings.username]);
+
+  const loadChatMessages = useCallback(async (chatId: number) => {
+    try {
+      const chatMessages = await getChatMessages(chatId);
+      setMessages(chatMessages);
+    } catch (error) {
+      console.error('Failed to load chat messages:', error);
+      Alert.alert('Error', 'Failed to load chat messages');
+    }
+  }, []);
+
+  const initializeChat = useCallback(async () => {
+    console.log('🔄 Initializing chat...');
+    setIsInitializing(true);
+    try {
+      const userId = await loadUserChats();
+      if (userId) {
+        const recentChat = await getRecentChatForUser(userId);
+        if (recentChat) {
+          setCurrentChat(recentChat);
+          setSelectedModel(recentChat.model); // Set the model from the loaded chat
+          await loadChatMessages(recentChat.id);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to initialize chat:', error);
+    } finally {
+      setIsInitializing(false);
+    }
+  }, [loadUserChats, loadChatMessages]);
+
+  const loadAvailableModels = useCallback(async () => {
+    try {
+      const userSettings = await getUserSettings(settings.username || 'default_user');
+      if (userSettings.server_url) {
+        console.log('🔍 Loading available models from:', userSettings.server_url);
+        const models = await ModelService.fetchAvailableModels(
+          userSettings.server_url, 
+          userSettings.api_key
+        );
+        setAvailableModels(models);
+        
+        // Set the first model as default if none selected
+        if (models.length > 0 && !selectedModel) {
+          setSelectedModel(models[0].id);
+        }
+        
+        console.log('✅ Loaded models:', models);
+      }
+    } catch (error) {
+      console.error('Failed to load models:', error);
+      // Don't show alert here, just log the error
+    }
+  }, [settings.username]); // Removed selectedModel dependency to prevent reloading on model change
+
+  useEffect(() => {
+    const initialize = async () => {
+      await initializeChat();
+      await loadAvailableModels();
+    };
+    initialize();
+  }, [initializeChat, loadAvailableModels]);
+
+  const createNewChat = async () => {
+    console.log('🆕 Creating new chat...');
+    try {
+      const userId = await getUserId(settings.username || 'default_user');
+      console.log('👤 Got user ID:', userId);
+      if (!userId) {
+        Alert.alert('Error', 'Failed to get user information');
+        return;
+      }
+
+      const language = settings.language || 'Spanish';
+      const difficulty = settings.difficulty || 'Beginner';
+      const model = selectedModel;
+      
+      console.log('📝 Creating chat with:', { userId, language, difficulty, model });
+
+      const chatId = await createChat(userId, language, difficulty, model);
+      console.log('🆔 Created chat with ID:', chatId);
+      
+      if (chatId) {
+        const newChat = await getChatById(chatId);
+        console.log('💬 Retrieved new chat:', newChat);
+        
+        if (newChat) {
+          setCurrentChat(newChat);
+          setMessages([]);
+          await loadUserChats();
+          console.log('✅ New chat set successfully');
+        }
+      }
+    } catch (error) {
+      console.error('Failed to create new chat:', error);
+      Alert.alert('Error', 'Failed to create new chat');
+    }
+  };
+
+  const sendMessage = async (content: string) => {
+    console.log('📤 ChatbotScreen sendMessage called with:', content);
+    console.log('📋 Current chat state:', currentChat ? `Chat ID: ${currentChat.id}` : 'No current chat');
+    
+    if (!currentChat) {
+      console.log('🔄 No current chat, creating new chat...');
+      await createNewChat();
+      if (!currentChat) {
+        console.log('❌ Failed to create new chat');
+        return;
+      }
+    }
+
+    console.log('⏳ Setting loading state...');
+    setIsLoading(true);
+
+    try {
+      await addChatMessage(currentChat.id, 'user', content);
+      const updatedMessages = await getChatMessages(currentChat.id);
+      setMessages(updatedMessages);
+
+      const userSettings = await getUserSettings(settings.username || 'default_user');
+      console.log('📋 User settings loaded:', {
+        username: settings.username || 'default_user',
+        api_key: userSettings.api_key ? `${userSettings.api_key.substring(0, 10)}...` : 'NOT SET',
+        server_url: userSettings.server_url || 'Using default OpenAI URL'
+      });
+      
+      const apiSettings: APISettings = {
+        apiKey: userSettings.api_key || '',
+        apiUrl: userSettings.server_url,
+      };
+
+      const validation = OpenAIService.validateAPISettings(apiSettings);
+      if (!validation.isValid) {
+        Alert.alert('API Configuration Error', validation.error);
+        setIsLoading(false);
+        return;
+      }
+
+      const systemPrompt = OpenAIService.generateSystemPrompt(
+        currentChat.language,
+        currentChat.difficulty
+      );
+
+      const openAIMessages = OpenAIService.convertChatMessagesToOpenAI(
+        updatedMessages,
+        systemPrompt
+      );
+
+      const assistantResponse = await OpenAIService.sendMessage(
+        openAIMessages,
+        apiSettings,
+        currentChat.model
+      );
+
+      await addChatMessage(currentChat.id, 'assistant', assistantResponse);
+      const finalMessages = await getChatMessages(currentChat.id);
+      setMessages(finalMessages);
+
+    } catch (error) {
+      console.error('Failed to send message:', error);
+      const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
+      Alert.alert('Error', errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleModelChange = async (newModel: string) => {
+    try {
+      console.log('🔄 Changing model to:', newModel);
+      setSelectedModel(newModel);
+      
+      if (currentChat) {
+        await updateChatModel(currentChat.id, newModel);
+        console.log('✅ Updated chat model to:', newModel);
+        
+        // Update the current chat object
+        setCurrentChat(prev => prev ? { ...prev, model: newModel } : null);
+      }
+    } catch (error) {
+      console.error('Failed to update chat model:', error);
+      Alert.alert('Error', 'Failed to update model');
+    }
+  };
+
+  const selectConversation = async (conversation: ChatDetail) => {
+    setCurrentChat(conversation);
+    setSelectedModel(conversation.model);
+    await loadChatMessages(conversation.id);
+  };
+
+  const deleteConversation = async (conversationId: number) => {
+    try {
+      const userId = await getUserId(settings.username || 'default_user');
+      if (userId) {
+        await deleteChat(conversationId, userId);
+        await loadUserChats();
+        
+        if (currentChat?.id === conversationId) {
+          setCurrentChat(null);
+          setMessages([]);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to delete conversation:', error);
+      Alert.alert('Error', 'Failed to delete conversation');
+    }
+  };
+
+  if (isInitializing) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#1976D2" />
+          <Text style={styles.loadingText}>Loading...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.placeholder}>Chatbot Screen</Text>
-      <Text style={styles.subtext}>To be implemented</Text>
-    </View>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <TouchableOpacity
+          style={styles.conversationsButton}
+          onPress={() => setShowConversations(true)}
+        >
+          <Text style={styles.conversationsButtonText}>Conversations</Text>
+        </TouchableOpacity>
+        <View style={styles.headerCenter}>
+          <Text style={styles.headerTitle}>
+            {currentChat ? `${currentChat.language} - ${currentChat.difficulty}` : 'New Chat'}
+          </Text>
+          {availableModels.length > 0 && (
+            <TouchableOpacity
+              style={styles.modelSelector}
+              onPress={() => setShowModelDropdown(!showModelDropdown)}
+            >
+              <Text style={styles.modelSelectorText}>
+                {selectedModel}
+              </Text>
+              <Text style={styles.dropdownArrow}>▼</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+        <TouchableOpacity
+          style={styles.newChatButton}
+          onPress={createNewChat}
+        >
+          <Text style={styles.newChatButtonText}>New</Text>
+        </TouchableOpacity>
+      </View>
+
+      {showModelDropdown && availableModels.length > 0 && (
+        <View style={styles.modelDropdownContainer}>
+          <ScrollView style={styles.modelDropdown} showsVerticalScrollIndicator={false}>
+            {availableModels.map((model) => (
+              <TouchableOpacity
+                key={model.id}
+                style={[
+                  styles.modelOption,
+                  selectedModel === model.id && styles.selectedModelOption,
+                ]}
+                onPress={() => {
+                  handleModelChange(model.id);
+                  setShowModelDropdown(false);
+                }}
+              >
+                <Text style={[
+                  styles.modelOptionText,
+                  selectedModel === model.id && styles.selectedModelOptionText,
+                ]}>
+                  {model.name}
+                </Text>
+                {model.owned_by && (
+                  <Text style={styles.modelSizeText}>{model.owned_by}</Text>
+                )}
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
+      )}
+
+      <ScrollView 
+        style={styles.messagesContainer}
+        contentContainerStyle={styles.messagesContent}
+        showsVerticalScrollIndicator={false}
+      >
+        {messages.length === 0 ? (
+          <View style={styles.emptyState}>
+            <Text style={styles.emptyStateText}>Start a conversation!</Text>
+            <Text style={styles.emptyStateSubtext}>
+              Type a message below to begin chatting in {currentChat?.language || settings.language || 'your target language'}.
+            </Text>
+          </View>
+        ) : (
+          messages.map((message, index) => (
+            <ChatMessage
+              key={`${message.id}-${index}`}
+              role={message.role}
+              content={message.content}
+              timestamp={message.timestamp}
+            />
+          ))
+        )}
+        {isLoading && (
+          <View style={styles.loadingMessage}>
+            <ActivityIndicator size="small" color="#1976D2" />
+            <Text style={styles.loadingMessageText}>Assistant is typing...</Text>
+          </View>
+        )}
+      </ScrollView>
+
+      <ChatInput
+        onSendMessage={sendMessage}
+        isLoading={isLoading}
+        placeholder="Type your message..."
+      />
+
+      <ConversationsList
+        visible={showConversations}
+        onClose={() => setShowConversations(false)}
+        conversations={conversations}
+        onSelectConversation={selectConversation}
+        onDeleteConversation={deleteConversation}
+        onNewConversation={createNewChat}
+        currentConversationId={currentChat?.id}
+      />
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#fff',
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: '#fff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0e0e0',
+  },
+  conversationsButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 6,
+    backgroundColor: '#f0f0f0',
+  },
+  conversationsButtonText: {
+    fontSize: 14,
+    color: '#1976D2',
+    fontWeight: '600',
+  },
+  headerCenter: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  headerTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
+    textAlign: 'center',
+  },
+  modelSelector: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#f0f0f0',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
+    marginTop: 4,
+  },
+  modelSelectorText: {
+    fontSize: 12,
+    color: '#666',
+    marginRight: 4,
+  },
+  dropdownArrow: {
+    fontSize: 10,
+    color: '#666',
+  },
+  modelDropdownContainer: {
+    backgroundColor: '#fff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0e0e0',
+    maxHeight: 200,
+  },
+  modelDropdown: {
+    maxHeight: 200,
+  },
+  modelOption: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+  },
+  selectedModelOption: {
+    backgroundColor: '#e3f2fd',
+  },
+  modelOptionText: {
+    fontSize: 14,
+    color: '#333',
+    flex: 1,
+  },
+  selectedModelOptionText: {
+    color: '#1976D2',
+    fontWeight: '600',
+  },
+  modelSizeText: {
+    fontSize: 12,
+    color: '#888',
+  },
+  newChatButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 6,
+    backgroundColor: '#1976D2',
+  },
+  newChatButtonText: {
+    fontSize: 14,
+    color: '#fff',
+    fontWeight: '600',
+  },
+  messagesContainer: {
+    flex: 1,
+    backgroundColor: '#fafafa',
+  },
+  messagesContent: {
+    paddingVertical: 16,
+    flexGrow: 1,
+  },
+  emptyState: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
+    paddingHorizontal: 32,
   },
-  placeholder: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#1976D2',
+  emptyStateText: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#666',
     marginBottom: 8,
+    textAlign: 'center',
   },
-  subtext: {
+  emptyStateSubtext: {
+    fontSize: 14,
+    color: '#888',
+    textAlign: 'center',
+    lineHeight: 20,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: 16,
     fontSize: 16,
     color: '#666',
+  },
+  loadingMessage: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 16,
+  },
+  loadingMessageText: {
+    marginLeft: 8,
+    fontSize: 14,
+    color: '#666',
+    fontStyle: 'italic',
   },
 });
 

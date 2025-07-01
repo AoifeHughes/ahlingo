@@ -7,9 +7,16 @@ from content_creation.generate_lessons import populate_database
 from database.database_manager import LanguageDB
 
 
-def initialize_default_settings():
+def initialize_default_settings(db_loc=None):
     """Initialize default settings in the database."""
-    with LanguageDB("../database/languageLearningDatabase.db") as db:
+    from pathlib import Path
+    
+    # Use the same path logic as populate_database  
+    if db_loc is None:
+        script_dir = Path(__file__).parent.parent  # repo root directory
+        db_loc = str(script_dir / "database" / "languageLearningDatabase.db")
+    
+    with LanguageDB(db_loc) as db:
         # Get or create default user
         default_user = db.get_most_recent_user() or "default_user"
 
@@ -24,5 +31,15 @@ def initialize_default_settings():
 
 
 if __name__ == "__main__":
-    populate_database()
-    initialize_default_settings()
+    from pathlib import Path
+    
+    # Set up database path
+    script_dir = Path(__file__).parent.parent  # repo root directory  
+    db_path = str(script_dir / "database" / "languageLearningDatabase.db")
+    
+    # Create database directory if it doesn't exist
+    db_dir = script_dir / "database"
+    db_dir.mkdir(exist_ok=True)
+    
+    populate_database(db_path)
+    initialize_default_settings(db_path)
