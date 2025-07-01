@@ -30,7 +30,11 @@ yarn-error.log*
 *settings.json
 *broken*
 *.egg-info
+# Database files
 database/languageLearningDatabase.db
+**/languageLearningDatabase.db
+**/languagelearningdatabase.db
+*.db
 
 # React Native
 ahlingo_mobile/node_modules/
