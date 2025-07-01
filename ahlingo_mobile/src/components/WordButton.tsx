@@ -9,12 +9,12 @@ interface WordButtonProps {
   disabled?: boolean;
 }
 
-const WordButton: React.FC<WordButtonProps> = ({ 
-  word, 
-  index, 
-  isSelected, 
-  onPress, 
-  disabled = false 
+const WordButton: React.FC<WordButtonProps> = ({
+  word,
+  index,
+  isSelected,
+  onPress,
+  disabled = false,
 }) => {
   return (
     <TouchableOpacity
@@ -26,11 +26,13 @@ const WordButton: React.FC<WordButtonProps> = ({
       onPress={() => onPress(word, index)}
       disabled={disabled}
     >
-      <Text style={[
-        styles.wordText,
-        isSelected && styles.selectedWordText,
-        disabled && styles.disabledWordText,
-      ]}>
+      <Text
+        style={[
+          styles.wordText,
+          isSelected && styles.selectedWordText,
+          disabled && styles.disabledWordText,
+        ]}
+      >
         {word}
       </Text>
     </TouchableOpacity>

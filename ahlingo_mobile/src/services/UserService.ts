@@ -1,4 +1,8 @@
-import { executeSqlSingle, getSingleRow, rowsToArray } from '../utils/databaseUtils';
+import {
+  executeSqlSingle,
+  getSingleRow,
+  rowsToArray,
+} from '../utils/databaseUtils';
 import { SQL_QUERIES, TIMEOUTS } from '../utils/constants';
 
 /**
@@ -19,7 +23,7 @@ export const getMostRecentUser = async (): Promise<string> => {
       [],
       TIMEOUTS.QUERY_MEDIUM
     );
-    
+
     if (results && results.rows.length > 0) {
       return results.rows.item(0).name;
     } else {
@@ -58,11 +62,11 @@ export const getUserId = async (username: string): Promise<number | null> => {
       [username],
       TIMEOUTS.QUERY_MEDIUM
     );
-    
+
     if (results && results.rows.length > 0) {
       return results.rows.item(0).id;
     }
-    
+
     // User doesn't exist, create them
     console.log('User not found, creating user:', username);
     await executeSqlSingle(
@@ -70,18 +74,18 @@ export const getUserId = async (username: string): Promise<number | null> => {
       [username],
       TIMEOUTS.QUERY_MEDIUM
     );
-    
+
     // Get the newly created user's ID
     const newUserResults = await executeSqlSingle(
       SQL_QUERIES.GET_USER_BY_NAME,
       [username],
       TIMEOUTS.QUERY_MEDIUM
     );
-    
+
     if (newUserResults && newUserResults.rows.length > 0) {
       return newUserResults.rows.item(0).id;
     }
-    
+
     return null;
   } catch (error) {
     console.error('Failed to get user ID:', error);
@@ -92,7 +96,9 @@ export const getUserId = async (username: string): Promise<number | null> => {
 /**
  * Get user settings by username
  */
-export const getUserSettings = async (username: string): Promise<UserSettings> => {
+export const getUserSettings = async (
+  username: string
+): Promise<UserSettings> => {
   try {
     // First ensure user exists
     const userResults = await executeSqlSingle(
@@ -128,7 +134,10 @@ export const getUserSettings = async (username: string): Promise<UserSettings> =
 
     const settings: UserSettings = {};
     if (settingsResults && settingsResults.rows) {
-      const settingsArray = rowsToArray<{setting_name: string; setting_value: string}>(settingsResults.rows);
+      const settingsArray = rowsToArray<{
+        setting_name: string;
+        setting_value: string;
+      }>(settingsResults.rows);
       settingsArray.forEach(row => {
         settings[row.setting_name] = row.setting_value;
       });
@@ -144,7 +153,11 @@ export const getUserSettings = async (username: string): Promise<UserSettings> =
 /**
  * Set a user setting
  */
-export const setUserSetting = async (username: string, settingName: string, settingValue: string): Promise<void> => {
+export const setUserSetting = async (
+  username: string,
+  settingName: string,
+  settingValue: string
+): Promise<void> => {
   try {
     // Get or create user
     const userResults = await executeSqlSingle(
@@ -200,16 +213,18 @@ export const updateUserLogin = async (username: string): Promise<void> => {
 /**
  * Get user settings with validation, ensuring user exists
  */
-export const getUserSettingsWithValidation = async (username: string): Promise<{
+export const getUserSettingsWithValidation = async (
+  username: string
+): Promise<{
   settings: UserSettings;
   userId: number;
 }> => {
   const settings = await getUserSettings(username);
   const userId = await getUserId(username);
-  
+
   if (!userId) {
     throw new Error('Failed to create or retrieve user');
   }
-  
+
   return { settings, userId };
 };

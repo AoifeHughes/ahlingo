@@ -19,17 +19,17 @@ const gameSlice = createSlice({
     selectPairColumn2: (state, action: PayloadAction<number | null>) => {
       state.selectedPairs.column2 = action.payload;
     },
-    clearSelections: (state) => {
+    clearSelections: state => {
       state.selectedPairs = { column1: null, column2: null };
     },
     addCorrectPair: (state, action: PayloadAction<number>) => {
       state.correctPairs.push(action.payload);
       state.score.correct += 1;
     },
-    incrementIncorrect: (state) => {
+    incrementIncorrect: state => {
       state.score.incorrect += 1;
     },
-    resetGame: (state) => {
+    resetGame: state => {
       state.selectedPairs = { column1: null, column2: null };
       state.correctPairs = [];
       state.score = { correct: 0, incorrect: 0 };

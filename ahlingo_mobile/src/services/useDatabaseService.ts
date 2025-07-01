@@ -4,7 +4,7 @@ import {
   getTopics,
   getDifficulties,
   getUserSettings,
-  setUserSetting
+  setUserSetting,
 } from './SimpleDatabaseService';
 import { Language, Topic, Difficulty } from '../types';
 
@@ -30,7 +30,9 @@ export const useLanguages = () => {
         setLanguages(result);
         setError(null);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch languages');
+        setError(
+          err instanceof Error ? err.message : 'Failed to fetch languages'
+        );
       } finally {
         setLoading(false);
       }
@@ -82,7 +84,9 @@ export const useDifficulties = () => {
         setDifficulties(result);
         setError(null);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch difficulties');
+        setError(
+          err instanceof Error ? err.message : 'Failed to fetch difficulties'
+        );
       } finally {
         setLoading(false);
       }
@@ -109,7 +113,9 @@ export const useUserSettings = (username: string) => {
         setSettings(result);
         setError(null);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch user settings');
+        setError(
+          err instanceof Error ? err.message : 'Failed to fetch user settings'
+        );
       } finally {
         setLoading(false);
       }

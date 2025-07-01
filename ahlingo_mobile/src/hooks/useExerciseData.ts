@@ -1,5 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
-import { getTopicsForExerciseType, getRandomExerciseForTopic, getExerciseData } from '../services/BaseExerciseService';
+import {
+  getTopicsForExerciseType,
+  getRandomExerciseForTopic,
+  getExerciseData,
+} from '../services/BaseExerciseService';
 import { Topic, ExerciseInfo } from '../types';
 import { ExerciseType } from '../utils/navigationUtils';
 
@@ -19,12 +23,16 @@ export const useExerciseTopics = (
     try {
       setLoading(true);
       setError(null);
-      
-      const availableTopics = await getTopicsForExerciseType(exerciseType, language, difficulty);
+
+      const availableTopics = await getTopicsForExerciseType(
+        exerciseType,
+        language,
+        difficulty
+      );
       setTopics(availableTopics);
-      
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to load topics';
+      const errorMessage =
+        err instanceof Error ? err.message : 'Failed to load topics';
       setError(errorMessage);
       console.error('Failed to load topics:', err);
     } finally {
@@ -67,22 +75,27 @@ export const useExercise = (
     try {
       setLoading(true);
       setError(null);
-      
+
       // Get random exercise for topic
-      const exerciseInfo = await getRandomExerciseForTopic(topicId, language, difficulty, exerciseType);
-      
+      const exerciseInfo = await getRandomExerciseForTopic(
+        topicId,
+        language,
+        difficulty,
+        exerciseType
+      );
+
       if (!exerciseInfo) {
         throw new Error(`No ${exerciseType} exercises found for this topic`);
       }
-      
+
       setExercise(exerciseInfo);
-      
+
       // Get exercise data
       const data = await getExerciseData(exerciseInfo.id, exerciseType);
       setExerciseData(data);
-      
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to load exercise';
+      const errorMessage =
+        err instanceof Error ? err.message : 'Failed to load exercise';
       setError(errorMessage);
       console.error('Failed to load exercise:', err);
     } finally {

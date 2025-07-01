@@ -1,4 +1,8 @@
-import { executeSqlSingle, getSingleRow, rowsToArray } from '../utils/databaseUtils';
+import {
+  executeSqlSingle,
+  getSingleRow,
+  rowsToArray,
+} from '../utils/databaseUtils';
 import { SQL_QUERIES, TIMEOUTS } from '../utils/constants';
 import { Language, Topic, Difficulty } from '../types';
 
@@ -12,27 +16,27 @@ import { Language, Topic, Difficulty } from '../types';
 export const logDatabaseTables = async (): Promise<void> => {
   try {
     console.log('🔄 Querying database tables...');
-    
+
     // Query all table names
     const results = await executeSqlSingle(
       SQL_QUERIES.GET_TABLES,
       [],
       TIMEOUTS.QUERY_MEDIUM
     );
-    
+
     if (!results || !results.rows) {
       console.log('No results returned');
       return;
     }
-    
+
     const tables = results.rows;
     console.log(`\n📊 Found ${tables.length} tables:\n`);
-    
+
     // Log each table name
     for (let i = 0; i < tables.length; i++) {
       const tableName = tables.item(i).name;
       console.log(`  📋 ${tableName}`);
-      
+
       // Get row count for each table
       try {
         const countResult = await executeSqlSingle(
@@ -43,9 +47,12 @@ export const logDatabaseTables = async (): Promise<void> => {
         const count = countResult.rows.item(0).count;
         console.log(`     Rows: ${count}`);
       } catch (error) {
-        console.error(`     Error counting rows:`, error instanceof Error ? error.message : error);
+        console.error(
+          `     Error counting rows:`,
+          error instanceof Error ? error.message : error
+        );
       }
-      
+
       // Get column info for each table
       try {
         const columnResults = await executeSqlSingle(
@@ -53,23 +60,25 @@ export const logDatabaseTables = async (): Promise<void> => {
           [],
           TIMEOUTS.QUERY_SHORT
         );
-        
+
         if (columnResults && columnResults.rows) {
           const columns = columnResults.rows;
           console.log(`     Columns:`);
-          
+
           for (let j = 0; j < columns.length; j++) {
             const col = columns.item(j);
             console.log(`       - ${col.name} (${col.type})`);
           }
         }
       } catch (colError) {
-        console.error(`     Error getting columns:`, colError instanceof Error ? colError.message : colError);
+        console.error(
+          `     Error getting columns:`,
+          colError instanceof Error ? colError.message : colError
+        );
       }
-      
+
       console.log(''); // Empty line for readability
     }
-    
   } catch (error) {
     console.error('❌ Database Error:', error);
     console.error('Details:', error instanceof Error ? error.message : error);
@@ -86,7 +95,7 @@ export const getLanguages = async (): Promise<Language[]> => {
       [],
       TIMEOUTS.QUERY_MEDIUM
     );
-    
+
     return results ? rowsToArray<Language>(results.rows) : [];
   } catch (error) {
     console.error('Failed to get languages:', error);
@@ -104,7 +113,7 @@ export const getDifficulties = async (): Promise<Difficulty[]> => {
       [],
       TIMEOUTS.QUERY_MEDIUM
     );
-    
+
     return results ? rowsToArray<Difficulty>(results.rows) : [];
   } catch (error) {
     console.error('Failed to get difficulties:', error);
@@ -122,7 +131,7 @@ export const getTopics = async (): Promise<Topic[]> => {
       [],
       TIMEOUTS.QUERY_MEDIUM
     );
-    
+
     return results ? rowsToArray<Topic>(results.rows) : [];
   } catch (error) {
     console.error('Failed to get topics:', error);
@@ -133,14 +142,16 @@ export const getTopics = async (): Promise<Topic[]> => {
 /**
  * Get exercises by lesson ID
  */
-export const getExercisesByLesson = async (lessonId: string): Promise<any[]> => {
+export const getExercisesByLesson = async (
+  lessonId: string
+): Promise<any[]> => {
   try {
     const results = await executeSqlSingle(
       SQL_QUERIES.GET_EXERCISES_BY_LESSON,
       [lessonId],
       TIMEOUTS.QUERY_MEDIUM
     );
-    
+
     return results ? rowsToArray(results.rows) : [];
   } catch (error) {
     console.error('Failed to get exercises by lesson:', error);

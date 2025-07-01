@@ -101,9 +101,9 @@ If you see identical exercises being generated:
 
 **Check:**
 ```sql
-SELECT exercise_name, COUNT(*) 
-FROM exercises_info 
-GROUP BY exercise_name 
+SELECT exercise_name, COUNT(*)
+FROM exercises_info
+GROUP BY exercise_name
 HAVING COUNT(*) > 1;
 ```
 
@@ -202,7 +202,7 @@ print("Available functions:", dir(outlines_generator))
 
 def run_diagnostics():
     print("🔍 Running Outlines Integration Diagnostics")
-    
+
     # 1. Check Ollama connection
     try:
         import requests
@@ -212,7 +212,7 @@ def run_diagnostics():
     except Exception as e:
         print("❌ Ollama server issue:", e)
         return
-    
+
     # 2. Test model setup
     try:
         from content_creation.outlines_generator import setup_outlines_model
@@ -221,7 +221,7 @@ def run_diagnostics():
     except Exception as e:
         print("❌ Model setup failed:", e)
         return
-    
+
     # 3. Test generation
     try:
         from content_creation.outlines_generator import generate_pairs
@@ -230,7 +230,7 @@ def run_diagnostics():
     except Exception as e:
         print("❌ Generation failed:", e)
         return
-    
+
     print("🎉 All diagnostics passed!")
 
 if __name__ == "__main__":
@@ -245,13 +245,13 @@ import psutil
 def monitor_generation():
     start_time = time.time()
     start_memory = psutil.Process().memory_info().rss / 1024 / 1024  # MB
-    
+
     # Your generation code here
     result = generate_conversations(model, "French", "beginner", "food")
-    
+
     end_time = time.time()
     end_memory = psutil.Process().memory_info().rss / 1024 / 1024  # MB
-    
+
     print(f"Generation time: {end_time - start_time:.2f}s")
     print(f"Memory usage: {end_memory - start_memory:.1f}MB increase")
     print(f"Results: {len(result)} exercises")

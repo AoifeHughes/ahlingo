@@ -16,14 +16,16 @@ const ConversationView: React.FC<ConversationViewProps> = ({ messages }) => {
   // Create a mapping of speakers to determine left/right alignment
   const speakers = [...new Set(messages.map(msg => msg.speaker))];
   const speakerAlignments = new Map<string, boolean>();
-  
+
   // Assign alternating alignments to speakers
   speakers.forEach((speaker, index) => {
     speakerAlignments.set(speaker, index % 2 === 0);
   });
 
   // Sort messages by conversation order
-  const sortedMessages = [...messages].sort((a, b) => a.conversation_order - b.conversation_order);
+  const sortedMessages = [...messages].sort(
+    (a, b) => a.conversation_order - b.conversation_order
+  );
 
   return (
     <View style={styles.container}>

@@ -65,8 +65,8 @@ from content_creation.generate_lessons import populate_database_legacy
 
 # Generate specific lessons
 for lesson_kind, lesson_id, json_response in generate_lessons_data_structured(
-    language="French", 
-    level="beginner", 
+    language="French",
+    level="beginner",
     topic="food"
 ):
     print(f"Generated {lesson_kind}: {len(json.loads(json_response))} exercises")

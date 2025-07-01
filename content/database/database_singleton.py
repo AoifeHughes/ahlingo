@@ -2,15 +2,17 @@
 from typing import Optional
 from .database_manager import LanguageDB
 
+
 class DatabaseManager:
     """
     Singleton class for managing database connections.
     Ensures only one instance of LanguageDB exists throughout the application.
     """
-    _instance: Optional['DatabaseManager'] = None
+
+    _instance: Optional["DatabaseManager"] = None
     _db: Optional[LanguageDB] = None
 
-    def __new__(cls) -> 'DatabaseManager':
+    def __new__(cls) -> "DatabaseManager":
         """
         Create a new instance of DatabaseManager if one doesn't exist.
         Returns the existing instance otherwise.
@@ -20,13 +22,15 @@ class DatabaseManager:
             cls._instance._db = None
         return cls._instance
 
-    def get_db(self, db_path: str = "database/languageLearningDatabase.db") -> LanguageDB:
+    def get_db(
+        self, db_path: str = "database/languageLearningDatabase.db"
+    ) -> LanguageDB:
         """
         Get the database instance. Initialize it if it doesn't exist.
-        
+
         Args:
             db_path: Path to the SQLite database file
-            
+
         Returns:
             LanguageDB: The database instance
         """

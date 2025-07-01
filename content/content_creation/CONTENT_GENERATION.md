@@ -13,30 +13,30 @@ graph TD
     C -->|Conversations| D[Conversation Generator]
     C -->|Pairs| E[Word Pair Generator]  
     C -->|Translations| F[Translation Generator]
-    
+
     D --> G[LLM Processing]
     E --> G
     F --> G
-    
+
     G --> H[JSON Response]
     H --> I[Response Parser]
     I --> J[Text Cleaner]
     J --> K[Database Insertion]
-    
+
     L[Assistant Templates] --> G
     M[System Prompts] --> G
-    
+
     K --> N[(SQLite Database)]
-    
+
     subgraph "Configuration"
         A1[languages.txt]
-        A2[levels.txt] 
+        A2[levels.txt]
         A3[topics.txt]
         A1 --> A
         A2 --> A
         A3 --> A
     end
-    
+
     subgraph "Exercise Types"
         D1[Dialogues with Speaker Names]
         E1[English ↔ Target Language]
@@ -77,7 +77,7 @@ The generation system is configured through three key files in `content/generati
 
 #### Conversation Exercises
 - **Structure**: Array of conversation objects with speaker/message pairs and summaries
-- **Features**: 
+- **Features**:
   - Culturally appropriate speaker names (Marie/Pierre for French, Anna/Hans for German, etc.)
   - 3-6 dialogue turns per conversation
   - Contextual summaries

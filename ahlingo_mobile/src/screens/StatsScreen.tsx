@@ -48,14 +48,17 @@ interface ProgressSummary {
 const StatsScreen: React.FC<Props> = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
   const [topicStats, setTopicStats] = useState<TopicStats[]>([]);
-  const [progressSummary, setProgressSummary] = useState<ProgressSummary | null>(null);
+  const [progressSummary, setProgressSummary] =
+    useState<ProgressSummary | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
   const isLoadingRef = useRef(false);
 
   const loadUserStats = useCallback(async () => {
     // Prevent multiple concurrent requests
     if (isLoadingRef.current) {
-      console.log('Stats loading already in progress, skipping duplicate request');
+      console.log(
+        'Stats loading already in progress, skipping duplicate request'
+      );
       return;
     }
 
@@ -73,13 +76,13 @@ const StatsScreen: React.FC<Props> = ({ navigation }) => {
 
     try {
       setLoading(true);
-      
+
       // Add timeout promise
       const timeoutPromise = new Promise<never>((_, reject) => {
         const timeoutId = setTimeout(() => {
           reject(new Error('Database operation timed out'));
         }, 10000); // 10 second timeout
-        
+
         // Clear timeout if request is aborted
         signal.addEventListener('abort', () => {
           clearTimeout(timeoutId);
@@ -88,19 +91,25 @@ const StatsScreen: React.FC<Props> = ({ navigation }) => {
       });
 
       // Get user settings (this creates user if doesn't exist)
-      const username = await Promise.race([getMostRecentUser(), timeoutPromise]);
-      
+      const username = await Promise.race([
+        getMostRecentUser(),
+        timeoutPromise,
+      ]);
+
       if (signal.aborted) return;
-      
-      const userSettings = await Promise.race([getUserSettings(username), timeoutPromise]);
-      
+
+      const userSettings = await Promise.race([
+        getUserSettings(username),
+        timeoutPromise,
+      ]);
+
       if (signal.aborted) return;
-      
+
       // Now get the user ID
       const userId = await Promise.race([getUserId(username), timeoutPromise]);
-      
+
       if (signal.aborted) return;
-      
+
       if (!userId) {
         if (!signal.aborted) {
           setLoading(false);
@@ -112,21 +121,29 @@ const StatsScreen: React.FC<Props> = ({ navigation }) => {
       // Load topic stats and progress summary with timeout using batched function
       const { stats: topicData, summary: summaryData } = await Promise.race([
         getUserStatsAndSummary(userId),
-        timeoutPromise
+        timeoutPromise,
       ]);
 
       if (signal.aborted) return;
 
       setTopicStats(topicData);
       setProgressSummary(summaryData);
-      
     } catch (error) {
       if (signal.aborted) return;
-      
+
       console.error('Failed to load user stats:', error);
-      if (error instanceof Error && error.message === 'Database operation timed out') {
-        Alert.alert('Timeout', 'Loading statistics is taking too long. Please try again.');
-      } else if (error instanceof Error && error.message === 'Request was cancelled') {
+      if (
+        error instanceof Error &&
+        error.message === 'Database operation timed out'
+      ) {
+        Alert.alert(
+          'Timeout',
+          'Loading statistics is taking too long. Please try again.'
+        );
+      } else if (
+        error instanceof Error &&
+        error.message === 'Request was cancelled'
+      ) {
         // Don't show alert for cancelled requests
         return;
       } else {
@@ -135,7 +152,7 @@ const StatsScreen: React.FC<Props> = ({ navigation }) => {
     } finally {
       // Always clear the loading guard
       isLoadingRef.current = false;
-      
+
       if (!signal.aborted) {
         setLoading(false);
       }
@@ -145,7 +162,7 @@ const StatsScreen: React.FC<Props> = ({ navigation }) => {
   useFocusEffect(
     useCallback(() => {
       loadUserStats();
-      
+
       // Cleanup function - runs when screen loses focus or unmounts
       return () => {
         if (abortControllerRef.current) {
@@ -164,11 +181,11 @@ const StatsScreen: React.FC<Props> = ({ navigation }) => {
     return (
       <View style={styles.progressBarContainer}>
         <View style={styles.progressBarBackground}>
-          <View 
+          <View
             style={[
-              styles.progressBarFill, 
-              { width: `${Math.min(percentage || 0, 100)}%` }
-            ]} 
+              styles.progressBarFill,
+              { width: `${Math.min(percentage || 0, 100)}%` },
+            ]}
           />
         </View>
         <Text style={styles.progressText}>{percentage || 0}%</Text>
@@ -187,30 +204,42 @@ const StatsScreen: React.FC<Props> = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+      >
         {/* Overall Progress Summary */}
         {progressSummary && (
           <View style={styles.summaryCard}>
             <Text style={styles.summaryTitle}>Overall Progress</Text>
             <View style={styles.summaryStats}>
               <View style={styles.statItem}>
-                <Text style={styles.statNumber}>{progressSummary.total_correct}</Text>
+                <Text style={styles.statNumber}>
+                  {progressSummary.total_correct}
+                </Text>
                 <Text style={styles.statLabel}>Completed</Text>
               </View>
               <View style={styles.statItem}>
-                <Text style={styles.statNumber}>{progressSummary.total_attempted}</Text>
+                <Text style={styles.statNumber}>
+                  {progressSummary.total_attempted}
+                </Text>
                 <Text style={styles.statLabel}>Attempted</Text>
               </View>
               <View style={styles.statItem}>
-                <Text style={styles.statNumber}>{progressSummary.total_available}</Text>
+                <Text style={styles.statNumber}>
+                  {progressSummary.total_available}
+                </Text>
                 <Text style={styles.statLabel}>Available</Text>
               </View>
             </View>
             <View style={styles.overallProgress}>
               <Text style={styles.overallProgressLabel}>
-                Overall Completion: {progressSummary.overall_completion_percentage || 0}%
+                Overall Completion:{' '}
+                {progressSummary.overall_completion_percentage || 0}%
               </Text>
-              {renderProgressBar(progressSummary.overall_completion_percentage || 0)}
+              {renderProgressBar(
+                progressSummary.overall_completion_percentage || 0
+              )}
             </View>
             <View style={styles.overallProgress}>
               <Text style={styles.overallProgressLabel}>

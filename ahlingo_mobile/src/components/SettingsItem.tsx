@@ -10,9 +10,7 @@ const SettingsItem: React.FC<SettingsItemProps> = ({ title, children }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{title}</Text>
-      <View style={styles.content}>
-        {children}
-      </View>
+      <View style={styles.content}>{children}</View>
     </View>
   );
 };

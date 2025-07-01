@@ -1,19 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  View, 
-  ScrollView, 
-  StyleSheet, 
-  Text, 
-  TextInput, 
-  Alert, 
-  ActivityIndicator 
+import {
+  View,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  Alert,
+  ActivityIndicator,
 } from 'react-native';
 import { Button } from 'react-native-elements';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootStackParamList, Language, Difficulty } from '../types';
 import { RootState } from '../store';
-import { setSettings, setLoading, setError } from '../store/slices/settingsSlice';
+import {
+  setSettings,
+  setLoading,
+  setError,
+} from '../store/slices/settingsSlice';
 import {
   getLanguages,
   getDifficulties,
@@ -21,7 +25,7 @@ import {
   getUserSettings,
   setUserSetting,
   updateUserLogin,
-  logDatabaseTables
+  logDatabaseTables,
 } from '../services/SimpleDatabaseService';
 import SettingsItem from '../components/SettingsItem';
 import Dropdown, { DropdownItem } from '../components/Dropdown';
@@ -46,8 +50,10 @@ interface FormData {
 
 const SettingsScreen: React.FC<Props> = ({ navigation }) => {
   const dispatch = useDispatch();
-  const { settings, isLoading } = useSelector((state: RootState) => state.settings);
-  
+  const { settings, isLoading } = useSelector(
+    (state: RootState) => state.settings
+  );
+
   const [formData, setFormData] = useState<FormData>({
     language: 'French',
     difficulty: 'Beginner',
@@ -56,7 +62,7 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
     hostname: '',
     username: 'default_user',
   });
-  
+
   const [languages, setLanguages] = useState<DropdownItem[]>([]);
   const [difficulties, setDifficulties] = useState<DropdownItem[]>([]);
   const [isSaving, setIsSaving] = useState(false);
@@ -67,15 +73,17 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
 
   const loadInitialData = async () => {
     dispatch(setLoading(true));
-    
+
     try {
       // Load languages from database
       const languagesData = await getLanguages();
-      const languageItems: DropdownItem[] = languagesData.map((lang: Language) => ({
-        label: lang.language,
-        value: lang.language,
-      }));
-      
+      const languageItems: DropdownItem[] = languagesData.map(
+        (lang: Language) => ({
+          label: lang.language,
+          value: lang.language,
+        })
+      );
+
       // Fallback if no languages in database
       if (languageItems.length === 0) {
         languageItems.push(
@@ -85,14 +93,16 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
         );
       }
       setLanguages(languageItems);
-      
+
       // Load difficulties from database
       const difficultiesData = await getDifficulties();
-      const difficultyItems: DropdownItem[] = difficultiesData.map((diff: Difficulty) => ({
-        label: diff.difficulty_level,
-        value: diff.difficulty_level,
-      }));
-      
+      const difficultyItems: DropdownItem[] = difficultiesData.map(
+        (diff: Difficulty) => ({
+          label: diff.difficulty_level,
+          value: diff.difficulty_level,
+        })
+      );
+
       // Fallback if no difficulties in database
       if (difficultyItems.length === 0) {
         difficultyItems.push(
@@ -102,10 +112,9 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
         );
       }
       setDifficulties(difficultyItems);
-      
+
       // Load user settings
       await loadUserSettings();
-      
     } catch (error) {
       console.error('Failed to load initial data:', error);
       dispatch(setError('Failed to load settings data'));
@@ -118,7 +127,7 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
     try {
       const username = await getMostRecentUser();
       const userSettings = await getUserSettings(username);
-      
+
       setFormData({
         language: userSettings.language || 'French',
         difficulty: userSettings.difficulty || 'Beginner',
@@ -127,13 +136,14 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
         hostname: userSettings.hostname || '',
         username: username,
       });
-      
+
       // Update Redux store
-      dispatch(setSettings({
-        language: userSettings.language || 'French',
-        difficulty: userSettings.difficulty || 'Beginner',
-      }));
-      
+      dispatch(
+        setSettings({
+          language: userSettings.language || 'French',
+          difficulty: userSettings.difficulty || 'Beginner',
+        })
+      );
     } catch (error) {
       console.error('Failed to load user settings:', error);
     }
@@ -141,28 +151,29 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
 
   const handleSave = async () => {
     setIsSaving(true);
-    
+
     try {
       const username = formData.username || 'default_user';
-      
+
       // Save all settings to database
       await setUserSetting(username, 'language', formData.language);
       await setUserSetting(username, 'difficulty', formData.difficulty);
       await setUserSetting(username, 'api_key', formData.apiKey);
       await setUserSetting(username, 'api_url', formData.apiUrl);
       await setUserSetting(username, 'hostname', formData.hostname);
-      
+
       // Update user login timestamp
       await updateUserLogin(username);
-      
+
       // Update Redux store
-      dispatch(setSettings({
-        language: formData.language,
-        difficulty: formData.difficulty,
-      }));
-      
+      dispatch(
+        setSettings({
+          language: formData.language,
+          difficulty: formData.difficulty,
+        })
+      );
+
       Alert.alert('Success', 'Settings saved successfully!');
-      
     } catch (error) {
       console.error('Failed to save settings:', error);
       Alert.alert('Error', 'Failed to save settings. Please try again.');
@@ -186,67 +197,70 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.content}>
           <SettingsItem title="Language">
             <Dropdown
               items={languages}
               selectedValue={formData.language}
-              onValueChange={(value) => updateFormData('language', value)}
+              onValueChange={value => updateFormData('language', value)}
               placeholder="Select Language"
             />
           </SettingsItem>
-          
+
           <SettingsItem title="Difficulty">
             <Dropdown
               items={difficulties}
               selectedValue={formData.difficulty}
-              onValueChange={(value) => updateFormData('difficulty', value)}
+              onValueChange={value => updateFormData('difficulty', value)}
               placeholder="Select Difficulty"
             />
           </SettingsItem>
-          
+
           <SettingsItem title="API Key">
             <TextInput
               style={styles.textInput}
               value={formData.apiKey}
-              onChangeText={(value) => updateFormData('apiKey', value)}
+              onChangeText={value => updateFormData('apiKey', value)}
               placeholder="Enter API Key"
               secureTextEntry
             />
           </SettingsItem>
-          
+
           <SettingsItem title="API URL">
             <TextInput
               style={styles.textInput}
               value={formData.apiUrl}
-              onChangeText={(value) => updateFormData('apiUrl', value)}
+              onChangeText={value => updateFormData('apiUrl', value)}
               placeholder="Enter API URL"
               keyboardType="url"
               autoCapitalize="none"
             />
           </SettingsItem>
-          
+
           <SettingsItem title="Hostname">
             <TextInput
               style={styles.textInput}
               value={formData.hostname}
-              onChangeText={(value) => updateFormData('hostname', value)}
+              onChangeText={value => updateFormData('hostname', value)}
               placeholder="Enter Hostname"
               autoCapitalize="none"
             />
           </SettingsItem>
-          
+
           <SettingsItem title="Username">
             <TextInput
               style={styles.textInput}
               value={formData.username}
-              onChangeText={(value) => updateFormData('username', value)}
+              onChangeText={value => updateFormData('username', value)}
               placeholder="Enter Username"
               autoCapitalize="none"
             />
           </SettingsItem>
-          
+
           <View style={styles.buttonContainer}>
             <Button
               title={isSaving ? 'Saving...' : 'Save Settings'}

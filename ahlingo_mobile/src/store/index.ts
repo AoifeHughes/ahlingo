@@ -11,7 +11,7 @@ export const store = configureStore({
     game: gameSlice,
     data: dataSlice,
   },
-  middleware: (getDefaultMiddleware) =>
+  middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
       serializableCheck: {
         ignoredActions: ['persist/PERSIST'],

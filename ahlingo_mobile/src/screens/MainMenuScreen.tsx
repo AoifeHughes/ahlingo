@@ -1,5 +1,12 @@
 import React from 'react';
-import { View, StyleSheet, Text, StatusBar, TouchableOpacity, Dimensions } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Text,
+  StatusBar,
+  TouchableOpacity,
+  Dimensions,
+} from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types';
 
@@ -17,53 +24,58 @@ const cardSize = (width - 60) / 2; // 2 cards per row with padding
 
 const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
   const exerciseItems = [
-    { 
-      title: 'Match Words', 
+    {
+      title: 'Match Words',
       screen: 'TopicSelection' as keyof RootStackParamList,
       icon: '🎯',
       exerciseType: 'pairs',
-      color: '#FF6B6B'
+      color: '#FF6B6B',
     },
-    { 
-      title: 'Conversations', 
+    {
+      title: 'Conversations',
       screen: 'TopicSelection' as keyof RootStackParamList,
       icon: '💬',
       exerciseType: 'conversation',
-      color: '#4ECDC4'
+      color: '#4ECDC4',
     },
-    { 
-      title: 'Translate', 
+    {
+      title: 'Translate',
       screen: 'TopicSelection' as keyof RootStackParamList,
       icon: '📝',
       exerciseType: 'translation',
-      color: '#45B7D1'
+      color: '#45B7D1',
     },
-    { 
-      title: 'Chat Practice', 
+    {
+      title: 'Chat Practice',
       screen: 'Chatbot' as keyof RootStackParamList,
       icon: '🤖',
       exerciseType: null,
-      color: '#96CEB4'
+      color: '#96CEB4',
     },
-    { 
-      title: 'Your Stats', 
+    {
+      title: 'Your Stats',
       screen: 'Stats' as keyof RootStackParamList,
       icon: '📊',
       exerciseType: null,
-      color: '#9C27B0'
+      color: '#9C27B0',
     },
-    { 
-      title: 'Retry Mistakes', 
+    {
+      title: 'Retry Mistakes',
       screen: 'RetryMistakes' as keyof RootStackParamList,
       icon: '🔄',
       exerciseType: null,
-      color: '#FF9800'
+      color: '#FF9800',
     },
   ];
 
-  const handleExercisePress = (item: typeof exerciseItems[0]) => {
+  const handleExercisePress = (item: (typeof exerciseItems)[0]) => {
     if (item.exerciseType) {
-      navigation.navigate('TopicSelection', { exerciseType: item.exerciseType });
+      navigation.navigate('TopicSelection', {
+        exerciseType: item.exerciseType as
+          | 'pairs'
+          | 'conversation'
+          | 'translation',
+      });
     } else {
       navigation.navigate(item.screen as any);
     }
@@ -75,14 +87,14 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.title}>AHLingo</Text>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.settingsButton}
             onPress={() => navigation.navigate('Settings')}
           >
             <Text style={styles.settingsIcon}>⚙️</Text>
           </TouchableOpacity>
         </View>
-        
+
         <View style={styles.cardsContainer}>
           {/* All exercise cards (3x2 grid) */}
           <View style={styles.exercisesGrid}>
@@ -101,9 +113,11 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
             ))}
           </View>
         </View>
-        
+
         <View style={styles.footer}>
-          <Text style={styles.footerText}>Start your language learning journey</Text>
+          <Text style={styles.footerText}>
+            Start your language learning journey
+          </Text>
         </View>
       </View>
     </>

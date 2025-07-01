@@ -1,4 +1,8 @@
-import { executeSqlSingle, getSingleRow, rowsToArray } from '../utils/databaseUtils';
+import {
+  executeSqlSingle,
+  getSingleRow,
+  rowsToArray,
+} from '../utils/databaseUtils';
 import { SQL_QUERIES, TIMEOUTS } from '../utils/constants';
 import { Topic, ExerciseInfo } from '../types';
 import { ExerciseType } from '../utils/navigationUtils';
@@ -21,7 +25,7 @@ export const getTopicsForExerciseType = async (
       [language, difficulty],
       TIMEOUTS.QUERY_MEDIUM
     );
-    
+
     return results ? rowsToArray<Topic>(results.rows) : [];
   } catch (error) {
     console.error(`Failed to get topics for ${exerciseType}:`, error);
@@ -44,10 +48,13 @@ export const getRandomExerciseForTopic = async (
       [topicId, language, difficulty],
       TIMEOUTS.QUERY_MEDIUM
     );
-    
+
     return getSingleRow<ExerciseInfo>(results);
   } catch (error) {
-    console.error(`Failed to get random ${exerciseType} exercise for topic:`, error);
+    console.error(
+      `Failed to get random ${exerciseType} exercise for topic:`,
+      error
+    );
     return null;
   }
 };
@@ -61,7 +68,7 @@ export const getExerciseData = async (
 ): Promise<any[]> => {
   try {
     let query: string;
-    
+
     switch (exerciseType) {
       case 'pairs':
         query = SQL_QUERIES.GET_PAIR_EXERCISES;
@@ -75,21 +82,23 @@ export const getExerciseData = async (
       default:
         throw new Error(`Unknown exercise type: ${exerciseType}`);
     }
-    
+
     const results = await executeSqlSingle(
       query,
       [exerciseId],
       TIMEOUTS.QUERY_MEDIUM
     );
-    
+
     return results ? rowsToArray(results.rows) : [];
   } catch (error) {
     console.error(`Failed to get ${exerciseType} exercise data:`, error);
-    
+
     // Fallback logic for missing tables (as in original code)
     if (exerciseType === 'conversation') {
       try {
-        console.log('conversation_exercises table not found, trying chat_details...');
+        console.log(
+          'conversation_exercises table not found, trying chat_details...'
+        );
         const fallbackResults = await executeSqlSingle(
           'SELECT * FROM chat_details WHERE id = ?',
           [exerciseId],
@@ -100,10 +109,12 @@ export const getExerciseData = async (
         console.error('Fallback query also failed:', fallbackError);
       }
     }
-    
+
     if (exerciseType === 'translation') {
       try {
-        console.log('translation_exercises table not found, trying pair_exercises as fallback...');
+        console.log(
+          'translation_exercises table not found, trying pair_exercises as fallback...'
+        );
         const fallbackResults = await executeSqlSingle(
           SQL_QUERIES.GET_PAIR_EXERCISES,
           [exerciseId],
@@ -114,7 +125,7 @@ export const getExerciseData = async (
         console.error('Fallback query also failed:', fallbackError);
       }
     }
-    
+
     return [];
   }
 };
@@ -142,15 +153,17 @@ export const recordExerciseAttempt = async (
 /**
  * Get topic name for an exercise
  */
-export const getTopicNameForExercise = async (exerciseId: number): Promise<string | null> => {
+export const getTopicNameForExercise = async (
+  exerciseId: number
+): Promise<string | null> => {
   try {
     const results = await executeSqlSingle(
       SQL_QUERIES.GET_TOPIC_FOR_EXERCISE,
       [exerciseId],
       TIMEOUTS.QUERY_MEDIUM
     );
-    
-    const row = getSingleRow<{topic: string}>(results);
+
+    const row = getSingleRow<{ topic: string }>(results);
     return row ? row.topic : null;
   } catch (error) {
     console.error('Failed to get topic name for exercise:', error);

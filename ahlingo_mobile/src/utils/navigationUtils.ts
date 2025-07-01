@@ -9,7 +9,9 @@ export type ExerciseType = 'pairs' | 'conversation' | 'translation';
 /**
  * Get the appropriate screen name for an exercise type
  */
-export const getExerciseScreenName = (exerciseType: ExerciseType): keyof RootStackParamList => {
+export const getExerciseScreenName = (
+  exerciseType: ExerciseType
+): keyof RootStackParamList => {
   switch (exerciseType) {
     case 'pairs':
       return 'PairsGame';

@@ -39,7 +39,6 @@ export interface PairExercise {
   language_2_content: string;
 }
 
-
 export interface TranslationExercise {
   id: number;
   exercise_id: number;

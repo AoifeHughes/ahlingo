@@ -27,7 +27,10 @@ type TopicSelectionScreenNavigationProp = NativeStackNavigationProp<
   'TopicSelection'
 >;
 
-type TopicSelectionScreenRouteProp = RouteProp<RootStackParamList, 'TopicSelection'>;
+type TopicSelectionScreenRouteProp = RouteProp<
+  RootStackParamList,
+  'TopicSelection'
+>;
 
 interface Props {
   navigation: TopicSelectionScreenNavigationProp;
@@ -41,7 +44,7 @@ const TopicSelectionScreen: React.FC<Props> = ({ navigation, route }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [userLanguage, setUserLanguage] = useState<string>('French');
   const [userDifficulty, setUserDifficulty] = useState<string>('Beginner');
-  
+
   const exerciseType = route.params?.exerciseType || 'pairs';
 
   useEffect(() => {
@@ -51,17 +54,18 @@ const TopicSelectionScreen: React.FC<Props> = ({ navigation, route }) => {
   const loadUserSettingsAndTopics = async () => {
     try {
       setLoading(true);
-      
+
       // Get current user settings from database
       const username = await getMostRecentUser();
       const userSettings = await getUserSettings(username);
-      
+
       const language = userSettings.language || settings.language || 'French';
-      const difficulty = userSettings.difficulty || settings.difficulty || 'Beginner';
-      
+      const difficulty =
+        userSettings.difficulty || settings.difficulty || 'Beginner';
+
       setUserLanguage(language);
       setUserDifficulty(difficulty);
-      
+
       // Load topics based on exercise type
       let availableTopics: Topic[] = [];
       if (exerciseType === 'pairs') {
@@ -74,9 +78,8 @@ const TopicSelectionScreen: React.FC<Props> = ({ navigation, route }) => {
         // Fallback to pairs for unknown exercise types
         availableTopics = await getTopicsForPairs(language, difficulty);
       }
-      
+
       setTopics(availableTopics);
-      
     } catch (error) {
       console.error('Failed to load topics:', error);
       Alert.alert('Error', 'Failed to load topics. Please try again.');
@@ -122,7 +125,8 @@ const TopicSelectionScreen: React.FC<Props> = ({ navigation, route }) => {
     <View style={styles.emptyContainer}>
       <Text style={styles.emptyTitle}>No Topics Available</Text>
       <Text style={styles.emptyText}>
-        No {exerciseType} exercises found for {userLanguage} at {userDifficulty} level.
+        No {exerciseType} exercises found for {userLanguage} at {userDifficulty}{' '}
+        level.
       </Text>
       <Text style={styles.emptyHint}>
         Try changing your language or difficulty in Settings.
@@ -147,11 +151,11 @@ const TopicSelectionScreen: React.FC<Props> = ({ navigation, route }) => {
           {userLanguage} • {userDifficulty}
         </Text>
       </View>
-      
+
       <FlatList
         data={topics}
         renderItem={renderTopicCard}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={item => item.id.toString()}
         contentContainerStyle={styles.listContainer}
         showsVerticalScrollIndicator={false}
         refreshControl={

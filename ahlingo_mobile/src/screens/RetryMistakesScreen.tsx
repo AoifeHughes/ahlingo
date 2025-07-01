@@ -48,14 +48,14 @@ const RetryMistakesScreen: React.FC<Props> = ({ navigation }) => {
   const loadFailedExercises = async () => {
     try {
       setLoading(true);
-      
+
       // Get user settings (this creates user if doesn't exist)
       const username = await getMostRecentUser();
       const userSettings = await getUserSettings(username);
-      
+
       // Now get the user ID
       const userId = await getUserId(username);
-      
+
       if (!userId) {
         setLoading(false);
         Alert.alert('Error', 'Failed to initialize user. Please try again.');
@@ -64,7 +64,6 @@ const RetryMistakesScreen: React.FC<Props> = ({ navigation }) => {
 
       const failed = await getUserFailedExercises(userId);
       setFailedExercises(failed);
-      
     } catch (error) {
       console.error('Failed to load failed exercises:', error);
       Alert.alert('Error', 'Failed to load exercises. Please try again.');
@@ -80,10 +79,14 @@ const RetryMistakesScreen: React.FC<Props> = ({ navigation }) => {
         navigation.navigate('PairsGame', { topicId: exercise.topic_id });
         break;
       case 'conversation':
-        navigation.navigate('ConversationExercises', { topicId: exercise.topic_id });
+        navigation.navigate('ConversationExercises', {
+          topicId: exercise.topic_id,
+        });
         break;
       case 'translation':
-        navigation.navigate('TranslationExercises', { topicId: exercise.topic_id });
+        navigation.navigate('TranslationExercises', {
+          topicId: exercise.topic_id,
+        });
         break;
       default:
         Alert.alert('Error', 'Unknown exercise type');
@@ -146,7 +149,10 @@ const RetryMistakesScreen: React.FC<Props> = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+      >
         {failedExercises.length > 0 ? (
           <>
             <View style={styles.headerCard}>
@@ -155,7 +161,8 @@ const RetryMistakesScreen: React.FC<Props> = ({ navigation }) => {
                 Retry exercises you got wrong to improve your skills
               </Text>
               <Text style={styles.exerciseCount}>
-                {failedExercises.length} exercise{failedExercises.length !== 1 ? 's' : ''} to retry
+                {failedExercises.length} exercise
+                {failedExercises.length !== 1 ? 's' : ''} to retry
               </Text>
             </View>
 
@@ -207,7 +214,8 @@ const RetryMistakesScreen: React.FC<Props> = ({ navigation }) => {
             <Text style={styles.noDataIcon}>🎉</Text>
             <Text style={styles.noDataTitle}>Great job!</Text>
             <Text style={styles.noDataText}>
-              You haven't made any mistakes yet, or you've already corrected them all.
+              You haven't made any mistakes yet, or you've already corrected
+              them all.
             </Text>
             <Text style={styles.noDataSubtext}>
               Keep practicing to maintain your perfect record!

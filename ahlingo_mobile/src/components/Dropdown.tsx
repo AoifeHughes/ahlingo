@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Modal, FlatList, StyleSheet } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Modal,
+  FlatList,
+  StyleSheet,
+  ViewStyle,
+} from 'react-native';
 
 export interface DropdownItem {
   label: string;
@@ -11,7 +19,7 @@ interface DropdownProps {
   selectedValue: string;
   onValueChange: (value: string) => void;
   placeholder?: string;
-  style?: any;
+  style?: ViewStyle;
 }
 
 const Dropdown: React.FC<DropdownProps> = ({
@@ -57,10 +65,7 @@ const Dropdown: React.FC<DropdownProps> = ({
         onPress={() => setIsVisible(true)}
       >
         <Text
-          style={[
-            styles.dropdownText,
-            !selectedItem && styles.placeholderText,
-          ]}
+          style={[styles.dropdownText, !selectedItem && styles.placeholderText]}
         >
           {displayText}
         </Text>
@@ -82,7 +87,7 @@ const Dropdown: React.FC<DropdownProps> = ({
             <FlatList
               data={items}
               renderItem={renderItem}
-              keyExtractor={(item) => item.value}
+              keyExtractor={item => item.value}
               style={styles.modalList}
             />
           </View>

@@ -7,13 +7,18 @@ interface AnswerBoxProps {
   onWordRemove: (word: string, originalIndex: number) => void;
 }
 
-const AnswerBox: React.FC<AnswerBoxProps> = ({ selectedWords, onWordRemove }) => {
+const AnswerBox: React.FC<AnswerBoxProps> = ({
+  selectedWords,
+  onWordRemove,
+}) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Your Translation:</Text>
       <View style={styles.answerArea}>
         {selectedWords.length === 0 ? (
-          <Text style={styles.placeholder}>Tap words below to build your translation</Text>
+          <Text style={styles.placeholder}>
+            Tap words below to build your translation
+          </Text>
         ) : (
           <ScrollView
             horizontal
@@ -26,7 +31,9 @@ const AnswerBox: React.FC<AnswerBoxProps> = ({ selectedWords, onWordRemove }) =>
                 word={wordObj.word}
                 index={wordObj.originalIndex}
                 isSelected={true}
-                onPress={() => onWordRemove(wordObj.word, wordObj.originalIndex)}
+                onPress={() =>
+                  onWordRemove(wordObj.word, wordObj.originalIndex)
+                }
               />
             ))}
           </ScrollView>

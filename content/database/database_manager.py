@@ -553,7 +553,14 @@ class LanguageDB:
             """INSERT INTO exercises_info
                (exercise_name, language_id, topic_id, difficulty_id, exercise_type, lesson_id)
                VALUES (?, ?, ?, ?, ?, ?)""",
-            (exercise_name, language_id, topic_id, difficulty_id, "conversation", lesson_id),
+            (
+                exercise_name,
+                language_id,
+                topic_id,
+                difficulty_id,
+                "conversation",
+                lesson_id,
+            ),
         )
         exercise_id = self.cursor.lastrowid
 
@@ -639,7 +646,7 @@ class LanguageDB:
         """Add a batch of word pairs as a single exercise to the database."""
         if not pairs:
             return -1
-            
+
         language_id = self._get_or_create_language(language)
         topic_id = self._get_or_create_topic(topic)
         difficulty_id = self._get_or_create_difficulty(difficulty_level)
@@ -658,10 +665,10 @@ class LanguageDB:
             # Check for duplicates within this batch (skip if duplicate)
             language_1_content = pair.get(language_1, "")
             language_2_content = pair.get(language_2, "")
-            
+
             if not language_1_content or not language_2_content:
                 continue  # Skip invalid pairs
-                
+
             # Check if this specific pair already exists in the database
             self.cursor.execute(
                 """SELECT COUNT(*) FROM pair_exercises
@@ -671,7 +678,7 @@ class LanguageDB:
             existing_count = self.cursor.fetchone()[0]
             if existing_count > 0:
                 continue  # Skip duplicate pairs
-                
+
             self.cursor.execute(
                 """INSERT INTO pair_exercises
                    (exercise_id, language_1, language_2, language_1_content, language_2_content)
@@ -710,7 +717,14 @@ class LanguageDB:
             """INSERT INTO exercises_info
                (exercise_name, language_id, topic_id, difficulty_id, exercise_type, lesson_id)
                VALUES (?, ?, ?, ?, ?, ?)""",
-            (exercise_name, language_id, topic_id, difficulty_id, "translation", lesson_id),
+            (
+                exercise_name,
+                language_id,
+                topic_id,
+                difficulty_id,
+                "translation",
+                lesson_id,
+            ),
         )
         exercise_id = self.cursor.lastrowid
 
@@ -785,10 +799,18 @@ class LanguageDB:
                WHERE p.language_1 = ? AND p.language_2 = ?
                AND t.topic = ? AND d.difficulty_level = ?
                ORDER BY RANDOM() LIMIT ?""",
-            ("English", language, topic, difficulty, (limit + 9) // 10),  # Estimate number of lessons needed
+            (
+                "English",
+                language,
+                topic,
+                difficulty,
+                (limit + 9) // 10,
+            ),  # Estimate number of lessons needed
         )
-        lesson_ids = [row["lesson_id"] for row in self.cursor.fetchall() if row["lesson_id"]]
-        
+        lesson_ids = [
+            row["lesson_id"] for row in self.cursor.fetchall() if row["lesson_id"]
+        ]
+
         # If no lesson_ids with non-null values found, fall back to original random selection
         if not lesson_ids:
             self.cursor.execute(
@@ -804,9 +826,9 @@ class LanguageDB:
                 ("English", language, topic, difficulty, limit),
             )
             return [dict(row) for row in self.cursor.fetchall()]
-        
+
         # Get exercises for the selected lesson_ids
-        placeholders = ','.join(['?'] * len(lesson_ids))
+        placeholders = ",".join(["?"] * len(lesson_ids))
         query = f"""SELECT e.exercise_name, p.language_1, p.language_2,
                           p.language_1_content, p.language_2_content
                    FROM exercises_info e
@@ -818,11 +840,11 @@ class LanguageDB:
                    AND e.lesson_id IN ({placeholders})
                    ORDER BY e.lesson_id, e.id
                    LIMIT ?"""
-        
+
         params = ["English", language, topic, difficulty] + lesson_ids + [limit]
         self.cursor.execute(query, params)
         return [dict(row) for row in self.cursor.fetchall()]
-        
+
     def get_random_translation_exercise(
         self, language: str, difficulty: str, topic: str, limit: int = 10
     ) -> List[Dict]:
@@ -837,10 +859,18 @@ class LanguageDB:
                WHERE t_ex.language_1 = ? AND t_ex.language_2 = ?
                AND t.topic = ? AND d.difficulty_level = ?
                ORDER BY RANDOM() LIMIT ?""",
-            ("English", language, topic, difficulty, (limit + 9) // 10),  # Estimate number of lessons needed
+            (
+                "English",
+                language,
+                topic,
+                difficulty,
+                (limit + 9) // 10,
+            ),  # Estimate number of lessons needed
         )
-        lesson_ids = [row["lesson_id"] for row in self.cursor.fetchall() if row["lesson_id"]]
-        
+        lesson_ids = [
+            row["lesson_id"] for row in self.cursor.fetchall() if row["lesson_id"]
+        ]
+
         # If no lesson_ids with non-null values found, fall back to original random selection
         if not lesson_ids:
             self.cursor.execute(
@@ -856,9 +886,9 @@ class LanguageDB:
                 ("English", language, topic, difficulty, limit),
             )
             return [dict(row) for row in self.cursor.fetchall()]
-        
+
         # Get exercises for the selected lesson_ids
-        placeholders = ','.join(['?'] * len(lesson_ids))
+        placeholders = ",".join(["?"] * len(lesson_ids))
         query = f"""SELECT e.exercise_name, t_ex.language_1, t_ex.language_2,
                           t_ex.language_1_content, t_ex.language_2_content
                    FROM exercises_info e
@@ -870,11 +900,11 @@ class LanguageDB:
                    AND e.lesson_id IN ({placeholders})
                    ORDER BY e.lesson_id, e.id
                    LIMIT ?"""
-        
+
         params = ["English", language, topic, difficulty] + lesson_ids + [limit]
         self.cursor.execute(query, params)
         return [dict(row) for row in self.cursor.fetchall()]
-        
+
     def get_random_conversation_exercise(
         self, language: str, difficulty: str, topic: str, limit: int = 5
     ) -> List[Dict]:
@@ -889,10 +919,17 @@ class LanguageDB:
                JOIN languages l ON e.language_id = l.id
                WHERE l.language = ? AND t.topic = ? AND d.difficulty_level = ?
                ORDER BY RANDOM() LIMIT ?""",
-            (language, topic, difficulty, (limit + 4) // 5),  # Estimate number of lessons needed
+            (
+                language,
+                topic,
+                difficulty,
+                (limit + 4) // 5,
+            ),  # Estimate number of lessons needed
         )
-        lesson_ids = [row["lesson_id"] for row in self.cursor.fetchall() if row["lesson_id"]]
-        
+        lesson_ids = [
+            row["lesson_id"] for row in self.cursor.fetchall() if row["lesson_id"]
+        ]
+
         # If no lesson_ids with non-null values found, fall back to original random selection
         if not lesson_ids:
             # Get exercise IDs first
@@ -908,7 +945,7 @@ class LanguageDB:
                 (language, topic, difficulty, limit),
             )
             exercise_data = [dict(row) for row in self.cursor.fetchall()]
-            
+
             # For each exercise, get the conversation messages and summary
             result = []
             for ex in exercise_data:
@@ -921,7 +958,7 @@ class LanguageDB:
                     (ex["exercise_id"],),
                 )
                 conversation = [dict(row) for row in self.cursor.fetchall()]
-                
+
                 # Get summary
                 self.cursor.execute(
                     """SELECT summary
@@ -931,18 +968,20 @@ class LanguageDB:
                 )
                 summary_row = self.cursor.fetchone()
                 summary = summary_row["summary"] if summary_row else ""
-                
-                result.append({
-                    "exercise_name": ex["exercise_name"],
-                    "conversation": conversation,
-                    "summary": summary
-                })
-                
+
+                result.append(
+                    {
+                        "exercise_name": ex["exercise_name"],
+                        "conversation": conversation,
+                        "summary": summary,
+                    }
+                )
+
             return result
-        
+
         # Get exercises for the selected lesson_ids
-        placeholders = ','.join(['?'] * len(lesson_ids))
-        
+        placeholders = ",".join(["?"] * len(lesson_ids))
+
         # Get exercise IDs first
         query = f"""SELECT DISTINCT e.id as exercise_id, e.exercise_name
                    FROM exercises_info e
@@ -954,11 +993,11 @@ class LanguageDB:
                    AND e.lesson_id IN ({placeholders})
                    ORDER BY e.lesson_id, e.id
                    LIMIT ?"""
-        
+
         params = [language, topic, difficulty] + lesson_ids + [limit]
         self.cursor.execute(query, params)
         exercise_data = [dict(row) for row in self.cursor.fetchall()]
-        
+
         # For each exercise, get the conversation messages and summary
         result = []
         for ex in exercise_data:
@@ -971,7 +1010,7 @@ class LanguageDB:
                 (ex["exercise_id"],),
             )
             conversation = [dict(row) for row in self.cursor.fetchall()]
-            
+
             # Get summary
             self.cursor.execute(
                 """SELECT summary
@@ -981,13 +1020,15 @@ class LanguageDB:
             )
             summary_row = self.cursor.fetchone()
             summary = summary_row["summary"] if summary_row else ""
-            
-            result.append({
-                "exercise_name": ex["exercise_name"],
-                "conversation": conversation,
-                "summary": summary
-            })
-            
+
+            result.append(
+                {
+                    "exercise_name": ex["exercise_name"],
+                    "conversation": conversation,
+                    "summary": summary,
+                }
+            )
+
         return result
 
     def store_pronunciation_audio(

@@ -2,7 +2,7 @@
  * AHLingo React Native App
  * Language Learning Application
  * Migrated from Kivy to React Native
- * 
+ *
  * @format
  */
 
@@ -16,21 +16,20 @@ import AppNavigator from './src/navigation/AppNavigator';
 import { initializeDatabase, logDatabaseTables } from './src/services/RefactoredDatabaseService';
 
 function AppContent(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
 
   useEffect(() => {
     // Initialize database when app starts
     const initializeApp = async () => {
       try {
         console.log('🚀 Initializing AHLingo app...');
-        
+
         // Initialize database once during app startup
         await initializeDatabase();
         console.log('✅ Database initialized successfully');
-        
+
         // Log database tables to verify everything works
         await logDatabaseTables();
-        
+
         console.log('✅ App initialized successfully');
       } catch (error) {
         console.error('❌ Failed to initialize app:', error);

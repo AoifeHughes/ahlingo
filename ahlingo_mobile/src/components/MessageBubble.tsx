@@ -7,12 +7,25 @@ interface MessageBubbleProps {
   isLeft: boolean;
 }
 
-const MessageBubble: React.FC<MessageBubbleProps> = ({ speaker, message, isLeft }) => {
+const MessageBubble: React.FC<MessageBubbleProps> = ({
+  speaker,
+  message,
+  isLeft,
+}) => {
   return (
-    <View style={[styles.container, isLeft ? styles.leftAlign : styles.rightAlign]}>
-      <View style={[styles.bubble, isLeft ? styles.leftBubble : styles.rightBubble]}>
+    <View
+      style={[styles.container, isLeft ? styles.leftAlign : styles.rightAlign]}
+    >
+      <View
+        style={[styles.bubble, isLeft ? styles.leftBubble : styles.rightBubble]}
+      >
         <Text style={styles.speakerName}>{speaker}</Text>
-        <Text style={[styles.messageText, isLeft ? styles.leftText : styles.rightText]}>
+        <Text
+          style={[
+            styles.messageText,
+            isLeft ? styles.leftText : styles.rightText,
+          ]}
+        >
           {message}
         </Text>
       </View>

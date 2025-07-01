@@ -31,7 +31,10 @@ type ConversationExercisesScreenNavigationProp = NativeStackNavigationProp<
   'ConversationExercises'
 >;
 
-type ConversationExercisesScreenRouteProp = RouteProp<RootStackParamList, 'ConversationExercises'>;
+type ConversationExercisesScreenRouteProp = RouteProp<
+  RootStackParamList,
+  'ConversationExercises'
+>;
 
 interface Props {
   navigation: ConversationExercisesScreenNavigationProp;
@@ -53,7 +56,10 @@ interface QuizState {
   score: number;
 }
 
-const ConversationExercisesScreen: React.FC<Props> = ({ navigation, route }) => {
+const ConversationExercisesScreen: React.FC<Props> = ({
+  navigation,
+  route,
+}) => {
   const { topicId } = route.params || {};
   const { settings } = useSelector((state: RootState) => state.settings);
 
@@ -65,10 +71,14 @@ const ConversationExercisesScreen: React.FC<Props> = ({ navigation, route }) => 
       return;
     }
   }, [topicId, navigation]);
-  
+
   const [loading, setLoading] = useState(true);
-  const [currentExercise, setCurrentExercise] = useState<ExerciseInfo | null>(null);
-  const [conversationData, setConversationData] = useState<ConversationMessage[]>([]);
+  const [currentExercise, setCurrentExercise] = useState<ExerciseInfo | null>(
+    null
+  );
+  const [conversationData, setConversationData] = useState<
+    ConversationMessage[]
+  >([]);
   const [quizState, setQuizState] = useState<QuizState>({
     correctAnswer: '',
     options: [],
@@ -89,69 +99,81 @@ const ConversationExercisesScreen: React.FC<Props> = ({ navigation, route }) => 
 
   // Clean text to handle spacing issues around punctuation
   const cleanText = (text: string): string => {
-    return text
-      // Attach punctuation to the preceding word (remove spaces before punctuation)
-      .replace(/\s+([.,!?;:])/g, '$1')
-      // Normalize multiple spaces to single space
-      .replace(/\s+/g, ' ')
-      // Trim leading and trailing spaces
-      .trim();
+    return (
+      text
+        // Attach punctuation to the preceding word (remove spaces before punctuation)
+        .replace(/\s+([.,!?;:])/g, '$1')
+        // Normalize multiple spaces to single space
+        .replace(/\s+/g, ' ')
+        // Trim leading and trailing spaces
+        .trim()
+    );
   };
 
   const loadConversationData = async () => {
     try {
       setLoading(true);
-      
+
       // Get user settings
       const username = await getMostRecentUser();
       const userSettings = await getUserSettings(username);
       const language = userSettings.language || settings.language || 'French';
-      const difficulty = userSettings.difficulty || settings.difficulty || 'Beginner';
-      
+      const difficulty =
+        userSettings.difficulty || settings.difficulty || 'Beginner';
+
       setUserLanguage(language);
       setUserDifficulty(difficulty);
-      
+
       // Get random conversation exercise for this topic
-      const exercise = await getRandomConversationExerciseForTopic(topicId, language, difficulty);
-      
+      const exercise = await getRandomConversationExerciseForTopic(
+        topicId,
+        language,
+        difficulty
+      );
+
       if (!exercise) {
         setLoading(false);
         Alert.alert('Error', 'No conversation exercises found for this topic.');
         navigation.goBack();
         return;
       }
-      
+
       setCurrentExercise(exercise);
-      
+
       // Get conversation data for this exercise
       const exerciseData = await getConversationExerciseData(exercise.id);
-      
+
       // Clean the conversation messages
       const cleanedData = exerciseData.map(msg => ({
         ...msg,
         message: cleanText(msg.message),
         speaker: cleanText(msg.speaker),
       }));
-      
+
       setConversationData(cleanedData);
-      
+
       // Get topic name
       const topicNameResult = await getTopicNameForExercise(exercise.id);
       setTopicName(topicNameResult || 'Unknown Topic');
-      
+
       // Get the correct answer and wrong options
       const correctSummary = await getConversationSummary(exercise.id);
-      const wrongSummaries = await getRandomConversationSummaries(exercise.id, 2);
-      
+      const wrongSummaries = await getRandomConversationSummaries(
+        exercise.id,
+        2
+      );
+
       if (correctSummary && wrongSummaries.length >= 2) {
         // Clean all summaries
         const cleanCorrectSummary = cleanText(correctSummary);
-        const cleanWrongSummaries = wrongSummaries.map(summary => cleanText(summary));
-        
+        const cleanWrongSummaries = wrongSummaries.map(summary =>
+          cleanText(summary)
+        );
+
         // Create options array with correct answer in random position
         const options = [cleanCorrectSummary, ...cleanWrongSummaries];
         const shuffledOptions = options.sort(() => Math.random() - 0.5);
-        
+
         setQuizState(prev => ({
           ...prev,
           correctAnswer: cleanCorrectSummary,
@@ -161,10 +183,12 @@ const ConversationExercisesScreen: React.FC<Props> = ({ navigation, route }) => 
           isCorrect: null,
         }));
       }
-      
     } catch (error) {
       console.error('Failed to load conversation data:', error);
-      Alert.alert('Error', 'Failed to load conversation exercise. Please try again.');
+      Alert.alert(
+        'Error',
+        'Failed to load conversation exercise. Please try again.'
+      );
       navigation.goBack();
     } finally {
       setLoading(false);
@@ -177,10 +201,10 @@ const ConversationExercisesScreen: React.FC<Props> = ({ navigation, route }) => 
 
   const handleOptionPress = async (optionIndex: number) => {
     if (quizState.hasAnswered) return;
-    
+
     const selectedAnswer = quizState.options[optionIndex];
     const isCorrect = selectedAnswer === quizState.correctAnswer;
-    
+
     // Record the exercise attempt
     try {
       const username = await getMostRecentUser();
@@ -191,7 +215,7 @@ const ConversationExercisesScreen: React.FC<Props> = ({ navigation, route }) => 
     } catch (error) {
       console.error('Failed to record exercise attempt:', error);
     }
-    
+
     setQuizState(prev => ({
       ...prev,
       selectedOption: optionIndex,
@@ -222,57 +246,79 @@ const ConversationExercisesScreen: React.FC<Props> = ({ navigation, route }) => 
           <Text style={styles.refreshButtonText}>🔄 New Exercise</Text>
         </TouchableOpacity>
       </View>
-      
+
       {/* Conversation display */}
       <View style={styles.conversationContainer}>
         {conversationData.length > 0 ? (
           <ConversationView messages={conversationData} />
         ) : (
           <View style={styles.noDataContainer}>
-            <Text style={styles.noDataText}>No conversation data available</Text>
+            <Text style={styles.noDataText}>
+              No conversation data available
+            </Text>
           </View>
         )}
       </View>
-      
+
       {/* Quiz section */}
       <View style={styles.quizContainer}>
         <Text style={styles.quizTitle}>What is this conversation about?</Text>
         <Text style={styles.quizSubtitle}>Choose the best summary:</Text>
-        
-        <ScrollView style={styles.optionsContainer} showsVerticalScrollIndicator={false}>
+
+        <ScrollView
+          style={styles.optionsContainer}
+          showsVerticalScrollIndicator={false}
+        >
           {quizState.options.map((option, index) => (
             <TouchableOpacity
               key={index}
               style={[
                 styles.optionButton,
                 quizState.selectedOption === index && styles.selectedOption,
-                quizState.hasAnswered && option === quizState.correctAnswer && styles.correctOption,
-                quizState.hasAnswered && quizState.selectedOption === index && option !== quizState.correctAnswer && styles.incorrectOption,
+                quizState.hasAnswered &&
+                  option === quizState.correctAnswer &&
+                  styles.correctOption,
+                quizState.hasAnswered &&
+                  quizState.selectedOption === index &&
+                  option !== quizState.correctAnswer &&
+                  styles.incorrectOption,
               ]}
               onPress={() => handleOptionPress(index)}
               disabled={quizState.hasAnswered}
             >
-              <Text style={[
-                styles.optionText,
-                quizState.selectedOption === index && styles.selectedOptionText,
-                quizState.hasAnswered && option === quizState.correctAnswer && styles.correctOptionText,
-              ]}>
+              <Text
+                style={[
+                  styles.optionText,
+                  quizState.selectedOption === index &&
+                    styles.selectedOptionText,
+                  quizState.hasAnswered &&
+                    option === quizState.correctAnswer &&
+                    styles.correctOptionText,
+                ]}
+              >
                 {option}
               </Text>
             </TouchableOpacity>
           ))}
         </ScrollView>
-        
+
         {/* Feedback */}
         {quizState.hasAnswered && (
           <View style={styles.feedbackContainer}>
-            <Text style={[
-              styles.feedbackText,
-              quizState.isCorrect ? styles.correctFeedback : styles.incorrectFeedback
-            ]}>
+            <Text
+              style={[
+                styles.feedbackText,
+                quizState.isCorrect
+                  ? styles.correctFeedback
+                  : styles.incorrectFeedback,
+              ]}
+            >
               {quizState.isCorrect ? '✅ Correct!' : '❌ Incorrect. Try again!'}
             </Text>
-            <TouchableOpacity style={styles.nextButton} onPress={handleNextExercise}>
+            <TouchableOpacity
+              style={styles.nextButton}
+              onPress={handleNextExercise}
+            >
               <Text style={styles.nextButtonText}>Next Exercise</Text>
             </TouchableOpacity>
           </View>

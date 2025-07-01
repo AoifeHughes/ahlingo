@@ -51,9 +51,11 @@ interface GameState {
 const PairsGameScreen: React.FC<Props> = ({ route, navigation }) => {
   const { topicId } = route.params;
   const { settings } = useSelector((state: RootState) => state.settings);
-  
+
   const [loading, setLoading] = useState(true);
-  const [currentExercise, setCurrentExercise] = useState<ExerciseInfo | null>(null);
+  const [currentExercise, setCurrentExercise] = useState<ExerciseInfo | null>(
+    null
+  );
   const [pairs, setPairs] = useState<PairExercise[]>([]);
   const [leftColumn, setLeftColumn] = useState<PairItem[]>([]);
   const [rightColumn, setRightColumn] = useState<PairItem[]>([]);
@@ -75,40 +77,44 @@ const PairsGameScreen: React.FC<Props> = ({ route, navigation }) => {
   const loadGameData = async () => {
     try {
       setLoading(true);
-      
+
       // Get user settings
       const username = await getMostRecentUser();
       const userSettings = await getUserSettings(username);
       const language = userSettings.language || settings.language || 'French';
-      const difficulty = userSettings.difficulty || settings.difficulty || 'Beginner';
-      
+      const difficulty =
+        userSettings.difficulty || settings.difficulty || 'Beginner';
+
       setUserLanguage(language);
       setUserDifficulty(difficulty);
-      
+
       // Get random exercise for this topic
-      const exercise = await getRandomExerciseForTopic(topicId, language, difficulty);
-      
+      const exercise = await getRandomExerciseForTopic(
+        topicId,
+        language,
+        difficulty
+      );
+
       if (!exercise) {
         setLoading(false);
         Alert.alert('Error', 'No exercises found for this topic.');
         navigation.goBack();
         return;
       }
-      
+
       setCurrentExercise(exercise);
-      
+
       // Get pairs for this exercise
       const exercisePairs = await getPairExercises(exercise.id);
-      
+
       if (exercisePairs.length === 0) {
         setLoading(false);
         Alert.alert('Error', 'No pairs found for this exercise.');
         navigation.goBack();
         return;
       }
-      
+
       setupGame(exercisePairs);
-      
     } catch (error) {
       console.error('Failed to load game data:', error);
       Alert.alert('Error', 'Failed to load game. Please try again.');
@@ -120,20 +126,20 @@ const PairsGameScreen: React.FC<Props> = ({ route, navigation }) => {
 
   const setupGame = (exercisePairs: PairExercise[]) => {
     setPairs(exercisePairs);
-    
+
     // Create left and right column items
     const leftItems: PairItem[] = exercisePairs.map((pair, index) => ({
       text: pair.language_1_content,
       pairId: index,
       originalIndex: index,
     }));
-    
+
     const rightItems: PairItem[] = exercisePairs.map((pair, index) => ({
       text: pair.language_2_content,
       pairId: index,
       originalIndex: index,
     }));
-    
+
     // Shuffle both columns independently
     const shuffleArray = <T,>(array: T[]): T[] => {
       const shuffled = [...array];
@@ -143,10 +149,10 @@ const PairsGameScreen: React.FC<Props> = ({ route, navigation }) => {
       }
       return shuffled;
     };
-    
+
     setLeftColumn(shuffleArray(leftItems));
     setRightColumn(shuffleArray(rightItems));
-    
+
     // Reset game state
     setGameState({
       selectedLeft: null,
@@ -159,10 +165,10 @@ const PairsGameScreen: React.FC<Props> = ({ route, navigation }) => {
 
   const handleButtonPress = async (pairId: number, column: number) => {
     if (isProcessingMatch) return;
-    
+
     setGameState(prevState => {
       const newState = { ...prevState };
-      
+
       if (column === 0) {
         // Left column
         if (newState.selectedLeft === pairId) {
@@ -182,27 +188,35 @@ const PairsGameScreen: React.FC<Props> = ({ route, navigation }) => {
           newState.selectedRight = pairId;
         }
       }
-      
+
       return newState;
     });
   };
 
   // Check for matches whenever selections change
   useEffect(() => {
-    if (gameState.selectedLeft !== null && gameState.selectedRight !== null && !isProcessingMatch) {
+    if (
+      gameState.selectedLeft !== null &&
+      gameState.selectedRight !== null &&
+      !isProcessingMatch
+    ) {
       checkMatch();
     }
   }, [gameState.selectedLeft, gameState.selectedRight]);
 
   const checkMatch = async () => {
-    if (gameState.selectedLeft === null || gameState.selectedRight === null) return;
-    
+    if (gameState.selectedLeft === null || gameState.selectedRight === null)
+      return;
+
     setIsProcessingMatch(true);
-    
+
     if (gameState.selectedLeft === gameState.selectedRight) {
       // Correct match!
-      const newMatchedPairs = [...gameState.matchedPairs, gameState.selectedLeft!];
-      
+      const newMatchedPairs = [
+        ...gameState.matchedPairs,
+        gameState.selectedLeft!,
+      ];
+
       setGameState(prevState => ({
         ...prevState,
         matchedPairs: newMatchedPairs,
@@ -210,7 +224,7 @@ const PairsGameScreen: React.FC<Props> = ({ route, navigation }) => {
         selectedLeft: null,
         selectedRight: null,
       }));
-      
+
       // Check if all pairs are matched (exercise completed)
       if (newMatchedPairs.length === pairs.length) {
         // Record exercise completion
@@ -231,7 +245,7 @@ const PairsGameScreen: React.FC<Props> = ({ route, navigation }) => {
         ...prevState,
         incorrectCount: prevState.incorrectCount + 1,
       }));
-      
+
       // Reset selection after 1 second delay
       setTimeout(() => {
         setGameState(prevState => ({
@@ -241,7 +255,7 @@ const PairsGameScreen: React.FC<Props> = ({ route, navigation }) => {
         }));
       }, 1000);
     }
-    
+
     setIsProcessingMatch(false);
   };
 
@@ -266,18 +280,20 @@ const PairsGameScreen: React.FC<Props> = ({ route, navigation }) => {
           <Text style={styles.refreshButtonText}>🔄 New Exercise</Text>
         </TouchableOpacity>
       </View>
-      
+
       {/* Score display */}
       <View style={styles.scoreContainer}>
         <Text style={styles.scoreText}>Correct: {gameState.correctCount}</Text>
-        <Text style={styles.scoreText}>Incorrect: {gameState.incorrectCount}</Text>
+        <Text style={styles.scoreText}>
+          Incorrect: {gameState.incorrectCount}
+        </Text>
       </View>
-      
+
       {/* Game area */}
       <View style={styles.gameContainer}>
         {/* Left column */}
         <View style={styles.column}>
-          <ScrollView 
+          <ScrollView
             style={styles.scrollView}
             contentContainerStyle={styles.scrollContent}
             showsVerticalScrollIndicator={false}
@@ -295,10 +311,10 @@ const PairsGameScreen: React.FC<Props> = ({ route, navigation }) => {
             ))}
           </ScrollView>
         </View>
-        
+
         {/* Right column */}
         <View style={styles.column}>
-          <ScrollView 
+          <ScrollView
             style={styles.scrollView}
             contentContainerStyle={styles.scrollContent}
             showsVerticalScrollIndicator={false}
