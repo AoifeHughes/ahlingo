@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   View,
   ScrollView,
@@ -10,6 +10,7 @@ import {
   Switch,
   TouchableOpacity,
   FlatList,
+  Animated,
 } from 'react-native';
 import { Button } from 'react-native-elements';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -59,6 +60,87 @@ interface FormData {
   preferLocalModels: boolean;
 }
 
+// Create a separate component for the progress bar to ensure it updates
+const DownloadProgressBar: React.FC<{
+  progress: number;
+  bytesWritten: number;
+  contentLength: number;
+  theme: any;
+}> = ({ progress, bytesWritten, contentLength, theme }) => {
+  const animatedWidth = useRef(new Animated.Value(0)).current;
+  
+  useEffect(() => {
+    Animated.timing(animatedWidth, {
+      toValue: progress * 100,
+      duration: 300,
+      useNativeDriver: false,
+    }).start();
+  }, [progress]);
+
+  const styles = StyleSheet.create({
+    progressContainer: {
+      marginTop: theme.spacing.sm,
+    },
+    progressText: {
+      fontSize: theme.typography.fontSizes.sm,
+      color: theme.colors.text,
+      marginBottom: theme.spacing.xs,
+      fontWeight: theme.typography.fontWeights.medium,
+    },
+    progressDetails: {
+      fontSize: theme.typography.fontSizes.xs,
+      color: theme.colors.textSecondary,
+      fontStyle: 'italic',
+    },
+    progressBar: {
+      height: 6,
+      backgroundColor: theme.colors.borderLight,
+      borderRadius: 3,
+      overflow: 'hidden',
+    },
+    progressFill: {
+      height: '100%',
+      backgroundColor: theme.colors.primary,
+      borderRadius: 3,
+    },
+  });
+
+  return (
+    <View style={styles.progressContainer}>
+      <Text style={styles.progressText}>
+        Downloading: {Math.round(progress * 100)}%
+        {bytesWritten > 0 && contentLength > 0 && (
+          <Text style={styles.progressDetails}>
+            {' '}({formatFileSize(bytesWritten)} / {formatFileSize(contentLength)})
+          </Text>
+        )}
+      </Text>
+      <View style={styles.progressBar}>
+        <Animated.View 
+          style={[
+            styles.progressFill, 
+            { 
+              width: animatedWidth.interpolate({
+                inputRange: [0, 100],
+                outputRange: ['0%', '100%'],
+              })
+            }
+          ]} 
+        />
+      </View>
+    </View>
+  );
+};
+
+const formatFileSize = (bytes: number): string => {
+  const gb = bytes / (1024 * 1024 * 1024);
+  if (gb >= 1) {
+    return `${gb.toFixed(1)} GB`;
+  }
+  const mb = bytes / (1024 * 1024);
+  return `${mb.toFixed(0)} MB`;
+};
+
 const SettingsScreen: React.FC<Props> = ({ navigation }) => {
   const dispatch = useDispatch();
   const { settings, isLoading } = useSelector(
@@ -94,6 +176,9 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
   const [isLoadingLocalModels, setIsLoadingLocalModels] = useState(false);
   const [storageUsage, setStorageUsage] = useState<{ totalSize: number; modelCount: number }>({ totalSize: 0, modelCount: 0 });
 
+  // Use refs to ensure we always have the latest progress
+  const downloadProgressRef = useRef<Record<string, LocalModelDownloadProgress>>({});
+
   useEffect(() => {
     loadInitialData();
   }, []);
@@ -103,6 +188,11 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
       loadLocalModels();
     }
   }, [formData.enableLocalModels]);
+
+  // Keep ref in sync with state
+  useEffect(() => {
+    downloadProgressRef.current = downloadProgress;
+  }, [downloadProgress]);
 
   const loadInitialData = async () => {
     dispatch(setLoading(true));
@@ -247,37 +337,41 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
     }
   };
 
-  const downloadModel = async (modelId: string) => {
+  const downloadModel = useCallback(async (modelId: string) => {
     try {
       console.log('🚀 Starting download for model:', modelId);
       
       // Initialize progress state
+      const initialProgress = { modelId, progress: 0, bytesWritten: 0, contentLength: 0 };
       setDownloadProgress(prev => ({
         ...prev,
-        [modelId]: { modelId, progress: 0, bytesWritten: 0, contentLength: 0 }
+        [modelId]: initialProgress
       }));
 
+      // Use a throttled update function to prevent too many renders
+      let lastUpdateTime = 0;
+      const updateThrottle = 100; // Update every 100ms max
+
       await LocalLlamaService.downloadModel(modelId, (progressData) => {
-        console.log('📊 Progress update received:', {
-          modelId: progressData.modelId,
-          progress: progressData.progress,
-          percentage: Math.round(progressData.progress * 100),
-          bytesWritten: progressData.bytesWritten,
-          contentLength: progressData.contentLength
-        });
+        const now = Date.now();
         
-        // Use callback form of setState to ensure we get the latest state
-        setDownloadProgress(prev => {
-          const updated = {
+        // Always update the ref immediately
+        downloadProgressRef.current[modelId] = progressData;
+        
+        // But throttle state updates to prevent excessive renders
+        if (now - lastUpdateTime >= updateThrottle || progressData.progress === 1) {
+          lastUpdateTime = now;
+          
+          console.log('📊 Progress update:', {
+            modelId: progressData.modelId,
+            percentage: Math.round(progressData.progress * 100),
+          });
+          
+          setDownloadProgress(prev => ({
             ...prev,
-            [modelId]: {
-              ...progressData,
-              timestamp: Date.now() // Add timestamp for debugging
-            }
-          };
-          console.log('📊 Updated progress state:', updated[modelId]);
-          return updated;
-        });
+            [modelId]: progressData
+          }));
+        }
       });
 
       console.log('✅ Download completed for model:', modelId);
@@ -304,7 +398,7 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
         return newProgress;
       });
     }
-  };
+  }, []);
 
   const deleteModel = async (modelId: string) => {
     try {
@@ -332,15 +426,6 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
     } catch (error) {
       console.error('Error in delete model:', error);
     }
-  };
-
-  const formatFileSize = (bytes: number): string => {
-    const gb = bytes / (1024 * 1024 * 1024);
-    if (gb >= 1) {
-      return `${gb.toFixed(1)} GB`;
-    }
-    const mb = bytes / (1024 * 1024);
-    return `${mb.toFixed(0)} MB`;
   };
 
   if (isLoading) {
@@ -440,14 +525,6 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
                   <ActivityIndicator size="small" color={theme.colors.primary} />
                 ) : (
                   <View style={styles.modelsContainer}>
-                    {/* Debug info - remove in production */}
-                    {Object.keys(downloadProgress).length > 0 && (
-                      <View style={styles.debugContainer}>
-                        <Text style={styles.debugText}>
-                          Active Downloads: {JSON.stringify(downloadProgress, null, 2)}
-                        </Text>
-                      </View>
-                    )}
                     {availableLocalModels.map((item) => {
                       const isDownloaded = downloadedModels.some(d => d.id === item.id);
                       const progress = downloadProgress[item.id];
@@ -460,25 +537,13 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
                             <Text style={styles.modelDescription}>
                               {item.description} • {formatFileSize(item.fileSize || 0)}
                             </Text>
-                            {isDownloading && (
-                              <View style={styles.progressContainer}>
-                                <Text style={styles.progressText}>
-                                  Downloading: {Math.round((progress?.progress || 0) * 100)}%
-                                  {progress?.bytesWritten && progress?.contentLength && (
-                                    <Text style={styles.progressDetails}>
-                                      {' '}({formatFileSize(progress.bytesWritten)} / {formatFileSize(progress.contentLength)})
-                                    </Text>
-                                  )}
-                                </Text>
-                                <View style={styles.progressBar}>
-                                  <View 
-                                    style={[
-                                      styles.progressFill, 
-                                      { width: `${Math.max(0, Math.min(100, (progress?.progress || 0) * 100))}%` }
-                                    ]} 
-                                  />
-                                </View>
-                              </View>
+                            {isDownloading && progress && (
+                              <DownloadProgressBar
+                                progress={progress.progress}
+                                bytesWritten={progress.bytesWritten}
+                                contentLength={progress.contentLength}
+                                theme={theme}
+                              />
                             )}
                           </View>
                           <View style={styles.modelActions}>
@@ -678,29 +743,6 @@ const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) => Sty
     color: currentTheme.colors.textSecondary,
     marginBottom: currentTheme.spacing.xs,
   },
-  progressContainer: {
-    marginTop: currentTheme.spacing.sm,
-  },
-  progressText: {
-    fontSize: currentTheme.typography.fontSizes.xs,
-    color: currentTheme.colors.textSecondary,
-    marginBottom: currentTheme.spacing.xs,
-  },
-  progressDetails: {
-    fontSize: currentTheme.typography.fontSizes.xs,
-    color: currentTheme.colors.textLight,
-    fontStyle: 'italic',
-  },
-  progressBar: {
-    height: 4,
-    backgroundColor: currentTheme.colors.borderLight,
-    borderRadius: 2,
-    overflow: 'hidden',
-  },
-  progressFill: {
-    height: '100%',
-    backgroundColor: currentTheme.colors.primary,
-  },
   modelActions: {
     justifyContent: 'center',
   },
@@ -726,18 +768,6 @@ const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) => Sty
     color: currentTheme.colors.background,
     fontSize: currentTheme.typography.fontSizes.sm,
     fontWeight: currentTheme.typography.fontWeights.semibold,
-  },
-  // Debug styles - remove in production
-  debugContainer: {
-    backgroundColor: currentTheme.colors.warning,
-    padding: currentTheme.spacing.sm,
-    marginBottom: currentTheme.spacing.sm,
-    borderRadius: currentTheme.borderRadius.sm,
-  },
-  debugText: {
-    fontSize: currentTheme.typography.fontSizes.xs,
-    color: currentTheme.colors.text,
-    fontFamily: 'monospace',
   },
 });
 

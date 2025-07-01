@@ -1,4 +1,4 @@
-import { initLlama, loadLlamaModelInfo } from 'llama.rn';
+import { initLlama } from 'llama.rn';
 import RNFS from 'react-native-fs';
 import {
   LocalModel,
@@ -15,16 +15,8 @@ const AVAILABLE_LOCAL_MODELS: LocalModel[] = [
     name: 'TinyLlama 1.1B Q4',
     filename: 'tinyllama-1.1b-chat-v1.0.Q4_K_M.gguf',
     downloadUrl: 'https://huggingface.co/TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF/resolve/main/tinyllama-1.1b-chat-v1.0.Q4_K_M.gguf',
-    description: 'Small model for testing - known to work on iOS',
+    description: 'Compact and fast model, optimized for mobile devices',
     fileSize: 638 * 1024 * 1024, // ~638MB
-  },
-  {
-    id: 'deepseek-r1-distill-qwen-1.5b-q3',
-    name: 'DeepSeek R1 Distill Qwen 1.5B (Q3)',
-    filename: 'deepseek-r1-distill-qwen-1.5b-q3.gguf',
-    downloadUrl: 'https://huggingface.co/lmstudio-community/DeepSeek-R1-Distill-Qwen-1.5B-GGUF/resolve/main/DeepSeek-R1-Distill-Qwen-1.5B-Q3_K_L.gguf',
-    description: 'Compact 1.5B parameter model, good for basic conversations',
-    fileSize: 980 * 1024 * 1024, // ~980MB based on actual download
   },
   {
     id: 'phi-3-mini-4k-instruct-q4',
@@ -102,22 +94,13 @@ class LocalLlamaService {
         const sizeDiff = Math.abs(actualSize - expectedSize);
         const sizeTolerancePercent = 0.1; // 10% tolerance
         
-        console.log(`📊 Model ${modelId} download verification:`, {
-          expectedSize: `${(expectedSize / 1024 / 1024).toFixed(2)} MB`,
-          actualSize: `${(actualSize / 1024 / 1024).toFixed(2)} MB`,
-          sizeDifference: `${(sizeDiff / 1024 / 1024).toFixed(2)} MB`,
-          isComplete: sizeDiff < (expectedSize * sizeTolerancePercent)
-        });
-        
         // Check if file size is within reasonable tolerance
         if (sizeDiff > (expectedSize * sizeTolerancePercent)) {
-          console.warn(`⚠️ Model ${modelId} file size mismatch - download may be incomplete`);
           return false;
         }
         
         return true;
       } catch (error) {
-        console.error(`❌ Error checking model ${modelId} file stats:`, error);
         return false;
       }
     }
@@ -145,30 +128,18 @@ class LocalLlamaService {
     }
 
     try {
-      console.log(`Starting download of ${model.name}...`);
-      
       const { promise } = RNFS.downloadFile({
         fromUrl: model.downloadUrl,
         toFile: filePath,
-        progressInterval: 250, // Update every 250ms for smoother progress
+        progressInterval: 250,
         progress: (res) => {
-          const progress = res.bytesWritten / res.contentLength;
-          const percentage = (progress * 100).toFixed(1);
-          
-          console.log(`📥 Download progress for ${model.name}: ${percentage}% (${res.bytesWritten}/${res.contentLength} bytes)`);
-          
           if (onProgress) {
-            const progressData = {
+            onProgress({
               modelId,
-              progress,
+              progress: res.bytesWritten / res.contentLength,
               bytesWritten: res.bytesWritten,
               contentLength: res.contentLength,
-            };
-            
-            console.log('📤 Calling progress callback with:', progressData);
-            onProgress(progressData);
-          } else {
-            console.log('⚠️ No progress callback provided');
+            });
           }
         },
       });
@@ -245,120 +216,38 @@ class LocalLlamaService {
       }
 
       console.log(`Initializing ${model.name}...`);
-      console.log(`📂 Model file path: ${filePath}`);
-      
-      // Enhanced file verification for iOS
-      try {
-        const stats = await RNFS.stat(filePath);
-        console.log(`📊 File verification:`, {
-          exists: exists,
-          path: filePath,
-          size: stats.size,
-          isFile: stats.isFile(),
-          absolutePath: stats.path, // This should be the full path
-          readable: true, // RNFS.stat succeeds means file is readable
-        });
-        
-        // Additional iOS-specific checks
-        console.log(`📱 iOS File System Info:`, {
-          documentsDirectory: RNFS.DocumentDirectoryPath,
-          modelFilename: model.filename,
-          fullPath: filePath,
-          pathMatch: filePath === stats.path,
-        });
-      } catch (statError) {
-        console.error(`❌ Failed to get file stats:`, statError);
-        throw new Error(`Cannot access model file: ${statError instanceof Error ? statError.message : 'Unknown error'}`);
-      }
 
-
-      // Validate model file size (should be reasonable for a GGUF file)
+      // Get absolute path for iOS compatibility
       const stats = await RNFS.stat(filePath);
-      const fileSizeMB = stats.size / (1024 * 1024);
-      console.log(`📏 Model file size: ${fileSizeMB.toFixed(2)} MB`);
-      
-      if (stats.size < 100 * 1024 * 1024) { // Less than 100MB is suspicious for a language model
-        console.warn(`⚠️ Model file seems too small (${fileSizeMB.toFixed(2)} MB). This might indicate an incomplete download.`);
-      }
-
-      // Use the absolute path from stats for better iOS compatibility
       const absoluteModelPath = stats.path;
-      
-      // Load model info for debugging
-      try {
-        const modelPath = `file://${absoluteModelPath}`;
-        console.log('Model Info:', await loadLlamaModelInfo(modelPath));
-      } catch (infoError) {
-        console.error(`❌ Failed to load model info:`, infoError);
-      }
 
-      // Try with iOS-optimized parameters
+      // Initialize with optimized parameters
       const initParams = {
-        model: absoluteModelPath, // Use absolute path for iOS
-        use_mlock: true, // Force system to keep model in RAM
-        n_ctx: 256, // Smaller context as requested
-        n_gpu_layers: 99, // Use GPU layers as requested
+        model: absoluteModelPath,
+        use_mlock: true,
+        n_ctx: 4096,
+        n_gpu_layers: 99, // Use GPU acceleration on iOS
       };
-
-      console.log(`🚀 Calling initLlama with params:`, initParams);
 
       try {
         this.context = await initLlama(initParams);
-        console.log(`✅ initLlama completed successfully`);
+        console.log(`Successfully initialized ${model.name}`);
       } catch (initError) {
-        console.error(`❌ initLlama failed:`, initError);
+        console.error(`Failed to initialize with GPU, trying CPU-only mode...`);
         
-        // Log all properties of the error object
-        if (initError && typeof initError === 'object') {
-          console.error(`❌ Error object properties:`, Object.keys(initError));
-          console.error(`❌ Full error object:`, JSON.stringify(initError, null, 2));
-        }
+        // Retry with CPU-only parameters
+        const cpuParams = {
+          model: absoluteModelPath,
+          use_mlock: false,
+          n_ctx: 4096,
+          n_gpu_layers: 0,
+        };
         
-        console.error(`❌ Error details:`, {
-          name: initError instanceof Error ? initError.name : 'Unknown',
-          message: initError instanceof Error ? initError.message : String(initError),
-          stack: initError instanceof Error ? initError.stack : undefined,
-          nativeError: (initError as any)?.nativeError,
-          code: (initError as any)?.code,
-          userInfo: (initError as any)?.userInfo,
-        });
-
-        // Check for specific error patterns
-        const errorMessage = initError instanceof Error ? initError.message : String(initError);
-        if (errorMessage.includes('architecture') || errorMessage.includes('x86_64') || errorMessage.includes('arm64')) {
-          console.error(`❌ Architecture mismatch detected. This model may not be compatible with the current device architecture.`);
-        }
-        
-        if (errorMessage.includes('memory') || errorMessage.includes('allocation')) {
-          console.error(`❌ Memory allocation issue detected. The model may be too large for available memory.`);
-        }
-
-        // Try with different parameters if initial attempt fails
-        console.log(`🔄 Retrying with minimal parameters...`);
-        try {
-          const retryParams = {
-            model: absoluteModelPath, // Use absolute path
-            use_mlock: false, // Disable mlock
-            n_ctx: 128, // Even smaller context
-            n_gpu_layers: 0, // Try without GPU
-            n_batch: 8, // Small batch size
-            f16_kv: false, // Use fp32 for compatibility
-          };
-          console.log(`🚀 Retry attempt with params:`, retryParams);
-          this.context = await initLlama(retryParams);
-          console.log(`✅ initLlama succeeded on retry with minimal parameters`);
-        } catch (retryError) {
-          console.error(`❌ Retry also failed:`, retryError);
-          if (retryError && typeof retryError === 'object') {
-            console.error(`❌ Retry error properties:`, Object.keys(retryError));
-            console.error(`❌ Full retry error:`, JSON.stringify(retryError, null, 2));
-          }
-          throw new Error(`Failed to load the model after multiple attempts. Original error: ${errorMessage}`);
-        }
+        this.context = await initLlama(cpuParams);
+        console.log(`Successfully initialized ${model.name} in CPU mode`);
       }
 
       this.currentModelId = modelId;
-      console.log(`Successfully initialized ${model.name}`);
     } catch (error) {
       console.error(`Error initializing model ${modelId}:`, error);
       this.context = null;
