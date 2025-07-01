@@ -9,8 +9,6 @@ import {
   Difficulty,
   PairExercise,
   ExerciseInfo,
-  ConversationExercise,
-  TranslationExercise,
 } from '../types';
 
 // Enable debug mode to see SQL logs
