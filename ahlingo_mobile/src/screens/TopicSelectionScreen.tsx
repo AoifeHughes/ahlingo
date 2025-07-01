@@ -21,7 +21,7 @@ import {
   getUserSettings,
   getMostRecentUser,
 } from '../services/SimpleDatabaseService';
-import { colors, spacing, borderRadius, shadows, typography } from '../utils/theme';
+import { useTheme } from '../contexts/ThemeContext';
 
 type TopicSelectionScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -40,6 +40,7 @@ interface Props {
 
 const TopicSelectionScreen: React.FC<Props> = ({ navigation, route }) => {
   const { settings } = useSelector((state: RootState) => state.settings);
+  const { theme } = useTheme();
   const [topics, setTopics] = useState<Topic[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -135,10 +136,12 @@ const TopicSelectionScreen: React.FC<Props> = ({ navigation, route }) => {
     </View>
   );
 
+  const styles = createStyles(theme);
+
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#1976D2" />
+        <ActivityIndicator size="large" color={theme.colors.primary} />
         <Text style={styles.loadingText}>Loading topics...</Text>
       </View>
     );
@@ -163,8 +166,8 @@ const TopicSelectionScreen: React.FC<Props> = ({ navigation, route }) => {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={handleRefresh}
-            colors={['#1976D2']}
-            tintColor="#1976D2"
+            colors={[theme.colors.primary]}
+            tintColor={theme.colors.primary}
           />
         }
         ListEmptyComponent={renderEmptyState}
@@ -173,67 +176,67 @@ const TopicSelectionScreen: React.FC<Props> = ({ navigation, route }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: currentTheme.colors.background,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: colors.background,
+    backgroundColor: currentTheme.colors.background,
   },
   loadingText: {
-    marginTop: spacing.lg,
-    fontSize: typography.fontSizes.lg,
-    color: colors.textSecondary,
+    marginTop: currentTheme.spacing.lg,
+    fontSize: currentTheme.typography.fontSizes.lg,
+    color: currentTheme.colors.textSecondary,
   },
   header: {
-    backgroundColor: colors.surface,
-    paddingVertical: spacing.xl,
-    paddingHorizontal: spacing.lg,
+    backgroundColor: currentTheme.colors.surface,
+    paddingVertical: currentTheme.spacing.xl,
+    paddingHorizontal: currentTheme.spacing.lg,
     borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+    borderBottomColor: currentTheme.colors.border,
   },
   headerTitle: {
-    fontSize: typography.fontSizes['3xl'],
-    fontWeight: typography.fontWeights.bold,
-    color: colors.text,
+    fontSize: currentTheme.typography.fontSizes['3xl'],
+    fontWeight: currentTheme.typography.fontWeights.bold,
+    color: currentTheme.colors.text,
     textAlign: 'center',
   },
   headerSubtitle: {
-    fontSize: typography.fontSizes.lg,
-    color: colors.textSecondary,
+    fontSize: currentTheme.typography.fontSizes.lg,
+    color: currentTheme.colors.textSecondary,
     textAlign: 'center',
-    marginTop: spacing.xs,
+    marginTop: currentTheme.spacing.xs,
   },
   listContainer: {
-    paddingVertical: spacing.lg,
+    paddingVertical: currentTheme.spacing.lg,
     flexGrow: 1,
   },
   emptyContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: spacing['4xl'],
+    paddingHorizontal: currentTheme.spacing['4xl'],
   },
   emptyTitle: {
-    fontSize: typography.fontSizes['2xl'],
-    fontWeight: typography.fontWeights.bold,
-    color: colors.text,
-    marginBottom: spacing.base,
+    fontSize: currentTheme.typography.fontSizes['2xl'],
+    fontWeight: currentTheme.typography.fontWeights.bold,
+    color: currentTheme.colors.text,
+    marginBottom: currentTheme.spacing.base,
     textAlign: 'center',
   },
   emptyText: {
-    fontSize: typography.fontSizes.lg,
-    color: colors.textSecondary,
+    fontSize: currentTheme.typography.fontSizes.lg,
+    color: currentTheme.colors.textSecondary,
     textAlign: 'center',
-    marginBottom: spacing.base,
+    marginBottom: currentTheme.spacing.base,
   },
   emptyHint: {
-    fontSize: typography.fontSizes.base,
-    color: colors.textLight,
+    fontSize: currentTheme.typography.fontSizes.base,
+    color: currentTheme.colors.textLight,
     textAlign: 'center',
     fontStyle: 'italic',
   },

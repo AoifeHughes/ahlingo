@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import WordButton from './WordButton';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface AnswerBoxProps {
   selectedWords: Array<{ word: string; originalIndex: number }>;
@@ -11,6 +12,8 @@ const AnswerBox: React.FC<AnswerBoxProps> = ({
   selectedWords,
   onWordRemove,
 }) => {
+  const { theme } = useTheme();
+  const styles = createStyles(theme);
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Your Translation:</Text>
@@ -48,37 +51,38 @@ const AnswerBox: React.FC<AnswerBoxProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) => StyleSheet.create({
   container: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
+    backgroundColor: currentTheme.colors.surface,
+    borderRadius: currentTheme.borderRadius.md,
+    padding: currentTheme.spacing.lg,
+    marginBottom: currentTheme.spacing.lg,
     borderWidth: 2,
-    borderColor: '#e0e0e0',
+    borderColor: currentTheme.colors.border,
+    ...currentTheme.shadows.base,
   },
   title: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
-    marginBottom: 12,
+    fontSize: currentTheme.typography.fontSizes.lg,
+    fontWeight: currentTheme.typography.fontWeights.semibold,
+    color: currentTheme.colors.text,
+    marginBottom: currentTheme.spacing.md,
     textAlign: 'center',
   },
   answerArea: {
     minHeight: 60,
-    backgroundColor: '#f8f9fa',
-    borderRadius: 8,
+    backgroundColor: currentTheme.colors.background,
+    borderRadius: currentTheme.borderRadius.base,
     borderWidth: 1,
-    borderColor: '#e0e0e0',
+    borderColor: currentTheme.colors.border,
     borderStyle: 'dashed',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 8,
-    marginBottom: 12,
+    padding: currentTheme.spacing.base,
+    marginBottom: currentTheme.spacing.md,
   },
   placeholder: {
-    fontSize: 14,
-    color: '#999',
+    fontSize: currentTheme.typography.fontSizes.base,
+    color: currentTheme.colors.textLight,
     fontStyle: 'italic',
     textAlign: 'center',
   },
@@ -88,13 +92,15 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   sentence: {
-    fontSize: 16,
-    color: '#333',
+    fontSize: currentTheme.typography.fontSizes.lg,
+    color: currentTheme.colors.text,
     textAlign: 'center',
-    backgroundColor: '#f0f8ff',
-    padding: 12,
-    borderRadius: 8,
-    fontWeight: '500',
+    backgroundColor: currentTheme.colors.primaryLight + '20',
+    padding: currentTheme.spacing.md,
+    borderRadius: currentTheme.borderRadius.base,
+    fontWeight: currentTheme.typography.fontWeights.medium,
+    borderWidth: 1,
+    borderColor: currentTheme.colors.primaryLight,
   },
 });
 

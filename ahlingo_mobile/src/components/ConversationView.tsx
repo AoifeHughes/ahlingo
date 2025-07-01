@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import MessageBubble from './MessageBubble';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface ConversationMessage {
   speaker: string;
@@ -13,6 +14,8 @@ interface ConversationViewProps {
 }
 
 const ConversationView: React.FC<ConversationViewProps> = ({ messages }) => {
+  const { theme } = useTheme();
+  
   // Create a mapping of speakers to determine left/right alignment
   const speakers = [...new Set(messages.map(msg => msg.speaker))];
   const speakerAlignments = new Map<string, boolean>();
@@ -28,7 +31,7 @@ const ConversationView: React.FC<ConversationViewProps> = ({ messages }) => {
   );
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
@@ -50,7 +53,6 @@ const ConversationView: React.FC<ConversationViewProps> = ({ messages }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fafafa',
   },
   scrollView: {
     flex: 1,

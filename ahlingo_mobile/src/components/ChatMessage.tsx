@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface ChatMessageProps {
   role: 'user' | 'assistant' | 'system';
@@ -14,13 +15,14 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
   timestamp,
   isStreaming = false,
 }) => {
+  const { theme } = useTheme();
   const isUser = role === 'user';
   const isSystem = role === 'system';
   
   if (isSystem) {
     return (
       <View style={styles.systemContainer}>
-        <Text style={styles.systemText}>{content}</Text>
+        <Text style={[styles.systemText, { color: theme.colors.textSecondary, backgroundColor: theme.colors.surface }]}>{content}</Text>
       </View>
     );
   }
@@ -33,13 +35,27 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
 
   return (
     <View style={[styles.container, isUser ? styles.userAlign : styles.assistantAlign]}>
-      <View style={[styles.bubble, isUser ? styles.userBubble : styles.assistantBubble]}>
-        <Text style={[styles.messageText, isUser ? styles.userText : styles.assistantText]}>
+      <View style={[
+        styles.bubble, 
+        { 
+          backgroundColor: isUser ? theme.colors.userMessage : theme.colors.assistantMessage,
+          shadowColor: theme.colors.text,
+        },
+        isUser ? styles.userBubble : styles.assistantBubble
+      ]}>
+        <Text style={[
+          styles.messageText, 
+          { color: isUser ? '#fff' : theme.colors.text }
+        ]}>
           {content}
-          {isStreaming && !isUser && <Text style={styles.streamingCursor}>▊</Text>}
+          {isStreaming && !isUser && <Text style={[styles.streamingCursor, { color: theme.colors.primary }]}>▊</Text>}
         </Text>
         {timestamp && (
-          <Text style={[styles.timestamp, isUser ? styles.userTimestamp : styles.assistantTimestamp]}>
+          <Text style={[
+            styles.timestamp, 
+            { color: isUser ? '#fff' : theme.colors.textSecondary },
+            isUser ? styles.userTimestamp : styles.assistantTimestamp
+          ]}>
             {formatTime(timestamp)}
           </Text>
         )}
@@ -64,7 +80,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderRadius: 18,
-    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 1,
@@ -74,22 +89,14 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   userBubble: {
-    backgroundColor: '#1976D2',
     borderBottomRightRadius: 4,
   },
   assistantBubble: {
-    backgroundColor: '#f0f0f0',
     borderBottomLeftRadius: 4,
   },
   messageText: {
     fontSize: 16,
     lineHeight: 22,
-  },
-  userText: {
-    color: '#fff',
-  },
-  assistantText: {
-    color: '#333',
   },
   timestamp: {
     fontSize: 11,
@@ -97,11 +104,9 @@ const styles = StyleSheet.create({
     opacity: 0.7,
   },
   userTimestamp: {
-    color: '#fff',
     textAlign: 'right',
   },
   assistantTimestamp: {
-    color: '#666',
     textAlign: 'left',
   },
   systemContainer: {
@@ -111,10 +116,8 @@ const styles = StyleSheet.create({
   },
   systemText: {
     fontSize: 12,
-    color: '#888',
     fontStyle: 'italic',
     textAlign: 'center',
-    backgroundColor: '#f9f9f9',
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 12,
@@ -122,7 +125,6 @@ const styles = StyleSheet.create({
   },
   streamingCursor: {
     fontSize: 16,
-    color: '#1976D2',
     fontWeight: 'bold',
   },
 });

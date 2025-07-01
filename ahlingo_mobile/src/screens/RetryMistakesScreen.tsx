@@ -16,6 +16,7 @@ import {
   getUserSettings,
   getUserId,
 } from '../services/SimpleDatabaseService';
+import { useTheme } from '../contexts/ThemeContext';
 
 type RetryMistakesScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -38,6 +39,7 @@ interface FailedExercise {
 }
 
 const RetryMistakesScreen: React.FC<Props> = ({ navigation }) => {
+  const { theme } = useTheme();
   const [loading, setLoading] = useState(true);
   const [failedExercises, setFailedExercises] = useState<FailedExercise[]>([]);
 
@@ -138,10 +140,12 @@ const RetryMistakesScreen: React.FC<Props> = ({ navigation }) => {
     return groups;
   }, {} as Record<string, FailedExercise[]>);
 
+  const styles = createStyles(theme);
+
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#1976D2" />
+        <ActivityIndicator size="large" color={theme.colors.primary} />
         <Text style={styles.loadingText}>Loading mistakes to retry...</Text>
       </View>
     );
@@ -227,89 +231,81 @@ const RetryMistakesScreen: React.FC<Props> = ({ navigation }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: currentTheme.colors.background,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
+    backgroundColor: currentTheme.colors.background,
   },
   loadingText: {
-    marginTop: 16,
-    fontSize: 16,
-    color: '#666',
+    marginTop: currentTheme.spacing.lg,
+    fontSize: currentTheme.typography.fontSizes.lg,
+    color: currentTheme.colors.textSecondary,
   },
   scrollView: {
     flex: 1,
   },
   headerCard: {
-    backgroundColor: '#fff',
-    margin: 16,
-    padding: 20,
-    borderRadius: 12,
-    elevation: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    backgroundColor: currentTheme.colors.surface,
+    margin: currentTheme.spacing.lg,
+    padding: currentTheme.spacing.xl,
+    borderRadius: currentTheme.borderRadius.md,
+    ...currentTheme.shadows.lg,
     alignItems: 'center',
   },
   headerTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 8,
+    fontSize: currentTheme.typography.fontSizes.xl,
+    fontWeight: currentTheme.typography.fontWeights.bold,
+    color: currentTheme.colors.text,
+    marginBottom: currentTheme.spacing.base,
     textAlign: 'center',
   },
   headerSubtitle: {
-    fontSize: 16,
-    color: '#666',
-    marginBottom: 12,
+    fontSize: currentTheme.typography.fontSizes.lg,
+    color: currentTheme.colors.textSecondary,
+    marginBottom: currentTheme.spacing.md,
     textAlign: 'center',
   },
   exerciseCount: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#f44336',
-    backgroundColor: '#ffebee',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 12,
+    fontSize: currentTheme.typography.fontSizes.base,
+    fontWeight: currentTheme.typography.fontWeights.semibold,
+    color: currentTheme.colors.error,
+    backgroundColor: currentTheme.colors.error + '20',
+    paddingHorizontal: currentTheme.spacing.md,
+    paddingVertical: currentTheme.spacing.sm,
+    borderRadius: currentTheme.borderRadius.md,
   },
   topicSection: {
-    marginBottom: 16,
+    marginBottom: currentTheme.spacing.lg,
   },
   topicTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-    marginLeft: 16,
-    marginBottom: 8,
-    marginTop: 8,
+    fontSize: currentTheme.typography.fontSizes.xl,
+    fontWeight: currentTheme.typography.fontWeights.bold,
+    color: currentTheme.colors.text,
+    marginLeft: currentTheme.spacing.lg,
+    marginBottom: currentTheme.spacing.base,
+    marginTop: currentTheme.spacing.base,
   },
   exerciseCard: {
-    backgroundColor: '#fff',
-    marginHorizontal: 16,
-    marginBottom: 8,
-    borderRadius: 8,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
+    backgroundColor: currentTheme.colors.surface,
+    marginHorizontal: currentTheme.spacing.lg,
+    marginBottom: currentTheme.spacing.base,
+    borderRadius: currentTheme.borderRadius.base,
+    ...currentTheme.shadows.base,
   },
   exerciseContent: {
-    padding: 16,
+    padding: currentTheme.spacing.lg,
   },
   exerciseHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: currentTheme.spacing.base,
   },
   exerciseInfo: {
     flexDirection: 'row',
@@ -317,33 +313,34 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   exerciseIcon: {
-    fontSize: 24,
-    marginRight: 12,
+    fontSize: currentTheme.typography.fontSizes['3xl'],
+    marginRight: currentTheme.spacing.md,
   },
   exerciseDetails: {
     flex: 1,
   },
   exerciseType: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#1976D2',
-    marginBottom: 2,
+    fontSize: currentTheme.typography.fontSizes.base,
+    fontWeight: currentTheme.typography.fontWeights.semibold,
+    color: currentTheme.colors.primary,
+    marginBottom: currentTheme.spacing.xs,
   },
   exerciseName: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#333',
+    fontSize: currentTheme.typography.fontSizes.lg,
+    fontWeight: currentTheme.typography.fontWeights.medium,
+    color: currentTheme.colors.text,
   },
   retryButton: {
-    backgroundColor: '#f44336',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
+    backgroundColor: currentTheme.colors.error,
+    paddingHorizontal: currentTheme.spacing.lg,
+    paddingVertical: currentTheme.spacing.base,
+    borderRadius: currentTheme.spacing.xl,
+    ...currentTheme.shadows.sm,
   },
   retryButtonText: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: '600',
+    color: currentTheme.colors.background,
+    fontSize: currentTheme.typography.fontSizes.base,
+    fontWeight: currentTheme.typography.fontWeights.semibold,
   },
   exerciseFooter: {
     flexDirection: 'row',
@@ -351,45 +348,41 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   exerciseLanguage: {
-    fontSize: 12,
-    color: '#666',
+    fontSize: currentTheme.typography.fontSizes.sm,
+    color: currentTheme.colors.textSecondary,
   },
   exerciseDate: {
-    fontSize: 12,
-    color: '#999',
+    fontSize: currentTheme.typography.fontSizes.sm,
+    color: currentTheme.colors.textLight,
   },
   noDataCard: {
-    backgroundColor: '#fff',
-    margin: 16,
-    padding: 40,
-    borderRadius: 12,
+    backgroundColor: currentTheme.colors.surface,
+    margin: currentTheme.spacing.lg,
+    padding: currentTheme.spacing['4xl'],
+    borderRadius: currentTheme.borderRadius.md,
     alignItems: 'center',
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
+    ...currentTheme.shadows.base,
   },
   noDataIcon: {
-    fontSize: 48,
-    marginBottom: 16,
+    fontSize: currentTheme.spacing['5xl'],
+    marginBottom: currentTheme.spacing.lg,
   },
   noDataTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#4caf50',
-    marginBottom: 12,
+    fontSize: currentTheme.typography.fontSizes.xl,
+    fontWeight: currentTheme.typography.fontWeights.bold,
+    color: currentTheme.colors.success,
+    marginBottom: currentTheme.spacing.md,
     textAlign: 'center',
   },
   noDataText: {
-    fontSize: 16,
-    color: '#666',
-    marginBottom: 8,
+    fontSize: currentTheme.typography.fontSizes.lg,
+    color: currentTheme.colors.textSecondary,
+    marginBottom: currentTheme.spacing.base,
     textAlign: 'center',
   },
   noDataSubtext: {
-    fontSize: 14,
-    color: '#999',
+    fontSize: currentTheme.typography.fontSizes.base,
+    color: currentTheme.colors.textLight,
     textAlign: 'center',
   },
 });

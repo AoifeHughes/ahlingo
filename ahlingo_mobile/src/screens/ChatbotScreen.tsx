@@ -37,7 +37,7 @@ import {
 } from '../services/OpenAIService';
 import { ModelService, ModelInfo } from '../services/ModelService';
 import { getUserSettings, getUserId } from '../services/SimpleDatabaseService';
-import { colors, spacing, borderRadius, shadows, typography } from '../utils/theme';
+import { useTheme } from '../contexts/ThemeContext';
 
 type ChatbotScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -50,6 +50,7 @@ interface Props {
 
 const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
   const settings = useSelector((state: RootState) => state.settings.settings);
+  const { theme } = useTheme();
   
   const [messages, setMessages] = useState<ChatMessageType[]>([]);
   const [currentChat, setCurrentChat] = useState<ChatDetail | null>(null);
@@ -342,11 +343,13 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
     }
   };
 
+  const styles = createStyles(theme);
+
   if (isInitializing) {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#1976D2" />
+          <ActivityIndicator size="large" color={theme.colors.primary} />
           <Text style={styles.loadingText}>Loading...</Text>
         </View>
       </SafeAreaView>
@@ -478,64 +481,65 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: currentTheme.colors.background,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.md,
-    backgroundColor: colors.surface,
+    paddingHorizontal: currentTheme.spacing.lg,
+    paddingVertical: currentTheme.spacing.md,
+    backgroundColor: currentTheme.colors.surface,
     borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+    borderBottomColor: currentTheme.colors.border,
   },
   conversationsButton: {
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-    borderRadius: borderRadius.base,
-    backgroundColor: colors.surfaceDark,
+    paddingHorizontal: currentTheme.spacing.md,
+    paddingVertical: currentTheme.spacing.sm,
+    borderRadius: currentTheme.borderRadius.base,
+    backgroundColor: currentTheme.colors.surfaceDark,
+    ...currentTheme.shadows.sm,
   },
   conversationsButtonText: {
-    fontSize: typography.fontSizes.base,
-    color: colors.primary,
-    fontWeight: typography.fontWeights.semibold,
+    fontSize: currentTheme.typography.fontSizes.base,
+    color: currentTheme.colors.primary,
+    fontWeight: currentTheme.typography.fontWeights.semibold,
   },
   headerCenter: {
     flex: 1,
     alignItems: 'center',
   },
   headerTitle: {
-    fontSize: typography.fontSizes.lg,
-    fontWeight: typography.fontWeights.semibold,
-    color: colors.text,
+    fontSize: currentTheme.typography.fontSizes.lg,
+    fontWeight: currentTheme.typography.fontWeights.semibold,
+    color: currentTheme.colors.text,
     textAlign: 'center',
   },
   modelSelector: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.surfaceDark,
-    paddingHorizontal: spacing.base,
-    paddingVertical: spacing.xs,
-    borderRadius: borderRadius.base,
-    marginTop: spacing.xs,
+    backgroundColor: currentTheme.colors.surfaceDark,
+    paddingHorizontal: currentTheme.spacing.base,
+    paddingVertical: currentTheme.spacing.xs,
+    borderRadius: currentTheme.borderRadius.base,
+    marginTop: currentTheme.spacing.xs,
   },
   modelSelectorText: {
-    fontSize: typography.fontSizes.sm,
-    color: colors.textSecondary,
-    marginRight: spacing.xs,
+    fontSize: currentTheme.typography.fontSizes.sm,
+    color: currentTheme.colors.textSecondary,
+    marginRight: currentTheme.spacing.xs,
   },
   dropdownArrow: {
-    fontSize: typography.fontSizes.xs,
-    color: colors.textSecondary,
+    fontSize: currentTheme.typography.fontSizes.xs,
+    color: currentTheme.colors.textSecondary,
   },
   modelDropdownContainer: {
-    backgroundColor: colors.surface,
+    backgroundColor: currentTheme.colors.surface,
     borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+    borderBottomColor: currentTheme.colors.border,
     maxHeight: 200,
   },
   modelDropdown: {
@@ -545,64 +549,65 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.md,
+    paddingHorizontal: currentTheme.spacing.lg,
+    paddingVertical: currentTheme.spacing.md,
     borderBottomWidth: 1,
-    borderBottomColor: colors.borderLight,
+    borderBottomColor: currentTheme.colors.borderLight,
   },
   selectedModelOption: {
-    backgroundColor: colors.secondary,
+    backgroundColor: currentTheme.colors.secondary,
   },
   modelOptionText: {
-    fontSize: typography.fontSizes.base,
-    color: colors.text,
+    fontSize: currentTheme.typography.fontSizes.base,
+    color: currentTheme.colors.text,
     flex: 1,
   },
   selectedModelOptionText: {
-    color: colors.primary,
-    fontWeight: typography.fontWeights.semibold,
+    color: currentTheme.colors.primary,
+    fontWeight: currentTheme.typography.fontWeights.semibold,
   },
   modelSizeText: {
-    fontSize: typography.fontSizes.sm,
-    color: colors.textSecondary,
+    fontSize: currentTheme.typography.fontSizes.sm,
+    color: currentTheme.colors.textSecondary,
   },
   newChatButton: {
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-    borderRadius: borderRadius.base,
-    backgroundColor: colors.primary,
+    paddingHorizontal: currentTheme.spacing.md,
+    paddingVertical: currentTheme.spacing.sm,
+    borderRadius: currentTheme.borderRadius.base,
+    backgroundColor: currentTheme.colors.primary,
+    ...currentTheme.shadows.sm,
   },
   newChatButtonText: {
-    fontSize: typography.fontSizes.base,
-    color: colors.background,
-    fontWeight: typography.fontWeights.semibold,
+    fontSize: currentTheme.typography.fontSizes.base,
+    color: currentTheme.colors.background,
+    fontWeight: currentTheme.typography.fontWeights.semibold,
   },
   messagesContainer: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: currentTheme.colors.background,
   },
   messagesContent: {
-    paddingVertical: spacing.lg,
+    paddingVertical: currentTheme.spacing.lg,
     flexGrow: 1,
   },
   emptyState: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: spacing['4xl'],
+    paddingHorizontal: currentTheme.spacing['4xl'],
   },
   emptyStateText: {
-    fontSize: typography.fontSizes.xl,
-    fontWeight: typography.fontWeights.semibold,
-    color: colors.textSecondary,
-    marginBottom: spacing.base,
+    fontSize: currentTheme.typography.fontSizes.xl,
+    fontWeight: currentTheme.typography.fontWeights.semibold,
+    color: currentTheme.colors.textSecondary,
+    marginBottom: currentTheme.spacing.base,
     textAlign: 'center',
   },
   emptyStateSubtext: {
-    fontSize: typography.fontSizes.base,
-    color: colors.textLight,
+    fontSize: currentTheme.typography.fontSizes.base,
+    color: currentTheme.colors.textLight,
     textAlign: 'center',
-    lineHeight: spacing.xl,
+    lineHeight: currentTheme.spacing.xl,
   },
   loadingContainer: {
     flex: 1,
@@ -610,20 +615,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   loadingText: {
-    marginTop: spacing.lg,
-    fontSize: typography.fontSizes.lg,
-    color: colors.textSecondary,
+    marginTop: currentTheme.spacing.lg,
+    fontSize: currentTheme.typography.fontSizes.lg,
+    color: currentTheme.colors.textSecondary,
   },
   loadingMessage: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: spacing.lg,
+    paddingVertical: currentTheme.spacing.lg,
   },
   loadingMessageText: {
-    marginLeft: spacing.base,
-    fontSize: typography.fontSizes.base,
-    color: colors.textSecondary,
+    marginLeft: currentTheme.spacing.base,
+    fontSize: currentTheme.typography.fontSizes.base,
+    color: currentTheme.colors.textSecondary,
     fontStyle: 'italic',
   },
 });

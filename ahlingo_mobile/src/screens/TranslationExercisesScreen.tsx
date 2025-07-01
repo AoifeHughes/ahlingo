@@ -22,7 +22,7 @@ import {
   getUserId,
   recordExerciseAttempt,
 } from '../services/SimpleDatabaseService';
-import { colors, spacing, borderRadius, shadows, typography } from '../utils/theme';
+import { useTheme } from '../contexts/ThemeContext';
 
 type TranslationExercisesScreenRouteProp = RouteProp<
   RootStackParamList,
@@ -62,6 +62,7 @@ interface GameState {
 const TranslationExercisesScreen: React.FC<Props> = ({ route, navigation }) => {
   const { topicId } = route.params || {};
   const { settings } = useSelector((state: RootState) => state.settings);
+  const { theme } = useTheme();
 
   // Safety check: if no topicId is provided, go back
   useEffect(() => {
@@ -274,10 +275,12 @@ const TranslationExercisesScreen: React.FC<Props> = ({ route, navigation }) => {
     loadTranslationData();
   };
 
+  const styles = createStyles(theme);
+
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color={colors.primary} />
+        <ActivityIndicator size="large" color={theme.colors.primary} />
         <Text style={styles.loadingText}>Loading translation exercise...</Text>
       </View>
     );
@@ -384,137 +387,137 @@ const TranslationExercisesScreen: React.FC<Props> = ({ route, navigation }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: currentTheme.colors.background,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: colors.background,
+    backgroundColor: currentTheme.colors.background,
   },
   loadingText: {
-    marginTop: spacing.lg,
-    fontSize: typography.fontSizes.lg,
-    color: colors.textSecondary,
+    marginTop: currentTheme.spacing.lg,
+    fontSize: currentTheme.typography.fontSizes.lg,
+    color: currentTheme.colors.textSecondary,
   },
   header: {
-    backgroundColor: colors.surface,
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.lg,
+    backgroundColor: currentTheme.colors.surface,
+    paddingVertical: currentTheme.spacing.md,
+    paddingHorizontal: currentTheme.spacing.lg,
     borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+    borderBottomColor: currentTheme.colors.border,
     alignItems: 'center',
   },
   refreshButton: {
-    backgroundColor: colors.primary,
-    paddingVertical: spacing.base,
-    paddingHorizontal: spacing.lg,
-    borderRadius: spacing.xl,
-    ...shadows.base,
+    backgroundColor: currentTheme.colors.primary,
+    paddingVertical: currentTheme.spacing.base,
+    paddingHorizontal: currentTheme.spacing.lg,
+    borderRadius: currentTheme.spacing.xl,
+    ...currentTheme.shadows.base,
   },
   refreshButtonText: {
-    color: colors.background,
-    fontSize: typography.fontSizes.base,
-    fontWeight: typography.fontWeights.semibold,
+    color: currentTheme.colors.background,
+    fontSize: currentTheme.typography.fontSizes.base,
+    fontWeight: currentTheme.typography.fontWeights.semibold,
   },
   sourceContainer: {
-    backgroundColor: colors.surface,
-    padding: spacing.lg,
-    marginBottom: spacing.base,
+    backgroundColor: currentTheme.colors.surface,
+    padding: currentTheme.spacing.lg,
+    marginBottom: currentTheme.spacing.base,
   },
   sourceTitle: {
-    fontSize: typography.fontSizes.lg,
-    fontWeight: typography.fontWeights.semibold,
-    color: colors.text,
+    fontSize: currentTheme.typography.fontSizes.lg,
+    fontWeight: currentTheme.typography.fontWeights.semibold,
+    color: currentTheme.colors.text,
     textAlign: 'center',
-    marginBottom: spacing.md,
+    marginBottom: currentTheme.spacing.md,
   },
   sourceText: {
-    fontSize: typography.fontSizes.xl,
-    fontWeight: typography.fontWeights.bold,
-    color: colors.primary,
+    fontSize: currentTheme.typography.fontSizes.xl,
+    fontWeight: currentTheme.typography.fontWeights.bold,
+    color: currentTheme.colors.primary,
     textAlign: 'center',
-    backgroundColor: colors.primaryLight + '20',
-    padding: spacing.lg,
-    borderRadius: borderRadius.md,
+    backgroundColor: currentTheme.colors.primaryLight + '20',
+    padding: currentTheme.spacing.lg,
+    borderRadius: currentTheme.borderRadius.md,
     borderWidth: 2,
-    borderColor: colors.primaryLight,
+    borderColor: currentTheme.colors.primaryLight,
   },
   answerSection: {
-    backgroundColor: colors.surface,
-    padding: spacing.lg,
-    marginBottom: spacing.base,
+    backgroundColor: currentTheme.colors.surface,
+    padding: currentTheme.spacing.lg,
+    marginBottom: currentTheme.spacing.base,
   },
   submitButton: {
-    backgroundColor: colors.success,
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.xl,
-    borderRadius: borderRadius.md,
+    backgroundColor: currentTheme.colors.success,
+    paddingVertical: currentTheme.spacing.md,
+    paddingHorizontal: currentTheme.spacing.xl,
+    borderRadius: currentTheme.borderRadius.md,
     alignItems: 'center',
-    marginTop: spacing.lg,
-    ...shadows.base,
+    marginTop: currentTheme.spacing.lg,
+    ...currentTheme.shadows.base,
   },
   submitButtonDisabled: {
-    backgroundColor: colors.buttonDisabled,
+    backgroundColor: currentTheme.colors.buttonDisabled,
     opacity: 0.6,
   },
   submitButtonText: {
-    color: colors.background,
-    fontSize: typography.fontSizes.lg,
-    fontWeight: typography.fontWeights.semibold,
+    color: currentTheme.colors.background,
+    fontSize: currentTheme.typography.fontSizes.lg,
+    fontWeight: currentTheme.typography.fontWeights.semibold,
   },
   submitButtonTextDisabled: {
-    color: colors.textSecondary,
+    color: currentTheme.colors.textSecondary,
   },
   feedbackContainer: {
-    marginTop: spacing.lg,
+    marginTop: currentTheme.spacing.lg,
     alignItems: 'center',
   },
   feedbackText: {
-    fontSize: typography.fontSizes.xl,
-    fontWeight: typography.fontWeights.semibold,
+    fontSize: currentTheme.typography.fontSizes.xl,
+    fontWeight: currentTheme.typography.fontWeights.semibold,
     textAlign: 'center',
-    marginBottom: spacing.base,
+    marginBottom: currentTheme.spacing.base,
   },
   correctFeedback: {
-    color: colors.success,
+    color: currentTheme.colors.success,
   },
   incorrectFeedback: {
-    color: colors.error,
+    color: currentTheme.colors.error,
   },
   correctAnswerText: {
-    fontSize: typography.fontSizes.lg,
-    color: colors.textSecondary,
+    fontSize: currentTheme.typography.fontSizes.lg,
+    color: currentTheme.colors.textSecondary,
     textAlign: 'center',
-    marginBottom: spacing.md,
+    marginBottom: currentTheme.spacing.md,
     fontStyle: 'italic',
   },
   nextButton: {
-    backgroundColor: colors.primary,
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.xl,
-    borderRadius: borderRadius.base,
-    ...shadows.base,
+    backgroundColor: currentTheme.colors.primary,
+    paddingVertical: currentTheme.spacing.md,
+    paddingHorizontal: currentTheme.spacing.xl,
+    borderRadius: currentTheme.borderRadius.base,
+    ...currentTheme.shadows.base,
   },
   nextButtonText: {
-    color: colors.background,
-    fontSize: typography.fontSizes.lg,
-    fontWeight: typography.fontWeights.semibold,
+    color: currentTheme.colors.background,
+    fontSize: currentTheme.typography.fontSizes.lg,
+    fontWeight: currentTheme.typography.fontWeights.semibold,
   },
   wordsContainer: {
     flex: 1,
-    backgroundColor: colors.surface,
-    padding: spacing.lg,
+    backgroundColor: currentTheme.colors.surface,
+    padding: currentTheme.spacing.lg,
   },
   wordsTitle: {
-    fontSize: typography.fontSizes.lg,
-    fontWeight: typography.fontWeights.semibold,
-    color: colors.text,
+    fontSize: currentTheme.typography.fontSizes.lg,
+    fontWeight: currentTheme.typography.fontWeights.semibold,
+    color: currentTheme.colors.text,
     textAlign: 'center',
-    marginBottom: spacing.lg,
+    marginBottom: currentTheme.spacing.lg,
   },
   wordsGrid: {
     flexDirection: 'row',

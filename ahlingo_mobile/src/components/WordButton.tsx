@@ -1,5 +1,6 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface WordButtonProps {
   word: string;
@@ -16,6 +17,8 @@ const WordButton: React.FC<WordButtonProps> = ({
   onPress,
   disabled = false,
 }) => {
+  const { theme } = useTheme();
+  const styles = createStyles(theme);
   return (
     <TouchableOpacity
       style={[
@@ -39,39 +42,40 @@ const WordButton: React.FC<WordButtonProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) => StyleSheet.create({
   wordButton: {
-    backgroundColor: '#f8f9fa',
+    backgroundColor: currentTheme.colors.surface,
     borderWidth: 2,
-    borderColor: '#e0e0e0',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    margin: 4,
+    borderColor: currentTheme.colors.border,
+    borderRadius: currentTheme.borderRadius.base,
+    paddingHorizontal: currentTheme.spacing.md,
+    paddingVertical: currentTheme.spacing.base,
+    margin: currentTheme.spacing.xs,
     minHeight: 40,
     justifyContent: 'center',
     alignItems: 'center',
+    ...currentTheme.shadows.sm,
   },
   selectedWord: {
-    backgroundColor: '#e3f2fd',
-    borderColor: '#1976D2',
+    backgroundColor: currentTheme.colors.primaryLight + '30',
+    borderColor: currentTheme.colors.primary,
   },
   disabledWord: {
-    backgroundColor: '#f5f5f5',
-    borderColor: '#ccc',
+    backgroundColor: currentTheme.colors.buttonDisabled,
+    borderColor: currentTheme.colors.border,
     opacity: 0.5,
   },
   wordText: {
-    fontSize: 16,
-    color: '#333',
-    fontWeight: '500',
+    fontSize: currentTheme.typography.fontSizes.lg,
+    color: currentTheme.colors.text,
+    fontWeight: currentTheme.typography.fontWeights.medium,
   },
   selectedWordText: {
-    color: '#1976D2',
-    fontWeight: '600',
+    color: currentTheme.colors.primary,
+    fontWeight: currentTheme.typography.fontWeights.semibold,
   },
   disabledWordText: {
-    color: '#999',
+    color: currentTheme.colors.textLight,
   },
 });
 

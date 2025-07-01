@@ -18,7 +18,7 @@ import {
   getUserSettings,
   getUserId,
 } from '../services/SimpleDatabaseService';
-import { colors, spacing, borderRadius, shadows, typography } from '../utils/theme';
+import { useTheme } from '../contexts/ThemeContext';
 
 type StatsScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -47,6 +47,7 @@ interface ProgressSummary {
 }
 
 const StatsScreen: React.FC<Props> = ({ navigation }) => {
+  const { theme } = useTheme();
   const [loading, setLoading] = useState(true);
   const [topicStats, setTopicStats] = useState<TopicStats[]>([]);
   const [progressSummary, setProgressSummary] =
@@ -194,10 +195,12 @@ const StatsScreen: React.FC<Props> = ({ navigation }) => {
     );
   };
 
+  const styles = createStyles(theme);
+
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color={colors.primary} />
+        <ActivityIndicator size="large" color={theme.colors.primary} />
         <Text style={styles.loadingText}>Loading your statistics...</Text>
       </View>
     );
@@ -283,65 +286,65 @@ const StatsScreen: React.FC<Props> = ({ navigation }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: currentTheme.colors.background,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: colors.background,
+    backgroundColor: currentTheme.colors.background,
   },
   loadingText: {
-    marginTop: spacing.lg,
-    fontSize: typography.fontSizes.lg,
-    color: colors.textSecondary,
+    marginTop: currentTheme.spacing.lg,
+    fontSize: currentTheme.typography.fontSizes.lg,
+    color: currentTheme.colors.textSecondary,
   },
   scrollView: {
     flex: 1,
   },
   summaryCard: {
-    backgroundColor: colors.surface,
-    margin: spacing.lg,
-    padding: spacing.xl,
-    borderRadius: borderRadius.md,
-    ...shadows.lg,
+    backgroundColor: currentTheme.colors.surface,
+    margin: currentTheme.spacing.lg,
+    padding: currentTheme.spacing.xl,
+    borderRadius: currentTheme.borderRadius.md,
+    ...currentTheme.shadows.lg,
   },
   summaryTitle: {
-    fontSize: typography.fontSizes.xl,
-    fontWeight: typography.fontWeights.bold,
-    color: colors.text,
-    marginBottom: spacing.lg,
+    fontSize: currentTheme.typography.fontSizes.xl,
+    fontWeight: currentTheme.typography.fontWeights.bold,
+    color: currentTheme.colors.text,
+    marginBottom: currentTheme.spacing.lg,
     textAlign: 'center',
   },
   summaryStats: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    marginBottom: spacing.xl,
+    marginBottom: currentTheme.spacing.xl,
   },
   statItem: {
     alignItems: 'center',
   },
   statNumber: {
-    fontSize: typography.fontSizes['3xl'],
-    fontWeight: typography.fontWeights.bold,
-    color: colors.primary,
+    fontSize: currentTheme.typography.fontSizes['3xl'],
+    fontWeight: currentTheme.typography.fontWeights.bold,
+    color: currentTheme.colors.primary,
   },
   statLabel: {
-    fontSize: typography.fontSizes.sm,
-    color: colors.textSecondary,
-    marginTop: spacing.xs,
+    fontSize: currentTheme.typography.fontSizes.sm,
+    color: currentTheme.colors.textSecondary,
+    marginTop: currentTheme.spacing.xs,
   },
   overallProgress: {
-    marginBottom: spacing.lg,
+    marginBottom: currentTheme.spacing.lg,
   },
   overallProgressLabel: {
-    fontSize: typography.fontSizes.lg,
-    fontWeight: typography.fontWeights.semibold,
-    color: colors.text,
-    marginBottom: spacing.base,
+    fontSize: currentTheme.typography.fontSizes.lg,
+    fontWeight: currentTheme.typography.fontWeights.semibold,
+    color: currentTheme.colors.text,
+    marginBottom: currentTheme.spacing.base,
   },
   progressBarContainer: {
     flexDirection: 'row',
@@ -349,76 +352,76 @@ const styles = StyleSheet.create({
   },
   progressBarBackground: {
     flex: 1,
-    height: spacing.base,
-    backgroundColor: colors.border,
-    borderRadius: borderRadius.sm,
-    marginRight: spacing.md,
+    height: currentTheme.spacing.base,
+    backgroundColor: currentTheme.colors.border,
+    borderRadius: currentTheme.borderRadius.sm,
+    marginRight: currentTheme.spacing.md,
   },
   progressBarFill: {
     height: '100%',
-    backgroundColor: colors.success,
-    borderRadius: borderRadius.sm,
+    backgroundColor: currentTheme.colors.success,
+    borderRadius: currentTheme.borderRadius.sm,
   },
   progressText: {
-    fontSize: typography.fontSizes.base,
-    fontWeight: typography.fontWeights.semibold,
-    color: colors.text,
+    fontSize: currentTheme.typography.fontSizes.base,
+    fontWeight: currentTheme.typography.fontWeights.semibold,
+    color: currentTheme.colors.text,
     minWidth: 40,
   },
   topicsSection: {
-    margin: spacing.lg,
+    margin: currentTheme.spacing.lg,
   },
   sectionTitle: {
-    fontSize: typography.fontSizes.xl,
-    fontWeight: typography.fontWeights.bold,
-    color: colors.text,
-    marginBottom: spacing.md,
+    fontSize: currentTheme.typography.fontSizes.xl,
+    fontWeight: currentTheme.typography.fontWeights.bold,
+    color: currentTheme.colors.text,
+    marginBottom: currentTheme.spacing.md,
   },
   topicCard: {
-    backgroundColor: colors.surface,
-    padding: spacing.lg,
-    borderRadius: borderRadius.base,
-    marginBottom: spacing.md,
-    ...shadows.base,
+    backgroundColor: currentTheme.colors.surface,
+    padding: currentTheme.spacing.lg,
+    borderRadius: currentTheme.borderRadius.base,
+    marginBottom: currentTheme.spacing.md,
+    ...currentTheme.shadows.base,
   },
   topicHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: spacing.xs,
+    marginBottom: currentTheme.spacing.xs,
   },
   topicName: {
-    fontSize: typography.fontSizes.lg,
-    fontWeight: typography.fontWeights.semibold,
-    color: colors.text,
+    fontSize: currentTheme.typography.fontSizes.lg,
+    fontWeight: currentTheme.typography.fontWeights.semibold,
+    color: currentTheme.colors.text,
   },
   topicStats: {
-    fontSize: typography.fontSizes.lg,
-    fontWeight: typography.fontWeights.bold,
-    color: colors.primary,
+    fontSize: currentTheme.typography.fontSizes.lg,
+    fontWeight: currentTheme.typography.fontWeights.bold,
+    color: currentTheme.colors.primary,
   },
   topicAttempted: {
-    fontSize: typography.fontSizes.base,
-    color: colors.textSecondary,
-    marginBottom: spacing.base,
+    fontSize: currentTheme.typography.fontSizes.base,
+    color: currentTheme.colors.textSecondary,
+    marginBottom: currentTheme.spacing.base,
   },
   noDataCard: {
-    backgroundColor: colors.surface,
-    padding: spacing['4xl'],
-    borderRadius: borderRadius.base,
+    backgroundColor: currentTheme.colors.surface,
+    padding: currentTheme.spacing['4xl'],
+    borderRadius: currentTheme.borderRadius.base,
     alignItems: 'center',
-    ...shadows.base,
+    ...currentTheme.shadows.base,
   },
   noDataText: {
-    fontSize: typography.fontSizes.lg,
-    fontWeight: typography.fontWeights.semibold,
-    color: colors.textSecondary,
-    marginBottom: spacing.base,
+    fontSize: currentTheme.typography.fontSizes.lg,
+    fontWeight: currentTheme.typography.fontWeights.semibold,
+    color: currentTheme.colors.textSecondary,
+    marginBottom: currentTheme.spacing.base,
     textAlign: 'center',
   },
   noDataSubtext: {
-    fontSize: typography.fontSizes.base,
-    color: colors.textLight,
+    fontSize: currentTheme.typography.fontSizes.base,
+    color: currentTheme.colors.textLight,
     textAlign: 'center',
   },
 });

@@ -1,5 +1,6 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { useTheme } from '../contexts/ThemeContext';
 
 export interface PairButtonProps {
   text: string;
@@ -18,6 +19,8 @@ const PairButton: React.FC<PairButtonProps> = ({
   matched,
   onPress,
 }) => {
+  const { theme } = useTheme();
+  const styles = createStyles(theme);
   const getButtonStyle = () => {
     if (matched) {
       return [styles.button, styles.matched];
@@ -50,44 +53,40 @@ const PairButton: React.FC<PairButtonProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) => StyleSheet.create({
   button: {
     minHeight: 60,
-    borderRadius: 8,
-    marginVertical: 4,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    borderRadius: currentTheme.borderRadius.base,
+    marginVertical: currentTheme.spacing.xs,
+    paddingHorizontal: currentTheme.spacing.lg,
+    paddingVertical: currentTheme.spacing.md,
     justifyContent: 'center',
     alignItems: 'center',
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.22,
-    shadowRadius: 2.22,
+    ...currentTheme.shadows.base,
   },
   normal: {
-    backgroundColor: '#2196F3', // Blue - normal state
+    backgroundColor: currentTheme.colors.primary,
   },
   selected: {
-    backgroundColor: '#E0E0E0', // Gray - selected state
+    backgroundColor: currentTheme.colors.secondary,
   },
   matched: {
-    backgroundColor: '#81C784', // Green - matched state
+    backgroundColor: currentTheme.colors.success,
   },
   text: {
-    fontSize: 16,
-    fontWeight: '500',
+    fontSize: currentTheme.typography.fontSizes.lg,
+    fontWeight: currentTheme.typography.fontWeights.medium,
     textAlign: 'center',
     flexWrap: 'wrap',
   },
   normalText: {
-    color: '#FFFFFF',
+    color: currentTheme.colors.background,
   },
   selectedText: {
-    color: '#333333',
+    color: currentTheme.colors.text,
   },
   matchedText: {
-    color: '#FFFFFF',
+    color: currentTheme.colors.background,
   },
 });
 

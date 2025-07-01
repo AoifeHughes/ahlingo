@@ -2,7 +2,7 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types';
-import { colors, typography } from '../utils/theme';
+import { useTheme } from '../contexts/ThemeContext';
 
 // Import screens (placeholder imports for now)
 import MainMenuScreen from '../screens/MainMenuScreen';
@@ -18,18 +18,20 @@ import RetryMistakesScreen from '../screens/RetryMistakesScreen';
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const AppNavigator: React.FC = () => {
+  const { theme } = useTheme();
+
   return (
     <NavigationContainer>
       <Stack.Navigator
         initialRouteName="MainMenu"
         screenOptions={{
           headerStyle: {
-            backgroundColor: colors.primary,
+            backgroundColor: theme.colors.primary,
           },
-          headerTintColor: colors.background,
+          headerTintColor: theme.colors.background,
           headerTitleStyle: {
-            fontWeight: typography.fontWeights.semibold,
-            fontSize: typography.fontSizes.lg,
+            fontWeight: theme.typography.fontWeights.semibold,
+            fontSize: theme.typography.fontSizes.lg,
           },
           headerBackTitle: 'Main Menu',
         }}

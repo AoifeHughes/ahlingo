@@ -22,7 +22,7 @@ import {
   getUserId,
   recordExerciseAttempt,
 } from '../services/SimpleDatabaseService';
-import { colors, spacing, borderRadius, shadows, typography } from '../utils/theme';
+import { useTheme } from '../contexts/ThemeContext';
 
 type PairsGameScreenRouteProp = RouteProp<RootStackParamList, 'PairsGame'>;
 type PairsGameScreenNavigationProp = NativeStackNavigationProp<
@@ -52,6 +52,7 @@ interface GameState {
 const PairsGameScreen: React.FC<Props> = ({ route, navigation }) => {
   const { topicId } = route.params;
   const { settings } = useSelector((state: RootState) => state.settings);
+  const { theme } = useTheme();
 
   const [loading, setLoading] = useState(true);
   const [currentExercise, setCurrentExercise] = useState<ExerciseInfo | null>(
@@ -264,10 +265,12 @@ const PairsGameScreen: React.FC<Props> = ({ route, navigation }) => {
     loadGameData();
   };
 
+  const styles = createStyles(theme);
+
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#1976D2" />
+        <ActivityIndicator size="large" color={theme.colors.primary} />
         <Text style={styles.loadingText}>Loading game...</Text>
       </View>
     );
@@ -338,52 +341,53 @@ const PairsGameScreen: React.FC<Props> = ({ route, navigation }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: currentTheme.colors.background,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: colors.background,
+    backgroundColor: currentTheme.colors.background,
   },
   loadingText: {
-    marginTop: spacing.lg,
-    fontSize: typography.fontSizes.lg,
-    color: colors.textSecondary,
+    marginTop: currentTheme.spacing.lg,
+    fontSize: currentTheme.typography.fontSizes.lg,
+    color: currentTheme.colors.textSecondary,
   },
   header: {
-    backgroundColor: colors.surface,
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.lg,
+    backgroundColor: currentTheme.colors.surface,
+    paddingVertical: currentTheme.spacing.md,
+    paddingHorizontal: currentTheme.spacing.lg,
     borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+    borderBottomColor: currentTheme.colors.border,
     alignItems: 'center',
   },
   refreshButton: {
-    backgroundColor: colors.primary,
-    paddingVertical: spacing.base,
-    paddingHorizontal: spacing.lg,
-    borderRadius: spacing.xl,
+    backgroundColor: currentTheme.colors.primary,
+    paddingVertical: currentTheme.spacing.base,
+    paddingHorizontal: currentTheme.spacing.lg,
+    borderRadius: currentTheme.spacing.xl,
+    ...currentTheme.shadows.base,
   },
   refreshButtonText: {
-    color: colors.background,
-    fontSize: typography.fontSizes.base,
-    fontWeight: typography.fontWeights.semibold,
+    color: currentTheme.colors.background,
+    fontSize: currentTheme.typography.fontSizes.base,
+    fontWeight: currentTheme.typography.fontWeights.semibold,
   },
   scoreContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    backgroundColor: colors.surface,
-    paddingVertical: spacing.md,
+    backgroundColor: currentTheme.colors.surface,
+    paddingVertical: currentTheme.spacing.md,
     marginBottom: 1,
   },
   scoreText: {
-    fontSize: typography.fontSizes.lg,
-    fontWeight: typography.fontWeights.semibold,
-    color: colors.text,
+    fontSize: currentTheme.typography.fontSizes.lg,
+    fontWeight: currentTheme.typography.fontWeights.semibold,
+    color: currentTheme.colors.text,
   },
   gameContainer: {
     flex: 1,
@@ -391,13 +395,13 @@ const styles = StyleSheet.create({
   },
   column: {
     flex: 1,
-    paddingHorizontal: spacing.base,
+    paddingHorizontal: currentTheme.spacing.base,
   },
   scrollView: {
     flex: 1,
   },
   scrollContent: {
-    paddingVertical: spacing.lg,
+    paddingVertical: currentTheme.spacing.lg,
   },
 });
 

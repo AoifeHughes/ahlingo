@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface MessageBubbleProps {
   speaker: string;
@@ -12,18 +13,26 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
   message,
   isLeft,
 }) => {
+  const { theme } = useTheme();
   return (
     <View
       style={[styles.container, isLeft ? styles.leftAlign : styles.rightAlign]}
     >
       <View
-        style={[styles.bubble, isLeft ? styles.leftBubble : styles.rightBubble]}
+        style={[
+          styles.bubble, 
+          { 
+            backgroundColor: isLeft ? theme.colors.assistantMessage : theme.colors.userMessage,
+            shadowColor: theme.colors.text,
+          },
+          isLeft ? styles.leftBubble : styles.rightBubble
+        ]}
       >
-        <Text style={styles.speakerName}>{speaker}</Text>
+        <Text style={[styles.speakerName, { color: theme.colors.textSecondary }]}>{speaker}</Text>
         <Text
           style={[
             styles.messageText,
-            isLeft ? styles.leftText : styles.rightText,
+            { color: isLeft ? theme.colors.text : '#fff' }
           ]}
         >
           {message}
@@ -49,7 +58,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderRadius: 18,
-    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 1,
@@ -59,28 +67,19 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   leftBubble: {
-    backgroundColor: '#f0f0f0',
     borderBottomLeftRadius: 4,
   },
   rightBubble: {
-    backgroundColor: '#1976D2',
     borderBottomRightRadius: 4,
   },
   speakerName: {
     fontSize: 12,
     fontWeight: '600',
     marginBottom: 4,
-    color: '#666',
   },
   messageText: {
     fontSize: 16,
     lineHeight: 20,
-  },
-  leftText: {
-    color: '#333',
-  },
-  rightText: {
-    color: '#fff',
   },
 });
 

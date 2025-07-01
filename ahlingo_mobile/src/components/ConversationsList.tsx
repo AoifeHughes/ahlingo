@@ -10,7 +10,7 @@ import {
   TextInput
 } from 'react-native';
 import { ChatDetail, updateChatName } from '../services/ChatService';
-import { colors, spacing, borderRadius, shadows, typography } from '../utils/theme';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface ConversationsListProps {
   visible: boolean;
@@ -33,6 +33,7 @@ const ConversationsList: React.FC<ConversationsListProps> = ({
   onRefreshConversations,
   currentConversationId,
 }) => {
+  const { theme } = useTheme();
   const [editingChatId, setEditingChatId] = useState<number | null>(null);
   const [editingChatName, setEditingChatName] = useState('');
   const formatDate = (dateString: string) => {
@@ -117,7 +118,14 @@ const ConversationsList: React.FC<ConversationsListProps> = ({
 
     return (
       <TouchableOpacity
-        style={[styles.conversationItem, isSelected && styles.selectedItem]}
+        style={[
+          styles.conversationItem, 
+          { backgroundColor: theme.colors.surface },
+          isSelected && [styles.selectedItem, { 
+            backgroundColor: theme.colors.secondary,
+            borderColor: theme.colors.primary 
+          }]
+        ]}
         onPress={() => {
           if (!isEditing) {
             onSelectConversation(item);
@@ -130,7 +138,10 @@ const ConversationsList: React.FC<ConversationsListProps> = ({
           {isEditing ? (
             <View style={styles.editingContainer}>
               <TextInput
-                style={styles.editInput}
+                style={[styles.editInput, { 
+                  color: theme.colors.text,
+                  borderBottomColor: theme.colors.primary 
+                }]}
                 value={editingChatName}
                 onChangeText={setEditingChatName}
                 autoFocus
@@ -138,15 +149,15 @@ const ConversationsList: React.FC<ConversationsListProps> = ({
                 onBlur={saveRename}
               />
               <TouchableOpacity onPress={cancelRename} style={styles.cancelButton}>
-                <Text style={styles.cancelButtonText}>✕</Text>
+                <Text style={[styles.cancelButtonText, { color: theme.colors.textSecondary }]}>✕</Text>
               </TouchableOpacity>
             </View>
           ) : (
             <>
-              <Text style={styles.conversationTitle}>
+              <Text style={[styles.conversationTitle, { color: theme.colors.text }]}>
                 {item.chat_name || `${item.language} - ${item.difficulty}`}
               </Text>
-              <Text style={styles.conversationDate}>
+              <Text style={[styles.conversationDate, { color: theme.colors.textSecondary }]}>
                 {formatDate(displayDate)}
               </Text>
             </>
@@ -154,15 +165,17 @@ const ConversationsList: React.FC<ConversationsListProps> = ({
         </View>
         {!isEditing && (
           <View style={styles.conversationDetails}>
-            <Text style={styles.conversationLanguage}>
+            <Text style={[styles.conversationLanguage, { color: theme.colors.textSecondary }]}>
               {item.language} - {item.difficulty}
             </Text>
-            <Text style={styles.conversationModel}>{item.model}</Text>
+            <Text style={[styles.conversationModel, { color: theme.colors.textLight }]}>{item.model}</Text>
           </View>
         )}
       </TouchableOpacity>
     );
   };
+
+  const styles = createStyles(theme);
 
   return (
     <Modal
@@ -171,28 +184,31 @@ const ConversationsList: React.FC<ConversationsListProps> = ({
       presentationStyle="pageSheet"
       onRequestClose={onClose}
     >
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Conversations</Text>
+      <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+        <View style={[styles.header, { 
+          backgroundColor: theme.colors.surface,
+          borderBottomColor: theme.colors.border 
+        }]}>
+          <Text style={[styles.title, { color: theme.colors.text }]}>Conversations</Text>
           <View style={styles.headerButtons}>
             <TouchableOpacity
-              style={styles.newButton}
+              style={[styles.newButton, { backgroundColor: theme.colors.primary }]}
               onPress={() => {
                 onNewConversation();
                 onClose();
               }}
             >
-              <Text style={styles.newButtonText}>New</Text>
+              <Text style={[styles.newButtonText, { color: theme.colors.background }]}>New</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-              <Text style={styles.closeButtonText}>Done</Text>
+              <Text style={[styles.closeButtonText, { color: theme.colors.primary }]}>Done</Text>
             </TouchableOpacity>
           </View>
         </View>
 
         {conversations.length > 0 ? (
           <>
-            <Text style={styles.instructionText}>
+            <Text style={[styles.instructionText, { color: theme.colors.textSecondary }]}>
               Press and hold to edit or delete chats
             </Text>
             <FlatList
@@ -206,8 +222,8 @@ const ConversationsList: React.FC<ConversationsListProps> = ({
           </>
         ) : (
           <View style={styles.emptyState}>
-            <Text style={styles.emptyStateText}>No conversations yet</Text>
-            <Text style={styles.emptyStateSubtext}>
+            <Text style={[styles.emptyStateText, { color: theme.colors.textSecondary }]}>No conversations yet</Text>
+            <Text style={[styles.emptyStateSubtext, { color: theme.colors.textLight }]}>
               Start a new conversation to begin chatting
             </Text>
           </View>
@@ -217,57 +233,49 @@ const ConversationsList: React.FC<ConversationsListProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: spacing.xl,
-    paddingVertical: spacing.lg,
-    backgroundColor: colors.surface,
+    paddingHorizontal: currentTheme.spacing.xl,
+    paddingVertical: currentTheme.spacing.lg,
     borderBottomWidth: 1,
-    borderBottomColor: colors.border,
   },
   title: {
-    fontSize: typography.fontSizes['2xl'],
-    fontWeight: typography.fontWeights.semibold,
-    color: colors.text,
+    fontSize: currentTheme.typography.fontSizes['2xl'],
+    fontWeight: currentTheme.typography.fontWeights.semibold,
   },
   instructionText: {
-    fontSize: typography.fontSizes.sm,
-    color: colors.textSecondary,
+    fontSize: currentTheme.typography.fontSizes.sm,
     textAlign: 'center',
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.base,
+    paddingHorizontal: currentTheme.spacing.lg,
+    paddingVertical: currentTheme.spacing.base,
     fontStyle: 'italic',
   },
   headerButtons: {
     flexDirection: 'row',
-    gap: spacing.md,
+    gap: currentTheme.spacing.md,
   },
   newButton: {
-    backgroundColor: colors.primary,
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.base,
-    borderRadius: borderRadius.base,
+    paddingHorizontal: currentTheme.spacing.lg,
+    paddingVertical: currentTheme.spacing.base,
+    borderRadius: currentTheme.borderRadius.base,
   },
   newButtonText: {
-    color: colors.background,
-    fontSize: typography.fontSizes.base,
-    fontWeight: typography.fontWeights.semibold,
+    fontSize: currentTheme.typography.fontSizes.base,
+    fontWeight: currentTheme.typography.fontWeights.semibold,
   },
   closeButton: {
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.base,
+    paddingHorizontal: currentTheme.spacing.lg,
+    paddingVertical: currentTheme.spacing.base,
   },
   closeButtonText: {
-    color: colors.primary,
-    fontSize: typography.fontSizes.lg,
-    fontWeight: typography.fontWeights.semibold,
+    fontSize: currentTheme.typography.fontSizes.lg,
+    fontWeight: currentTheme.typography.fontWeights.semibold,
   },
   list: {
     flex: 1,
@@ -276,45 +284,38 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   conversationItem: {
-    backgroundColor: colors.surface,
-    marginHorizontal: spacing.lg,
-    marginVertical: spacing.xs,
-    padding: spacing.lg,
-    borderRadius: borderRadius.lg,
-    ...shadows.base,
+    marginHorizontal: currentTheme.spacing.lg,
+    marginVertical: currentTheme.spacing.xs,
+    padding: currentTheme.spacing.lg,
+    borderRadius: currentTheme.borderRadius.lg,
+    ...currentTheme.shadows.base,
   },
   selectedItem: {
-    backgroundColor: colors.secondary,
-    borderColor: colors.primary,
     borderWidth: 1,
   },
   conversationHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: spacing.xs,
+    marginBottom: currentTheme.spacing.xs,
   },
   conversationTitle: {
-    fontSize: typography.fontSizes.lg,
-    fontWeight: typography.fontWeights.semibold,
-    color: colors.text,
+    fontSize: currentTheme.typography.fontSizes.lg,
+    fontWeight: currentTheme.typography.fontWeights.semibold,
     flex: 1,
   },
   conversationDate: {
-    fontSize: typography.fontSizes.sm,
-    color: colors.textSecondary,
+    fontSize: currentTheme.typography.fontSizes.sm,
   },
   conversationDetails: {
-    marginTop: spacing.xs,
+    marginTop: currentTheme.spacing.xs,
   },
   conversationLanguage: {
-    fontSize: typography.fontSizes.sm,
-    color: colors.textSecondary,
-    marginBottom: spacing.xs,
+    fontSize: currentTheme.typography.fontSizes.sm,
+    marginBottom: currentTheme.spacing.xs,
   },
   conversationModel: {
-    fontSize: typography.fontSizes.sm,
-    color: colors.textLight,
+    fontSize: currentTheme.typography.fontSizes.sm,
   },
   editingContainer: {
     flexDirection: 'row',
@@ -323,38 +324,33 @@ const styles = StyleSheet.create({
   },
   editInput: {
     flex: 1,
-    fontSize: typography.fontSizes.lg,
-    fontWeight: typography.fontWeights.semibold,
-    color: colors.text,
+    fontSize: currentTheme.typography.fontSizes.lg,
+    fontWeight: currentTheme.typography.fontWeights.semibold,
     borderBottomWidth: 1,
-    borderBottomColor: colors.primary,
-    paddingVertical: spacing.xs,
-    marginRight: spacing.base,
+    paddingVertical: currentTheme.spacing.xs,
+    marginRight: currentTheme.spacing.base,
   },
   cancelButton: {
-    padding: spacing.xs,
+    padding: currentTheme.spacing.xs,
   },
   cancelButtonText: {
-    fontSize: typography.fontSizes.lg,
-    color: colors.textSecondary,
+    fontSize: currentTheme.typography.fontSizes.lg,
   },
   emptyState: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: spacing['4xl'],
+    paddingHorizontal: currentTheme.spacing['4xl'],
   },
   emptyStateText: {
-    fontSize: typography.fontSizes.xl,
-    fontWeight: typography.fontWeights.semibold,
-    color: colors.textSecondary,
-    marginBottom: spacing.base,
+    fontSize: currentTheme.typography.fontSizes.xl,
+    fontWeight: currentTheme.typography.fontWeights.semibold,
+    marginBottom: currentTheme.spacing.base,
   },
   emptyStateSubtext: {
-    fontSize: typography.fontSizes.base,
-    color: colors.textLight,
+    fontSize: currentTheme.typography.fontSizes.base,
     textAlign: 'center',
-    lineHeight: spacing.xl,
+    lineHeight: currentTheme.spacing.xl,
   },
 });
 
