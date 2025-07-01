@@ -13,7 +13,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { store } from './src/store';
 import AppNavigator from './src/navigation/AppNavigator';
-import { logDatabaseTables } from './src/services/SimpleDatabaseService';
+import { initializeDatabase, logDatabaseTables } from './src/services/RefactoredDatabaseService';
 
 function AppContent(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
@@ -22,18 +22,18 @@ function AppContent(): React.JSX.Element {
     // Initialize database when app starts
     const initializeApp = async () => {
       try {
-        // The database will be automatically initialized when first accessed
-        // by any SimpleDatabaseService function. Let's log the tables to verify.
-        console.log('App starting - database will initialize on first access');
+        console.log('🚀 Initializing AHLingo app...');
         
-        // Add a small delay then log database tables to verify everything works
-        setTimeout(() => {
-          logDatabaseTables();
-        }, 1000);
+        // Initialize database once during app startup
+        await initializeDatabase();
+        console.log('✅ Database initialized successfully');
         
-        console.log('App initialized successfully');
+        // Log database tables to verify everything works
+        await logDatabaseTables();
+        
+        console.log('✅ App initialized successfully');
       } catch (error) {
-        console.error('Failed to initialize app:', error);
+        console.error('❌ Failed to initialize app:', error);
       }
     };
 
