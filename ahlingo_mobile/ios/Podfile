@@ -20,7 +20,10 @@ target 'AhLingo' do
   use_react_native!(
     :path => config[:reactNativePath],
     # An absolute path to your application root.
-    :app_path => "#{Pod::Config.instance.installation_root}/.."
+    :app_path => "#{Pod::Config.instance.installation_root}/..",
+    # Explicitly disable new architecture
+    :fabric_enabled => false,
+    :hermes_enabled => true, # or false if you don't want Hermes
   )
 
   post_install do |installer|
@@ -29,7 +32,17 @@ target 'AhLingo' do
       installer,
       config[:reactNativePath],
       :mac_catalyst_enabled => false,
+      # Remove fabric_enabled from here - it's not a valid parameter
       # :ccache_enabled => true
     )
+    
+    # Fix for non-modular includes
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |config|
+        config.build_settings['CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES'] = 'YES'
+        # Ensure old architecture
+        config.build_settings['RCT_NEW_ARCH_ENABLED'] = '0'
+      end
+    end
   end
 end

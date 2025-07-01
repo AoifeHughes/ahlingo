@@ -38,6 +38,7 @@ import {
 import { ModelService, ModelInfo } from '../services/ModelService';
 import { getUserSettings, getUserId } from '../services/SimpleDatabaseService';
 import { useTheme } from '../contexts/ThemeContext';
+import LocalLlamaService from '../services/LocalLlamaService';
 
 type ChatbotScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -113,21 +114,44 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
   const loadAvailableModels = useCallback(async () => {
     try {
       const userSettings = await getUserSettings(settings.username || 'default_user');
-      if (userSettings.server_url) {
-        console.log('🔍 Loading available models from:', userSettings.server_url);
-        const models = await ModelService.fetchAvailableModels(
-          userSettings.server_url, 
-          userSettings.api_key
-        );
-        setAvailableModels(models);
+      const includeLocal = userSettings.enable_local_models === 'true' || false;
+      
+      console.log('🔍 Loading available models...', {
+        serverUrl: userSettings.server_url,
+        includeLocal,
+      });
+
+      const models = await ModelService.fetchAllModels(
+        userSettings.server_url, 
+        userSettings.api_key,
+        includeLocal
+      );
+      setAvailableModels(models);
+      
+      // Set the first available model as default if none selected
+      if (models.length > 0 && !selectedModel) {
+        // Prefer local models if available and preference is set
+        const preferLocal = userSettings.prefer_local_models === 'true' || false;
+        const localModels = models.filter(m => m.isLocal && m.isDownloaded);
+        const remoteModels = models.filter(m => !m.isLocal);
         
-        // Set the first model as default if none selected
-        if (models.length > 0 && !selectedModel) {
-          setSelectedModel(models[0].id);
+        let defaultModel: ModelInfo | undefined;
+        if (preferLocal && localModels.length > 0) {
+          defaultModel = localModels[0];
+        } else if (remoteModels.length > 0) {
+          defaultModel = remoteModels[0];
+        } else if (localModels.length > 0) {
+          defaultModel = localModels[0];
+        } else {
+          defaultModel = models[0];
         }
         
-        console.log('✅ Loaded models:', models);
+        if (defaultModel) {
+          setSelectedModel(defaultModel.id);
+        }
       }
+      
+      console.log('✅ Loaded models:', models);
     } catch (error) {
       console.error('Failed to load models:', error);
       // Don't show alert here, just log the error
@@ -201,33 +225,14 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
       setMessages(updatedMessages);
 
       const userSettings = await getUserSettings(settings.username || 'default_user');
-      console.log('📋 User settings loaded:', {
-        username: settings.username || 'default_user',
-        api_key: userSettings.api_key ? `${userSettings.api_key.substring(0, 10)}...` : 'NOT SET',
-        server_url: userSettings.server_url || 'Using default OpenAI URL'
-      });
+      const modelId = currentChat.model;
+      const isLocalModel = ModelService.isLocalModel(modelId);
       
-      const apiSettings: APISettings = {
-        apiKey: userSettings.api_key || '',
-        apiUrl: userSettings.server_url,
-      };
-
-      const validation = OpenAIService.validateAPISettings(apiSettings);
-      if (!validation.isValid) {
-        Alert.alert('API Configuration Error', validation.error);
-        setIsLoading(false);
-        return;
-      }
-
-      const systemPrompt = OpenAIService.generateSystemPrompt(
-        currentChat.language,
-        currentChat.difficulty
-      );
-
-      const openAIMessages = OpenAIService.convertChatMessagesToOpenAI(
-        updatedMessages,
-        systemPrompt
-      );
+      console.log('📋 Model routing info:', {
+        modelId,
+        isLocalModel,
+        username: settings.username || 'default_user',
+      });
 
       // Start streaming
       setIsLoading(false);
@@ -236,7 +241,7 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
 
       console.log('🌊 Starting streaming response...');
 
-      const streamingCallbacks: StreamingCallbacks = {
+      const commonCallbacks = {
         onContent: (chunk: string) => {
           console.log('📝 Streaming chunk:', chunk);
           setStreamingContent(prev => prev + chunk);
@@ -271,14 +276,82 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
         }
       };
 
-      const controller = await OpenAIService.sendMessageStream(
-        openAIMessages,
-        apiSettings,
-        streamingCallbacks,
-        currentChat.model
-      );
+      if (isLocalModel) {
+        // Route to local model
+        console.log('🏠 Using local model:', modelId);
+        
+        try {
+          const localModelId = ModelService.extractLocalModelId(modelId);
+          
+          // Initialize the model if needed
+          if (!LocalLlamaService.isReady() || LocalLlamaService.getCurrentModel() !== localModelId) {
+            console.log('🔧 Initializing local model...');
+            setIsLoading(true);
+            setIsStreaming(false);
+            await LocalLlamaService.initializeModel(localModelId);
+            setIsLoading(false);
+            setIsStreaming(true);
+          }
 
-      setStreamController(controller);
+          // Prepare messages for local model
+          const systemPrompt = OpenAIService.generateSystemPrompt(
+            currentChat.language,
+            currentChat.difficulty
+          );
+
+          const localMessages = [
+            { role: 'system' as const, content: systemPrompt },
+            ...updatedMessages.slice(-10).map(msg => ({ // Limit context for performance
+              role: msg.role as 'user' | 'assistant',
+              content: msg.content
+            }))
+          ];
+
+          await LocalLlamaService.completion(localMessages, commonCallbacks);
+
+        } catch (error) {
+          console.error('Local model error:', error);
+          commonCallbacks.onError(error instanceof Error ? error : new Error('Local model failed'));
+        }
+
+      } else {
+        // Route to remote model
+        console.log('🌐 Using remote model:', modelId);
+        
+        const apiSettings: APISettings = {
+          apiKey: userSettings.api_key || '',
+          apiUrl: userSettings.server_url,
+        };
+
+        const validation = OpenAIService.validateAPISettings(apiSettings);
+        if (!validation.isValid) {
+          Alert.alert('API Configuration Error', validation.error);
+          setIsLoading(false);
+          setIsStreaming(false);
+          return;
+        }
+
+        const systemPrompt = OpenAIService.generateSystemPrompt(
+          currentChat.language,
+          currentChat.difficulty
+        );
+
+        const openAIMessages = OpenAIService.convertChatMessagesToOpenAI(
+          updatedMessages,
+          systemPrompt
+        );
+
+        const streamingCallbacks: StreamingCallbacks = commonCallbacks;
+
+        const controller = await OpenAIService.sendMessageStream(
+          openAIMessages,
+          apiSettings,
+          streamingCallbacks,
+          modelId
+        );
+
+        setStreamController(controller);
+      }
 
     } catch (error) {
       console.error('Failed to send message:', error);
@@ -292,10 +365,15 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
 
   const stopGeneration = () => {
     console.log('🛑 Stopping generation...');
+    
+    // Stop remote model generation
     if (streamController) {
       streamController.abort();
       setStreamController(null);
     }
+    
+    // For local models, we don't have direct cancellation support in this implementation
+    // But we can stop the streaming state
     setIsStreaming(false);
     setStreamingContent('');
   };
@@ -304,6 +382,28 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
   const handleModelChange = async (newModel: string) => {
     try {
       console.log('🔄 Changing model to:', newModel);
+      
+      // Check if it's a local model and if it's downloaded
+      if (ModelService.isLocalModel(newModel)) {
+        const localModelId = ModelService.extractLocalModelId(newModel);
+        const isDownloaded = await LocalLlamaService.isModelDownloaded(localModelId);
+        
+        if (!isDownloaded) {
+          Alert.alert(
+            'Model Not Downloaded',
+            'This local model is not downloaded yet. Please download it from Settings first.',
+            [
+              { text: 'Cancel', style: 'cancel' },
+              { 
+                text: 'Go to Settings', 
+                onPress: () => navigation.navigate('Settings' as any)
+              }
+            ]
+          );
+          return;
+        }
+      }
+      
       setSelectedModel(newModel);
       
       if (currentChat) {
@@ -404,15 +504,35 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
                   setShowModelDropdown(false);
                 }}
               >
-                <Text style={[
-                  styles.modelOptionText,
-                  selectedModel === model.id && styles.selectedModelOptionText,
-                ]}>
-                  {model.name}
-                </Text>
-                {model.owned_by && (
-                  <Text style={styles.modelSizeText}>{model.owned_by}</Text>
-                )}
+                <View style={styles.modelOptionContent}>
+                  <Text style={[
+                    styles.modelOptionText,
+                    selectedModel === model.id && styles.selectedModelOptionText,
+                  ]}>
+                    {model.name}
+                  </Text>
+                  <View style={styles.modelMetadata}>
+                    {model.isLocal && (
+                      <Text style={[
+                        styles.modelBadge,
+                        styles.localBadge,
+                        !model.isDownloaded && styles.notDownloadedBadge
+                      ]}>
+                        {model.isDownloaded ? '📱 Local' : '📱 Not Downloaded'}
+                      </Text>
+                    )}
+                    {!model.isLocal && (
+                      <Text style={[styles.modelBadge, styles.remoteBadge]}>
+                        🌐 Remote
+                      </Text>
+                    )}
+                    {model.fileSize && (
+                      <Text style={styles.modelSizeText}>
+                        {ModelService.getModelSize(model)}
+                      </Text>
+                    )}
+                  </View>
+                </View>
               </TouchableOpacity>
             ))}
           </ScrollView>
@@ -546,9 +666,6 @@ const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) => Sty
     maxHeight: 200,
   },
   modelOption: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
     paddingHorizontal: currentTheme.spacing.lg,
     paddingVertical: currentTheme.spacing.md,
     borderBottomWidth: 1,
@@ -557,17 +674,45 @@ const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) => Sty
   selectedModelOption: {
     backgroundColor: currentTheme.colors.secondary,
   },
+  modelOptionContent: {
+    flex: 1,
+  },
   modelOptionText: {
     fontSize: currentTheme.typography.fontSizes.base,
     color: currentTheme.colors.text,
-    flex: 1,
+    marginBottom: currentTheme.spacing.xs,
   },
   selectedModelOptionText: {
     color: currentTheme.colors.primary,
     fontWeight: currentTheme.typography.fontWeights.semibold,
   },
+  modelMetadata: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    gap: currentTheme.spacing.xs,
+  },
+  modelBadge: {
+    fontSize: currentTheme.typography.fontSizes.xs,
+    paddingHorizontal: currentTheme.spacing.xs,
+    paddingVertical: 2,
+    borderRadius: currentTheme.borderRadius.sm,
+    overflow: 'hidden',
+  },
+  localBadge: {
+    backgroundColor: currentTheme.colors.success,
+    color: currentTheme.colors.background,
+  },
+  remoteBadge: {
+    backgroundColor: currentTheme.colors.primary,
+    color: currentTheme.colors.background,
+  },
+  notDownloadedBadge: {
+    backgroundColor: currentTheme.colors.warning,
+    color: currentTheme.colors.text,
+  },
   modelSizeText: {
-    fontSize: currentTheme.typography.fontSizes.sm,
+    fontSize: currentTheme.typography.fontSizes.xs,
     color: currentTheme.colors.textSecondary,
   },
   newChatButton: {

@@ -99,6 +99,46 @@ export interface AppSettings {
   apiUrl?: string;
   hostname?: string;
   username?: string;
+  enableLocalModels?: boolean;
+  preferLocalModels?: boolean;
+}
+
+// Local LLM types
+export interface LocalModel {
+  id: string;
+  name: string;
+  filename: string;
+  downloadUrl: string;
+  filePath?: string;
+  fileSize?: number;
+  isDownloaded?: boolean;
+  isDownloading?: boolean;
+  downloadProgress?: number;
+  description?: string;
+}
+
+export interface LocalModelDownloadProgress {
+  modelId: string;
+  progress: number;
+  bytesWritten: number;
+  contentLength: number;
+}
+
+export interface LocalLlamaMessage {
+  role: 'system' | 'user' | 'assistant';
+  content: string;
+}
+
+export interface LocalLlamaCompletion {
+  text: string;
+  timings?: {
+    predicted_per_token_ms: number;
+    predicted_per_second: number;
+  };
+}
+
+export interface TokenData {
+  token: string;
 }
 
 // Navigation types

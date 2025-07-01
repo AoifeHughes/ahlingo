@@ -12,6 +12,8 @@ const initialState: SettingsState = {
     language: 'French', // Default from Kivy app
     difficulty: 'Beginner', // Default from Kivy app
     userId: 1, // Default user
+    enableLocalModels: false,
+    preferLocalModels: false,
   },
   isLoading: false,
   error: null,
@@ -33,6 +35,12 @@ const settingsSlice = createSlice({
     setUserId: (state, action: PayloadAction<number>) => {
       state.settings.userId = action.payload;
     },
+    setEnableLocalModels: (state, action: PayloadAction<boolean>) => {
+      state.settings.enableLocalModels = action.payload;
+    },
+    setPreferLocalModels: (state, action: PayloadAction<boolean>) => {
+      state.settings.preferLocalModels = action.payload;
+    },
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload;
     },
@@ -47,6 +55,8 @@ export const {
   setLanguage,
   setDifficulty,
   setUserId,
+  setEnableLocalModels,
+  setPreferLocalModels,
   setLoading,
   setError,
 } = settingsSlice.actions;
