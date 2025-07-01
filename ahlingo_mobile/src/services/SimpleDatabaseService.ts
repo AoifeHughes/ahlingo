@@ -121,6 +121,51 @@ async function ensureDatabaseCopied() {
   }
 }
 
+// Migration function to add chat_name column if it doesn't exist
+export const migrateChatNameColumn = async (db: SQLiteDatabase): Promise<void> => {
+  try {
+    console.log('🔄 Checking chat_name column migration...');
+    
+    // Check if chat_name column exists in chat_details table
+    const columnResults = await db.executeSql(
+      'PRAGMA table_info("chat_details");'
+    );
+    
+    let hasNameColumn = false;
+    if (columnResults && columnResults[0]) {
+      const columns = columnResults[0].rows;
+      for (let i = 0; i < columns.length; i++) {
+        const col = columns.item(i);
+        if (col.name === 'chat_name') {
+          hasNameColumn = true;
+          break;
+        }
+      }
+    }
+    
+    if (!hasNameColumn) {
+      console.log('📝 Adding chat_name column to chat_details table...');
+      
+      // Add the chat_name column with default value
+      await db.executeSql(
+        'ALTER TABLE chat_details ADD COLUMN chat_name TEXT DEFAULT "Unnamed chat"'
+      );
+      
+      // Update existing chats to have default names
+      await db.executeSql(
+        'UPDATE chat_details SET chat_name = "Unnamed chat" WHERE chat_name IS NULL OR chat_name = ""'
+      );
+      
+      console.log('✅ Successfully added chat_name column and set default names');
+    } else {
+      console.log('✅ chat_name column already exists');
+    }
+  } catch (error) {
+    console.error('❌ Failed to migrate chat_name column:', error);
+    // Don't throw error - migration should be non-blocking
+  }
+};
+
 export const logDatabaseTables = async (): Promise<void> => {
   let db: SQLiteDatabase | null = null;
 
@@ -144,6 +189,9 @@ export const logDatabaseTables = async (): Promise<void> => {
     // Test connection
     await db.executeSql('SELECT 1');
     console.log('✅ Database connection verified');
+
+    // Check and migrate database schema
+    await migrateChatNameColumn(db);
 
     // Query all table names
     const results = await db.executeSql(

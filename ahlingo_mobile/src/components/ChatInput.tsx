@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, TextInput, TouchableOpacity, StyleSheet, Text } from 'react-native';
+import { colors, spacing, borderRadius, typography } from '../utils/theme';
 
 interface ChatInputProps {
   onSendMessage: (message: string) => void;
@@ -84,62 +85,62 @@ const ChatInput: React.FC<ChatInputProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.surface,
     borderTopWidth: 1,
-    borderTopColor: '#e0e0e0',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    borderTopColor: colors.border,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.md,
   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'flex-end',
-    backgroundColor: '#f5f5f5',
-    borderRadius: 24,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    minHeight: 48,
+    backgroundColor: colors.background,
+    borderRadius: spacing['3xl'],
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.base,
+    minHeight: spacing['5xl'],
   },
   textInput: {
     flex: 1,
-    fontSize: 16,
-    color: '#333',
+    fontSize: typography.fontSizes.lg,
+    color: colors.text,
     maxHeight: 100,
-    paddingVertical: 8,
-    paddingRight: 12,
+    paddingVertical: spacing.base,
+    paddingRight: spacing.md,
   },
   sendButton: {
-    backgroundColor: '#1976D2',
-    borderRadius: 20,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
+    backgroundColor: colors.primary,
+    borderRadius: spacing.xl,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.base,
     minWidth: 60,
     alignItems: 'center',
     justifyContent: 'center',
   },
   sendButtonDisabled: {
-    backgroundColor: '#ccc',
+    backgroundColor: colors.buttonDisabled,
   },
   sendButtonText: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: '600',
+    color: colors.background,
+    fontSize: typography.fontSizes.base,
+    fontWeight: typography.fontWeights.semibold,
   },
   sendButtonTextDisabled: {
-    color: '#999',
+    color: colors.textLight,
   },
   stopButton: {
-    backgroundColor: '#f44336',
-    borderRadius: 20,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
+    backgroundColor: colors.error,
+    borderRadius: spacing.xl,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.base,
     minWidth: 60,
     alignItems: 'center',
     justifyContent: 'center',
   },
   stopButtonText: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: '600',
+    color: colors.background,
+    fontSize: typography.fontSizes.base,
+    fontWeight: typography.fontWeights.semibold,
   },
 });
 

@@ -7,7 +7,8 @@ import {
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
-  SafeAreaView
+  SafeAreaView,
+  TextInput
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useSelector } from 'react-redux';
@@ -26,7 +27,8 @@ import {
   deleteChat,
   getRecentChatForUser,
   getChatById,
-  updateChatModel
+  updateChatModel,
+  updateChatName
 } from '../services/ChatService';
 import { 
   OpenAIService, 
@@ -35,6 +37,7 @@ import {
 } from '../services/OpenAIService';
 import { ModelService, ModelInfo } from '../services/ModelService';
 import { getUserSettings, getUserId } from '../services/SimpleDatabaseService';
+import { colors, spacing, borderRadius, shadows, typography } from '../utils/theme';
 
 type ChatbotScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -296,6 +299,7 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
     setStreamingContent('');
   };
 
+
   const handleModelChange = async (newModel: string) => {
     try {
       console.log('🔄 Changing model to:', newModel);
@@ -360,7 +364,7 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
         </TouchableOpacity>
         <View style={styles.headerCenter}>
           <Text style={styles.headerTitle}>
-            {currentChat ? `${currentChat.language} - ${currentChat.difficulty}` : 'New Chat'}
+            {currentChat ? (currentChat.chat_name || `${currentChat.language} - ${currentChat.difficulty}`) : 'New Chat'}
           </Text>
           {availableModels.length > 0 && (
             <TouchableOpacity
@@ -467,6 +471,7 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
         onSelectConversation={selectConversation}
         onDeleteConversation={deleteConversation}
         onNewConversation={createNewChat}
+        onRefreshConversations={loadUserChats}
         currentConversationId={currentChat?.id}
       />
     </SafeAreaView>
@@ -476,61 +481,61 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: colors.background,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    backgroundColor: '#fff',
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.md,
+    backgroundColor: colors.surface,
     borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
+    borderBottomColor: colors.border,
   },
   conversationsButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 6,
-    backgroundColor: '#f0f0f0',
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    borderRadius: borderRadius.base,
+    backgroundColor: colors.surfaceDark,
   },
   conversationsButtonText: {
-    fontSize: 14,
-    color: '#1976D2',
-    fontWeight: '600',
+    fontSize: typography.fontSizes.base,
+    color: colors.primary,
+    fontWeight: typography.fontWeights.semibold,
   },
   headerCenter: {
     flex: 1,
     alignItems: 'center',
   },
   headerTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
+    fontSize: typography.fontSizes.lg,
+    fontWeight: typography.fontWeights.semibold,
+    color: colors.text,
     textAlign: 'center',
   },
   modelSelector: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#f0f0f0',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 6,
-    marginTop: 4,
+    backgroundColor: colors.surfaceDark,
+    paddingHorizontal: spacing.base,
+    paddingVertical: spacing.xs,
+    borderRadius: borderRadius.base,
+    marginTop: spacing.xs,
   },
   modelSelectorText: {
-    fontSize: 12,
-    color: '#666',
-    marginRight: 4,
+    fontSize: typography.fontSizes.sm,
+    color: colors.textSecondary,
+    marginRight: spacing.xs,
   },
   dropdownArrow: {
-    fontSize: 10,
-    color: '#666',
+    fontSize: typography.fontSizes.xs,
+    color: colors.textSecondary,
   },
   modelDropdownContainer: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.surface,
     borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
+    borderBottomColor: colors.border,
     maxHeight: 200,
   },
   modelDropdown: {
@@ -540,64 +545,64 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.md,
     borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    borderBottomColor: colors.borderLight,
   },
   selectedModelOption: {
-    backgroundColor: '#e3f2fd',
+    backgroundColor: colors.secondary,
   },
   modelOptionText: {
-    fontSize: 14,
-    color: '#333',
+    fontSize: typography.fontSizes.base,
+    color: colors.text,
     flex: 1,
   },
   selectedModelOptionText: {
-    color: '#1976D2',
-    fontWeight: '600',
+    color: colors.primary,
+    fontWeight: typography.fontWeights.semibold,
   },
   modelSizeText: {
-    fontSize: 12,
-    color: '#888',
+    fontSize: typography.fontSizes.sm,
+    color: colors.textSecondary,
   },
   newChatButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 6,
-    backgroundColor: '#1976D2',
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    borderRadius: borderRadius.base,
+    backgroundColor: colors.primary,
   },
   newChatButtonText: {
-    fontSize: 14,
-    color: '#fff',
-    fontWeight: '600',
+    fontSize: typography.fontSizes.base,
+    color: colors.background,
+    fontWeight: typography.fontWeights.semibold,
   },
   messagesContainer: {
     flex: 1,
-    backgroundColor: '#fafafa',
+    backgroundColor: colors.background,
   },
   messagesContent: {
-    paddingVertical: 16,
+    paddingVertical: spacing.lg,
     flexGrow: 1,
   },
   emptyState: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 32,
+    paddingHorizontal: spacing['4xl'],
   },
   emptyStateText: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#666',
-    marginBottom: 8,
+    fontSize: typography.fontSizes.xl,
+    fontWeight: typography.fontWeights.semibold,
+    color: colors.textSecondary,
+    marginBottom: spacing.base,
     textAlign: 'center',
   },
   emptyStateSubtext: {
-    fontSize: 14,
-    color: '#888',
+    fontSize: typography.fontSizes.base,
+    color: colors.textLight,
     textAlign: 'center',
-    lineHeight: 20,
+    lineHeight: spacing.xl,
   },
   loadingContainer: {
     flex: 1,
@@ -605,20 +610,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   loadingText: {
-    marginTop: 16,
-    fontSize: 16,
-    color: '#666',
+    marginTop: spacing.lg,
+    fontSize: typography.fontSizes.lg,
+    color: colors.textSecondary,
   },
   loadingMessage: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 16,
+    paddingVertical: spacing.lg,
   },
   loadingMessageText: {
-    marginLeft: 8,
-    fontSize: 14,
-    color: '#666',
+    marginLeft: spacing.base,
+    fontSize: typography.fontSizes.base,
+    color: colors.textSecondary,
     fontStyle: 'italic',
   },
 });

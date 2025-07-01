@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   View, 
   Text, 
@@ -6,9 +6,11 @@ import {
   TouchableOpacity, 
   StyleSheet,
   Modal,
-  Alert
+  Alert,
+  TextInput
 } from 'react-native';
-import { ChatDetail } from '../services/ChatService';
+import { ChatDetail, updateChatName } from '../services/ChatService';
+import { colors, spacing, borderRadius, shadows, typography } from '../utils/theme';
 
 interface ConversationsListProps {
   visible: boolean;
@@ -17,6 +19,7 @@ interface ConversationsListProps {
   onSelectConversation: (conversation: ChatDetail) => void;
   onDeleteConversation: (conversationId: number) => void;
   onNewConversation: () => void;
+  onRefreshConversations: () => void;
   currentConversationId?: number;
 }
 
@@ -27,8 +30,11 @@ const ConversationsList: React.FC<ConversationsListProps> = ({
   onSelectConversation,
   onDeleteConversation,
   onNewConversation,
+  onRefreshConversations,
   currentConversationId,
 }) => {
+  const [editingChatId, setEditingChatId] = useState<number | null>(null);
+  const [editingChatName, setEditingChatName] = useState('');
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     const now = new Date();
@@ -61,28 +67,99 @@ const ConversationsList: React.FC<ConversationsListProps> = ({
     );
   };
 
+  const handleLongPress = (conversation: ChatDetail) => {
+    Alert.alert(
+      'Conversation Options',
+      'What would you like to do?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Rename',
+          onPress: () => startRenaming(conversation),
+        },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: () => handleDeleteConversation(conversation),
+        },
+      ]
+    );
+  };
+
+  const startRenaming = (conversation: ChatDetail) => {
+    setEditingChatId(conversation.id);
+    setEditingChatName(conversation.chat_name || `${conversation.language} - ${conversation.difficulty}`);
+  };
+
+  const saveRename = async () => {
+    if (!editingChatId || !editingChatName.trim()) return;
+
+    try {
+      await updateChatName(editingChatId, editingChatName.trim());
+      setEditingChatId(null);
+      setEditingChatName('');
+      onRefreshConversations();
+    } catch (error) {
+      console.error('Failed to rename chat:', error);
+      Alert.alert('Error', 'Failed to rename conversation');
+    }
+  };
+
+  const cancelRename = () => {
+    setEditingChatId(null);
+    setEditingChatName('');
+  };
+
   const renderConversationItem = ({ item }: { item: ChatDetail }) => {
     const isSelected = currentConversationId === item.id;
     const displayDate = item.last_updated || item.created_at;
+    const isEditing = editingChatId === item.id;
 
     return (
       <TouchableOpacity
         style={[styles.conversationItem, isSelected && styles.selectedItem]}
         onPress={() => {
-          onSelectConversation(item);
-          onClose();
+          if (!isEditing) {
+            onSelectConversation(item);
+            onClose();
+          }
         }}
-        onLongPress={() => handleDeleteConversation(item)}
+        onLongPress={() => !isEditing && handleLongPress(item)}
       >
         <View style={styles.conversationHeader}>
-          <Text style={styles.conversationTitle}>
-            {item.language} - {item.difficulty}
-          </Text>
-          <Text style={styles.conversationDate}>
-            {formatDate(displayDate)}
-          </Text>
+          {isEditing ? (
+            <View style={styles.editingContainer}>
+              <TextInput
+                style={styles.editInput}
+                value={editingChatName}
+                onChangeText={setEditingChatName}
+                autoFocus
+                onSubmitEditing={saveRename}
+                onBlur={saveRename}
+              />
+              <TouchableOpacity onPress={cancelRename} style={styles.cancelButton}>
+                <Text style={styles.cancelButtonText}>✕</Text>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <>
+              <Text style={styles.conversationTitle}>
+                {item.chat_name || `${item.language} - ${item.difficulty}`}
+              </Text>
+              <Text style={styles.conversationDate}>
+                {formatDate(displayDate)}
+              </Text>
+            </>
+          )}
         </View>
-        <Text style={styles.conversationModel}>{item.model}</Text>
+        {!isEditing && (
+          <View style={styles.conversationDetails}>
+            <Text style={styles.conversationLanguage}>
+              {item.language} - {item.difficulty}
+            </Text>
+            <Text style={styles.conversationModel}>{item.model}</Text>
+          </View>
+        )}
       </TouchableOpacity>
     );
   };
@@ -114,14 +191,19 @@ const ConversationsList: React.FC<ConversationsListProps> = ({
         </View>
 
         {conversations.length > 0 ? (
-          <FlatList
-            data={conversations}
-            renderItem={renderConversationItem}
-            keyExtractor={(item) => item.id.toString()}
-            style={styles.list}
-            contentContainerStyle={styles.listContent}
-            showsVerticalScrollIndicator={false}
-          />
+          <>
+            <Text style={styles.instructionText}>
+              Press and hold to edit or delete chats
+            </Text>
+            <FlatList
+              data={conversations}
+              renderItem={renderConversationItem}
+              keyExtractor={(item) => item.id.toString()}
+              style={styles.list}
+              contentContainerStyle={styles.listContent}
+              showsVerticalScrollIndicator={false}
+            />
+          </>
         ) : (
           <View style={styles.emptyState}>
             <Text style={styles.emptyStateText}>No conversations yet</Text>
@@ -138,46 +220,54 @@ const ConversationsList: React.FC<ConversationsListProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.background,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    backgroundColor: '#fff',
+    paddingHorizontal: spacing.xl,
+    paddingVertical: spacing.lg,
+    backgroundColor: colors.surface,
     borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
+    borderBottomColor: colors.border,
   },
   title: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#333',
+    fontSize: typography.fontSizes['2xl'],
+    fontWeight: typography.fontWeights.semibold,
+    color: colors.text,
+  },
+  instructionText: {
+    fontSize: typography.fontSizes.sm,
+    color: colors.textSecondary,
+    textAlign: 'center',
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.base,
+    fontStyle: 'italic',
   },
   headerButtons: {
     flexDirection: 'row',
-    gap: 12,
+    gap: spacing.md,
   },
   newButton: {
-    backgroundColor: '#1976D2',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 8,
+    backgroundColor: colors.primary,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.base,
+    borderRadius: borderRadius.base,
   },
   newButtonText: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: '600',
+    color: colors.background,
+    fontSize: typography.fontSizes.base,
+    fontWeight: typography.fontWeights.semibold,
   },
   closeButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.base,
   },
   closeButtonText: {
-    color: '#1976D2',
-    fontSize: 16,
-    fontWeight: '600',
+    color: colors.primary,
+    fontSize: typography.fontSizes.lg,
+    fontWeight: typography.fontWeights.semibold,
   },
   list: {
     flex: 1,
@@ -186,62 +276,85 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   conversationItem: {
-    backgroundColor: '#fff',
-    marginHorizontal: 16,
-    marginVertical: 4,
-    padding: 16,
-    borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
+    backgroundColor: colors.surface,
+    marginHorizontal: spacing.lg,
+    marginVertical: spacing.xs,
+    padding: spacing.lg,
+    borderRadius: borderRadius.lg,
+    ...shadows.base,
   },
   selectedItem: {
-    backgroundColor: '#e3f2fd',
-    borderColor: '#1976D2',
+    backgroundColor: colors.secondary,
+    borderColor: colors.primary,
     borderWidth: 1,
   },
   conversationHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 4,
+    marginBottom: spacing.xs,
   },
   conversationTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
+    fontSize: typography.fontSizes.lg,
+    fontWeight: typography.fontWeights.semibold,
+    color: colors.text,
     flex: 1,
   },
   conversationDate: {
-    fontSize: 12,
-    color: '#666',
+    fontSize: typography.fontSizes.sm,
+    color: colors.textSecondary,
+  },
+  conversationDetails: {
+    marginTop: spacing.xs,
+  },
+  conversationLanguage: {
+    fontSize: typography.fontSizes.sm,
+    color: colors.textSecondary,
+    marginBottom: spacing.xs,
   },
   conversationModel: {
-    fontSize: 14,
-    color: '#888',
+    fontSize: typography.fontSizes.sm,
+    color: colors.textLight,
+  },
+  editingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  editInput: {
+    flex: 1,
+    fontSize: typography.fontSizes.lg,
+    fontWeight: typography.fontWeights.semibold,
+    color: colors.text,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.primary,
+    paddingVertical: spacing.xs,
+    marginRight: spacing.base,
+  },
+  cancelButton: {
+    padding: spacing.xs,
+  },
+  cancelButtonText: {
+    fontSize: typography.fontSizes.lg,
+    color: colors.textSecondary,
   },
   emptyState: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 32,
+    paddingHorizontal: spacing['4xl'],
   },
   emptyStateText: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#666',
-    marginBottom: 8,
+    fontSize: typography.fontSizes.xl,
+    fontWeight: typography.fontWeights.semibold,
+    color: colors.textSecondary,
+    marginBottom: spacing.base,
   },
   emptyStateSubtext: {
-    fontSize: 14,
-    color: '#888',
+    fontSize: typography.fontSizes.base,
+    color: colors.textLight,
     textAlign: 'center',
-    lineHeight: 20,
+    lineHeight: spacing.xl,
   },
 });
 

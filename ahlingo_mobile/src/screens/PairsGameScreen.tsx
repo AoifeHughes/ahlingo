@@ -22,6 +22,7 @@ import {
   getUserId,
   recordExerciseAttempt,
 } from '../services/SimpleDatabaseService';
+import { colors, spacing, borderRadius, shadows, typography } from '../utils/theme';
 
 type PairsGameScreenRouteProp = RouteProp<RootStackParamList, 'PairsGame'>;
 type PairsGameScreenNavigationProp = NativeStackNavigationProp<
@@ -340,49 +341,49 @@ const PairsGameScreen: React.FC<Props> = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.background,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.background,
   },
   loadingText: {
-    marginTop: 16,
-    fontSize: 16,
-    color: '#666',
+    marginTop: spacing.lg,
+    fontSize: typography.fontSizes.lg,
+    color: colors.textSecondary,
   },
   header: {
-    backgroundColor: '#fff',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
+    backgroundColor: colors.surface,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.lg,
     borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
+    borderBottomColor: colors.border,
     alignItems: 'center',
   },
   refreshButton: {
-    backgroundColor: '#1976D2',
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 20,
+    backgroundColor: colors.primary,
+    paddingVertical: spacing.base,
+    paddingHorizontal: spacing.lg,
+    borderRadius: spacing.xl,
   },
   refreshButtonText: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: '600',
+    color: colors.background,
+    fontSize: typography.fontSizes.base,
+    fontWeight: typography.fontWeights.semibold,
   },
   scoreContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    backgroundColor: '#fff',
-    paddingVertical: 12,
+    backgroundColor: colors.surface,
+    paddingVertical: spacing.md,
     marginBottom: 1,
   },
   scoreText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
+    fontSize: typography.fontSizes.lg,
+    fontWeight: typography.fontWeights.semibold,
+    color: colors.text,
   },
   gameContainer: {
     flex: 1,
@@ -390,13 +391,13 @@ const styles = StyleSheet.create({
   },
   column: {
     flex: 1,
-    paddingHorizontal: 8,
+    paddingHorizontal: spacing.base,
   },
   scrollView: {
     flex: 1,
   },
   scrollContent: {
-    paddingVertical: 16,
+    paddingVertical: spacing.lg,
   },
 });
 

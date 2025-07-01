@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types';
+import { useTheme } from '../contexts/ThemeContext';
 
 type MainMenuScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -23,48 +24,49 @@ const { width } = Dimensions.get('window');
 const cardSize = (width - 60) / 2; // 2 cards per row with padding
 
 const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
+  const { theme } = useTheme();
   const exerciseItems = [
     {
       title: 'Match Words',
       screen: 'TopicSelection' as keyof RootStackParamList,
       icon: '🎯',
       exerciseType: 'pairs',
-      color: '#FF6B6B',
+      color: theme.colors.primary,
     },
     {
       title: 'Conversations',
       screen: 'TopicSelection' as keyof RootStackParamList,
       icon: '💬',
       exerciseType: 'conversation',
-      color: '#4ECDC4',
+      color: theme.colors.secondary,
     },
     {
       title: 'Translate',
       screen: 'TopicSelection' as keyof RootStackParamList,
       icon: '📝',
       exerciseType: 'translation',
-      color: '#45B7D1',
+      color: theme.colors.primaryLight,
     },
     {
       title: 'Chat Practice',
       screen: 'Chatbot' as keyof RootStackParamList,
       icon: '🤖',
       exerciseType: null,
-      color: '#96CEB4',
+      color: theme.colors.primaryDark,
     },
     {
       title: 'Your Stats',
       screen: 'Stats' as keyof RootStackParamList,
       icon: '📊',
       exerciseType: null,
-      color: '#9C27B0',
+      color: theme.colors.info,
     },
     {
       title: 'Retry Mistakes',
       screen: 'RetryMistakes' as keyof RootStackParamList,
       icon: '🔄',
       exerciseType: null,
-      color: '#FF9800',
+      color: theme.colors.warning,
     },
   ];
 
@@ -81,9 +83,11 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
     }
   };
 
+  const styles = createStyles(theme);
+
   return (
     <>
-      <StatusBar backgroundColor="#1976D2" barStyle="light-content" />
+      <StatusBar backgroundColor={theme.colors.primary} barStyle="light-content" />
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.title}>AHLingo</Text>
@@ -124,51 +128,47 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: currentTheme.colors.background,
   },
   header: {
-    backgroundColor: '#1976D2',
+    backgroundColor: currentTheme.colors.primary,
     paddingTop: 60,
-    paddingBottom: 30,
-    paddingHorizontal: 20,
+    paddingBottom: currentTheme.spacing['3xl'],
+    paddingHorizontal: currentTheme.spacing.xl,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    elevation: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    ...currentTheme.shadows.lg,
   },
   title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
+    fontSize: currentTheme.typography.fontSizes['4xl'],
+    fontWeight: currentTheme.typography.fontWeights.bold,
+    color: currentTheme.colors.background,
     textAlign: 'center',
     flex: 1,
   },
   settingsButton: {
     position: 'absolute',
-    right: 20,
+    right: currentTheme.spacing.xl,
     top: 60,
-    width: 40,
-    height: 40,
+    width: currentTheme.spacing['5xl'],
+    height: currentTheme.spacing['5xl'],
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 20,
+    borderRadius: currentTheme.spacing.xl,
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
   },
   settingsIcon: {
-    fontSize: 20,
-    color: '#FFFFFF',
+    fontSize: currentTheme.typography.fontSizes['2xl'],
+    color: currentTheme.colors.background,
   },
   cardsContainer: {
     flex: 1,
-    paddingHorizontal: 20,
-    paddingVertical: 20,
+    paddingHorizontal: currentTheme.spacing.xl,
+    paddingVertical: currentTheme.spacing.xl,
   },
   exercisesGrid: {
     flexDirection: 'row',
@@ -178,13 +178,9 @@ const styles = StyleSheet.create({
   exerciseCard: {
     width: cardSize,
     height: cardSize,
-    borderRadius: 20,
-    marginBottom: 12,
-    elevation: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
+    borderRadius: currentTheme.spacing.xl,
+    marginBottom: currentTheme.spacing.md,
+    ...currentTheme.shadows.lg,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -193,26 +189,26 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   cardIcon: {
-    fontSize: 48,
-    marginBottom: 12,
+    fontSize: currentTheme.spacing['5xl'],
+    marginBottom: currentTheme.spacing.md,
   },
   cardTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#FFFFFF',
+    fontSize: currentTheme.typography.fontSizes.lg,
+    fontWeight: currentTheme.typography.fontWeights.semibold,
+    color: currentTheme.colors.background,
     textAlign: 'center',
     textShadowColor: 'rgba(0, 0, 0, 0.3)',
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 2,
   },
   footer: {
-    paddingVertical: 20,
-    paddingHorizontal: 20,
+    paddingVertical: currentTheme.spacing.xl,
+    paddingHorizontal: currentTheme.spacing.xl,
     alignItems: 'center',
   },
   footerText: {
-    fontSize: 16,
-    color: '#666',
+    fontSize: currentTheme.typography.fontSizes.lg,
+    color: currentTheme.colors.textSecondary,
     fontStyle: 'italic',
     textAlign: 'center',
   },

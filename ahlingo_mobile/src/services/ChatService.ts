@@ -2,6 +2,7 @@ import SQLite, {
   Database as SQLiteDatabase,
 } from 'react-native-sqlite-storage';
 import { SQL_QUERIES, TIMEOUTS } from '../utils/constants';
+import { migrateChatNameColumn } from './SimpleDatabaseService';
 
 SQLite.DEBUG(true);
 SQLite.enablePromise(true);
@@ -57,12 +58,29 @@ const safeCloseDatabase = async (db: SQLiteDatabase | null): Promise<void> => {
   }
 };
 
+// Helper function to open database and ensure migrations are run
+const openDatabaseWithMigrations = async (): Promise<SQLiteDatabase> => {
+  const db = await withTimeout(
+    SQLite.openDatabase({
+      name: 'languageLearningDatabase.db',
+      location: 'Documents',
+    }),
+    TIMEOUTS.CONNECTION
+  );
+  
+  // Run migrations
+  await migrateChatNameColumn(db);
+  
+  return db;
+};
+
 export interface ChatDetail {
   id: number;
   user_id: number;
   language: string;
   difficulty: string;
   model: string;
+  chat_name?: string;
   created_at: string;
   last_updated?: string;
 }
@@ -79,21 +97,16 @@ export const createChat = async (
   userId: number,
   language: string,
   difficulty: string,
-  model: string = 'gpt-3.5-turbo'
+  model: string = 'gpt-3.5-turbo',
+  chatName: string = 'Unnamed chat'
 ): Promise<number | null> => {
   let db: SQLiteDatabase | null = null;
 
   try {
-    db = await withTimeout(
-      SQLite.openDatabase({
-        name: 'languageLearningDatabase.db',
-        location: 'Documents',
-      }),
-      TIMEOUTS.CONNECTION
-    );
+    db = await openDatabaseWithMigrations();
 
     const result = await withTimeout(
-      db.executeSql(SQL_QUERIES.CREATE_CHAT, [userId, language, difficulty, model]),
+      db.executeSql(SQL_QUERIES.CREATE_CHAT, [userId, language, difficulty, model, chatName]),
       TIMEOUTS.QUERY_MEDIUM
     );
 
@@ -114,13 +127,7 @@ export const getUserChats = async (userId: number): Promise<ChatDetail[]> => {
   let db: SQLiteDatabase | null = null;
 
   try {
-    db = await withTimeout(
-      SQLite.openDatabase({
-        name: 'languageLearningDatabase.db',
-        location: 'Documents',
-      }),
-      TIMEOUTS.CONNECTION
-    );
+    db = await openDatabaseWithMigrations();
 
     const results = await withTimeout(
       db.executeSql(SQL_QUERIES.GET_USER_CHATS, [userId]),
@@ -147,13 +154,7 @@ export const getChatById = async (chatId: number): Promise<ChatDetail | null> =>
   let db: SQLiteDatabase | null = null;
 
   try {
-    db = await withTimeout(
-      SQLite.openDatabase({
-        name: 'languageLearningDatabase.db',
-        location: 'Documents',
-      }),
-      TIMEOUTS.CONNECTION
-    );
+    db = await openDatabaseWithMigrations();
 
     const results = await withTimeout(
       db.executeSql(SQL_QUERIES.GET_CHAT_BY_ID, [chatId]),
@@ -177,13 +178,7 @@ export const updateChatTimestamp = async (chatId: number): Promise<void> => {
   let db: SQLiteDatabase | null = null;
 
   try {
-    db = await withTimeout(
-      SQLite.openDatabase({
-        name: 'languageLearningDatabase.db',
-        location: 'Documents',
-      }),
-      TIMEOUTS.CONNECTION
-    );
+    db = await openDatabaseWithMigrations();
 
     await withTimeout(
       db.executeSql(SQL_QUERIES.UPDATE_CHAT_TIMESTAMP, [chatId]),
@@ -201,13 +196,7 @@ export const updateChatModel = async (chatId: number, model: string): Promise<vo
   let db: SQLiteDatabase | null = null;
 
   try {
-    db = await withTimeout(
-      SQLite.openDatabase({
-        name: 'languageLearningDatabase.db',
-        location: 'Documents',
-      }),
-      TIMEOUTS.CONNECTION
-    );
+    db = await openDatabaseWithMigrations();
 
     await withTimeout(
       db.executeSql(SQL_QUERIES.UPDATE_CHAT_MODEL, [model, chatId]),
@@ -221,17 +210,29 @@ export const updateChatModel = async (chatId: number, model: string): Promise<vo
   }
 };
 
+export const updateChatName = async (chatId: number, chatName: string): Promise<void> => {
+  let db: SQLiteDatabase | null = null;
+
+  try {
+    db = await openDatabaseWithMigrations();
+
+    await withTimeout(
+      db.executeSql(SQL_QUERIES.UPDATE_CHAT_NAME, [chatName, chatId]),
+      TIMEOUTS.QUERY_SHORT
+    );
+  } catch (error) {
+    console.error('Failed to update chat name:', error);
+    throw error;
+  } finally {
+    await safeCloseDatabase(db);
+  }
+};
+
 export const deleteChat = async (chatId: number, userId: number): Promise<void> => {
   let db: SQLiteDatabase | null = null;
 
   try {
-    db = await withTimeout(
-      SQLite.openDatabase({
-        name: 'languageLearningDatabase.db',
-        location: 'Documents',
-      }),
-      TIMEOUTS.CONNECTION
-    );
+    db = await openDatabaseWithMigrations();
 
     await withTimeout(
       db.executeSql(SQL_QUERIES.DELETE_CHAT_MESSAGES, [chatId]),
@@ -258,13 +259,7 @@ export const addChatMessage = async (
   let db: SQLiteDatabase | null = null;
 
   try {
-    db = await withTimeout(
-      SQLite.openDatabase({
-        name: 'languageLearningDatabase.db',
-        location: 'Documents',
-      }),
-      TIMEOUTS.CONNECTION
-    );
+    db = await openDatabaseWithMigrations();
 
     await withTimeout(
       db.executeSql(SQL_QUERIES.ADD_CHAT_MESSAGE, [chatId, role, content]),
@@ -287,13 +282,7 @@ export const getChatMessages = async (chatId: number): Promise<ChatMessage[]> =>
   let db: SQLiteDatabase | null = null;
 
   try {
-    db = await withTimeout(
-      SQLite.openDatabase({
-        name: 'languageLearningDatabase.db',
-        location: 'Documents',
-      }),
-      TIMEOUTS.CONNECTION
-    );
+    db = await openDatabaseWithMigrations();
 
     const results = await withTimeout(
       db.executeSql(SQL_QUERIES.GET_CHAT_MESSAGES, [chatId]),
@@ -320,13 +309,7 @@ export const getRecentChatForUser = async (userId: number): Promise<ChatDetail |
   let db: SQLiteDatabase | null = null;
 
   try {
-    db = await withTimeout(
-      SQLite.openDatabase({
-        name: 'languageLearningDatabase.db',
-        location: 'Documents',
-      }),
-      TIMEOUTS.CONNECTION
-    );
+    db = await openDatabaseWithMigrations();
 
     const results = await withTimeout(
       db.executeSql(SQL_QUERIES.GET_RECENT_CHAT_FOR_USER, [userId]),

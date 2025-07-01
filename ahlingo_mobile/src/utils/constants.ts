@@ -151,23 +151,26 @@ export const SQL_QUERIES = {
 
   // Chat queries
   CREATE_CHAT:
-    'INSERT INTO chat_details (user_id, language, difficulty, model, created_at, last_updated) VALUES (?, ?, ?, ?, datetime("now"), datetime("now"))',
+    'INSERT INTO chat_details (user_id, language, difficulty, model, chat_name, created_at, last_updated) VALUES (?, ?, ?, ?, ?, datetime("now"), datetime("now"))',
   
   GET_USER_CHATS: `
-    SELECT id, user_id, language, difficulty, model, created_at, last_updated
+    SELECT id, user_id, language, difficulty, model, chat_name, created_at, last_updated
     FROM chat_details
     WHERE user_id = ?
     ORDER BY last_updated DESC
   `,
 
   GET_CHAT_BY_ID:
-    'SELECT id, user_id, language, difficulty, model, created_at, last_updated FROM chat_details WHERE id = ?',
+    'SELECT id, user_id, language, difficulty, model, chat_name, created_at, last_updated FROM chat_details WHERE id = ?',
 
   UPDATE_CHAT_TIMESTAMP:
     'UPDATE chat_details SET last_updated = datetime("now") WHERE id = ?',
 
   UPDATE_CHAT_MODEL:
     'UPDATE chat_details SET model = ?, last_updated = datetime("now") WHERE id = ?',
+
+  UPDATE_CHAT_NAME:
+    'UPDATE chat_details SET chat_name = ?, last_updated = datetime("now") WHERE id = ?',
 
   DELETE_CHAT:
     'DELETE FROM chat_details WHERE id = ? AND user_id = ?',
@@ -186,7 +189,7 @@ export const SQL_QUERIES = {
     'DELETE FROM chat_histories WHERE chat_id = ?',
 
   GET_RECENT_CHAT_FOR_USER: `
-    SELECT id, user_id, language, difficulty, model, created_at, last_updated
+    SELECT id, user_id, language, difficulty, model, chat_name, created_at, last_updated
     FROM chat_details
     WHERE user_id = ?
     ORDER BY last_updated DESC

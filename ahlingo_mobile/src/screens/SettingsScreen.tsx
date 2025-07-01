@@ -29,6 +29,8 @@ import {
 } from '../services/SimpleDatabaseService';
 import SettingsItem from '../components/SettingsItem';
 import Dropdown, { DropdownItem } from '../components/Dropdown';
+import { getAvailableThemes, ThemeVariant } from '../utils/theme';
+import { useTheme } from '../contexts/ThemeContext';
 
 type SettingsScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -45,6 +47,7 @@ interface FormData {
   apiKey: string;
   serverUrl: string;
   username: string;
+  theme: string;
 }
 
 const SettingsScreen: React.FC<Props> = ({ navigation }) => {
@@ -52,6 +55,7 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
   const { settings, isLoading } = useSelector(
     (state: RootState) => state.settings
   );
+  const { theme, themeVariant, setTheme } = useTheme();
 
   const [formData, setFormData] = useState<FormData>({
     language: 'French',
@@ -59,10 +63,17 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
     apiKey: '',
     serverUrl: '',
     username: 'default_user',
+    theme: themeVariant,
   });
 
   const [languages, setLanguages] = useState<DropdownItem[]>([]);
   const [difficulties, setDifficulties] = useState<DropdownItem[]>([]);
+  const [themes] = useState<DropdownItem[]>(
+    getAvailableThemes().map(theme => ({
+      label: `${theme.name} - ${theme.description}`,
+      value: theme.key,
+    }))
+  );
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
@@ -132,6 +143,7 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
         apiKey: userSettings.api_key || '',
         serverUrl: userSettings.server_url || '',
         username: username,
+        theme: themeVariant,
       });
 
       // Update Redux store
@@ -158,6 +170,9 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
       await setUserSetting(username, 'api_key', formData.apiKey);
       await setUserSetting(username, 'server_url', formData.serverUrl);
 
+      // Apply theme change immediately (this will also save to database)
+      await setTheme(formData.theme as ThemeVariant);
+
       // Update user login timestamp
       await updateUserLogin(username);
 
@@ -183,13 +198,16 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
   };
 
   if (isLoading) {
+    const loadingStyles = createStyles(theme);
     return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#1976D2" />
-        <Text style={styles.loadingText}>Loading settings...</Text>
+      <View style={loadingStyles.loadingContainer}>
+        <ActivityIndicator size="large" color={theme.colors.primary} />
+        <Text style={loadingStyles.loadingText}>Loading settings...</Text>
       </View>
     );
   }
+
+  const styles = createStyles(theme);
 
   return (
     <View style={styles.container}>
@@ -213,6 +231,15 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
               selectedValue={formData.difficulty}
               onValueChange={value => updateFormData('difficulty', value)}
               placeholder="Select Difficulty"
+            />
+          </SettingsItem>
+
+          <SettingsItem title="Theme">
+            <Dropdown
+              items={themes}
+              selectedValue={formData.theme}
+              onValueChange={value => updateFormData('theme', value)}
+              placeholder="Select Theme"
             />
           </SettingsItem>
 
@@ -266,61 +293,57 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: currentTheme.colors.background,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
+    backgroundColor: currentTheme.colors.background,
   },
   loadingText: {
-    marginTop: 16,
-    fontSize: 16,
-    color: '#666',
+    marginTop: currentTheme.spacing.lg,
+    fontSize: currentTheme.typography.fontSizes.lg,
+    color: currentTheme.colors.textSecondary,
   },
   scrollView: {
     flex: 1,
   },
   content: {
-    padding: 16,
+    padding: currentTheme.spacing.lg,
   },
   textInput: {
-    backgroundColor: '#f5f5f5',
+    backgroundColor: currentTheme.colors.surface,
     borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    fontSize: 16,
-    color: '#333',
-    minHeight: 48,
+    borderColor: currentTheme.colors.border,
+    borderRadius: currentTheme.borderRadius.base,
+    paddingHorizontal: currentTheme.spacing.lg,
+    paddingVertical: currentTheme.spacing.md,
+    fontSize: currentTheme.typography.fontSizes.lg,
+    color: currentTheme.colors.text,
+    minHeight: currentTheme.spacing['5xl'],
   },
   buttonContainer: {
-    marginTop: 24,
-    marginBottom: 32,
+    marginTop: currentTheme.spacing['3xl'],
+    marginBottom: currentTheme.spacing['4xl'],
   },
   saveButton: {
-    backgroundColor: '#4CAF50',
-    borderRadius: 8,
-    paddingVertical: 16,
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    backgroundColor: currentTheme.colors.success,
+    borderRadius: currentTheme.borderRadius.base,
+    paddingVertical: currentTheme.spacing.lg,
+    ...currentTheme.shadows.base,
   },
   saveButtonText: {
-    fontSize: 18,
-    fontWeight: 'bold',
+    fontSize: currentTheme.typography.fontSizes.xl,
+    fontWeight: currentTheme.typography.fontWeights.bold,
   },
   helpText: {
-    fontSize: 12,
-    color: '#666',
-    marginTop: 4,
+    fontSize: currentTheme.typography.fontSizes.sm,
+    color: currentTheme.colors.textSecondary,
+    marginTop: currentTheme.spacing.xs,
     fontStyle: 'italic',
   },
 });

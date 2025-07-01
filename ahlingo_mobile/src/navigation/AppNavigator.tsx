@@ -2,6 +2,7 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types';
+import { colors, typography } from '../utils/theme';
 
 // Import screens (placeholder imports for now)
 import MainMenuScreen from '../screens/MainMenuScreen';
@@ -23,12 +24,14 @@ const AppNavigator: React.FC = () => {
         initialRouteName="MainMenu"
         screenOptions={{
           headerStyle: {
-            backgroundColor: '#1976D2', // Material Design Blue 700
+            backgroundColor: colors.primary,
           },
-          headerTintColor: '#fff',
+          headerTintColor: colors.background,
           headerTitleStyle: {
-            fontWeight: 'bold',
+            fontWeight: typography.fontWeights.semibold,
+            fontSize: typography.fontSizes.lg,
           },
+          headerBackTitle: 'Main Menu',
         }}
       >
         <Stack.Screen
