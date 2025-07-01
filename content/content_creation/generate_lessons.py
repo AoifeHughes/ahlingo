@@ -64,10 +64,31 @@ def process_response(
     lesson_kind: str,
     lesson_id: str,
 ) -> None:
-    """Process and insert response data into the database."""
+    """Process and insert response data into the database with validation."""
     try:
         # Parse the JSON response
         cleaned_response = safe_json_loads(response)
+        
+        # Import and apply validation from outlines_generator
+        from .outlines_generator import validate_conversations, validate_pairs, validate_translations, ValidationError
+        
+        # Validate the response data before processing
+        try:
+            if lesson_kind == "conversations":
+                validated_response = validate_conversations(cleaned_response, language)
+            elif lesson_kind == "pairs":
+                validated_response = validate_pairs(cleaned_response, language)
+            elif lesson_kind == "translations":
+                validated_response = validate_translations(cleaned_response, language)
+            else:
+                raise ValueError(f"Unknown lesson kind: {lesson_kind}")
+        except ValidationError as ve:
+            print(f"Validation failed for {lesson_kind} {language}-{topic}-{level} (ID: {lesson_id}): {ve}")
+            print("Skipping database insertion for this lesson.")
+            return  # Don't insert invalid data
+        
+        # Use validated response instead of cleaned_response
+        cleaned_response = validated_response
 
         lesson_name = f"{topic} {lesson_kind.title()} Lesson - ID: {lesson_id}"
 
@@ -79,12 +100,28 @@ def process_response(
                     # Clean conversation messages
                     cleaned_conversations = []
                     for conv in exercise["conversation"]:
-                        cleaned_conversations.append(
-                            {
-                                "speaker": clean_text(conv["speaker"]),
-                                "message": clean_text(conv["message"]),
-                            }
-                        )
+                        speaker = clean_text(conv["speaker"])
+                        message = clean_text(conv["message"])
+                        
+                        # Additional validation for database insertion
+                        if not speaker or not message:
+                            print(f"Skipping conversation turn with empty speaker or message in exercise {idx + 1}")
+                            continue
+                            
+                        cleaned_conversations.append({
+                            "speaker": speaker,
+                            "message": message,
+                        })
+                    
+                    # Only insert if we have valid conversations
+                    if not cleaned_conversations:
+                        print(f"No valid conversation turns found for exercise {idx + 1}, skipping")
+                        continue
+                        
+                    summary = clean_text(exercise["conversation_summary"])
+                    if not summary:
+                        print(f"Empty summary for conversation exercise {idx + 1}, skipping")
+                        continue
 
                     db.add_conversation_exercise(
                         exercise_name=exercise_name,
@@ -92,20 +129,37 @@ def process_response(
                         topic=topic,
                         difficulty_level=level,
                         conversations=cleaned_conversations,
-                        summary=clean_text(exercise["conversation_summary"]),
+                        summary=summary,
                         lesson_id=lesson_id,
                     )
                 elif lesson_kind == "pairs":
                     # For pairs, we want to process the entire batch at once rather than individual pairs
                     # This should only execute once per response since we're handling all pairs together
                     if idx == 0:  # Only process on the first iteration
-                        # Clean all pairs in the response
+                        # Clean all pairs in the response with additional validation
                         cleaned_pairs = []
                         for pair_exercise in cleaned_response:
+                            english_word = clean_text(pair_exercise["English"])
+                            target_word = clean_text(pair_exercise[language])
+                            
+                            # Additional validation for database insertion
+                            if not english_word or not target_word:
+                                print(f"Skipping pair with empty English or {language} word")
+                                continue
+                                
                             cleaned_pairs.append({
-                                "English": clean_text(pair_exercise["English"]),
-                                language: clean_text(pair_exercise[language])
+                                "English": english_word,
+                                language: target_word
                             })
+                        
+                        # Only insert if we have valid pairs
+                        if not cleaned_pairs:
+                            print(f"No valid word pairs found, skipping batch insertion")
+                            break
+                            
+                        if len(cleaned_pairs) < 5:  # Minimum threshold for useful word pair exercise
+                            print(f"Too few valid pairs ({len(cleaned_pairs)}), skipping batch insertion")
+                            break
                         
                         # Add all pairs as a single exercise
                         db.add_pair_exercise_batch(
@@ -121,6 +175,19 @@ def process_response(
                         # Skip the rest of the loop for pairs
                         break
                 elif lesson_kind == "translations":
+                    english_sentence = clean_text(exercise["English"])
+                    target_sentence = clean_text(exercise[language])
+                    
+                    # Additional validation for database insertion
+                    if not english_sentence or not target_sentence:
+                        print(f"Skipping translation exercise {idx + 1} with empty English or {language} sentence")
+                        continue
+                    
+                    # Check for reasonable sentence length (not just single words)
+                    if len(english_sentence.split()) < 2 or len(target_sentence.split()) < 1:
+                        print(f"Skipping translation exercise {idx + 1} with sentences that are too short")
+                        continue
+                    
                     db.add_translation_exercise(
                         exercise_name=exercise_name,
                         language=language,
@@ -128,8 +195,8 @@ def process_response(
                         difficulty_level=level,
                         language_1="English",
                         language_2=language,
-                        language_1_content=clean_text(exercise["English"]),
-                        language_2_content=clean_text(exercise[language]),
+                        language_1_content=english_sentence,
+                        language_2_content=target_sentence,
                         lesson_id=lesson_id,
                     )
             except Exception as e:
