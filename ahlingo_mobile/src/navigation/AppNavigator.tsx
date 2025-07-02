@@ -14,6 +14,11 @@ import ChatbotScreen from '../screens/ChatbotScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import StatsScreen from '../screens/StatsScreen';
 import RetryMistakesScreen from '../screens/RetryMistakesScreen';
+import StudyTopicScreen from '../screens/StudyTopicScreen';
+import FillInTheBlankScreen from '../screens/FillInTheBlankScreen';
+import ExerciseShuffleStartScreen from '../screens/ExerciseShuffleStartScreen';
+import ExerciseShuffleTransitionScreen from '../screens/ExerciseShuffleTransitionScreen';
+import ExerciseShuffleSummaryScreen from '../screens/ExerciseShuffleSummaryScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -49,17 +54,26 @@ const AppNavigator: React.FC = () => {
         <Stack.Screen
           name="PairsGame"
           component={PairsGameScreen}
-          options={{ title: 'Pairs Game' }}
+          options={({ route }) => ({
+            title: 'Pairs Game',
+            headerBackButtonMenuEnabled: !route.params?.shuffleContext,
+          })}
         />
         <Stack.Screen
           name="ConversationExercises"
           component={ConversationExercisesScreen}
-          options={{ title: 'Conversation' }}
+          options={({ route }) => ({
+            title: 'Conversation',
+            headerBackButtonMenuEnabled: !route.params?.shuffleContext,
+          })}
         />
         <Stack.Screen
           name="TranslationExercises"
           component={TranslationExercisesScreen}
-          options={{ title: 'Translation' }}
+          options={({ route }) => ({
+            title: 'Translation',
+            headerBackButtonMenuEnabled: !route.params?.shuffleContext,
+          })}
         />
         <Stack.Screen
           name="Chatbot"
@@ -80,6 +94,34 @@ const AppNavigator: React.FC = () => {
           name="RetryMistakes"
           component={RetryMistakesScreen}
           options={{ title: 'Retry Mistakes' }}
+        />
+        <Stack.Screen
+          name="StudyTopic"
+          component={StudyTopicScreen}
+          options={{ title: 'Study Topic' }}
+        />
+        <Stack.Screen
+          name="FillInTheBlank"
+          component={FillInTheBlankScreen}
+          options={{ title: 'Fill in the Blank' }}
+        />
+        <Stack.Screen
+          name="ExerciseShuffleStart"
+          component={ExerciseShuffleStartScreen}
+          options={{ title: 'Exercise Shuffle' }}
+        />
+        <Stack.Screen
+          name="ExerciseShuffleTransition"
+          component={ExerciseShuffleTransitionScreen}
+          options={{ 
+            title: 'Challenge Progress',
+            headerBackButtonMenuEnabled: false,
+          }}
+        />
+        <Stack.Screen
+          name="ExerciseShuffleSummary"
+          component={ExerciseShuffleSummaryScreen}
+          options={{ title: 'Shuffle Results' }}
         />
       </Stack.Navigator>
     </NavigationContainer>

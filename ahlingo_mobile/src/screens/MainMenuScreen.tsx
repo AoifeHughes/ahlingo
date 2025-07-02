@@ -21,54 +21,79 @@ interface Props {
 }
 
 const { width } = Dimensions.get('window');
-const cardSize = (width - 60) / 2; // 2 cards per row with padding
+const cardSize = (width - 80) / 3; // 3 cards per row with padding
 
 const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
   const { theme } = useTheme();
+  
+  // Define the first 5 theme colors to cycle through
+  const themeColors = [
+    theme.colors.primary,
+    theme.colors.secondary,
+    theme.colors.success,
+    theme.colors.warning,
+    theme.colors.info,
+  ];
+
   const exerciseItems = [
+    {
+      title: 'Exercise Shuffle',
+      screen: 'ExerciseShuffleStart' as keyof RootStackParamList,
+      icon: '🎲',
+      exerciseType: null,
+    },
     {
       title: 'Match Words',
       screen: 'TopicSelection' as keyof RootStackParamList,
       icon: '🎯',
       exerciseType: 'pairs',
-      color: theme.colors.primary,
     },
     {
       title: 'Conversations',
       screen: 'TopicSelection' as keyof RootStackParamList,
       icon: '💬',
       exerciseType: 'conversation',
-      color: theme.colors.secondary,
     },
     {
       title: 'Translate',
       screen: 'TopicSelection' as keyof RootStackParamList,
       icon: '📝',
       exerciseType: 'translation',
-      color: theme.colors.primaryLight,
     },
     {
       title: 'Chat Practice',
       screen: 'Chatbot' as keyof RootStackParamList,
       icon: '🤖',
       exerciseType: null,
-      color: theme.colors.primaryDark,
+    },
+    {
+      title: 'Study Topic',
+      screen: 'StudyTopic' as keyof RootStackParamList,
+      icon: '📚',
+      exerciseType: null,
+    },
+    {
+      title: 'Fill in the Blank',
+      screen: 'FillInTheBlank' as keyof RootStackParamList,
+      icon: '✏️',
+      exerciseType: null,
     },
     {
       title: 'Your Stats',
       screen: 'Stats' as keyof RootStackParamList,
       icon: '📊',
       exerciseType: null,
-      color: theme.colors.info,
     },
     {
       title: 'Retry Mistakes',
       screen: 'RetryMistakes' as keyof RootStackParamList,
       icon: '🔄',
       exerciseType: null,
-      color: theme.colors.warning,
     },
-  ];
+  ].map((item, index) => ({
+    ...item,
+    color: themeColors[index % themeColors.length],
+  }));
 
   const handleExercisePress = (item: (typeof exerciseItems)[0]) => {
     if (item.exerciseType) {
@@ -78,6 +103,9 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
           | 'conversation'
           | 'translation',
       });
+    } else if (item.title === 'Exercise Shuffle') {
+      // Navigate directly to shuffle start screen
+      navigation.navigate('ExerciseShuffleStart', { exercises: [] });
     } else {
       navigation.navigate(item.screen as any);
     }
@@ -100,7 +128,7 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
         </View>
 
         <View style={styles.cardsContainer}>
-          {/* All exercise cards (3x2 grid) */}
+          {/* All exercise cards (3x3 grid) */}
           <View style={styles.exercisesGrid}>
             {exerciseItems.map((item, index) => (
               <TouchableOpacity
@@ -193,7 +221,7 @@ const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) => Sty
     marginBottom: currentTheme.spacing.md,
   },
   cardTitle: {
-    fontSize: currentTheme.typography.fontSizes.lg,
+    fontSize: currentTheme.typography.fontSizes.base,
     fontWeight: currentTheme.typography.fontWeights.semibold,
     color: currentTheme.colors.background,
     textAlign: 'center',

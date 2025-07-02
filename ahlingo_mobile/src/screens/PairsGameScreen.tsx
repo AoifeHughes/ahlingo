@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   StyleSheet,
@@ -7,8 +7,9 @@ import {
   ActivityIndicator,
   Alert,
   TouchableOpacity,
+  BackHandler,
 } from 'react-native';
-import { RouteProp } from '@react-navigation/native';
+import { RouteProp, useFocusEffect, usePreventRemove } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useSelector } from 'react-redux';
 import { RootStackParamList, PairExercise, ExerciseInfo } from '../types';
@@ -50,7 +51,7 @@ interface GameState {
 }
 
 const PairsGameScreen: React.FC<Props> = ({ route, navigation }) => {
-  const { topicId } = route.params;
+  const { topicId, shuffleContext, exerciseInfo } = route.params;
   const { settings } = useSelector((state: RootState) => state.settings);
   const { theme } = useTheme();
 
@@ -74,7 +75,53 @@ const PairsGameScreen: React.FC<Props> = ({ route, navigation }) => {
 
   useEffect(() => {
     loadGameData();
-  }, [topicId]);
+  }, [topicId, exerciseInfo]);
+
+  // Handle back button press when in shuffle mode
+  const handleBackPress = useCallback(() => {
+    if (shuffleContext) {
+      Alert.alert(
+        'Exit Shuffle?',
+        'Your progress will be lost if you exit now.',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          { 
+            text: 'Exit', 
+            style: 'destructive',
+            onPress: () => navigation.navigate('MainMenu')
+          },
+        ]
+      );
+      return true; // Prevent default back action
+    }
+    return false; // Allow default back action for normal mode
+  }, [shuffleContext, navigation]);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (shuffleContext) {
+        const onBackPress = () => handleBackPress();
+        const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress);
+        return () => subscription.remove();
+      }
+    }, [shuffleContext, handleBackPress])
+  );
+
+  // Prevent removal when in shuffle mode and show warning
+  usePreventRemove(!!shuffleContext, ({ data }) => {
+    Alert.alert(
+      'Exit Shuffle?',
+      'Your progress will be lost if you exit now.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        { 
+          text: 'Exit', 
+          style: 'destructive',
+          onPress: () => navigation.navigate('MainMenu')
+        },
+      ]
+    );
+  });
 
   const loadGameData = async () => {
     try {
@@ -90,16 +137,23 @@ const PairsGameScreen: React.FC<Props> = ({ route, navigation }) => {
       setUserLanguage(language);
       setUserDifficulty(difficulty);
 
-      // Get user ID for prioritizing untried exercises
-      const userId = await getUserId(username);
+      let exercise: ExerciseInfo | null = null;
 
-      // Get random exercise for this topic (prioritizing untried exercises)
-      const exercise = await getRandomExerciseForTopic(
-        topicId,
-        language,
-        difficulty,
-        userId
-      );
+      // Check if we're in shuffle mode and have a specific exercise
+      if (shuffleContext && exerciseInfo) {
+        exercise = exerciseInfo;
+      } else if (topicId) {
+        // Get user ID for prioritizing untried exercises
+        const userId = await getUserId(username);
+
+        // Get random exercise for this topic (prioritizing untried exercises)
+        exercise = await getRandomExerciseForTopic(
+          topicId,
+          language,
+          difficulty,
+          userId
+        );
+      }
 
       if (!exercise) {
         setLoading(false);
@@ -238,11 +292,18 @@ const PairsGameScreen: React.FC<Props> = ({ route, navigation }) => {
           const username = await getMostRecentUser();
           const userId = await getUserId(username);
           if (userId && currentExercise) {
-            // Exercise is considered successful if user completed it
-            await recordExerciseAttempt(userId, currentExercise.id, true);
+            // Exercise is considered successful only if user had no incorrect attempts
+            const isSuccessful = gameState.incorrectCount === 0;
+            await recordExerciseAttempt(userId, currentExercise.id, isSuccessful);
           }
         } catch (error) {
           console.error('Failed to record exercise completion:', error);
+        }
+
+        // Handle shuffle mode completion
+        if (shuffleContext) {
+          // Don't auto-transition in shuffle mode - let user manually proceed
+          // The transition will happen when they press the next button in the UI
         }
       }
     } else {
@@ -282,12 +343,31 @@ const PairsGameScreen: React.FC<Props> = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
-      {/* Header with refresh button */}
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.refreshButton} onPress={handleRefresh}>
-          <Text style={styles.refreshButtonText}>🔄 New Exercise</Text>
-        </TouchableOpacity>
-      </View>
+      {/* Header with refresh button - hidden in shuffle mode */}
+      {!shuffleContext && (
+        <View style={styles.header}>
+          <TouchableOpacity style={styles.refreshButton} onPress={handleRefresh}>
+            <Text style={styles.refreshButtonText}>🔄 New Exercise</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
+      {/* Next exercise button for shuffle mode when completed */}
+      {shuffleContext && gameState.matchedPairs.length === pairs.length && pairs.length > 0 && (
+        <View style={styles.header}>
+          <TouchableOpacity 
+            style={[styles.refreshButton, { backgroundColor: gameState.incorrectCount === 0 ? theme.colors.success : theme.colors.primary }]} 
+            onPress={() => {
+              const isSuccessful = gameState.incorrectCount === 0;
+              shuffleContext.onComplete(isSuccessful);
+            }}
+          >
+            <Text style={styles.refreshButtonText}>
+              {gameState.incorrectCount === 0 ? '✅ Perfect! Next Exercise' : '➡️ Next Exercise'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      )}
 
       {/* Score display */}
       <View style={styles.scoreContainer}>

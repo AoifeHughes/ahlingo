@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   StyleSheet,
@@ -7,8 +7,9 @@ import {
   ActivityIndicator,
   Alert,
   TouchableOpacity,
+  BackHandler,
 } from 'react-native';
-import { RouteProp } from '@react-navigation/native';
+import { RouteProp, useFocusEffect, usePreventRemove } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useSelector } from 'react-redux';
 import { RootStackParamList, ExerciseInfo } from '../types';
@@ -60,18 +61,18 @@ interface GameState {
 }
 
 const TranslationExercisesScreen: React.FC<Props> = ({ route, navigation }) => {
-  const { topicId } = route.params || {};
+  const { topicId, shuffleContext, exerciseInfo } = route.params || {};
   const { settings } = useSelector((state: RootState) => state.settings);
   const { theme } = useTheme();
 
-  // Safety check: if no topicId is provided, go back
+  // Safety check: if no topicId or exerciseInfo is provided, go back
   useEffect(() => {
-    if (!topicId) {
+    if (!topicId && !exerciseInfo) {
       Alert.alert('Error', 'No topic selected. Please select a topic first.');
       navigation.goBack();
       return;
     }
-  }, [topicId, navigation]);
+  }, [topicId, exerciseInfo, navigation]);
 
   const [loading, setLoading] = useState(true);
   const [currentExercise, setCurrentExercise] = useState<ExerciseInfo | null>(
@@ -93,10 +94,56 @@ const TranslationExercisesScreen: React.FC<Props> = ({ route, navigation }) => {
   const [userDifficulty, setUserDifficulty] = useState<string>('Beginner');
 
   useEffect(() => {
-    if (topicId) {
+    if (topicId || exerciseInfo) {
       loadTranslationData();
     }
-  }, [topicId]);
+  }, [topicId, exerciseInfo]);
+
+  // Handle back button press when in shuffle mode
+  const handleBackPress = useCallback(() => {
+    if (shuffleContext) {
+      Alert.alert(
+        'Exit Shuffle?',
+        'Your progress will be lost if you exit now.',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          { 
+            text: 'Exit', 
+            style: 'destructive',
+            onPress: () => navigation.navigate('MainMenu')
+          },
+        ]
+      );
+      return true; // Prevent default back action
+    }
+    return false; // Allow default back action for normal mode
+  }, [shuffleContext, navigation]);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (shuffleContext) {
+        const onBackPress = () => handleBackPress();
+        const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress);
+        return () => subscription.remove();
+      }
+    }, [shuffleContext, handleBackPress])
+  );
+
+  // Prevent removal when in shuffle mode and show warning
+  usePreventRemove(!!shuffleContext, ({ data }) => {
+    Alert.alert(
+      'Exit Shuffle?',
+      'Your progress will be lost if you exit now.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        { 
+          text: 'Exit', 
+          style: 'destructive',
+          onPress: () => navigation.navigate('MainMenu')
+        },
+      ]
+    );
+  });
 
   const loadTranslationData = async () => {
     try {
@@ -112,16 +159,23 @@ const TranslationExercisesScreen: React.FC<Props> = ({ route, navigation }) => {
       setUserLanguage(language);
       setUserDifficulty(difficulty);
 
-      // Get user ID for prioritizing untried exercises
-      const userId = await getUserId(username);
+      let exercise: ExerciseInfo | null = null;
 
-      // Get random translation exercise for this topic (prioritizing untried exercises)
-      const exercise = await getRandomTranslationExerciseForTopic(
-        topicId,
-        language,
-        difficulty,
-        userId
-      );
+      // Check if we're in shuffle mode and have a specific exercise
+      if (shuffleContext && exerciseInfo) {
+        exercise = exerciseInfo;
+      } else if (topicId) {
+        // Get user ID for prioritizing untried exercises
+        const userId = await getUserId(username);
+
+        // Get random translation exercise for this topic (prioritizing untried exercises)
+        exercise = await getRandomTranslationExerciseForTopic(
+          topicId,
+          language,
+          difficulty,
+          userId
+        );
+      }
 
       if (!exercise) {
         setLoading(false);
@@ -254,29 +308,41 @@ const TranslationExercisesScreen: React.FC<Props> = ({ route, navigation }) => {
       isCorrect,
       score: isCorrect ? prev.score + 1 : prev.score,
     }));
+
+    // Handle shuffle mode completion - don't auto-transition
+    if (shuffleContext) {
+      // Don't auto-transition in shuffle mode - let user manually proceed
+      // The transition will happen when they press the next button in the UI
+    }
   };
 
   const handleNextExercise = () => {
-    if (translationData.length > 1) {
-      // Get a random different exercise from the current data
-      const otherExercises = translationData.filter(
-        (_, index) =>
-          index !==
-          translationData.findIndex(
-            t => t.language_1_content === gameState.sourceText
-          )
-      );
+    if (shuffleContext && gameState.hasSubmitted) {
+      // In shuffle mode, proceed to next exercise in shuffle
+      shuffleContext.onComplete(gameState.isCorrect || false);
+    } else {
+      // In normal mode, load a new exercise
+      if (translationData.length > 1) {
+        // Get a random different exercise from the current data
+        const otherExercises = translationData.filter(
+          (_, index) =>
+            index !==
+            translationData.findIndex(
+              t => t.language_1_content === gameState.sourceText
+            )
+        );
 
-      if (otherExercises.length > 0) {
-        const nextExercise =
-          otherExercises[Math.floor(Math.random() * otherExercises.length)];
-        setupGame(nextExercise);
-        return;
+        if (otherExercises.length > 0) {
+          const nextExercise =
+            otherExercises[Math.floor(Math.random() * otherExercises.length)];
+          setupGame(nextExercise);
+          return;
+        }
       }
-    }
 
-    // If no other exercises in current data, load new data
-    loadTranslationData();
+      // If no other exercises in current data, load new data
+      loadTranslationData();
+    }
   };
 
   const styles = createStyles(theme);
@@ -292,12 +358,14 @@ const TranslationExercisesScreen: React.FC<Props> = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
-      {/* Header with refresh button */}
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.refreshButton} onPress={handleRefresh}>
-          <Text style={styles.refreshButtonText}>🔄 New Exercise</Text>
-        </TouchableOpacity>
-      </View>
+      {/* Header with refresh button - hidden in shuffle mode */}
+      {!shuffleContext && (
+        <View style={styles.header}>
+          <TouchableOpacity style={styles.refreshButton} onPress={handleRefresh}>
+            <Text style={styles.refreshButtonText}>🔄 New Exercise</Text>
+          </TouchableOpacity>
+        </View>
+      )}
 
       {/* Source text */}
       <View style={styles.sourceContainer}>
@@ -334,7 +402,12 @@ const TranslationExercisesScreen: React.FC<Props> = ({ route, navigation }) => {
               style={styles.nextButton}
               onPress={handleNextExercise}
             >
-              <Text style={styles.nextButtonText}>Next Exercise</Text>
+              <Text style={styles.nextButtonText}>
+                {shuffleContext 
+                  ? (gameState.isCorrect ? '✅ Perfect! Next Exercise' : '➡️ Next Exercise')
+                  : 'Next Exercise'
+                }
+              </Text>
             </TouchableOpacity>
           </View>
         )}

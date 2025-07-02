@@ -9,6 +9,7 @@ import {
   Difficulty,
   PairExercise,
   ExerciseInfo,
+  ShuffleExercise,
 } from '../types';
 
 // Enable debug mode to see SQL logs
@@ -1739,6 +1740,142 @@ export const getUserProgressSummary = async (userId: number): Promise<any> => {
       overall_completion_percentage: 0,
       success_rate: 0,
     };
+  } finally {
+    await safeCloseDatabase(db);
+  }
+};
+
+// Get 5 random mixed exercises for Exercise Shuffle
+export const getRandomMixedExercises = async (
+  userId: number | null,
+  language: string,
+  difficulty: string
+): Promise<ShuffleExercise[]> => {
+  let db: SQLiteDatabase | null = null;
+
+  try {
+    await ensureDatabaseCopied();
+
+    db = await SQLite.openDatabase({
+      name: 'languageLearningDatabase.db',
+      location: 'Documents',
+    });
+
+    const shuffleExercises: ShuffleExercise[] = [];
+    const exerciseTypes = ['pairs', 'conversation', 'translation'];
+    const usedTopics = new Set<number>();
+
+    for (let i = 0; i < 5; i++) {
+      // Try to get an exercise of different types and topics
+      const exerciseType = exerciseTypes[i % exerciseTypes.length];
+      
+      let query: string;
+      let params: any[];
+
+      if (userId) {
+        // Prioritize untried exercises
+        query = `
+          SELECT ei.*, t.topic as topic_name
+          FROM exercises_info ei
+          JOIN languages l ON ei.language_id = l.id
+          JOIN difficulties d ON ei.difficulty_id = d.id
+          JOIN topics t ON ei.topic_id = t.id
+          ${exerciseType === 'pairs' ? 'JOIN pair_exercises pe ON ei.id = pe.exercise_id' : ''}
+          ${exerciseType === 'conversation' ? 'JOIN conversation_exercises ce ON ei.id = ce.exercise_id' : ''}
+          ${exerciseType === 'translation' ? 'JOIN translation_exercises te ON ei.id = te.exercise_id' : ''}
+          LEFT JOIN user_exercise_attempts uea ON ei.id = uea.exercise_id AND uea.user_id = ?
+          WHERE ei.exercise_type = ?
+            AND l.language = ?
+            AND d.difficulty_level = ?
+            ${usedTopics.size > 0 ? `AND ei.topic_id NOT IN (${Array.from(usedTopics).join(',')})` : ''}
+            AND uea.exercise_id IS NULL
+          ORDER BY RANDOM()
+          LIMIT 1
+        `;
+        params = [userId, exerciseType, language, difficulty];
+      } else {
+        query = `
+          SELECT ei.*, t.topic as topic_name
+          FROM exercises_info ei
+          JOIN languages l ON ei.language_id = l.id
+          JOIN difficulties d ON ei.difficulty_id = d.id
+          JOIN topics t ON ei.topic_id = t.id
+          ${exerciseType === 'pairs' ? 'JOIN pair_exercises pe ON ei.id = pe.exercise_id' : ''}
+          ${exerciseType === 'conversation' ? 'JOIN conversation_exercises ce ON ei.id = ce.exercise_id' : ''}
+          ${exerciseType === 'translation' ? 'JOIN translation_exercises te ON ei.id = te.exercise_id' : ''}
+          WHERE ei.exercise_type = ?
+            AND l.language = ?
+            AND d.difficulty_level = ?
+            ${usedTopics.size > 0 ? `AND ei.topic_id NOT IN (${Array.from(usedTopics).join(',')})` : ''}
+          ORDER BY RANDOM()
+          LIMIT 1
+        `;
+        params = [exerciseType, language, difficulty];
+      }
+
+      const result = await db.executeSql(query, params);
+
+      if (result[0].rows.length > 0) {
+        const row = result[0].rows.item(0);
+        shuffleExercises.push({
+          exerciseInfo: {
+            id: row.id,
+            exercise_name: row.exercise_name,
+            topic_id: row.topic_id,
+            difficulty_id: row.difficulty_id,
+            language_id: row.language_id,
+            exercise_type: row.exercise_type,
+            lesson_id: row.lesson_id,
+          },
+          exerciseType: row.exercise_type as 'pairs' | 'conversation' | 'translation',
+          topicName: row.topic_name,
+        });
+        usedTopics.add(row.topic_id);
+      } else {
+        // If no untried exercises, fall back to any exercise of this type
+        const fallbackQuery = `
+          SELECT ei.*, t.topic as topic_name
+          FROM exercises_info ei
+          JOIN languages l ON ei.language_id = l.id
+          JOIN difficulties d ON ei.difficulty_id = d.id
+          JOIN topics t ON ei.topic_id = t.id
+          ${exerciseType === 'pairs' ? 'JOIN pair_exercises pe ON ei.id = pe.exercise_id' : ''}
+          ${exerciseType === 'conversation' ? 'JOIN conversation_exercises ce ON ei.id = ce.exercise_id' : ''}
+          ${exerciseType === 'translation' ? 'JOIN translation_exercises te ON ei.id = te.exercise_id' : ''}
+          WHERE ei.exercise_type = ?
+            AND l.language = ?
+            AND d.difficulty_level = ?
+            ${usedTopics.size > 0 ? `AND ei.topic_id NOT IN (${Array.from(usedTopics).join(',')})` : ''}
+          ORDER BY RANDOM()
+          LIMIT 1
+        `;
+
+        const fallbackResult = await db.executeSql(fallbackQuery, [exerciseType, language, difficulty]);
+        
+        if (fallbackResult[0].rows.length > 0) {
+          const row = fallbackResult[0].rows.item(0);
+          shuffleExercises.push({
+            exerciseInfo: {
+              id: row.id,
+              exercise_name: row.exercise_name,
+              topic_id: row.topic_id,
+              difficulty_id: row.difficulty_id,
+              language_id: row.language_id,
+              exercise_type: row.exercise_type,
+              lesson_id: row.lesson_id,
+            },
+            exerciseType: row.exercise_type as 'pairs' | 'conversation' | 'translation',
+            topicName: row.topic_name,
+          });
+          usedTopics.add(row.topic_id);
+        }
+      }
+    }
+
+    return shuffleExercises;
+  } catch (error) {
+    console.error('Failed to get random mixed exercises:', error);
+    return [];
   } finally {
     await safeCloseDatabase(db);
   }

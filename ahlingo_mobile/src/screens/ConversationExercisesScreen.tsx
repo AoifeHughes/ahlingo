@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   StyleSheet,
@@ -7,9 +7,10 @@ import {
   ActivityIndicator,
   Alert,
   TouchableOpacity,
+  BackHandler,
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RouteProp } from '@react-navigation/native';
+import { RouteProp, useFocusEffect, usePreventRemove } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import { RootStackParamList, ExerciseInfo } from '../types';
 import { RootState } from '../store';
@@ -25,6 +26,7 @@ import {
   getUserId,
   recordExerciseAttempt,
 } from '../services/SimpleDatabaseService';
+import { useTheme } from '../contexts/ThemeContext';
 
 type ConversationExercisesScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -60,17 +62,18 @@ const ConversationExercisesScreen: React.FC<Props> = ({
   navigation,
   route,
 }) => {
-  const { topicId } = route.params || {};
+  const { topicId, shuffleContext, exerciseInfo } = route.params || {};
   const { settings } = useSelector((state: RootState) => state.settings);
+  const { theme } = useTheme();
 
-  // Safety check: if no topicId is provided, go back
+  // Safety check: if no topicId or exerciseInfo is provided, go back
   useEffect(() => {
-    if (!topicId) {
+    if (!topicId && !exerciseInfo) {
       Alert.alert('Error', 'No topic selected. Please select a topic first.');
       navigation.goBack();
       return;
     }
-  }, [topicId, navigation]);
+  }, [topicId, exerciseInfo, navigation]);
 
   const [loading, setLoading] = useState(true);
   const [currentExercise, setCurrentExercise] = useState<ExerciseInfo | null>(
@@ -92,10 +95,56 @@ const ConversationExercisesScreen: React.FC<Props> = ({
   const [topicName, setTopicName] = useState<string>('');
 
   useEffect(() => {
-    if (topicId) {
+    if (topicId || exerciseInfo) {
       loadConversationData();
     }
-  }, [topicId]);
+  }, [topicId, exerciseInfo]);
+
+  // Handle back button press when in shuffle mode
+  const handleBackPress = useCallback(() => {
+    if (shuffleContext) {
+      Alert.alert(
+        'Exit Shuffle?',
+        'Your progress will be lost if you exit now.',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          { 
+            text: 'Exit', 
+            style: 'destructive',
+            onPress: () => navigation.navigate('MainMenu')
+          },
+        ]
+      );
+      return true; // Prevent default back action
+    }
+    return false; // Allow default back action for normal mode
+  }, [shuffleContext, navigation]);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (shuffleContext) {
+        const onBackPress = () => handleBackPress();
+        const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress);
+        return () => subscription.remove();
+      }
+    }, [shuffleContext, handleBackPress])
+  );
+
+  // Prevent removal when in shuffle mode and show warning
+  usePreventRemove(!!shuffleContext, ({ data }) => {
+    Alert.alert(
+      'Exit Shuffle?',
+      'Your progress will be lost if you exit now.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        { 
+          text: 'Exit', 
+          style: 'destructive',
+          onPress: () => navigation.navigate('MainMenu')
+        },
+      ]
+    );
+  });
 
   // Clean text to handle spacing issues around punctuation
   const cleanText = (text: string): string => {
@@ -124,16 +173,23 @@ const ConversationExercisesScreen: React.FC<Props> = ({
       setUserLanguage(language);
       setUserDifficulty(difficulty);
 
-      // Get user ID for prioritizing untried exercises
-      const userId = await getUserId(username);
+      let exercise: ExerciseInfo | null = null;
 
-      // Get random conversation exercise for this topic (prioritizing untried exercises)
-      const exercise = await getRandomConversationExerciseForTopic(
-        topicId,
-        language,
-        difficulty,
-        userId
-      );
+      // Check if we're in shuffle mode and have a specific exercise
+      if (shuffleContext && exerciseInfo) {
+        exercise = exerciseInfo;
+      } else if (topicId) {
+        // Get user ID for prioritizing untried exercises
+        const userId = await getUserId(username);
+
+        // Get random conversation exercise for this topic (prioritizing untried exercises)
+        exercise = await getRandomConversationExerciseForTopic(
+          topicId,
+          language,
+          difficulty,
+          userId
+        );
+      }
 
       if (!exercise) {
         setLoading(false);
@@ -227,16 +283,30 @@ const ConversationExercisesScreen: React.FC<Props> = ({
       isCorrect,
       score: isCorrect ? prev.score + 1 : prev.score,
     }));
+
+    // Handle shuffle mode completion - don't auto-transition
+    if (shuffleContext) {
+      // Don't auto-transition in shuffle mode - let user manually proceed
+      // The transition will happen when they press the next button in the UI
+    }
   };
 
   const handleNextExercise = () => {
-    loadConversationData();
+    if (shuffleContext && quizState.hasAnswered) {
+      // In shuffle mode, proceed to next exercise in shuffle
+      shuffleContext.onComplete(quizState.isCorrect || false);
+    } else {
+      // In normal mode, load a new exercise
+      loadConversationData();
+    }
   };
+
+  const styles = createStyles(theme);
 
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#1976D2" />
+        <ActivityIndicator size="large" color={theme.colors.primary} />
         <Text style={styles.loadingText}>Loading conversation exercise...</Text>
       </View>
     );
@@ -244,12 +314,14 @@ const ConversationExercisesScreen: React.FC<Props> = ({
 
   return (
     <View style={styles.container}>
-      {/* Header with refresh button */}
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.refreshButton} onPress={handleRefresh}>
-          <Text style={styles.refreshButtonText}>🔄 New Exercise</Text>
-        </TouchableOpacity>
-      </View>
+      {/* Header with refresh button - hidden in shuffle mode */}
+      {!shuffleContext && (
+        <View style={styles.header}>
+          <TouchableOpacity style={styles.refreshButton} onPress={handleRefresh}>
+            <Text style={styles.refreshButtonText}>🔄 New Exercise</Text>
+          </TouchableOpacity>
+        </View>
+      )}
 
       {/* Conversation display */}
       <View style={styles.conversationContainer}>
@@ -323,7 +395,12 @@ const ConversationExercisesScreen: React.FC<Props> = ({
               style={styles.nextButton}
               onPress={handleNextExercise}
             >
-              <Text style={styles.nextButtonText}>Next Exercise</Text>
+              <Text style={styles.nextButtonText}>
+                {shuffleContext 
+                  ? (quizState.isCorrect ? '✅ Perfect! Next Exercise' : '➡️ Next Exercise')
+                  : 'Next Exercise'
+                }
+              </Text>
             </TouchableOpacity>
           </View>
         )}
@@ -332,137 +409,139 @@ const ConversationExercisesScreen: React.FC<Props> = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: currentTheme.colors.background,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
+    backgroundColor: currentTheme.colors.background,
   },
   loadingText: {
-    marginTop: 16,
-    fontSize: 16,
-    color: '#666',
+    marginTop: currentTheme.spacing.lg,
+    fontSize: currentTheme.typography.fontSizes.lg,
+    color: currentTheme.colors.textSecondary,
   },
   header: {
-    backgroundColor: '#fff',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
+    backgroundColor: currentTheme.colors.surface,
+    paddingVertical: currentTheme.spacing.md,
+    paddingHorizontal: currentTheme.spacing.lg,
     borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
+    borderBottomColor: currentTheme.colors.border,
     alignItems: 'center',
   },
   refreshButton: {
-    backgroundColor: '#1976D2',
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 20,
+    backgroundColor: currentTheme.colors.primary,
+    paddingVertical: currentTheme.spacing.base,
+    paddingHorizontal: currentTheme.spacing.lg,
+    borderRadius: currentTheme.spacing.xl,
+    ...currentTheme.shadows.base,
   },
   refreshButtonText: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: '600',
+    color: currentTheme.colors.background,
+    fontSize: currentTheme.typography.fontSizes.base,
+    fontWeight: currentTheme.typography.fontWeights.semibold,
   },
   conversationContainer: {
     flex: 1.2,
-    backgroundColor: '#fff',
-    marginBottom: 8,
+    backgroundColor: currentTheme.colors.surface,
+    marginBottom: currentTheme.spacing.base,
   },
   quizContainer: {
     flex: 1.8,
-    backgroundColor: '#fff',
-    paddingHorizontal: 16,
-    paddingTop: 8,
+    backgroundColor: currentTheme.colors.surface,
+    paddingHorizontal: currentTheme.spacing.lg,
+    paddingTop: currentTheme.spacing.base,
   },
   quizTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
+    fontSize: currentTheme.typography.fontSizes.xl,
+    fontWeight: currentTheme.typography.fontWeights.bold,
+    color: currentTheme.colors.text,
     textAlign: 'center',
-    marginBottom: 4,
+    marginBottom: currentTheme.spacing.xs,
   },
   quizSubtitle: {
-    fontSize: 14,
-    color: '#666',
+    fontSize: currentTheme.typography.fontSizes.base,
+    color: currentTheme.colors.textSecondary,
     textAlign: 'center',
-    marginBottom: 12,
+    marginBottom: currentTheme.spacing.md,
   },
   optionsContainer: {
     flex: 1,
   },
   optionButton: {
-    backgroundColor: '#f8f9fa',
+    backgroundColor: currentTheme.colors.background,
     borderWidth: 2,
-    borderColor: '#e0e0e0',
-    borderRadius: 12,
-    padding: 12,
-    marginBottom: 8,
+    borderColor: currentTheme.colors.border,
+    borderRadius: currentTheme.borderRadius.lg,
+    padding: currentTheme.spacing.md,
+    marginBottom: currentTheme.spacing.base,
   },
   selectedOption: {
-    borderColor: '#1976D2',
-    backgroundColor: '#e3f2fd',
+    borderColor: currentTheme.colors.primary,
+    backgroundColor: currentTheme.colors.primaryLight,
   },
   correctOption: {
-    borderColor: '#4caf50',
-    backgroundColor: '#e8f5e8',
+    borderColor: currentTheme.colors.success,
+    backgroundColor: currentTheme.colors.successLight,
   },
   incorrectOption: {
-    borderColor: '#f44336',
-    backgroundColor: '#ffebee',
+    borderColor: currentTheme.colors.error,
+    backgroundColor: currentTheme.colors.errorLight,
   },
   optionText: {
-    fontSize: 16,
-    color: '#333',
+    fontSize: currentTheme.typography.fontSizes.lg,
+    color: currentTheme.colors.text,
     lineHeight: 22,
   },
   selectedOptionText: {
-    color: '#1976D2',
-    fontWeight: '600',
+    color: currentTheme.colors.primary,
+    fontWeight: currentTheme.typography.fontWeights.semibold,
   },
   correctOptionText: {
-    color: '#4caf50',
-    fontWeight: '600',
+    color: currentTheme.colors.success,
+    fontWeight: currentTheme.typography.fontWeights.semibold,
   },
   feedbackContainer: {
-    paddingVertical: 12,
+    paddingVertical: currentTheme.spacing.md,
     alignItems: 'center',
   },
   feedbackText: {
-    fontSize: 18,
-    fontWeight: '600',
+    fontSize: currentTheme.typography.fontSizes.xl,
+    fontWeight: currentTheme.typography.fontWeights.semibold,
     textAlign: 'center',
-    marginBottom: 8,
+    marginBottom: currentTheme.spacing.base,
   },
   correctFeedback: {
-    color: '#4caf50',
+    color: currentTheme.colors.success,
   },
   incorrectFeedback: {
-    color: '#f44336',
+    color: currentTheme.colors.error,
   },
   nextButton: {
-    backgroundColor: '#1976D2',
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 8,
+    backgroundColor: currentTheme.colors.primary,
+    paddingVertical: currentTheme.spacing.md,
+    paddingHorizontal: currentTheme.spacing.xl,
+    borderRadius: currentTheme.borderRadius.base,
+    ...currentTheme.shadows.base,
   },
   nextButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
+    color: currentTheme.colors.background,
+    fontSize: currentTheme.typography.fontSizes.lg,
+    fontWeight: currentTheme.typography.fontWeights.semibold,
   },
   noDataContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 32,
+    padding: currentTheme.spacing['2xl'],
   },
   noDataText: {
-    fontSize: 16,
-    color: '#666',
+    fontSize: currentTheme.typography.fontSizes.lg,
+    color: currentTheme.colors.textSecondary,
     textAlign: 'center',
   },
 });

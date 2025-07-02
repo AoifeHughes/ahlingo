@@ -150,14 +150,57 @@ export interface TokenData {
 }
 
 // Navigation types
+// Exercise Shuffle types
+export interface ShuffleExercise {
+  exerciseInfo: ExerciseInfo;
+  exerciseType: 'pairs' | 'conversation' | 'translation';
+  topicName: string;
+}
+
+export interface ExerciseShuffleContext {
+  isShuffleMode: boolean;
+  currentChallenge: number;
+  totalChallenges: number;
+  onComplete: (success: boolean) => void;
+}
+
 export type RootStackParamList = {
   MainMenu: undefined;
   TopicSelection: { exerciseType?: 'pairs' | 'conversation' | 'translation' };
-  PairsGame: { topicId: number };
-  ConversationExercises: { topicId: number };
-  TranslationExercises: { topicId: number };
+  PairsGame: { 
+    topicId?: number;
+    shuffleContext?: ExerciseShuffleContext;
+    exerciseInfo?: ExerciseInfo;
+  };
+  ConversationExercises: { 
+    topicId?: number;
+    shuffleContext?: ExerciseShuffleContext;
+    exerciseInfo?: ExerciseInfo;
+  };
+  TranslationExercises: { 
+    topicId?: number;
+    shuffleContext?: ExerciseShuffleContext;
+    exerciseInfo?: ExerciseInfo;
+  };
   Chatbot: undefined;
   Settings: undefined;
   Stats: undefined;
   RetryMistakes: undefined;
+  // New feature screens
+  StudyTopic: undefined;
+  FillInTheBlank: undefined;
+  // Exercise Shuffle specific screens
+  ExerciseShuffleStart: { exercises: ShuffleExercise[] };
+  ExerciseShuffleTransition: { 
+    currentChallenge: number;
+    totalChallenges: number;
+    success: boolean;
+    nextExercise: ShuffleExercise | null;
+    results: boolean[];
+    exercises: ShuffleExercise[];
+  };
+  ExerciseShuffleSummary: { 
+    results: boolean[];
+    exercises: ShuffleExercise[];
+  };
 };
