@@ -91,12 +91,15 @@ class LocalLlamaService {
         const stats = await RNFS.stat(filePath);
         const expectedSize = model.fileSize;
         const actualSize = stats.size;
-        const sizeDiff = Math.abs(actualSize - expectedSize);
-        const sizeTolerancePercent = 0.1; // 10% tolerance
         
-        // Check if file size is within reasonable tolerance
-        if (sizeDiff > (expectedSize * sizeTolerancePercent)) {
-          return false;
+        if (expectedSize) {
+          const sizeDiff = Math.abs(actualSize - expectedSize);
+          const sizeTolerancePercent = 0.1; // 10% tolerance
+          
+          // Check if file size is within reasonable tolerance
+          if (sizeDiff > (expectedSize * sizeTolerancePercent)) {
+            return false;
+          }
         }
         
         return true;
@@ -120,23 +123,56 @@ class LocalLlamaService {
 
     const filePath = this.getModelPath(model.filename);
     
-    // Check if already exists
+    // Check if already exists and is complete
     const exists = await RNFS.exists(filePath);
     if (exists) {
-      console.log(`Model ${modelId} already downloaded`);
-      return;
+      const isComplete = await this.isModelDownloaded(modelId);
+      if (isComplete) {
+        console.log(`Model ${modelId} already downloaded and complete`);
+        return;
+      } else {
+        console.log(`Model ${modelId} exists but incomplete, removing partial download`);
+        await RNFS.unlink(filePath);
+      }
     }
 
     try {
+      console.log(`🚀 Starting download for ${model.name} from ${model.downloadUrl}`);
+      console.log(`📁 Downloading to: ${filePath}`);
+      
       const { promise } = RNFS.downloadFile({
         fromUrl: model.downloadUrl,
         toFile: filePath,
-        progressInterval: 250,
+        background: true, // Continue download in background (iOS)
+        discretionary: true, // Allow OS to control timing for better performance (iOS)
+        cacheable: true, // Allow caching in shared NSURLCache (iOS)
+        progressDivider: 1, // Report progress for every byte written
+        begin: (res) => {
+          console.log(`📋 Download begin for ${model.name}:`, {
+            jobId: res.jobId,
+            statusCode: res.statusCode,
+            contentLength: res.contentLength,
+            headers: res.headers
+          });
+          
+          // Initialize progress tracking with content length
+          if (onProgress && res.contentLength > 0) {
+            onProgress({
+              modelId,
+              progress: 0,
+              bytesWritten: 0,
+              contentLength: res.contentLength,
+            });
+          }
+        },
         progress: (res) => {
+          const progressPercent = res.contentLength > 0 ? (res.bytesWritten / res.contentLength) : 0;
+          console.log(`📊 Download progress: ${Math.round(progressPercent * 100)}% (${res.bytesWritten}/${res.contentLength})`);
+          
           if (onProgress) {
             onProgress({
               modelId,
-              progress: res.bytesWritten / res.contentLength,
+              progress: progressPercent,
               bytesWritten: res.bytesWritten,
               contentLength: res.contentLength,
             });
@@ -225,7 +261,7 @@ class LocalLlamaService {
       const initParams = {
         model: absoluteModelPath,
         use_mlock: true,
-        n_ctx: 4096,
+        n_ctx: 1024,
         n_gpu_layers: 99, // Use GPU acceleration on iOS
       };
 
@@ -239,7 +275,7 @@ class LocalLlamaService {
         const cpuParams = {
           model: absoluteModelPath,
           use_mlock: false,
-          n_ctx: 4096,
+          n_ctx: 1024,
           n_gpu_layers: 0,
         };
         

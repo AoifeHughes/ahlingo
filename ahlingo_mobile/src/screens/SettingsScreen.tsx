@@ -66,7 +66,7 @@ const DownloadProgressBar: React.FC<{
   bytesWritten: number;
   contentLength: number;
   theme: any;
-}> = ({ progress, bytesWritten, contentLength, theme }) => {
+}> = React.memo(({ progress, bytesWritten, contentLength, theme }) => {
   const animatedWidth = useRef(new Animated.Value(0)).current;
   
   useEffect(() => {
@@ -130,7 +130,14 @@ const DownloadProgressBar: React.FC<{
       </View>
     </View>
   );
-};
+}, (prevProps, nextProps) => {
+  // Only re-render if progress or other essential props change
+  return (
+    prevProps.progress === nextProps.progress &&
+    prevProps.bytesWritten === nextProps.bytesWritten &&
+    prevProps.contentLength === nextProps.contentLength
+  );
+});
 
 const formatFileSize = (bytes: number): string => {
   const gb = bytes / (1024 * 1024 * 1024);
@@ -350,10 +357,17 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
 
       // Use a throttled update function to prevent too many renders
       let lastUpdateTime = 0;
-      const updateThrottle = 100; // Update every 100ms max
+      const updateThrottle = 50; // Update every 50ms for smoother progress
 
       await LocalLlamaService.downloadModel(modelId, (progressData) => {
         const now = Date.now();
+        
+        console.log('🔄 Settings received progress:', {
+          modelId: progressData.modelId,
+          percentage: Math.round(progressData.progress * 100),
+          bytes: `${progressData.bytesWritten}/${progressData.contentLength}`,
+          timestamp: now
+        });
         
         // Always update the ref immediately
         downloadProgressRef.current[modelId] = progressData;
@@ -362,7 +376,7 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
         if (now - lastUpdateTime >= updateThrottle || progressData.progress === 1) {
           lastUpdateTime = now;
           
-          console.log('📊 Progress update:', {
+          console.log('📊 Updating UI with progress:', {
             modelId: progressData.modelId,
             percentage: Math.round(progressData.progress * 100),
           });
