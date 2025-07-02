@@ -437,10 +437,10 @@ def generate_lessons_data_structured(
     language: str,
     level: str,
     topic: str,
-    N_runs: int = 2,
+    N_runs: int = 10,
     lesson_kinds: List[str] = ["conversations", "pairs", "translations"],
     model=None,  # Allow passing model to reuse it
-    max_retries: int = 3,
+    max_retries: int = 5,
 ):
     """Drop-in replacement for your generate_lessons_data using Outlines with validation and retry logic."""
 

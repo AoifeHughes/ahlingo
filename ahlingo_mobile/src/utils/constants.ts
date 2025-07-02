@@ -42,17 +42,27 @@ export const SQL_QUERIES = {
   GET_TOPICS: 'SELECT * FROM topics ORDER BY topic',
 
   // Exercise filtering templates
-  GET_TOPICS_BY_TYPE: (exerciseType: string) => `
-    SELECT DISTINCT t.id, t.topic
-    FROM topics t
-    JOIN exercises_info ei ON t.id = ei.topic_id
-    JOIN languages l ON ei.language_id = l.id
-    JOIN difficulties d ON ei.difficulty_id = d.id
-    WHERE l.language = ?
-      AND d.difficulty_level = ?
-      AND ei.exercise_type = '${exerciseType}'
-    ORDER BY t.topic
-  `,
+  GET_TOPICS_BY_TYPE: (exerciseType: string) => {
+    const exerciseTableMap = {
+      'pairs': 'pair_exercises pe',
+      'conversation': 'conversation_exercises ce', 
+      'translation': 'translation_exercises te'
+    };
+    const joinTable = exerciseTableMap[exerciseType as keyof typeof exerciseTableMap] || 'pair_exercises pe';
+    
+    return `
+      SELECT DISTINCT t.id, t.topic
+      FROM topics t
+      JOIN exercises_info ei ON t.id = ei.topic_id
+      JOIN languages l ON ei.language_id = l.id
+      JOIN difficulties d ON ei.difficulty_id = d.id
+      JOIN ${joinTable} ON ei.id = ${joinTable.split(' ')[1]}.exercise_id
+      WHERE l.language = ?
+        AND d.difficulty_level = ?
+        AND ei.exercise_type = '${exerciseType}'
+      ORDER BY t.topic
+    `;
+  },
 
   GET_RANDOM_EXERCISE: (exerciseType: string) => `
     SELECT ei.* FROM exercises_info ei
