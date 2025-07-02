@@ -26,6 +26,14 @@ const AVAILABLE_LOCAL_MODELS: LocalModel[] = [
     description: 'Microsoft Phi-3 Mini optimized for instruction following',
     fileSize: 2.4 * 1024 * 1024 * 1024, // ~2.4GB
   },
+  {
+    id: 'phi-4-mini-instruct-q4',
+    name: 'Phi-4 Mini Instruct (Q4)',
+    filename: 'microsoft_Phi-4-mini-instruct-Q4_0.gguf',
+    downloadUrl: 'https://huggingface.co/bartowski/microsoft_Phi-4-mini-instruct-GGUF/resolve/main/microsoft_Phi-4-mini-instruct-Q4_0.gguf?download=true',
+    description: 'Latest Microsoft Phi-4 Mini model with enhanced instruction following',
+    fileSize: 2.7 * 1024 * 1024 * 1024, // ~2.7GB
+  },
 ];
 
 const STOP_WORDS = [
