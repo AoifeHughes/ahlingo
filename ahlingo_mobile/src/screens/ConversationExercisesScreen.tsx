@@ -124,11 +124,15 @@ const ConversationExercisesScreen: React.FC<Props> = ({
       setUserLanguage(language);
       setUserDifficulty(difficulty);
 
-      // Get random conversation exercise for this topic
+      // Get user ID for prioritizing untried exercises
+      const userId = await getUserId(username);
+
+      // Get random conversation exercise for this topic (prioritizing untried exercises)
       const exercise = await getRandomConversationExerciseForTopic(
         topicId,
         language,
-        difficulty
+        difficulty,
+        userId
       );
 
       if (!exercise) {

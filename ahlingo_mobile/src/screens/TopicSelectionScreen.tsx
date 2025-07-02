@@ -11,7 +11,7 @@ import {
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
-import { RootStackParamList, Topic } from '../types';
+import { RootStackParamList, Topic, TopicWithProgress } from '../types';
 import { RootState } from '../store';
 import TopicCard from '../components/TopicCard';
 import {
@@ -20,6 +20,8 @@ import {
   getTopicsForTranslation,
   getUserSettings,
   getMostRecentUser,
+  getUserId,
+  getTopicProgress,
 } from '../services/SimpleDatabaseService';
 import { useTheme } from '../contexts/ThemeContext';
 
@@ -41,7 +43,7 @@ interface Props {
 const TopicSelectionScreen: React.FC<Props> = ({ navigation, route }) => {
   const { settings } = useSelector((state: RootState) => state.settings);
   const { theme } = useTheme();
-  const [topics, setTopics] = useState<Topic[]>([]);
+  const [topics, setTopics] = useState<TopicWithProgress[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [userLanguage, setUserLanguage] = useState<string>('French');
@@ -68,6 +70,9 @@ const TopicSelectionScreen: React.FC<Props> = ({ navigation, route }) => {
       setUserLanguage(language);
       setUserDifficulty(difficulty);
 
+      // Get user ID for progress tracking
+      const userId = await getUserId(username);
+      
       // Load topics based on exercise type
       let availableTopics: Topic[] = [];
       if (exerciseType === 'pairs') {
@@ -81,7 +86,17 @@ const TopicSelectionScreen: React.FC<Props> = ({ navigation, route }) => {
         availableTopics = await getTopicsForPairs(language, difficulty);
       }
 
-      setTopics(availableTopics);
+      // Fetch progress for each topic
+      const topicsWithProgress: TopicWithProgress[] = await Promise.all(
+        availableTopics.map(async (topic) => {
+          const progress = userId
+            ? await getTopicProgress(userId, topic.id, exerciseType, language, difficulty)
+            : { totalExercises: 0, completedExercises: 0, percentage: 0 };
+          return { ...topic, progress };
+        })
+      );
+
+      setTopics(topicsWithProgress);
     } catch (error) {
       console.error('Failed to load topics:', error);
       Alert.alert('Error', 'Failed to load topics. Please try again.');
@@ -90,7 +105,7 @@ const TopicSelectionScreen: React.FC<Props> = ({ navigation, route }) => {
     }
   };
 
-  const handleTopicPress = (topic: Topic) => {
+  const handleTopicPress = (topic: TopicWithProgress) => {
     if (exerciseType === 'pairs') {
       navigation.navigate('PairsGame', { topicId: topic.id });
     } else if (exerciseType === 'conversation') {
@@ -119,8 +134,10 @@ const TopicSelectionScreen: React.FC<Props> = ({ navigation, route }) => {
     setRefreshing(false);
   };
 
-  const renderTopicCard = ({ item }: { item: Topic }) => (
-    <TopicCard topic={item} onPress={handleTopicPress} />
+  const renderTopicCard = ({ item, index }: { item: TopicWithProgress; index: number }) => (
+    <View style={styles.cardWrapper}>
+      <TopicCard topic={item} onPress={handleTopicPress} />
+    </View>
   );
 
   const renderEmptyState = () => (
@@ -162,6 +179,8 @@ const TopicSelectionScreen: React.FC<Props> = ({ navigation, route }) => {
         keyExtractor={item => item.id.toString()}
         contentContainerStyle={styles.listContainer}
         showsVerticalScrollIndicator={false}
+        numColumns={2}
+        columnWrapperStyle={styles.columnWrapper}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -212,8 +231,15 @@ const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) => Sty
     marginTop: currentTheme.spacing.xs,
   },
   listContainer: {
-    paddingVertical: currentTheme.spacing.lg,
+    paddingVertical: currentTheme.spacing.base,
+    paddingHorizontal: currentTheme.spacing.base,
     flexGrow: 1,
+  },
+  columnWrapper: {
+    justifyContent: 'space-between',
+  },
+  cardWrapper: {
+    flex: 0.5,
   },
   emptyContainer: {
     flex: 1,

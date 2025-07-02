@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Text,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
 import { Button } from 'react-native-elements';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -36,12 +37,30 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
     languages,
     difficulties,
     themes,
-    isSaving,
+    isResetting,
     updateFormData,
-    handleSave,
+    handleReset,
   } = useSettingsForm();
 
   const localModelsHook = useLocalModels(formData.enableLocalModels);
+
+  const confirmReset = () => {
+    Alert.alert(
+      'Reset User Data',
+      'Are you sure you want to reset all your progress and chat history? This action cannot be undone.\n\nThis will:\n• Clear all exercise progress\n• Delete chat history\n• Keep all lessons intact\n\nYour settings will remain unchanged.',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Reset',
+          style: 'destructive',
+          onPress: handleReset,
+        },
+      ]
+    );
+  };
 
   if (isLoading) {
     const loadingStyles = createStyles(theme);
@@ -79,14 +98,18 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
             theme={theme}
           />
 
-          <View style={styles.buttonContainer}>
+          <View style={styles.dangerZone}>
+            <Text style={styles.dangerZoneTitle}>Danger Zone</Text>
+            <Text style={styles.dangerZoneDescription}>
+              Reset your learning progress and chat history. This action cannot be undone.
+            </Text>
             <Button
-              title={isSaving ? 'Saving...' : 'Save Settings'}
-              buttonStyle={styles.saveButton}
-              titleStyle={styles.saveButtonText}
-              onPress={handleSave}
-              disabled={isSaving}
-              loading={isSaving}
+              title={isResetting ? 'Resetting...' : 'Reset User Data'}
+              buttonStyle={styles.resetButton}
+              titleStyle={styles.resetButtonText}
+              onPress={confirmReset}
+              disabled={isResetting}
+              loading={isResetting}
             />
           </View>
         </View>
@@ -117,19 +140,37 @@ const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) => Sty
   content: {
     padding: currentTheme.spacing.lg,
   },
-  buttonContainer: {
+  dangerZone: {
     marginTop: currentTheme.spacing['3xl'],
     marginBottom: currentTheme.spacing['4xl'],
+    padding: currentTheme.spacing.lg,
+    borderRadius: currentTheme.borderRadius.base,
+    borderWidth: 1,
+    borderColor: currentTheme.colors.error,
+    backgroundColor: currentTheme.colors.surface,
   },
-  saveButton: {
-    backgroundColor: currentTheme.colors.success,
+  dangerZoneTitle: {
+    fontSize: currentTheme.typography.fontSizes.xl,
+    fontWeight: currentTheme.typography.fontWeights.bold,
+    color: currentTheme.colors.error,
+    marginBottom: currentTheme.spacing.base,
+  },
+  dangerZoneDescription: {
+    fontSize: currentTheme.typography.fontSizes.base,
+    color: currentTheme.colors.textSecondary,
+    marginBottom: currentTheme.spacing.lg,
+    lineHeight: 20,
+  },
+  resetButton: {
+    backgroundColor: currentTheme.colors.error,
     borderRadius: currentTheme.borderRadius.base,
     paddingVertical: currentTheme.spacing.lg,
     ...currentTheme.shadows.base,
   },
-  saveButtonText: {
-    fontSize: currentTheme.typography.fontSizes.xl,
+  resetButtonText: {
+    fontSize: currentTheme.typography.fontSizes.lg,
     fontWeight: currentTheme.typography.fontWeights.bold,
+    color: currentTheme.colors.surface,
   },
 });
 

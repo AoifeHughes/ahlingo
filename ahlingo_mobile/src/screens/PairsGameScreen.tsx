@@ -90,11 +90,15 @@ const PairsGameScreen: React.FC<Props> = ({ route, navigation }) => {
       setUserLanguage(language);
       setUserDifficulty(difficulty);
 
-      // Get random exercise for this topic
+      // Get user ID for prioritizing untried exercises
+      const userId = await getUserId(username);
+
+      // Get random exercise for this topic (prioritizing untried exercises)
       const exercise = await getRandomExerciseForTopic(
         topicId,
         language,
-        difficulty
+        difficulty,
+        userId
       );
 
       if (!exercise) {

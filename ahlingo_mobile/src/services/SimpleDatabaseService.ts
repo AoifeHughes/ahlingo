@@ -593,7 +593,8 @@ export const getTopicsForPairs = async (
 export const getRandomExerciseForTopic = async (
   topicId: number,
   language: string,
-  difficulty: string
+  difficulty: string,
+  userId?: number | null
 ): Promise<ExerciseInfo | null> => {
   let db: SQLiteDatabase | null = null;
 
@@ -605,7 +606,32 @@ export const getRandomExerciseForTopic = async (
       location: 'Documents',
     });
 
-    const query = `
+    if (userId) {
+      // First, try to get an exercise that hasn't been attempted
+      const untriedQuery = `
+        SELECT ei.* FROM exercises_info ei
+        JOIN languages l ON ei.language_id = l.id
+        JOIN difficulties d ON ei.difficulty_id = d.id
+        JOIN pair_exercises pe ON ei.id = pe.exercise_id
+        LEFT JOIN user_exercise_attempts uea ON ei.id = uea.exercise_id AND uea.user_id = ?
+        WHERE ei.topic_id = ?
+          AND l.language = ?
+          AND d.difficulty_level = ?
+          AND ei.exercise_type = 'pairs'
+          AND uea.exercise_id IS NULL
+        ORDER BY RANDOM()
+        LIMIT 1
+      `;
+
+      const untriedResults = await db.executeSql(untriedQuery, [userId, topicId, language, difficulty]);
+
+      if (untriedResults && untriedResults[0] && untriedResults[0].rows.length > 0) {
+        return untriedResults[0].rows.item(0);
+      }
+    }
+
+    // If no untried exercises found (or no userId provided), fall back to random selection
+    const randomQuery = `
       SELECT ei.* FROM exercises_info ei
       JOIN languages l ON ei.language_id = l.id
       JOIN difficulties d ON ei.difficulty_id = d.id
@@ -618,7 +644,7 @@ export const getRandomExerciseForTopic = async (
       LIMIT 1
     `;
 
-    const results = await db.executeSql(query, [topicId, language, difficulty]);
+    const results = await db.executeSql(randomQuery, [topicId, language, difficulty]);
 
     if (results && results[0] && results[0].rows.length > 0) {
       return results[0].rows.item(0);
@@ -750,7 +776,8 @@ export const getTopicsForConversation = async (
 export const getRandomConversationExerciseForTopic = async (
   topicId: number,
   language: string,
-  difficulty: string
+  difficulty: string,
+  userId?: number | null
 ): Promise<ExerciseInfo | null> => {
   let db: SQLiteDatabase | null = null;
 
@@ -762,7 +789,32 @@ export const getRandomConversationExerciseForTopic = async (
       location: 'Documents',
     });
 
-    const query = `
+    if (userId) {
+      // First, try to get an exercise that hasn't been attempted
+      const untriedQuery = `
+        SELECT ei.* FROM exercises_info ei
+        JOIN languages l ON ei.language_id = l.id
+        JOIN difficulties d ON ei.difficulty_id = d.id
+        JOIN conversation_exercises ce ON ei.id = ce.exercise_id
+        LEFT JOIN user_exercise_attempts uea ON ei.id = uea.exercise_id AND uea.user_id = ?
+        WHERE ei.topic_id = ?
+          AND l.language = ?
+          AND d.difficulty_level = ?
+          AND ei.exercise_type = 'conversation'
+          AND uea.exercise_id IS NULL
+        ORDER BY RANDOM()
+        LIMIT 1
+      `;
+
+      const untriedResults = await db.executeSql(untriedQuery, [userId, topicId, language, difficulty]);
+
+      if (untriedResults && untriedResults[0] && untriedResults[0].rows.length > 0) {
+        return untriedResults[0].rows.item(0);
+      }
+    }
+
+    // If no untried exercises found (or no userId provided), fall back to random selection
+    const randomQuery = `
       SELECT ei.* FROM exercises_info ei
       JOIN languages l ON ei.language_id = l.id
       JOIN difficulties d ON ei.difficulty_id = d.id
@@ -775,7 +827,7 @@ export const getRandomConversationExerciseForTopic = async (
       LIMIT 1
     `;
 
-    const results = await db.executeSql(query, [topicId, language, difficulty]);
+    const results = await db.executeSql(randomQuery, [topicId, language, difficulty]);
 
     if (results && results[0] && results[0].rows.length > 0) {
       return results[0].rows.item(0);
@@ -898,7 +950,8 @@ export const getTopicsForTranslation = async (
 export const getRandomTranslationExerciseForTopic = async (
   topicId: number,
   language: string,
-  difficulty: string
+  difficulty: string,
+  userId?: number | null
 ): Promise<ExerciseInfo | null> => {
   let db: SQLiteDatabase | null = null;
 
@@ -910,7 +963,32 @@ export const getRandomTranslationExerciseForTopic = async (
       location: 'Documents',
     });
 
-    const query = `
+    if (userId) {
+      // First, try to get an exercise that hasn't been attempted
+      const untriedQuery = `
+        SELECT ei.* FROM exercises_info ei
+        JOIN languages l ON ei.language_id = l.id
+        JOIN difficulties d ON ei.difficulty_id = d.id
+        JOIN translation_exercises te ON ei.id = te.exercise_id
+        LEFT JOIN user_exercise_attempts uea ON ei.id = uea.exercise_id AND uea.user_id = ?
+        WHERE ei.topic_id = ?
+          AND l.language = ?
+          AND d.difficulty_level = ?
+          AND ei.exercise_type = 'translation'
+          AND uea.exercise_id IS NULL
+        ORDER BY RANDOM()
+        LIMIT 1
+      `;
+
+      const untriedResults = await db.executeSql(untriedQuery, [userId, topicId, language, difficulty]);
+
+      if (untriedResults && untriedResults[0] && untriedResults[0].rows.length > 0) {
+        return untriedResults[0].rows.item(0);
+      }
+    }
+
+    // If no untried exercises found (or no userId provided), fall back to random selection
+    const randomQuery = `
       SELECT ei.* FROM exercises_info ei
       JOIN languages l ON ei.language_id = l.id
       JOIN difficulties d ON ei.difficulty_id = d.id
@@ -923,7 +1001,7 @@ export const getRandomTranslationExerciseForTopic = async (
       LIMIT 1
     `;
 
-    const results = await db.executeSql(query, [topicId, language, difficulty]);
+    const results = await db.executeSql(randomQuery, [topicId, language, difficulty]);
 
     if (results && results[0] && results[0].rows.length > 0) {
       return results[0].rows.item(0);
@@ -1119,6 +1197,154 @@ export const recordExerciseAttempt = async (
     );
   } catch (error) {
     console.error('Failed to record exercise attempt:', error);
+    throw error;
+  } finally {
+    await safeCloseDatabase(db);
+  }
+};
+
+// Get topic progress for a specific exercise type
+export const getTopicProgress = async (
+  userId: number,
+  topicId: number,
+  exerciseType: string,
+  language: string,
+  difficulty: string
+): Promise<{ totalExercises: number; completedExercises: number; percentage: number }> => {
+  let db: SQLiteDatabase | null = null;
+
+  try {
+    await ensureDatabaseCopied();
+
+    db = await SQLite.openDatabase({
+      name: 'languageLearningDatabase.db',
+      location: 'Documents',
+    });
+
+    // Get total exercises for this topic/type/language/difficulty combination
+    const totalQuery = `
+      SELECT COUNT(DISTINCT ei.id) as total
+      FROM exercises_info ei
+      JOIN languages l ON ei.language_id = l.id
+      JOIN difficulties d ON ei.difficulty_id = d.id
+      ${exerciseType === 'pairs' ? 'JOIN pair_exercises pe ON ei.id = pe.exercise_id' : ''}
+      ${exerciseType === 'conversation' ? 'JOIN conversation_exercises ce ON ei.id = ce.exercise_id' : ''}
+      ${exerciseType === 'translation' ? 'JOIN translation_exercises te ON ei.id = te.exercise_id' : ''}
+      WHERE ei.topic_id = ?
+        AND ei.exercise_type = ?
+        AND l.language = ?
+        AND d.difficulty_level = ?
+    `;
+
+    const totalResult = await db.executeSql(totalQuery, [topicId, exerciseType, language, difficulty]);
+    const totalExercises = totalResult[0].rows.item(0).total || 0;
+
+    // Get completed exercises (at least one correct attempt)
+    const completedQuery = `
+      SELECT COUNT(DISTINCT ei.id) as completed
+      FROM exercises_info ei
+      JOIN languages l ON ei.language_id = l.id
+      JOIN difficulties d ON ei.difficulty_id = d.id
+      JOIN user_exercise_attempts uea ON ei.id = uea.exercise_id
+      ${exerciseType === 'pairs' ? 'JOIN pair_exercises pe ON ei.id = pe.exercise_id' : ''}
+      ${exerciseType === 'conversation' ? 'JOIN conversation_exercises ce ON ei.id = ce.exercise_id' : ''}
+      ${exerciseType === 'translation' ? 'JOIN translation_exercises te ON ei.id = te.exercise_id' : ''}
+      WHERE ei.topic_id = ?
+        AND ei.exercise_type = ?
+        AND l.language = ?
+        AND d.difficulty_level = ?
+        AND uea.user_id = ?
+        AND uea.is_correct = 1
+    `;
+
+    const completedResult = await db.executeSql(completedQuery, [topicId, exerciseType, language, difficulty, userId]);
+    const completedExercises = completedResult[0].rows.item(0).completed || 0;
+
+    const percentage = totalExercises > 0 ? Math.round((completedExercises / totalExercises) * 100) : 0;
+
+    return {
+      totalExercises,
+      completedExercises,
+      percentage
+    };
+  } catch (error) {
+    console.error('Failed to get topic progress:', error);
+    return { totalExercises: 0, completedExercises: 0, percentage: 0 };
+  } finally {
+    await safeCloseDatabase(db);
+  }
+};
+
+// Reset user data (stats and chats) while keeping lessons intact
+export const resetUserData = async (username: string): Promise<void> => {
+  let db: SQLiteDatabase | null = null;
+
+  try {
+    await ensureDatabaseCopied();
+
+    db = await SQLite.openDatabase({
+      name: 'languageLearningDatabase.db',
+      location: 'Documents',
+    });
+
+    // Get user ID first
+    const userIdResult = await db.executeSql(
+      'SELECT id FROM users WHERE username = ?',
+      [username]
+    );
+
+    if (userIdResult[0].rows.length === 0) {
+      throw new Error(`User ${username} not found`);
+    }
+
+    const userId = userIdResult[0].rows.item(0).id;
+
+    // Start a transaction for atomic operations
+    await db.executeSql('BEGIN TRANSACTION');
+
+    try {
+      // Delete user exercise attempts (this removes progress/stats)
+      await db.executeSql(
+        'DELETE FROM user_exercise_attempts WHERE user_id = ?',
+        [userId]
+      );
+
+      // Delete user chats/conversations if that table exists
+      // Check if table exists first
+      const tableCheck = await db.executeSql(
+        `SELECT name FROM sqlite_master WHERE type='table' AND name='user_chats'`
+      );
+
+      if (tableCheck[0].rows.length > 0) {
+        await db.executeSql(
+          'DELETE FROM user_chats WHERE user_id = ?',
+          [userId]
+        );
+      }
+
+      // Reset user stats if there's a user_stats table
+      const statsTableCheck = await db.executeSql(
+        `SELECT name FROM sqlite_master WHERE type='table' AND name='user_stats'`
+      );
+
+      if (statsTableCheck[0].rows.length > 0) {
+        await db.executeSql(
+          'DELETE FROM user_stats WHERE user_id = ?',
+          [userId]
+        );
+      }
+
+      // Commit the transaction
+      await db.executeSql('COMMIT');
+
+      console.log(`Successfully reset data for user: ${username}`);
+    } catch (error) {
+      // Rollback on error
+      await db.executeSql('ROLLBACK');
+      throw error;
+    }
+  } catch (error) {
+    console.error('Failed to reset user data:', error);
     throw error;
   } finally {
     await safeCloseDatabase(db);

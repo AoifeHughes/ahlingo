@@ -15,6 +15,14 @@ export interface Topic {
   topic: string;
 }
 
+export interface TopicWithProgress extends Topic {
+  progress: {
+    totalExercises: number;
+    completedExercises: number;
+    percentage: number;
+  };
+}
+
 export interface Difficulty {
   id: number;
   difficulty_level: string;

@@ -13,6 +13,7 @@ import {
   getUserSettings,
   setUserSetting,
   updateUserLogin,
+  resetUserData,
 } from '../services/SimpleDatabaseService';
 import { Language, Difficulty } from '../types';
 import { DropdownItem } from '../components/Dropdown';
@@ -36,11 +37,11 @@ interface UseSettingsFormReturn {
   languages: DropdownItem[];
   difficulties: DropdownItem[];
   themes: DropdownItem[];
-  isSaving: boolean;
+  isResetting: boolean;
   
   // Functions
   updateFormData: (field: keyof FormData, value: string | boolean) => void;
-  handleSave: () => Promise<void>;
+  handleReset: () => Promise<void>;
   loadInitialData: () => Promise<void>;
 }
 
@@ -67,12 +68,28 @@ export const useSettingsForm = (): UseSettingsFormReturn => {
       value: theme.key,
     }))
   );
-  const [isSaving, setIsSaving] = useState(false);
+  const [isResetting, setIsResetting] = useState(false);
+  const [initialFormData, setInitialFormData] = useState<FormData | null>(null);
 
   // Load initial data on mount
   useEffect(() => {
     loadInitialData();
   }, []);
+
+  // Auto-save when form data changes (after initial load)
+  useEffect(() => {
+    if (initialFormData) {
+      const hasChanges = Object.keys(formData).some(key => {
+        const formKey = key as keyof FormData;
+        return formData[formKey] !== initialFormData[formKey];
+      });
+      
+      if (hasChanges) {
+        // Auto-save the changes
+        handleAutoSave();
+      }
+    }
+  }, [formData, initialFormData]);
 
   const loadInitialData = async () => {
     dispatch(setLoading(true));
@@ -131,7 +148,7 @@ export const useSettingsForm = (): UseSettingsFormReturn => {
       const username = await getMostRecentUser();
       const userSettings = await getUserSettings(username);
 
-      setFormData({
+      const loadedFormData = {
         language: userSettings.language || 'French',
         difficulty: userSettings.difficulty || 'Beginner',
         apiKey: userSettings.api_key || '',
@@ -140,7 +157,10 @@ export const useSettingsForm = (): UseSettingsFormReturn => {
         theme: themeVariant,
         enableLocalModels: userSettings.enable_local_models === 'true' || false,
         preferLocalModels: userSettings.prefer_local_models === 'true' || false,
-      });
+      };
+
+      setFormData(loadedFormData);
+      setInitialFormData(loadedFormData);
 
       // Update Redux store
       dispatch(
@@ -156,13 +176,12 @@ export const useSettingsForm = (): UseSettingsFormReturn => {
     }
   };
 
-  const handleSave = async () => {
-    setIsSaving(true);
 
+  const handleAutoSave = async () => {
     try {
       const username = formData.username || 'default_user';
 
-      // Save all settings to database
+      // Save all settings to database silently
       await setUserSetting(username, 'language', formData.language);
       await setUserSetting(username, 'difficulty', formData.difficulty);
       await setUserSetting(username, 'api_key', formData.apiKey);
@@ -170,7 +189,7 @@ export const useSettingsForm = (): UseSettingsFormReturn => {
       await setUserSetting(username, 'enable_local_models', formData.enableLocalModels.toString());
       await setUserSetting(username, 'prefer_local_models', formData.preferLocalModels.toString());
 
-      // Apply theme change immediately (this will also save to database)
+      // Apply theme change immediately
       await setTheme(formData.theme as ThemeVariant);
 
       // Update user login timestamp
@@ -186,12 +205,25 @@ export const useSettingsForm = (): UseSettingsFormReturn => {
         })
       );
 
-      Alert.alert('Success', 'Settings saved successfully!');
+      setInitialFormData({ ...formData }); // Update initial data after successful save
     } catch (error) {
-      console.error('Failed to save settings:', error);
-      Alert.alert('Error', 'Failed to save settings. Please try again.');
+      console.error('Failed to auto-save settings:', error);
+      // Show error only if auto-save fails
+      Alert.alert('Error', 'Failed to save settings automatically. Please try again.');
+    }
+  };
+
+  const handleReset = async () => {
+    setIsResetting(true);
+    try {
+      const username = formData.username || 'default_user';
+      await resetUserData(username);
+      Alert.alert('Success', 'User data has been reset successfully! Your progress and chat history have been cleared, but lessons remain intact.');
+    } catch (error) {
+      console.error('Failed to reset user data:', error);
+      Alert.alert('Error', 'Failed to reset user data. Please try again.');
     } finally {
-      setIsSaving(false);
+      setIsResetting(false);
     }
   };
 
@@ -205,11 +237,11 @@ export const useSettingsForm = (): UseSettingsFormReturn => {
     languages,
     difficulties,
     themes,
-    isSaving,
+    isResetting,
     
     // Functions
     updateFormData,
-    handleSave,
+    handleReset,
     loadInitialData,
   };
 };
