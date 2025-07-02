@@ -90,6 +90,8 @@ const styles = StyleSheet.create({
     borderTopColor: colors.border,
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.md,
+    position: 'relative',
+    zIndex: 1,
   },
   inputContainer: {
     flexDirection: 'row',

@@ -49,7 +49,7 @@ export class OpenAIService {
   private static readonly REQUEST_TIMEOUT = 30000;
 
   static generateSystemPrompt(language: string, difficulty: string): string {
-    return `You are a language learning assistant. Always attempt to speak in ${language} at ${difficulty} level. Encourage the user to learn and practice in ${language}. Respond in English when specifically asked by the user.`;
+    return `You are a language learning assistant. Always attempt to speak in ${language} at ${difficulty} level. Encourage the user to learn and practice in ${language}. Respond in English when specifically asked by the user. Keep sentences short`;
   }
 
   static convertChatMessagesToOpenAI(
@@ -246,6 +246,7 @@ export class OpenAIService {
           const xhr = new XMLHttpRequest();
           let fullContent = '';
           let buffer = '';
+          let isCompleted = false;
           
           // Set up abort controller integration
           const abortHandler = () => {
@@ -287,7 +288,10 @@ export class OpenAIService {
                     
                     if (data === '[DONE]') {
                       console.log('✅ Stream finished with [DONE]');
-                      callbacks.onComplete(fullContent);
+                      if (!isCompleted) {
+                        isCompleted = true;
+                        callbacks.onComplete(fullContent);
+                      }
                       controller.signal.removeEventListener('abort', abortHandler);
                       resolve(controller);
                       return;
@@ -309,7 +313,10 @@ export class OpenAIService {
                       const finishReason = parsed.choices?.[0]?.finish_reason;
                       if (finishReason) {
                         console.log('✅ Stream finished with reason:', finishReason);
-                        callbacks.onComplete(fullContent);
+                        if (!isCompleted) {
+                          isCompleted = true;
+                          callbacks.onComplete(fullContent);
+                        }
                         controller.signal.removeEventListener('abort', abortHandler);
                         resolve(controller);
                         return;
@@ -335,7 +342,10 @@ export class OpenAIService {
                 if (fullContent.length === 0) {
                   console.warn('⚠️ Stream completed but no content received');
                 }
-                callbacks.onComplete(fullContent);
+                if (!isCompleted) {
+                  isCompleted = true;
+                  callbacks.onComplete(fullContent);
+                }
                 controller.signal.removeEventListener('abort', abortHandler);
                 resolve(controller);
               }

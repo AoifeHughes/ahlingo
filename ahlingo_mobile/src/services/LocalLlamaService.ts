@@ -89,33 +89,49 @@ class LocalLlamaService {
   // Check if a specific model is downloaded
   async isModelDownloaded(modelId: string): Promise<boolean> {
     const model = AVAILABLE_LOCAL_MODELS.find(m => m.id === modelId);
-    if (!model) return false;
+    if (!model) {
+      console.log(`❌ Model not found in AVAILABLE_LOCAL_MODELS: ${modelId}`);
+      return false;
+    }
     
     const filePath = this.getModelPath(model.filename);
     const exists = await RNFS.exists(filePath);
     
+    console.log(`🔍 Checking model download status:`, {
+      modelId,
+      filename: model.filename,
+      filePath,
+      exists
+    });
+    
     if (exists) {
       try {
         const stats = await RNFS.stat(filePath);
-        const expectedSize = model.fileSize;
         const actualSize = stats.size;
         
-        if (expectedSize) {
-          const sizeDiff = Math.abs(actualSize - expectedSize);
-          const sizeTolerancePercent = 0.1; // 10% tolerance
-          
-          // Check if file size is within reasonable tolerance
-          if (sizeDiff > (expectedSize * sizeTolerancePercent)) {
-            return false;
-          }
-        }
+        console.log(`📊 Model file info:`, {
+          modelId,
+          filename: model.filename,
+          actualSizeGB: actualSize / (1024 * 1024 * 1024),
+          actualSizeMB: actualSize / (1024 * 1024)
+        });
         
-        return true;
+        // File exists and has content, consider it valid
+        // No size validation - just check that it's not empty
+        if (actualSize > 0) {
+          console.log(`✅ Model ${modelId} is downloaded and valid (size: ${(actualSize / (1024 * 1024 * 1024)).toFixed(2)} GB)`);
+          return true;
+        } else {
+          console.log(`❌ Model ${modelId} file is empty`);
+          return false;
+        }
       } catch (error) {
+        console.log(`❌ Error checking model ${modelId}:`, error);
         return false;
       }
     }
     
+    console.log(`❌ Model ${modelId} file does not exist`);
     return false;
   }
 

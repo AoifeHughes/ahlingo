@@ -8,12 +8,15 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   SafeAreaView,
-  TextInput
+  TextInput,
+  KeyboardAvoidingView,
+  Platform
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useSelector } from 'react-redux';
 import { RootStackParamList } from '../types';
 import { RootState } from '../store';
+import { useUserData } from '../hooks/useUserData';
 import ChatInput from '../components/ChatInput';
 import ChatMessage from '../components/ChatMessage';
 import ConversationsList from '../components/ConversationsList';
@@ -36,7 +39,7 @@ import {
   StreamingCallbacks
 } from '../services/OpenAIService';
 import { ModelService, ModelInfo } from '../services/ModelService';
-import { getUserSettings, getUserId } from '../services/SimpleDatabaseService';
+import { getUserSettings } from '../services/SimpleDatabaseService';
 import { useTheme } from '../contexts/ThemeContext';
 import LocalLlamaService from '../services/LocalLlamaService';
 
@@ -51,6 +54,7 @@ interface Props {
 
 const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
   const settings = useSelector((state: RootState) => state.settings.settings);
+  const { language, difficulty, userId } = useUserData();
   const { theme } = useTheme();
   
   const [messages, setMessages] = useState<ChatMessageType[]>([]);
@@ -68,7 +72,6 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
 
   const loadUserChats = useCallback(async () => {
     try {
-      const userId = await getUserId(settings.username || 'default_user');
       if (userId) {
         const userChats = await getUserChats(userId);
         setConversations(userChats);
@@ -79,7 +82,7 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
       console.error('Failed to load user chats:', error);
       return null;
     }
-  }, [settings.username]);
+  }, [userId]);
 
   const loadChatMessages = useCallback(async (chatId: number) => {
     try {
@@ -169,15 +172,11 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
   const createNewChat = async () => {
     console.log('🆕 Creating new chat...');
     try {
-      const userId = await getUserId(settings.username || 'default_user');
-      console.log('👤 Got user ID:', userId);
       if (!userId) {
         Alert.alert('Error', 'Failed to get user information');
         return;
       }
 
-      const language = settings.language || 'Spanish';
-      const difficulty = settings.difficulty || 'Beginner';
       const model = selectedModel;
       
       console.log('📝 Creating chat with:', { userId, language, difficulty, model });
@@ -249,17 +248,17 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
         onComplete: async (fullContent: string) => {
           console.log('✅ Streaming completed. Full content length:', fullContent.length);
           try {
+            // Clear streaming state FIRST to prevent duplicate display
+            setIsStreaming(false);
+            setStreamingContent('');
+            setStreamController(null);
+            
             // Save the complete assistant message to database
             await addChatMessage(currentChat.id, 'assistant', fullContent);
             
             // Reload messages from database
             const finalMessages = await getChatMessages(currentChat.id);
             setMessages(finalMessages);
-            
-            // Clear streaming state
-            setIsStreaming(false);
-            setStreamingContent('');
-            setStreamController(null);
           } catch (error) {
             console.error('Failed to save streaming message:', error);
             Alert.alert('Error', 'Failed to save message');
@@ -386,9 +385,19 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
       // Check if it's a local model and if it's downloaded
       if (ModelService.isLocalModel(newModel)) {
         const localModelId = ModelService.extractLocalModelId(newModel);
+        console.log('🏠 Local model detected:', {
+          originalModelId: newModel,
+          extractedLocalModelId: localModelId
+        });
+        
         const isDownloaded = await LocalLlamaService.isModelDownloaded(localModelId);
+        console.log('📋 Download status check result:', {
+          localModelId,
+          isDownloaded
+        });
         
         if (!isDownloaded) {
+          console.log('❌ Model not downloaded, showing alert');
           Alert.alert(
             'Model Not Downloaded',
             'This local model is not downloaded yet. Please download it from Settings first.',
@@ -401,6 +410,8 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
             ]
           );
           return;
+        } else {
+          console.log('✅ Model is downloaded, proceeding with selection');
         }
       }
       
@@ -427,7 +438,6 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
 
   const deleteConversation = async (conversationId: number) => {
     try {
-      const userId = await getUserId(settings.username || 'default_user');
       if (userId) {
         await deleteChat(conversationId, userId);
         await loadUserChats();
@@ -458,145 +468,152 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.conversationsButton}
-          onPress={() => setShowConversations(true)}
-        >
-          <Text style={styles.conversationsButtonText}>Conversations</Text>
-        </TouchableOpacity>
-        <View style={styles.headerCenter}>
-          <Text style={styles.headerTitle}>
-            {currentChat ? (currentChat.chat_name || `${currentChat.language} - ${currentChat.difficulty}`) : 'New Chat'}
-          </Text>
-          {availableModels.length > 0 && (
-            <TouchableOpacity
-              style={styles.modelSelector}
-              onPress={() => setShowModelDropdown(!showModelDropdown)}
-            >
-              <Text style={styles.modelSelectorText}>
-                {selectedModel}
-              </Text>
-              <Text style={styles.dropdownArrow}>▼</Text>
-            </TouchableOpacity>
-          )}
-        </View>
-        <TouchableOpacity
-          style={styles.newChatButton}
-          onPress={createNewChat}
-        >
-          <Text style={styles.newChatButtonText}>New</Text>
-        </TouchableOpacity>
-      </View>
-
-      {showModelDropdown && availableModels.length > 0 && (
-        <View style={styles.modelDropdownContainer}>
-          <ScrollView style={styles.modelDropdown} showsVerticalScrollIndicator={false}>
-            {availableModels.map((model) => (
-              <TouchableOpacity
-                key={model.id}
-                style={[
-                  styles.modelOption,
-                  selectedModel === model.id && styles.selectedModelOption,
-                ]}
-                onPress={() => {
-                  handleModelChange(model.id);
-                  setShowModelDropdown(false);
-                }}
-              >
-                <View style={styles.modelOptionContent}>
-                  <Text style={[
-                    styles.modelOptionText,
-                    selectedModel === model.id && styles.selectedModelOptionText,
-                  ]}>
-                    {model.name}
-                  </Text>
-                  <View style={styles.modelMetadata}>
-                    {model.isLocal && (
-                      <Text style={[
-                        styles.modelBadge,
-                        styles.localBadge,
-                        !model.isDownloaded && styles.notDownloadedBadge
-                      ]}>
-                        {model.isDownloaded ? '📱 Local' : '📱 Not Downloaded'}
-                      </Text>
-                    )}
-                    {!model.isLocal && (
-                      <Text style={[styles.modelBadge, styles.remoteBadge]}>
-                        🌐 Remote
-                      </Text>
-                    )}
-                    {model.fileSize && (
-                      <Text style={styles.modelSizeText}>
-                        {ModelService.getModelSize(model)}
-                      </Text>
-                    )}
-                  </View>
-                </View>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        </View>
-      )}
-
-      <ScrollView 
-        style={styles.messagesContainer}
-        contentContainerStyle={styles.messagesContent}
-        showsVerticalScrollIndicator={false}
+      <KeyboardAvoidingView 
+        style={styles.keyboardAvoidingView}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 20}
+        enabled={true}
       >
-        {messages.length === 0 && !isStreaming ? (
-          <View style={styles.emptyState}>
-            <Text style={styles.emptyStateText}>Start a conversation!</Text>
-            <Text style={styles.emptyStateSubtext}>
-              Type a message below to begin chatting in {currentChat?.language || settings.language || 'your target language'}.
+        <View style={styles.header}>
+          <TouchableOpacity
+            style={styles.conversationsButton}
+            onPress={() => setShowConversations(true)}
+          >
+            <Text style={styles.conversationsButtonText}>Conversations</Text>
+          </TouchableOpacity>
+          <View style={styles.headerCenter}>
+            <Text style={styles.headerTitle}>
+              {currentChat ? (currentChat.chat_name || `${currentChat.language} - ${currentChat.difficulty}`) : 'New Chat'}
             </Text>
-          </View>
-        ) : (
-          <>
-            {messages.map((message, index) => (
-              <ChatMessage
-                key={`${message.id}-${index}`}
-                role={message.role}
-                content={message.content}
-                timestamp={message.timestamp}
-              />
-            ))}
-            {isStreaming && (
-              <ChatMessage
-                key="streaming-message"
-                role="assistant"
-                content={streamingContent}
-                isStreaming={true}
-              />
+            {availableModels.length > 0 && (
+              <TouchableOpacity
+                style={styles.modelSelector}
+                onPress={() => setShowModelDropdown(!showModelDropdown)}
+              >
+                <Text style={styles.modelSelectorText}>
+                  {selectedModel}
+                </Text>
+                <Text style={styles.dropdownArrow}>▼</Text>
+              </TouchableOpacity>
             )}
-          </>
-        )}
-        {isLoading && (
-          <View style={styles.loadingMessage}>
-            <ActivityIndicator size="small" color="#1976D2" />
-            <Text style={styles.loadingMessageText}>Assistant is typing...</Text>
+          </View>
+          <TouchableOpacity
+            style={styles.newChatButton}
+            onPress={createNewChat}
+          >
+            <Text style={styles.newChatButtonText}>New</Text>
+          </TouchableOpacity>
+        </View>
+
+        {showModelDropdown && availableModels.length > 0 && (
+          <View style={styles.modelDropdownContainer}>
+            <ScrollView style={styles.modelDropdown} showsVerticalScrollIndicator={false}>
+              {availableModels.map((model) => (
+                <TouchableOpacity
+                  key={model.id}
+                  style={[
+                    styles.modelOption,
+                    selectedModel === model.id && styles.selectedModelOption,
+                  ]}
+                  onPress={() => {
+                    handleModelChange(model.id);
+                    setShowModelDropdown(false);
+                  }}
+                >
+                  <View style={styles.modelOptionContent}>
+                    <Text style={[
+                      styles.modelOptionText,
+                      selectedModel === model.id && styles.selectedModelOptionText,
+                    ]}>
+                      {model.name}
+                    </Text>
+                    <View style={styles.modelMetadata}>
+                      {model.isLocal && (
+                        <Text style={[
+                          styles.modelBadge,
+                          styles.localBadge,
+                          !model.isDownloaded && styles.notDownloadedBadge
+                        ]}>
+                          {model.isDownloaded ? '📱 Local' : '📱 Not Downloaded'}
+                        </Text>
+                      )}
+                      {!model.isLocal && (
+                        <Text style={[styles.modelBadge, styles.remoteBadge]}>
+                          🌐 Remote
+                        </Text>
+                      )}
+                      {model.fileSize && (
+                        <Text style={styles.modelSizeText}>
+                          {ModelService.getModelSize(model)}
+                        </Text>
+                      )}
+                    </View>
+                  </View>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
           </View>
         )}
-      </ScrollView>
 
-      <ChatInput
-        onSendMessage={sendMessage}
-        onStopGeneration={stopGeneration}
-        isLoading={isLoading}
-        isStreaming={isStreaming}
-        placeholder="Type your message..."
-      />
+        <ScrollView 
+          style={styles.messagesContainer}
+          contentContainerStyle={styles.messagesContent}
+          showsVerticalScrollIndicator={false}
+        >
+          {messages.length === 0 && !isStreaming ? (
+            <View style={styles.emptyState}>
+              <Text style={styles.emptyStateText}>Start a conversation!</Text>
+              <Text style={styles.emptyStateSubtext}>
+                Type a message below to begin chatting in {currentChat?.language || settings.language || 'your target language'}.
+              </Text>
+            </View>
+          ) : (
+            <>
+              {messages.map((message, index) => (
+                <ChatMessage
+                  key={`${message.id}-${index}`}
+                  role={message.role}
+                  content={message.content}
+                  timestamp={message.timestamp}
+                />
+              ))}
+              {isStreaming && (
+                <ChatMessage
+                  key="streaming-message"
+                  role="assistant"
+                  content={streamingContent}
+                  isStreaming={true}
+                />
+              )}
+            </>
+          )}
+          {isLoading && (
+            <View style={styles.loadingMessage}>
+              <ActivityIndicator size="small" color="#1976D2" />
+              <Text style={styles.loadingMessageText}>Assistant is typing...</Text>
+            </View>
+          )}
+        </ScrollView>
 
-      <ConversationsList
-        visible={showConversations}
-        onClose={() => setShowConversations(false)}
-        conversations={conversations}
-        onSelectConversation={selectConversation}
-        onDeleteConversation={deleteConversation}
-        onNewConversation={createNewChat}
-        onRefreshConversations={loadUserChats}
-        currentConversationId={currentChat?.id}
-      />
+        <ChatInput
+          onSendMessage={sendMessage}
+          onStopGeneration={stopGeneration}
+          isLoading={isLoading}
+          isStreaming={isStreaming}
+          placeholder="Type your message..."
+        />
+
+        <ConversationsList
+          visible={showConversations}
+          onClose={() => setShowConversations(false)}
+          conversations={conversations}
+          onSelectConversation={selectConversation}
+          onDeleteConversation={deleteConversation}
+          onNewConversation={createNewChat}
+          onRefreshConversations={loadUserChats}
+          currentConversationId={currentChat?.id}
+        />
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
@@ -605,6 +622,9 @@ const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) => Sty
   container: {
     flex: 1,
     backgroundColor: currentTheme.colors.background,
+  },
+  keyboardAvoidingView: {
+    flex: 1,
   },
   header: {
     flexDirection: 'row',
