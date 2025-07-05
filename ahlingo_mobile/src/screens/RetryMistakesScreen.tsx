@@ -90,6 +90,11 @@ const RetryMistakesScreen: React.FC<Props> = ({ navigation }) => {
           topicId: exercise.topic_id,
         });
         break;
+      case 'fill_in_blank':
+        navigation.navigate('FillInTheBlank', {
+          topicId: exercise.topic_id,
+        });
+        break;
       default:
         Alert.alert('Error', 'Unknown exercise type');
     }

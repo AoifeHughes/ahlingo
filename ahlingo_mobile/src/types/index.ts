@@ -34,7 +34,7 @@ export interface ExerciseInfo {
   topic_id: number;
   difficulty_id: number;
   language_id: number;
-  exercise_type: 'pairs' | 'translation' | 'conversation';
+  exercise_type: 'pairs' | 'translation' | 'conversation' | 'fill_in_blank';
   lesson_id?: string;
 }
 
@@ -54,6 +54,16 @@ export interface TranslationExercise {
   language_2: string;
   language_1_content: string;
   language_2_content: string;
+}
+
+export interface FillInBlankExercise {
+  id: number;
+  exercise_id: number;
+  sentence: string; // Sentence with blank marked as _ (e.g., "Bonjour, je _ Jacques.")
+  correct_answer: string; // Correct word (e.g., "m'appelle")
+  incorrect_1: string; // First distractor (e.g., "suis")
+  incorrect_2: string; // Second distractor (e.g., "ai")
+  blank_position: number; // Position of blank in sentence (e.g., 2)
 }
 
 export interface ConversationExercise {
@@ -153,7 +163,7 @@ export interface TokenData {
 // Exercise Shuffle types
 export interface ShuffleExercise {
   exerciseInfo: ExerciseInfo;
-  exerciseType: 'pairs' | 'conversation' | 'translation';
+  exerciseType: 'pairs' | 'conversation' | 'translation' | 'fill_in_blank';
   topicName: string;
 }
 
@@ -166,7 +176,7 @@ export interface ExerciseShuffleContext {
 
 export type RootStackParamList = {
   MainMenu: undefined;
-  TopicSelection: { exerciseType?: 'pairs' | 'conversation' | 'translation' };
+  TopicSelection: { exerciseType?: 'pairs' | 'conversation' | 'translation' | 'fill_in_blank' };
   PairsGame: { 
     topicId?: number;
     shuffleContext?: ExerciseShuffleContext;
@@ -188,7 +198,11 @@ export type RootStackParamList = {
   RetryMistakes: undefined;
   // New feature screens
   StudyTopic: undefined;
-  FillInTheBlank: undefined;
+  FillInTheBlank: { 
+    topicId?: number;
+    shuffleContext?: ExerciseShuffleContext;
+    exerciseInfo?: ExerciseInfo;
+  };
   // Exercise Shuffle specific screens
   ExerciseShuffleStart: { exercises: ShuffleExercise[] };
   ExerciseShuffleTransition: { 

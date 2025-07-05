@@ -74,9 +74,9 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
     },
     {
       title: 'Fill in the Blank',
-      screen: 'FillInTheBlank' as keyof RootStackParamList,
+      screen: 'TopicSelection' as keyof RootStackParamList,
       icon: '✏️',
-      exerciseType: null,
+      exerciseType: 'fill_in_blank',
     },
     {
       title: 'Your Stats',
@@ -101,7 +101,8 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
         exerciseType: item.exerciseType as
           | 'pairs'
           | 'conversation'
-          | 'translation',
+          | 'translation'
+          | 'fill_in_blank',
       });
     } else if (item.title === 'Exercise Shuffle') {
       // Navigate directly to shuffle start screen

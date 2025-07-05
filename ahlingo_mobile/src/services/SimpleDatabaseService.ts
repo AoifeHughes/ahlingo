@@ -10,6 +10,7 @@ import {
   PairExercise,
   ExerciseInfo,
   ShuffleExercise,
+  FillInBlankExercise,
 } from '../types';
 
 // Enable debug mode to see SQL logs
@@ -31,52 +32,109 @@ const withTimeout = <T>(
   ]);
 };
 
-// Safe database cleanup helper
+// Enhanced transaction-aware database cleanup helper with state validation
 const safeCloseDatabase = async (db: SQLiteDatabase | null): Promise<void> => {
   if (!db) return;
 
   try {
-    // First, check if database is still open
-    // Some databases might already be closed due to errors
-
-    // Try to rollback any pending transactions
+    // First, verify the database is actually open by testing a simple operation
+    let isDatabaseOpen = false;
     try {
-      await withTimeout(db.executeSql('ROLLBACK'), 2000);
-    } catch (rollbackError) {
-      // Rollback might fail if:
-      // 1. No transaction is active (normal)
-      // 2. Database is already closed (normal)
-      // 3. Database is corrupted (we'll still try to close)
-      const errorMsg =
-        rollbackError instanceof Error
-          ? rollbackError.message
-          : String(rollbackError);
+      // Test if database is responsive with a lightweight query
+      await withTimeout(db.executeSql('SELECT 1'), 1000);
+      isDatabaseOpen = true;
+    } catch (testError) {
+      const testErrorMsg = testError instanceof Error ? testError.message : String(testError);
+      
       if (
-        !errorMsg.includes('database is locked') &&
-        !errorMsg.includes('not an error')
+        testErrorMsg.includes('database is not open') ||
+        testErrorMsg.includes('database is closed') ||
+        testErrorMsg.includes('invalid connection')
       ) {
-        console.log(
-          'Rollback not needed or failed (this is usually normal):',
-          errorMsg
-        );
+        console.log('ℹ️ Database already closed, no cleanup needed');
+        return;
+      } else {
+        console.log('⚠️ Database test query failed, but attempting cleanup anyway:', testErrorMsg);
+        // Continue with cleanup attempt even if test query fails for other reasons
+        isDatabaseOpen = true;
       }
     }
 
-    // Wait a brief moment for any pending operations to complete
-    await new Promise(resolve => setTimeout(resolve, 50));
+    if (!isDatabaseOpen) {
+      return;
+    }
+
+    // Check if we're in a transaction by querying SQLite's internal state
+    let inTransaction = false;
+    try {
+      const result = await withTimeout(db.executeSql('PRAGMA journal_mode'), 1000);
+      // If we can execute this, the database is responsive
+      
+      // Try to detect if we're in a transaction by attempting a savepoint
+      try {
+        await withTimeout(db.executeSql('SAVEPOINT test_transaction_state'), 1000);
+        await withTimeout(db.executeSql('RELEASE SAVEPOINT test_transaction_state'), 1000);
+      } catch (savepointError) {
+        // If savepoint fails, we might be in a transaction
+        inTransaction = true;
+      }
+    } catch (pragmaError) {
+      // Database might be closed or corrupted
+      console.log('Database state check failed, attempting direct close');
+    }
+
+    // If we detected an active transaction, try to clean it up
+    if (inTransaction) {
+      console.log('🔄 Active transaction detected, attempting cleanup...');
+      
+      // Try multiple rollback attempts with increasing delays
+      const maxAttempts = 3;
+      for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+        try {
+          await withTimeout(db.executeSql('ROLLBACK'), 2000);
+          console.log(`✅ Transaction rolled back on attempt ${attempt}`);
+          break;
+        } catch (rollbackError) {
+          const errorMsg = rollbackError instanceof Error ? rollbackError.message : String(rollbackError);
+          
+          if (errorMsg.includes('no transaction is active')) {
+            // Transaction was already completed
+            console.log('✅ No active transaction found');
+            break;
+          }
+          
+          if (attempt === maxAttempts) {
+            console.log(`⚠️ Could not rollback transaction after ${maxAttempts} attempts:`, errorMsg);
+          } else {
+            console.log(`🔄 Rollback attempt ${attempt} failed, retrying...`);
+            // Wait longer between attempts
+            await new Promise(resolve => setTimeout(resolve, 200 * attempt));
+          }
+        }
+      }
+    }
+
+    // Wait for any pending operations to complete
+    await new Promise(resolve => setTimeout(resolve, 100));
 
     // Now try to close the database with timeout
-    await withTimeout(db.close(), 3000);
+    await withTimeout(db.close(), 5000);
     console.log('✅ Database closed safely');
+    
   } catch (closeError) {
-    const errorMsg =
-      closeError instanceof Error ? closeError.message : String(closeError);
-    // Only log errors that aren't "already closed" type errors
+    const errorMsg = closeError instanceof Error ? closeError.message : String(closeError);
+    
+    // Filter out expected/harmless errors and categorize them properly
     if (
-      !errorMsg.includes('database is closed') &&
-      !errorMsg.includes('invalid connection')
+      errorMsg.includes('database is closed') ||
+      errorMsg.includes('invalid connection') ||
+      errorMsg.includes('database cannot be closed while a transaction is in progress') ||
+      errorMsg.includes('database is not open') ||
+      errorMsg.includes('cannot close: database is not open')
     ) {
-      console.error('Error during safe database close:', errorMsg);
+      console.log('ℹ️ Database close info:', errorMsg);
+    } else {
+      console.error('❌ Unexpected error during database close:', errorMsg);
     }
   }
 };
@@ -918,6 +976,49 @@ export const getTopicsForTranslation = async (
   }
 };
 
+// Get topics that have fill-in-blank exercises for the given language and difficulty
+export const getTopicsForFillInBlank = async (
+  language: string,
+  difficulty: string
+): Promise<Topic[]> => {
+  let db: SQLiteDatabase | null = null;
+
+  try {
+    await ensureDatabaseCopied();
+
+    db = await SQLite.openDatabase(getDatabaseConfig());
+
+    const query = `
+      SELECT DISTINCT t.id, t.topic
+      FROM topics t
+      JOIN exercises_info ei ON t.id = ei.topic_id
+      JOIN languages l ON ei.language_id = l.id
+      JOIN difficulties d ON ei.difficulty_id = d.id
+      JOIN fill_in_blank_exercises fibe ON ei.id = fibe.exercise_id
+      WHERE l.language = ?
+        AND d.difficulty_level = ?
+        AND ei.exercise_type = 'fill_in_blank'
+      ORDER BY t.topic
+    `;
+
+    const results = await db.executeSql(query, [language, difficulty]);
+
+    const topics: Topic[] = [];
+    if (results && results[0]) {
+      for (let i = 0; i < results[0].rows.length; i++) {
+        topics.push(results[0].rows.item(i));
+      }
+    }
+
+    return topics;
+  } catch (error) {
+    console.error('Failed to get topics for fill-in-blank:', error);
+    return [];
+  } finally {
+    await safeCloseDatabase(db);
+  }
+};
+
 export const getRandomTranslationExerciseForTopic = async (
   topicId: number,
   language: string,
@@ -1034,6 +1135,109 @@ export const getTranslationExerciseData = async (
     }
   } catch (error) {
     console.error('Failed to get translation exercise data:', error);
+    return [];
+  } finally {
+    await safeCloseDatabase(db);
+  }
+};
+
+// Get random fill-in-the-blank exercise for a topic
+export const getRandomFillInBlankExerciseForTopic = async (
+  topicId: number,
+  language: string,
+  difficulty: string,
+  userId?: number | null
+): Promise<ExerciseInfo | null> => {
+  let db: SQLiteDatabase | null = null;
+
+  try {
+    await ensureDatabaseCopied();
+
+    db = await SQLite.openDatabase(getDatabaseConfig());
+
+    if (userId) {
+      // First, try to get an exercise that hasn't been attempted
+      const untriedQuery = `
+        SELECT ei.* FROM exercises_info ei
+        JOIN languages l ON ei.language_id = l.id
+        JOIN difficulties d ON ei.difficulty_id = d.id
+        JOIN fill_in_blank_exercises fibe ON ei.id = fibe.exercise_id
+        LEFT JOIN user_exercise_attempts uea ON ei.id = uea.exercise_id AND uea.user_id = ?
+        WHERE ei.topic_id = ?
+          AND l.language = ?
+          AND d.difficulty_level = ?
+          AND ei.exercise_type = 'fill_in_blank'
+          AND uea.exercise_id IS NULL
+        ORDER BY RANDOM()
+        LIMIT 1
+      `;
+
+      const untriedResults = await db.executeSql(untriedQuery, [userId, topicId, language, difficulty]);
+
+      if (untriedResults && untriedResults[0] && untriedResults[0].rows.length > 0) {
+        return untriedResults[0].rows.item(0);
+      }
+    }
+
+    // If no untried exercises found (or no userId provided), fall back to random selection
+    const randomQuery = `
+      SELECT ei.* FROM exercises_info ei
+      JOIN languages l ON ei.language_id = l.id
+      JOIN difficulties d ON ei.difficulty_id = d.id
+      JOIN fill_in_blank_exercises fibe ON ei.id = fibe.exercise_id
+      WHERE ei.topic_id = ?
+        AND l.language = ?
+        AND d.difficulty_level = ?
+        AND ei.exercise_type = 'fill_in_blank'
+      ORDER BY RANDOM()
+      LIMIT 1
+    `;
+
+    const results = await db.executeSql(randomQuery, [topicId, language, difficulty]);
+
+    if (results && results[0] && results[0].rows.length > 0) {
+      return results[0].rows.item(0);
+    }
+
+    return null;
+  } catch (error) {
+    console.error(
+      'Failed to get random fill-in-blank exercise for topic:',
+      error
+    );
+    return null;
+  } finally {
+    await safeCloseDatabase(db);
+  }
+};
+
+// Get fill-in-the-blank exercise data for a specific exercise
+export const getFillInBlankExerciseData = async (
+  exerciseId: number
+): Promise<FillInBlankExercise[]> => {
+  let db: SQLiteDatabase | null = null;
+
+  try {
+    await ensureDatabaseCopied();
+
+    db = await SQLite.openDatabase(getDatabaseConfig());
+
+    // Get from fill_in_blank_exercises table
+    const results = await db.executeSql(
+      'SELECT * FROM fill_in_blank_exercises WHERE exercise_id = ? ORDER BY id',
+      [exerciseId]
+    );
+
+    const fillInBlankData: FillInBlankExercise[] = [];
+    if (results && results[0]) {
+      for (let i = 0; i < results[0].rows.length; i++) {
+        fillInBlankData.push(results[0].rows.item(i));
+      }
+    }
+
+    return fillInBlankData;
+  } catch (error) {
+    console.error('Failed to get fill-in-blank exercise data:', error);
     return [];
   } finally {
     await safeCloseDatabase(db);

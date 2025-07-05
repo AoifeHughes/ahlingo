@@ -37,7 +37,7 @@ export const withTimeout = <T>(
 };
 
 /**
- * Safe database cleanup helper
+ * Enhanced transaction-aware database cleanup helper with state validation
  */
 export const safeCloseDatabase = async (
   db: SQLiteDatabase | null
@@ -45,39 +45,104 @@ export const safeCloseDatabase = async (
   if (!db) return;
 
   try {
-    // Try to rollback any pending transactions
+    // First, verify the database is actually open by testing a simple operation
+    let isDatabaseOpen = false;
     try {
-      await withTimeout(db.executeSql('ROLLBACK'), TIMEOUTS.QUERY_SHORT);
-    } catch (rollbackError) {
-      const errorMsg =
-        rollbackError instanceof Error
-          ? rollbackError.message
-          : String(rollbackError);
+      // Test if database is responsive with a lightweight query
+      await withTimeout(db.executeSql('SELECT 1'), TIMEOUTS.QUERY_SHORT);
+      isDatabaseOpen = true;
+    } catch (testError) {
+      const testErrorMsg = testError instanceof Error ? testError.message : String(testError);
+      
       if (
-        !errorMsg.includes('database is locked') &&
-        !errorMsg.includes('not an error')
+        testErrorMsg.includes('database is not open') ||
+        testErrorMsg.includes('database is closed') ||
+        testErrorMsg.includes('invalid connection')
       ) {
-        console.log(
-          'Rollback not needed or failed (this is usually normal):',
-          errorMsg
-        );
+        console.log('ℹ️ Database already closed, no cleanup needed');
+        return;
+      } else {
+        console.log('⚠️ Database test query failed, but attempting cleanup anyway:', testErrorMsg);
+        // Continue with cleanup attempt even if test query fails for other reasons
+        isDatabaseOpen = true;
       }
     }
 
-    // Wait a brief moment for any pending operations to complete
-    await new Promise(resolve => setTimeout(resolve, 50));
+    if (!isDatabaseOpen) {
+      return;
+    }
+
+    // Check if we're in a transaction by querying SQLite's internal state
+    let inTransaction = false;
+    try {
+      const result = await withTimeout(db.executeSql('PRAGMA journal_mode'), TIMEOUTS.QUERY_SHORT);
+      // If we can execute this, the database is responsive
+      
+      // Try to detect if we're in a transaction by attempting a savepoint
+      try {
+        await withTimeout(db.executeSql('SAVEPOINT test_transaction_state'), TIMEOUTS.QUERY_SHORT);
+        await withTimeout(db.executeSql('RELEASE SAVEPOINT test_transaction_state'), TIMEOUTS.QUERY_SHORT);
+      } catch (savepointError) {
+        // If savepoint fails, we might be in a transaction
+        inTransaction = true;
+      }
+    } catch (pragmaError) {
+      // Database might be closed or corrupted
+      console.log('Database state check failed, attempting direct close');
+    }
+
+    // If we detected an active transaction, try to clean it up
+    if (inTransaction) {
+      console.log('🔄 Active transaction detected, attempting cleanup...');
+      
+      // Try multiple rollback attempts with increasing delays
+      const maxAttempts = 3;
+      for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+        try {
+          await withTimeout(db.executeSql('ROLLBACK'), TIMEOUTS.QUERY_SHORT);
+          console.log(`✅ Transaction rolled back on attempt ${attempt}`);
+          break;
+        } catch (rollbackError) {
+          const errorMsg = rollbackError instanceof Error ? rollbackError.message : String(rollbackError);
+          
+          if (errorMsg.includes('no transaction is active')) {
+            // Transaction was already completed
+            console.log('✅ No active transaction found');
+            break;
+          }
+          
+          if (attempt === maxAttempts) {
+            console.log(`⚠️ Could not rollback transaction after ${maxAttempts} attempts:`, errorMsg);
+          } else {
+            console.log(`🔄 Rollback attempt ${attempt} failed, retrying...`);
+            // Wait longer between attempts
+            await new Promise(resolve => setTimeout(resolve, 200 * attempt));
+          }
+        }
+      }
+    }
+
+    // Wait for any pending operations to complete
+    await new Promise(resolve => setTimeout(resolve, 100));
 
     // Now try to close the database with timeout
     await withTimeout(db.close(), TIMEOUTS.CONNECTION);
     console.log('✅ Database closed safely');
+    
   } catch (closeError) {
-    const errorMsg =
-      closeError instanceof Error ? closeError.message : String(closeError);
+    const errorMsg = closeError instanceof Error ? closeError.message : String(closeError);
+    
+    // Filter out expected/harmless errors and categorize them properly
     if (
-      !errorMsg.includes('database is closed') &&
-      !errorMsg.includes('invalid connection')
+      errorMsg.includes('database is closed') ||
+      errorMsg.includes('invalid connection') ||
+      errorMsg.includes('database cannot be closed while a transaction is in progress') ||
+      errorMsg.includes('database is not open') ||
+      errorMsg.includes('cannot close: database is not open')
     ) {
-      console.error('Error during safe database close:', errorMsg);
+      console.log('ℹ️ Database close info:', errorMsg);
+    } else {
+      console.error('❌ Unexpected error during database close:', errorMsg);
     }
   }
 };

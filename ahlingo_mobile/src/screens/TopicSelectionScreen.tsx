@@ -18,6 +18,7 @@ import {
   getTopicsForPairs,
   getTopicsForConversation,
   getTopicsForTranslation,
+  getTopicsForFillInBlank,
   getUserSettings,
   getMostRecentUser,
   getUserId,
@@ -81,6 +82,8 @@ const TopicSelectionScreen: React.FC<Props> = ({ navigation, route }) => {
         availableTopics = await getTopicsForConversation(language, difficulty);
       } else if (exerciseType === 'translation') {
         availableTopics = await getTopicsForTranslation(language, difficulty);
+      } else if (exerciseType === 'fill_in_blank') {
+        availableTopics = await getTopicsForFillInBlank(language, difficulty);
       } else {
         // Fallback to pairs for unknown exercise types
         availableTopics = await getTopicsForPairs(language, difficulty);
@@ -112,6 +115,8 @@ const TopicSelectionScreen: React.FC<Props> = ({ navigation, route }) => {
       navigation.navigate('ConversationExercises', { topicId: topic.id });
     } else if (exerciseType === 'translation') {
       navigation.navigate('TranslationExercises', { topicId: topic.id });
+    } else if (exerciseType === 'fill_in_blank') {
+      navigation.navigate('FillInTheBlank', { topicId: topic.id });
     }
   };
 
@@ -123,6 +128,8 @@ const TopicSelectionScreen: React.FC<Props> = ({ navigation, route }) => {
         return 'Conversation Exercises';
       case 'translation':
         return 'Translation Exercises';
+      case 'fill_in_blank':
+        return 'Fill in the Blank Exercises';
       default:
         return 'Choose a Topic';
     }
