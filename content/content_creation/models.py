@@ -23,6 +23,16 @@ class ConversationExercise(BaseModel):
     conversation_summary: str = Field(..., description="Summary of the conversation")
 
 
+class FillInBlankExercise(BaseModel):
+    """A fill-in-blank exercise with correct and incorrect options."""
+
+    sentence: str = Field(..., description="Sentence with one blank (_)")
+    correct_answer: str = Field(..., description="The correct word for the blank")
+    incorrect_1: str = Field(..., description="First incorrect option")
+    incorrect_2: str = Field(..., description="Second incorrect option")
+    blank_position: int = Field(..., description="Position of the blank in the sentence (0-indexed)")
+
+
 def create_pair_schema(language: str):
     """
     Create a dynamic Pydantic schema for word/sentence pairs.

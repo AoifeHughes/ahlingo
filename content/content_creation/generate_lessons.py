@@ -74,6 +74,7 @@ def process_response(
             validate_conversations,
             validate_pairs,
             validate_translations,
+            validate_fill_in_blank,
             ValidationError,
         )
 
@@ -85,6 +86,8 @@ def process_response(
                 validated_response = validate_pairs(cleaned_response, language)
             elif lesson_kind == "translations":
                 validated_response = validate_translations(cleaned_response, language)
+            elif lesson_kind == "fill_in_blank":
+                validated_response = validate_fill_in_blank(cleaned_response, language)
             else:
                 raise ValueError(f"Unknown lesson kind: {lesson_kind}")
         except ValidationError as ve:
@@ -226,6 +229,46 @@ def process_response(
                         language_2=language,
                         language_1_content=english_sentence,
                         language_2_content=target_sentence,
+                        lesson_id=lesson_id,
+                    )
+                elif lesson_kind == "fill_in_blank":
+                    sentence = clean_text(exercise["sentence"])
+                    correct_answer = clean_text(exercise["correct_answer"])
+                    incorrect_1 = clean_text(exercise["incorrect_1"])
+                    incorrect_2 = clean_text(exercise["incorrect_2"])
+                    blank_position = exercise["blank_position"]
+
+                    # Additional validation for database insertion
+                    if not sentence or not correct_answer or not incorrect_1 or not incorrect_2:
+                        print(
+                            f"Skipping fill-in-blank exercise {idx + 1} with empty sentence or answer options"
+                        )
+                        continue
+
+                    # Validate blank position is an integer
+                    if not isinstance(blank_position, int):
+                        print(
+                            f"Skipping fill-in-blank exercise {idx + 1} with invalid blank_position"
+                        )
+                        continue
+
+                    # Validate sentence contains exactly one blank
+                    if sentence.count("_") != 1:
+                        print(
+                            f"Skipping fill-in-blank exercise {idx + 1} with incorrect number of blanks"
+                        )
+                        continue
+
+                    db.add_fill_in_blank_exercise(
+                        exercise_name=exercise_name,
+                        language=language,
+                        topic=topic,
+                        difficulty_level=level,
+                        sentence=sentence,
+                        correct_answer=correct_answer,
+                        incorrect_1=incorrect_1,
+                        incorrect_2=incorrect_2,
+                        blank_position=blank_position,
                         lesson_id=lesson_id,
                     )
             except Exception as e:

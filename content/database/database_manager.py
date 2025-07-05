@@ -100,6 +100,16 @@ class LanguageDB:
                 language_2_content TEXT NOT NULL,
                 FOREIGN KEY (exercise_id) REFERENCES exercises_info (id)
             )""",
+            """CREATE TABLE IF NOT EXISTS fill_in_blank_exercises (
+                id INTEGER PRIMARY KEY,
+                exercise_id INTEGER NOT NULL,
+                sentence TEXT NOT NULL,
+                correct_answer TEXT NOT NULL,
+                incorrect_1 TEXT NOT NULL,
+                incorrect_2 TEXT NOT NULL,
+                blank_position INTEGER NOT NULL,
+                FOREIGN KEY (exercise_id) REFERENCES exercises_info (id)
+            )""",
             """CREATE TABLE IF NOT EXISTS user_exercise_attempts (
                 id INTEGER PRIMARY KEY,
                 user_id INTEGER NOT NULL,
@@ -309,6 +319,7 @@ class LanguageDB:
                 WHEN pe.id IS NOT NULL THEN 'Pairs'
                 WHEN ce.id IS NOT NULL THEN 'Conversation'
                 WHEN te.id IS NOT NULL THEN 'Translation'
+                WHEN fib.id IS NOT NULL THEN 'Fill in Blank'
                 ELSE 'Unknown'
             END as exercise_type,
             uea.attempt_date
@@ -318,6 +329,7 @@ class LanguageDB:
             LEFT JOIN pair_exercises pe ON ei.id = pe.exercise_id
             LEFT JOIN conversation_exercises ce ON ei.id = ce.exercise_id
             LEFT JOIN translation_exercises te ON ei.id = te.exercise_id
+            LEFT JOIN fill_in_blank_exercises fib ON ei.id = fib.exercise_id
             WHERE uea.user_id = ? AND uea.is_correct = 0
             ORDER BY uea.attempt_date DESC
             """,
@@ -516,6 +528,7 @@ class LanguageDB:
                     WHEN pe.id IS NOT NULL THEN 'Pairs'
                     WHEN ce.id IS NOT NULL THEN 'Conversation'
                     WHEN te.id IS NOT NULL THEN 'Translation'
+                    WHEN fib.id IS NOT NULL THEN 'Fill in Blank'
                     ELSE 'Unknown'
                 END as exercise_type,
                 COUNT(DISTINCT uea.exercise_id) as completed_exercises,
@@ -526,6 +539,7 @@ class LanguageDB:
                LEFT JOIN pair_exercises pe ON ei.id = pe.exercise_id
                LEFT JOIN conversation_exercises ce ON ei.id = ce.exercise_id
                LEFT JOIN translation_exercises te ON ei.id = te.exercise_id
+               LEFT JOIN fill_in_blank_exercises fib ON ei.id = fib.exercise_id
                WHERE uea.user_id = ?
                GROUP BY exercise_type""",
             (user_id,),
@@ -744,6 +758,57 @@ class LanguageDB:
         self.conn.commit()
         return exercise_id
 
+    def add_fill_in_blank_exercise(
+        self,
+        exercise_name: str,
+        language: str,
+        topic: str,
+        difficulty_level: str,
+        sentence: str,
+        correct_answer: str,
+        incorrect_1: str,
+        incorrect_2: str,
+        blank_position: int,
+        lesson_id: str = None,
+    ) -> int:
+        """Add a fill-in-blank exercise to the database."""
+        language_id = self._get_or_create_language(language)
+        topic_id = self._get_or_create_topic(topic)
+        difficulty_id = self._get_or_create_difficulty(difficulty_level)
+
+        # Always create a new exercise - lesson_id is just for grouping
+        self.cursor.execute(
+            """INSERT INTO exercises_info
+               (exercise_name, language_id, topic_id, difficulty_id, exercise_type, lesson_id)
+               VALUES (?, ?, ?, ?, ?, ?)""",
+            (
+                exercise_name,
+                language_id,
+                topic_id,
+                difficulty_id,
+                "fill_in_blank",
+                lesson_id,
+            ),
+        )
+        exercise_id = self.cursor.lastrowid
+
+        self.cursor.execute(
+            """INSERT INTO fill_in_blank_exercises
+               (exercise_id, sentence, correct_answer, incorrect_1, incorrect_2, blank_position)
+               VALUES (?, ?, ?, ?, ?, ?)""",
+            (
+                exercise_id,
+                sentence,
+                correct_answer,
+                incorrect_1,
+                incorrect_2,
+                blank_position,
+            ),
+        )
+
+        self.conn.commit()
+        return exercise_id
+
     def get_languages(self) -> List[str]:
         """Get all available languages."""
         self.cursor.execute(
@@ -902,6 +967,65 @@ class LanguageDB:
                    LIMIT ?"""
 
         params = ["English", language, topic, difficulty] + lesson_ids + [limit]
+        self.cursor.execute(query, params)
+        return [dict(row) for row in self.cursor.fetchall()]
+
+    def get_random_fill_in_blank_exercise(
+        self, language: str, difficulty: str, topic: str, limit: int = 10
+    ) -> List[Dict]:
+        """Get random fill-in-blank exercises for given criteria, grouped by lesson_id."""
+        # First, get random lesson_ids that match the criteria
+        self.cursor.execute(
+            """SELECT DISTINCT e.lesson_id
+               FROM exercises_info e
+               JOIN fill_in_blank_exercises fib ON e.id = fib.exercise_id
+               JOIN topics t ON e.topic_id = t.id
+               JOIN difficulties d ON e.difficulty_id = d.id
+               JOIN languages l ON e.language_id = l.id
+               WHERE l.language = ? AND t.topic = ? AND d.difficulty_level = ?
+               ORDER BY RANDOM() LIMIT ?""",
+            (
+                language,
+                topic,
+                difficulty,
+                (limit + 9) // 10,
+            ),  # Estimate number of lessons needed
+        )
+        lesson_ids = [
+            row["lesson_id"] for row in self.cursor.fetchall() if row["lesson_id"]
+        ]
+
+        # If no lesson_ids with non-null values found, fall back to original random selection
+        if not lesson_ids:
+            self.cursor.execute(
+                """SELECT e.exercise_name, fib.sentence, fib.correct_answer,
+                          fib.incorrect_1, fib.incorrect_2, fib.blank_position
+                   FROM exercises_info e
+                   JOIN fill_in_blank_exercises fib ON e.id = fib.exercise_id
+                   JOIN topics t ON e.topic_id = t.id
+                   JOIN difficulties d ON e.difficulty_id = d.id
+                   JOIN languages l ON e.language_id = l.id
+                   WHERE l.language = ? AND t.topic = ? AND d.difficulty_level = ?
+                   ORDER BY RANDOM() LIMIT ?""",
+                (language, topic, difficulty, limit),
+            )
+            return [dict(row) for row in self.cursor.fetchall()]
+
+        # Get exercises for the selected lesson_ids
+        placeholders = ",".join(["?"] * len(lesson_ids))
+        query = f"""SELECT e.exercise_name, fib.sentence, fib.correct_answer,
+                          fib.incorrect_1, fib.incorrect_2, fib.blank_position
+                   FROM exercises_info e
+                   JOIN fill_in_blank_exercises fib ON e.id = fib.exercise_id
+                   JOIN topics t ON e.topic_id = t.id
+                   JOIN difficulties d ON e.difficulty_id = d.id
+                   JOIN languages l ON e.language_id = l.id
+                   WHERE l.language = ? AND t.topic = ? AND d.difficulty_level = ?
+                   AND e.lesson_id IN ({placeholders})
+                   ORDER BY e.lesson_id, e.id
+                   LIMIT ?"""
+
+        params = [language, topic, difficulty] + lesson_ids + [limit]
         self.cursor.execute(query, params)
         return [dict(row) for row in self.cursor.fetchall()]
 
@@ -1219,6 +1343,23 @@ class LanguageDB:
         self.cursor.execute(query)
         return [dict(row) for row in self.cursor.fetchall()]
 
+    def get_all_fill_in_blank_exercises(self) -> List[Dict]:
+        """Get all fill-in-blank exercises from the database."""
+        query = """
+        SELECT e.id, e.exercise_name, l.language, t.topic, 
+               d.difficulty_level, e.lesson_id,
+               fib.sentence, fib.correct_answer, fib.incorrect_1, 
+               fib.incorrect_2, fib.blank_position
+        FROM exercises_info e
+        JOIN fill_in_blank_exercises fib ON e.id = fib.exercise_id
+        JOIN languages l ON e.language_id = l.id
+        JOIN topics t ON e.topic_id = t.id
+        JOIN difficulties d ON e.difficulty_id = d.id
+        ORDER BY e.id
+        """
+        self.cursor.execute(query)
+        return [dict(row) for row in self.cursor.fetchall()]
+
     def remove_conversation_exercises(self, exercise_ids: List[int]) -> int:
         """Remove conversation exercises by IDs."""
         if not exercise_ids:
@@ -1279,6 +1420,28 @@ class LanguageDB:
         # Remove from translation_exercises table
         self.cursor.execute(
             f"DELETE FROM translation_exercises WHERE exercise_id IN ({placeholders})",
+            exercise_ids
+        )
+        
+        # Remove from exercises_info table
+        self.cursor.execute(
+            f"DELETE FROM exercises_info WHERE id IN ({placeholders})",
+            exercise_ids
+        )
+        
+        self.conn.commit()
+        return len(exercise_ids)
+
+    def remove_fill_in_blank_exercises(self, exercise_ids: List[int]) -> int:
+        """Remove fill-in-blank exercises by IDs."""
+        if not exercise_ids:
+            return 0
+            
+        placeholders = ','.join(['?'] * len(exercise_ids))
+        
+        # Remove from fill_in_blank_exercises table
+        self.cursor.execute(
+            f"DELETE FROM fill_in_blank_exercises WHERE exercise_id IN ({placeholders})",
             exercise_ids
         )
         

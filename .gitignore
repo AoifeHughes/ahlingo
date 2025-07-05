@@ -48,6 +48,7 @@ ahlingo_mobile/android/app/build/
 ahlingo_mobile/android/.gradle/
 ahlingo_mobile/android/app/release/
 ahlingo_mobile/android/keystore.properties
+ahlingo_mobile/android/app/*
 ahlingo_mobile/.expo/
 ahlingo_mobile/dist/
 ahlingo_mobile/.bundle/

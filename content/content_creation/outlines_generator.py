@@ -158,6 +158,68 @@ def validate_translations(data: list, language: str) -> list:
     return data
 
 
+def validate_fill_in_blank(data: list, language: str) -> list:
+    """Validate fill-in-blank exercise data."""
+    if not isinstance(data, list):
+        raise ValidationError(f"Expected list, got {type(data)}")
+
+    if not (3 <= len(data) <= 10):
+        raise ValidationError(f"Expected 3-10 fill-in-blank exercises, got {len(data)}")
+
+    for i, item in enumerate(data):
+        if not isinstance(item, dict):
+            raise ValidationError(f"Fill-in-blank {i}: Expected dict, got {type(item)}")
+
+        required_fields = ["sentence", "correct_answer", "incorrect_1", "incorrect_2", "blank_position"]
+        for field in required_fields:
+            if field not in item:
+                raise ValidationError(f"Fill-in-blank {i}: Missing required field '{field}'")
+
+        sentence = item["sentence"].strip()
+        correct_answer = item["correct_answer"].strip()
+        incorrect_1 = item["incorrect_1"].strip()
+        incorrect_2 = item["incorrect_2"].strip()
+
+        # Validate sentence has content and contains a blank
+        if not sentence:
+            raise ValidationError(f"Fill-in-blank {i}: Empty sentence not allowed")
+        
+        if "_" not in sentence:
+            raise ValidationError(f"Fill-in-blank {i}: Sentence must contain a blank (_)")
+        
+        # Count blanks - should have exactly one
+        blank_count = sentence.count("_")
+        if blank_count != 1:
+            raise ValidationError(f"Fill-in-blank {i}: Sentence must contain exactly one blank, found {blank_count}")
+
+        # Validate answers are not empty
+        if not correct_answer or not incorrect_1 or not incorrect_2:
+            raise ValidationError(f"Fill-in-blank {i}: All answer options must be non-empty")
+
+        # Validate answers are different
+        answers = [correct_answer, incorrect_1, incorrect_2]
+        if len(set(answers)) != len(answers):
+            raise ValidationError(f"Fill-in-blank {i}: Answer options must be unique")
+
+        # Validate blank position
+        blank_position = item["blank_position"]
+        if not isinstance(blank_position, int):
+            raise ValidationError(f"Fill-in-blank {i}: blank_position must be an integer")
+        
+        # Count words in sentence (replace _ with correct answer to count properly)
+        sentence_with_answer = sentence.replace("_", correct_answer)
+        word_count = len(sentence_with_answer.split())
+        
+        if blank_position < 0 or blank_position >= word_count:
+            raise ValidationError(f"Fill-in-blank {i}: blank_position {blank_position} out of range for sentence with {word_count} words")
+
+        # Validate sentence length (reasonable bounds)
+        if word_count < 3 or word_count > 20:
+            raise ValidationError(f"Fill-in-blank {i}: Sentence length should be 3-20 words, got {word_count}")
+
+    return data
+
+
 def setup_outlines_model():
     """Setup Outlines with centralized configuration."""
     import warnings
@@ -433,12 +495,111 @@ Create 5-8 sentence pairs at {level} level:
         return json.loads(result)
 
 
+def generate_fill_in_blank(model, language: str, level: str, topic: str):
+    """Generate fill-in-blank exercises with guaranteed structure."""
+    from .assistants import default_fill_in_blank_assistants
+
+    # JSON schema for fill-in-blank exercises (as string for outlines)
+    schema = f"""{{
+        "type": "array",
+        "items": {{
+            "type": "object",
+            "properties": {{
+                "sentence": {{"type": "string"}},
+                "correct_answer": {{"type": "string"}},
+                "incorrect_1": {{"type": "string"}},
+                "incorrect_2": {{"type": "string"}},
+                "blank_position": {{"type": "integer"}}
+            }},
+            "required": ["sentence", "correct_answer", "incorrect_1", "incorrect_2", "blank_position"]
+        }}
+    }}"""
+
+    # Create system message with enhanced instructions
+    system_content = f"""You are a {language} language learning tool. Generate fill-in-blank exercises for "{topic}".
+
+CRITICAL REQUIREMENTS:
+1. Create exactly 5-8 fill-in-blank exercises at {level} level
+2. Each sentence must contain EXACTLY ONE underscore (_) representing the blank
+3. Each exercise must have EXACTLY 3 answer options that are COMPLETELY DIFFERENT from each other
+4. The blank_position must be the correct word position (counting from 0)
+
+FORMAT REQUIREMENTS:
+- sentence: A {language} sentence with exactly one _ (underscore) where a word is missing
+- correct_answer: The correct word that fills the blank
+- incorrect_1: A plausible but wrong alternative (different from correct_answer)
+- incorrect_2: Another plausible but wrong alternative (different from both correct_answer and incorrect_1)
+- blank_position: Integer showing position of the blank (0 = first word, 1 = second word, etc.)
+
+CONTENT GUIDELINES:
+- Focus on {topic}-related vocabulary and grammar
+- Ensure incorrect options are the same part of speech as the correct answer
+- Make incorrect options plausible but clearly wrong in context
+- Use sentences appropriate for {level} learners
+- Test different word types: nouns, verbs, adjectives, etc.
+
+EXAMPLE:
+{{"sentence": "Je mange une _ rouge", "correct_answer": "pomme", "incorrect_1": "orange", "incorrect_2": "banane", "blank_position": 3}}
+
+Remember: All three answer options must be unique, and there must be exactly one blank per sentence."""
+
+    # Use structured generation with proper message format
+    if hasattr(model, "chat") and hasattr(model.chat, "completions"):
+        # For OpenAI client fallback
+        messages = [
+            {"role": "system", "content": system_content},
+            {"role": "user", "content": "Generate fill-in-blank exercise examples"},
+        ]
+
+        # Add assistant examples if available
+        if language in default_fill_in_blank_assistants:
+            examples_content = default_fill_in_blank_assistants[language]["content"]
+            messages.extend(
+                [
+                    {"role": "assistant", "content": examples_content},
+                    {
+                        "role": "user",
+                        "content": f"Now generate 5-8 new fill-in-blank exercises for the topic: {topic}",
+                    },
+                ]
+            )
+
+        # Use OpenAI client with JSON schema (manual parsing)
+        completion = model.chat.completions.create(
+            model=MODEL_CONFIG["model_name"],
+            messages=messages,
+            temperature=MODEL_CONFIG["temperature"],
+        )
+        result_text = completion.choices[0].message.content
+        # Extract JSON array from response
+        import re
+
+        json_match = re.search(r"\[.*\]", result_text, re.DOTALL)
+        if json_match:
+            return json.loads(json_match.group())
+        else:
+            return json.loads(result_text)
+    else:
+        # For outlines model with structured generation
+        generator = outlines.generate.json(model, schema)
+
+        # Create enhanced prompt with examples context
+        examples_context = ""
+        if language in default_fill_in_blank_assistants:
+            examples_content = default_fill_in_blank_assistants[language]["content"]
+            examples_context = f"\n\nReference examples (for format only):\n{examples_content}\n\nNow generate 5-8 NEW fill-in-blank exercises for the topic: {topic}"
+
+        full_prompt = system_content + examples_context
+        result = generator(full_prompt)
+        return json.loads(result)
+
+
 def generate_lessons_data_structured(
     language: str,
     level: str,
     topic: str,
     N_runs: int = 10,
-    lesson_kinds: List[str] = ["conversations", "pairs", "translations"],
+    lesson_kinds: List[str] = ["conversations", "pairs", "translations", "fill_in_blank"],
     model=None,  # Allow passing model to reuse it
     max_retries: int = 5,
 ):
@@ -453,6 +614,7 @@ def generate_lessons_data_structured(
         "conversations": validate_conversations,
         "pairs": validate_pairs,
         "translations": validate_translations,
+        "fill_in_blank": validate_fill_in_blank,
     }
 
     # Generation function mapping
@@ -460,6 +622,7 @@ def generate_lessons_data_structured(
         "conversations": generate_conversations,
         "pairs": generate_pairs,
         "translations": generate_translations,
+        "fill_in_blank": generate_fill_in_blank,
     }
 
     for lesson_kind in lesson_kinds:
