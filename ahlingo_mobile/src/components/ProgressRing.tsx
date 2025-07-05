@@ -7,6 +7,7 @@ interface ProgressRingProps {
   percentage: number;
   size?: number;
   strokeWidth?: number;
+  testID?: string;
 }
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
@@ -14,7 +15,8 @@ const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 const ProgressRing: React.FC<ProgressRingProps> = ({ 
   percentage, 
   size = 60, 
-  strokeWidth = 4 
+  strokeWidth = 4,
+  testID
 }) => {
   const { theme } = useTheme();
   const animatedValue = useRef(new Animated.Value(0)).current;
@@ -37,7 +39,7 @@ const ProgressRing: React.FC<ProgressRingProps> = ({
   });
 
   return (
-    <View style={[styles.container, { width: size, height: size }]}>
+    <View style={[styles.container, { width: size, height: size }]} testID={testID}>
       <Svg width={size} height={size} style={styles.svg}>
         <Defs>
           <LinearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="100%">

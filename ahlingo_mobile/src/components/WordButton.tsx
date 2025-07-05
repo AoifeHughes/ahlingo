@@ -28,6 +28,7 @@ const WordButton: React.FC<WordButtonProps> = ({
       ]}
       onPress={() => onPress(word, index)}
       disabled={disabled}
+      testID="word-button"
     >
       <Text
         style={[

@@ -75,10 +75,11 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
   const styles = createStyles(theme);
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} testID="settings-screen">
       <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
+        testID="settings-scroll"
       >
         <View style={styles.content}>
           <BasicSettingsForm
@@ -98,7 +99,7 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
             theme={theme}
           />
 
-          <View style={styles.dangerZone}>
+          <View style={styles.dangerZone} testID="danger-zone">
             <Text style={styles.dangerZoneTitle}>Danger Zone</Text>
             <Text style={styles.dangerZoneDescription}>
               Reset your learning progress and chat history. This action cannot be undone.
@@ -110,6 +111,7 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
               onPress={confirmReset}
               disabled={isResetting}
               loading={isResetting}
+              testID="reset-button"
             />
           </View>
         </View>

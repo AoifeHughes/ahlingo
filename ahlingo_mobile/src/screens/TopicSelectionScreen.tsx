@@ -166,10 +166,10 @@ const TopicSelectionScreen: React.FC<Props> = ({ navigation, route }) => {
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>{getExerciseTypeTitle()}</Text>
-        <Text style={styles.headerSubtitle}>
+    <View style={styles.container} testID="topic-selection-screen">
+      <View style={styles.header} testID="topic-selection-header">
+        <Text style={styles.headerTitle} testID="exercise-type-title">{getExerciseTypeTitle()}</Text>
+        <Text style={styles.headerSubtitle} testID="user-settings-display">
           {userLanguage} • {userDifficulty}
         </Text>
       </View>
@@ -182,6 +182,7 @@ const TopicSelectionScreen: React.FC<Props> = ({ navigation, route }) => {
         showsVerticalScrollIndicator={false}
         numColumns={2}
         columnWrapperStyle={styles.columnWrapper}
+        testID="topics-list"
         refreshControl={
           <RefreshControl
             refreshing={refreshing}

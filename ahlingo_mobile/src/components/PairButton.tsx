@@ -47,6 +47,13 @@ const PairButton: React.FC<PairButtonProps> = ({
       onPress={() => onPress(pairId, column)}
       disabled={matched}
       activeOpacity={0.8}
+      testID="pair-button"
+      accessibilityRole="button"
+      accessibilityLabel={`Pair button: ${text}`}
+      accessibilityState={{
+        selected: selected,
+        disabled: matched,
+      }}
     >
       <Text style={getTextStyle()}>{text}</Text>
     </TouchableOpacity>

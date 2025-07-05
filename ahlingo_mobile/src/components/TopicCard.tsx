@@ -21,14 +21,18 @@ const TopicCard: React.FC<TopicCardProps> = ({ topic, onPress }) => {
       style={[styles.card, { width: cardSize, height: cardSize }]}
       onPress={() => onPress(topic)}
       activeOpacity={0.7}
+      testID={`topic-card-${topic.id}`}
+      accessibilityRole="button"
+      accessibilityLabel={`${topic.topic} topic`}
+      accessibilityHint="Tap to practice exercises for this topic"
     >
       <View style={styles.progressContainer}>
-        <ProgressRing percentage={topic.progress.percentage} />
+        <ProgressRing percentage={topic.progress.percentage} testID="progress-ring" />
         <Text style={styles.percentage}>{topic.progress.percentage}%</Text>
       </View>
       <Text style={styles.title} numberOfLines={2}>{topic.topic}</Text>
       <Text style={styles.subtitle}>
-        {topic.progress.completedExercises}/{topic.progress.totalExercises} completed
+        {topic.progress.completedExercises}/{topic.progress.totalExercises} exercises
       </Text>
     </TouchableOpacity>
   );

@@ -1,0 +1,63 @@
+name: PR Checks
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  quick-checks:
+    name: Quick Quality Checks
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Type check
+      run: npm run type-check
+
+    - name: Lint check
+      run: npm run lint
+
+    - name: Format check
+      run: npm run format:check
+
+    - name: Run unit tests with coverage
+      run: npm run test:ci
+
+    - name: Comment PR with coverage
+      uses: romeovs/lcov-reporter-action@v0.3.1
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        lcov-file: ./coverage/lcov.info
+        delete-old-comments: true
+
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Run npm audit
+      run: npm audit --audit-level moderate
+      continue-on-error: true
+
+    - name: Check for sensitive files
+      run: |
+        if find . -name "*.key" -o -name "*.pem" -o -name "*.p12" -o -name "*keystore*" -o -name "google-services.json" | grep -v node_modules | head -1; then
+          echo "❌ Sensitive files found in repository"
+          exit 1
+        else
+          echo "✅ No sensitive files found"
+        fi

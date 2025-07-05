@@ -119,10 +119,11 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
       <StatusBar backgroundColor={theme.colors.primary} barStyle="light-content" />
       <View style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.title}>AHLingo</Text>
+          <Text style={styles.title} testID="app-title">AHLingo</Text>
           <TouchableOpacity
             style={styles.settingsButton}
             onPress={() => navigation.navigate('Settings')}
+            testID="settings-button"
           >
             <Text style={styles.settingsIcon}>⚙️</Text>
           </TouchableOpacity>
@@ -137,6 +138,7 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
                 style={[styles.exerciseCard, { backgroundColor: item.color }]}
                 onPress={() => handleExercisePress(item)}
                 activeOpacity={0.8}
+                testID={`exercise-${item.title.toLowerCase().replace(/\s+/g, '-')}`}
               >
                 <View style={styles.cardContent}>
                   <Text style={styles.cardIcon}>{item.icon}</Text>
