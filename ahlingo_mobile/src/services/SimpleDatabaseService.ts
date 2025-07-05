@@ -1176,113 +1176,96 @@ export const getRandomMixedExercisesForTopic = async (
 
     db = await SQLite.openDatabase(getDatabaseConfig());
 
-    // Get available exercise types for this topic
-    const typesQuery = `
-      SELECT DISTINCT ei.exercise_type
-      FROM exercises_info ei
-      JOIN languages l ON ei.language_id = l.id
-      JOIN difficulties d ON ei.difficulty_id = d.id
-      WHERE ei.topic_id = ?
-        AND l.language = ?
-        AND d.difficulty_level = ?
-        AND ei.exercise_type IN ('pairs', 'conversation', 'translation', 'fill_in_blank')
-    `;
-
-    const typesResults = await db.executeSql(typesQuery, [topicId, language, difficulty]);
-    
-    if (!typesResults || !typesResults[0] || typesResults[0].rows.length === 0) {
-      return [];
-    }
-
-    const availableTypes: ('pairs' | 'conversation' | 'translation' | 'fill_in_blank')[] = [];
-    for (let i = 0; i < typesResults[0].rows.length; i++) {
-      availableTypes.push(typesResults[0].rows.item(i).exercise_type);
-    }
-
-    const exercises: ShuffleExercise[] = [];
-    const targetCount = 5;
-
-    // Get topic name
+    // Get topic name first
     const topicQuery = 'SELECT topic FROM topics WHERE id = ?';
     const topicResults = await db.executeSql(topicQuery, [topicId]);
     const topicName = topicResults[0].rows.length > 0 ? topicResults[0].rows.item(0).topic : 'Unknown Topic';
 
-    // Try to get exercises with preference for untried ones if userId is provided
-    for (let attempt = 0; attempt < targetCount; attempt++) {
-      const randomType = availableTypes[Math.floor(Math.random() * availableTypes.length)];
+    // Get all available exercises for this topic that have actual data in their respective tables
+    const exercisesQuery = `
+      SELECT 
+        ei.*,
+        CASE 
+          WHEN pe.exercise_id IS NOT NULL THEN 'pairs'
+          WHEN ce.exercise_id IS NOT NULL THEN 'conversation'
+          WHEN te.exercise_id IS NOT NULL THEN 'translation'
+          WHEN fibe.exercise_id IS NOT NULL THEN 'fill_in_blank'
+        END as verified_exercise_type
+      FROM exercises_info ei
+      JOIN languages l ON ei.language_id = l.id
+      JOIN difficulties d ON ei.difficulty_id = d.id
+      LEFT JOIN pair_exercises pe ON ei.id = pe.exercise_id AND ei.exercise_type = 'pairs'
+      LEFT JOIN conversation_exercises ce ON ei.id = ce.exercise_id AND ei.exercise_type = 'conversation'
+      LEFT JOIN translation_exercises te ON ei.id = te.exercise_id AND ei.exercise_type = 'translation'
+      LEFT JOIN fill_in_blank_exercises fibe ON ei.id = fibe.exercise_id AND ei.exercise_type = 'fill_in_blank'
+      WHERE ei.topic_id = ?
+        AND l.language = ?
+        AND d.difficulty_level = ?
+        AND ei.exercise_type IN ('pairs', 'conversation', 'translation', 'fill_in_blank')
+        AND (pe.exercise_id IS NOT NULL OR ce.exercise_id IS NOT NULL OR te.exercise_id IS NOT NULL OR fibe.exercise_id IS NOT NULL)
+    `;
+
+    const exercisesResults = await db.executeSql(exercisesQuery, [topicId, language, difficulty]);
+    
+    if (!exercisesResults || !exercisesResults[0] || exercisesResults[0].rows.length === 0) {
+      return [];
+    }
+
+    // Collect all verified exercises
+    const allExercises: { exerciseInfo: any; exerciseType: string }[] = [];
+    for (let i = 0; i < exercisesResults[0].rows.length; i++) {
+      const row = exercisesResults[0].rows.item(i);
+      allExercises.push({
+        exerciseInfo: row,
+        exerciseType: row.verified_exercise_type,
+      });
+    }
+
+    if (allExercises.length === 0) {
+      return [];
+    }
+
+    // If userId is provided, prioritize untried exercises
+    let prioritizedExercises = allExercises;
+    if (userId) {
+      // Get user's attempted exercises
+      const attemptedQuery = `
+        SELECT DISTINCT exercise_id 
+        FROM user_exercise_attempts 
+        WHERE user_id = ?
+      `;
+      const attemptedResults = await db.executeSql(attemptedQuery, [userId]);
       
-      let exerciseQuery: string;
-      let queryParams: any[];
-
-      if (userId) {
-        // Try to get untried exercises first
-        exerciseQuery = `
-          SELECT ei.*
-          FROM exercises_info ei
-          JOIN languages l ON ei.language_id = l.id
-          JOIN difficulties d ON ei.difficulty_id = d.id
-          LEFT JOIN user_exercise_attempts uea ON ei.id = uea.exercise_id AND uea.user_id = ?
-          WHERE ei.topic_id = ?
-            AND l.language = ?
-            AND d.difficulty_level = ?
-            AND ei.exercise_type = ?
-            AND uea.exercise_id IS NULL
-          ORDER BY RANDOM()
-          LIMIT 1
-        `;
-        queryParams = [userId, topicId, language, difficulty, randomType];
-      } else {
-        exerciseQuery = `
-          SELECT ei.*
-          FROM exercises_info ei
-          JOIN languages l ON ei.language_id = l.id
-          JOIN difficulties d ON ei.difficulty_id = d.id
-          WHERE ei.topic_id = ?
-            AND l.language = ?
-            AND d.difficulty_level = ?
-            AND ei.exercise_type = ?
-          ORDER BY RANDOM()
-          LIMIT 1
-        `;
-        queryParams = [topicId, language, difficulty, randomType];
-      }
-
-      const results = await db.executeSql(exerciseQuery, queryParams);
-
-      if (results && results[0] && results[0].rows.length > 0) {
-        const exerciseInfo = results[0].rows.item(0);
-        exercises.push({
-          exerciseInfo,
-          exerciseType: randomType,
-          topicName,
-        });
-      } else if (userId) {
-        // If no untried exercises, fall back to any exercise of this type
-        const fallbackQuery = `
-          SELECT ei.*
-          FROM exercises_info ei
-          JOIN languages l ON ei.language_id = l.id
-          JOIN difficulties d ON ei.difficulty_id = d.id
-          WHERE ei.topic_id = ?
-            AND l.language = ?
-            AND d.difficulty_level = ?
-            AND ei.exercise_type = ?
-          ORDER BY RANDOM()
-          LIMIT 1
-        `;
-        
-        const fallbackResults = await db.executeSql(fallbackQuery, [topicId, language, difficulty, randomType]);
-        
-        if (fallbackResults && fallbackResults[0] && fallbackResults[0].rows.length > 0) {
-          const exerciseInfo = fallbackResults[0].rows.item(0);
-          exercises.push({
-            exerciseInfo,
-            exerciseType: randomType,
-            topicName,
-          });
+      const attemptedIds = new Set<number>();
+      if (attemptedResults && attemptedResults[0]) {
+        for (let i = 0; i < attemptedResults[0].rows.length; i++) {
+          attemptedIds.add(attemptedResults[0].rows.item(i).exercise_id);
         }
       }
+
+      // Separate untried and tried exercises
+      const untriedExercises = allExercises.filter(ex => !attemptedIds.has(ex.exerciseInfo.id));
+      const triedExercises = allExercises.filter(ex => attemptedIds.has(ex.exerciseInfo.id));
+      
+      // Prioritize untried exercises
+      prioritizedExercises = [...untriedExercises, ...triedExercises];
     }
+
+    // Shuffle the prioritized list
+    for (let i = prioritizedExercises.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [prioritizedExercises[i], prioritizedExercises[j]] = [prioritizedExercises[j], prioritizedExercises[i]];
+    }
+
+    // Select up to 5 exercises
+    const selectedExercises = prioritizedExercises.slice(0, Math.min(5, prioritizedExercises.length));
+
+    // Convert to ShuffleExercise format
+    const exercises: ShuffleExercise[] = selectedExercises.map(({ exerciseInfo, exerciseType }) => ({
+      exerciseInfo,
+      exerciseType: exerciseType as 'pairs' | 'conversation' | 'translation' | 'fill_in_blank',
+      topicName,
+    }));
 
     return exercises;
   } catch (error) {
