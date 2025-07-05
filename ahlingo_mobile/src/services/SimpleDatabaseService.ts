@@ -81,6 +81,27 @@ const safeCloseDatabase = async (db: SQLiteDatabase | null): Promise<void> => {
   }
 };
 
+// Helper function to get database config for platform-specific paths
+const getDatabaseConfig = () => {
+  const databaseName = 'languageLearningDatabase.db';
+  
+  if (Platform.OS === 'ios') {
+    return {
+      name: databaseName,
+      location: 'Documents',
+    };
+  } else {
+    // Android: use absolute path to ensure we open from the same location we copied to
+    const documentsPath = RNFS.ExternalDirectoryPath || RNFS.DocumentDirectoryPath;
+    const databasePath = `${documentsPath}/${databaseName}`;
+    
+    return {
+      name: databasePath,
+      location: 'default',
+    };
+  }
+};
+
 // First, ensure the database is copied from bundle to Documents
 async function ensureDatabaseCopied() {
   try {
@@ -176,11 +197,8 @@ export const logDatabaseTables = async (): Promise<void> => {
 
     console.log('🔄 Opening database...');
 
-    // Open database from Documents directory (where we just copied it)
-    db = await SQLite.openDatabase({
-      name: 'languageLearningDatabase.db', // Note: capital L
-      location: 'Documents', // This is the key difference!
-    });
+    // Open database from the correct directory (where we just copied it)
+    db = await SQLite.openDatabase(getDatabaseConfig());
 
     console.log('✅ Database opened successfully');
 
@@ -266,10 +284,7 @@ export const getLanguages = async (): Promise<Language[]> => {
   try {
     await ensureDatabaseCopied();
 
-    db = await SQLite.openDatabase({
-      name: 'languageLearningDatabase.db',
-      location: 'Documents',
-    });
+    db = await SQLite.openDatabase(getDatabaseConfig());
 
     const results = await db.executeSql(
       'SELECT * FROM languages ORDER BY language'
@@ -297,10 +312,7 @@ export const getDifficulties = async (): Promise<Difficulty[]> => {
   try {
     await ensureDatabaseCopied();
 
-    db = await SQLite.openDatabase({
-      name: 'languageLearningDatabase.db',
-      location: 'Documents',
-    });
+    db = await SQLite.openDatabase(getDatabaseConfig());
 
     const results = await db.executeSql(
       'SELECT * FROM difficulties ORDER BY difficulty_level'
@@ -328,10 +340,7 @@ export const getTopics = async (): Promise<Topic[]> => {
   try {
     await ensureDatabaseCopied();
 
-    db = await SQLite.openDatabase({
-      name: 'languageLearningDatabase.db',
-      location: 'Documents',
-    });
+    db = await SQLite.openDatabase(getDatabaseConfig());
 
     const results = await db.executeSql('SELECT * FROM topics ORDER BY topic');
 
@@ -358,10 +367,7 @@ export const getMostRecentUser = async (): Promise<string> => {
     await ensureDatabaseCopied();
 
     db = await withTimeout(
-      SQLite.openDatabase({
-        name: 'languageLearningDatabase.db',
-        location: 'Documents',
-      }),
+      SQLite.openDatabase(getDatabaseConfig()),
       3000
     );
 
@@ -391,10 +397,7 @@ const createDefaultUser = async (): Promise<void> => {
   try {
     await ensureDatabaseCopied();
 
-    db = await SQLite.openDatabase({
-      name: 'languageLearningDatabase.db',
-      location: 'Documents',
-    });
+    db = await SQLite.openDatabase(getDatabaseConfig());
 
     await db.executeSql(
       'INSERT OR IGNORE INTO users (name, last_login) VALUES (?, datetime("now"))',
@@ -416,10 +419,7 @@ export const getUserSettings = async (
     await ensureDatabaseCopied();
 
     db = await withTimeout(
-      SQLite.openDatabase({
-        name: 'languageLearningDatabase.db',
-        location: 'Documents',
-      }),
+      SQLite.openDatabase(getDatabaseConfig()),
       3000
     );
 
@@ -484,10 +484,7 @@ export const setUserSetting = async (
   try {
     await ensureDatabaseCopied();
 
-    db = await SQLite.openDatabase({
-      name: 'languageLearningDatabase.db',
-      location: 'Documents',
-    });
+    db = await SQLite.openDatabase(getDatabaseConfig());
 
     // Get or create user
     const userResults = await db.executeSql(
@@ -529,10 +526,7 @@ export const updateUserLogin = async (username: string): Promise<void> => {
   try {
     await ensureDatabaseCopied();
 
-    db = await SQLite.openDatabase({
-      name: 'languageLearningDatabase.db',
-      location: 'Documents',
-    });
+    db = await SQLite.openDatabase(getDatabaseConfig());
 
     await db.executeSql(
       'UPDATE users SET last_login = datetime("now") WHERE name = ?',
@@ -555,10 +549,7 @@ export const getTopicsForPairs = async (
   try {
     await ensureDatabaseCopied();
 
-    db = await SQLite.openDatabase({
-      name: 'languageLearningDatabase.db',
-      location: 'Documents',
-    });
+    db = await SQLite.openDatabase(getDatabaseConfig());
 
     const query = `
       SELECT DISTINCT t.id, t.topic
@@ -602,10 +593,7 @@ export const getRandomExerciseForTopic = async (
   try {
     await ensureDatabaseCopied();
 
-    db = await SQLite.openDatabase({
-      name: 'languageLearningDatabase.db',
-      location: 'Documents',
-    });
+    db = await SQLite.openDatabase(getDatabaseConfig());
 
     if (userId) {
       // First, try to get an exercise that hasn't been attempted
@@ -668,10 +656,7 @@ export const getPairExercises = async (
   try {
     await ensureDatabaseCopied();
 
-    db = await SQLite.openDatabase({
-      name: 'languageLearningDatabase.db',
-      location: 'Documents',
-    });
+    db = await SQLite.openDatabase(getDatabaseConfig());
 
     const results = await db.executeSql(
       'SELECT * FROM pair_exercises WHERE exercise_id = ? ORDER BY id',
@@ -702,10 +687,7 @@ export const getExercisesByLesson = async (
   try {
     await ensureDatabaseCopied();
 
-    db = await SQLite.openDatabase({
-      name: 'languageLearningDatabase.db',
-      location: 'Documents',
-    });
+    db = await SQLite.openDatabase(getDatabaseConfig());
 
     const results = await db.executeSql(
       'SELECT * FROM exercises_info WHERE lesson_id = ? AND exercise_type = "pairs" ORDER BY id',
@@ -738,10 +720,7 @@ export const getTopicsForConversation = async (
   try {
     await ensureDatabaseCopied();
 
-    db = await SQLite.openDatabase({
-      name: 'languageLearningDatabase.db',
-      location: 'Documents',
-    });
+    db = await SQLite.openDatabase(getDatabaseConfig());
 
     const query = `
       SELECT DISTINCT t.id, t.topic
@@ -785,10 +764,7 @@ export const getRandomConversationExerciseForTopic = async (
   try {
     await ensureDatabaseCopied();
 
-    db = await SQLite.openDatabase({
-      name: 'languageLearningDatabase.db',
-      location: 'Documents',
-    });
+    db = await SQLite.openDatabase(getDatabaseConfig());
 
     if (userId) {
       // First, try to get an exercise that hasn't been attempted
@@ -854,10 +830,7 @@ export const getConversationExerciseData = async (
   try {
     await ensureDatabaseCopied();
 
-    db = await SQLite.openDatabase({
-      name: 'languageLearningDatabase.db',
-      location: 'Documents',
-    });
+    db = await SQLite.openDatabase(getDatabaseConfig());
 
     // First, try to get from conversation_exercises table if it exists
     try {
@@ -912,10 +885,7 @@ export const getTopicsForTranslation = async (
   try {
     await ensureDatabaseCopied();
 
-    db = await SQLite.openDatabase({
-      name: 'languageLearningDatabase.db',
-      location: 'Documents',
-    });
+    db = await SQLite.openDatabase(getDatabaseConfig());
 
     const query = `
       SELECT DISTINCT t.id, t.topic
@@ -959,10 +929,7 @@ export const getRandomTranslationExerciseForTopic = async (
   try {
     await ensureDatabaseCopied();
 
-    db = await SQLite.openDatabase({
-      name: 'languageLearningDatabase.db',
-      location: 'Documents',
-    });
+    db = await SQLite.openDatabase(getDatabaseConfig());
 
     if (userId) {
       // First, try to get an exercise that hasn't been attempted
@@ -1028,10 +995,7 @@ export const getTranslationExerciseData = async (
   try {
     await ensureDatabaseCopied();
 
-    db = await SQLite.openDatabase({
-      name: 'languageLearningDatabase.db',
-      location: 'Documents',
-    });
+    db = await SQLite.openDatabase(getDatabaseConfig());
 
     // First, try to get from translation_exercises table if it exists
     try {
@@ -1085,10 +1049,7 @@ export const getConversationSummary = async (
   try {
     await ensureDatabaseCopied();
 
-    db = await SQLite.openDatabase({
-      name: 'languageLearningDatabase.db',
-      location: 'Documents',
-    });
+    db = await SQLite.openDatabase(getDatabaseConfig());
 
     const results = await db.executeSql(
       'SELECT summary FROM conversation_summaries WHERE exercise_id = ?',
@@ -1118,10 +1079,7 @@ export const getRandomConversationSummaries = async (
   try {
     await ensureDatabaseCopied();
 
-    db = await SQLite.openDatabase({
-      name: 'languageLearningDatabase.db',
-      location: 'Documents',
-    });
+    db = await SQLite.openDatabase(getDatabaseConfig());
 
     const results = await db.executeSql(
       'SELECT summary FROM conversation_summaries WHERE exercise_id != ? ORDER BY RANDOM() LIMIT ?',
@@ -1153,10 +1111,7 @@ export const getTopicNameForExercise = async (
   try {
     await ensureDatabaseCopied();
 
-    db = await SQLite.openDatabase({
-      name: 'languageLearningDatabase.db',
-      location: 'Documents',
-    });
+    db = await SQLite.openDatabase(getDatabaseConfig());
 
     const results = await db.executeSql(
       'SELECT t.topic FROM exercises_info ei JOIN topics t ON ei.topic_id = t.id WHERE ei.id = ?',
@@ -1187,10 +1142,7 @@ export const recordExerciseAttempt = async (
   try {
     await ensureDatabaseCopied();
 
-    db = await SQLite.openDatabase({
-      name: 'languageLearningDatabase.db',
-      location: 'Documents',
-    });
+    db = await SQLite.openDatabase(getDatabaseConfig());
 
     await db.executeSql(
       'INSERT INTO user_exercise_attempts (user_id, exercise_id, is_correct, attempt_date) VALUES (?, ?, ?, datetime("now"))',
@@ -1217,10 +1169,7 @@ export const getTopicProgress = async (
   try {
     await ensureDatabaseCopied();
 
-    db = await SQLite.openDatabase({
-      name: 'languageLearningDatabase.db',
-      location: 'Documents',
-    });
+    db = await SQLite.openDatabase(getDatabaseConfig());
 
     // Get total exercises for this topic/type/language/difficulty combination
     const totalQuery = `
@@ -1283,10 +1232,7 @@ export const resetUserData = async (username: string): Promise<void> => {
   try {
     await ensureDatabaseCopied();
 
-    db = await SQLite.openDatabase({
-      name: 'languageLearningDatabase.db',
-      location: 'Documents',
-    });
+    db = await SQLite.openDatabase(getDatabaseConfig());
 
     // Get user ID first
     const userIdResult = await db.executeSql(
@@ -1360,10 +1306,7 @@ export const getUserId = async (username: string): Promise<number | null> => {
     await ensureDatabaseCopied();
 
     db = await withTimeout(
-      SQLite.openDatabase({
-        name: 'languageLearningDatabase.db',
-        location: 'Documents',
-      }),
+      SQLite.openDatabase(getDatabaseConfig()),
       3000
     );
 
@@ -1420,10 +1363,7 @@ export const getUserStatsByTopic = async (userId: number): Promise<any[]> => {
     await ensureDatabaseCopied();
 
     db = await withTimeout(
-      SQLite.openDatabase({
-        name: 'languageLearningDatabase.db',
-        location: 'Documents',
-      }),
+      SQLite.openDatabase(getDatabaseConfig()),
       3000
     );
 
@@ -1485,10 +1425,7 @@ export const getUserFailedExercises = async (
 
     await ensureDatabaseCopied();
 
-    db = await SQLite.openDatabase({
-      name: 'languageLearningDatabase.db',
-      location: 'Documents',
-    });
+    db = await SQLite.openDatabase(getDatabaseConfig());
 
     const results = await db.executeSql(
       `
@@ -1567,10 +1504,7 @@ export const getUserStatsAndSummary = async (
     await ensureDatabaseCopied();
 
     db = await withTimeout(
-      SQLite.openDatabase({
-        name: 'languageLearningDatabase.db',
-        location: 'Documents',
-      }),
+      SQLite.openDatabase(getDatabaseConfig()),
       3000
     );
 
@@ -1690,10 +1624,7 @@ export const getUserProgressSummary = async (userId: number): Promise<any> => {
     await ensureDatabaseCopied();
 
     db = await withTimeout(
-      SQLite.openDatabase({
-        name: 'languageLearningDatabase.db',
-        location: 'Documents',
-      }),
+      SQLite.openDatabase(getDatabaseConfig()),
       3000
     );
 
@@ -1756,10 +1687,7 @@ export const getRandomMixedExercises = async (
   try {
     await ensureDatabaseCopied();
 
-    db = await SQLite.openDatabase({
-      name: 'languageLearningDatabase.db',
-      location: 'Documents',
-    });
+    db = await SQLite.openDatabase(getDatabaseConfig());
 
     const shuffleExercises: ShuffleExercise[] = [];
     const exerciseTypes = ['pairs', 'conversation', 'translation'];

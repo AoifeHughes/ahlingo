@@ -144,16 +144,31 @@ export const initializeDatabase = async (): Promise<void> => {
       // Ensure database is copied
       await ensureDatabaseCopied();
 
-      // Open the database
+      // Determine the correct database path for opening
+      const documentsPath =
+        Platform.OS === 'ios'
+          ? RNFS.DocumentDirectoryPath
+          : RNFS.ExternalDirectoryPath || RNFS.DocumentDirectoryPath;
+      
+      const databasePath = `${documentsPath}/${DATABASE_CONFIG.NAME}`;
+
+      // Open the database using absolute path for Android, location for iOS
+      const databaseConfig = Platform.OS === 'ios' 
+        ? {
+            name: DATABASE_CONFIG.NAME,
+            location: 'Documents',
+          }
+        : {
+            name: databasePath,
+            location: 'default',
+          };
+
       globalDb = await withTimeout(
-        SQLite.openDatabase({
-          name: DATABASE_CONFIG.NAME,
-          location: DATABASE_CONFIG.LOCATION,
-        }),
+        SQLite.openDatabase(databaseConfig),
         TIMEOUTS.CONNECTION
       );
 
-      console.log('✅ Database opened successfully');
+      console.log('✅ Database opened successfully from:', Platform.OS === 'ios' ? 'Documents directory' : databasePath);
 
       // Wait for database to be ready and test connection
       await new Promise(resolve => setTimeout(resolve, 100));

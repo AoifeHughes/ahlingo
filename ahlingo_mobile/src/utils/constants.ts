@@ -1,7 +1,6 @@
 // Database configuration constants
 export const DATABASE_CONFIG = {
   NAME: 'languageLearningDatabase.db',
-  LOCATION: 'Documents' as const,
 } as const;
 
 // Timeout constants
