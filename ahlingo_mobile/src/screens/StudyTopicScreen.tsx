@@ -2,7 +2,7 @@ import React from 'react';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../types';
-import ComingSoonScreen from './ComingSoonScreen';
+import StudyTopicSelectionScreen from './StudyTopicSelectionScreen';
 
 type StudyTopicScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -21,12 +21,9 @@ interface Props {
 
 const StudyTopicScreen: React.FC<Props> = ({ navigation, route }) => {
   return (
-    <ComingSoonScreen
+    <StudyTopicSelectionScreen
       navigation={navigation}
       route={route}
-      featureName="Study Topic"
-      featureIcon="📚"
-      description="Dive deep into specific topics with comprehensive study materials and focused practice sessions."
     />
   );
 };

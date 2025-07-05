@@ -15,6 +15,7 @@ import SettingsScreen from '../screens/SettingsScreen';
 import StatsScreen from '../screens/StatsScreen';
 import RetryMistakesScreen from '../screens/RetryMistakesScreen';
 import StudyTopicScreen from '../screens/StudyTopicScreen';
+import StudyTopicShuffleScreen from '../screens/StudyTopicShuffleScreen';
 import FillInTheBlankScreen from '../screens/FillInTheBlankScreen';
 import ExerciseShuffleStartScreen from '../screens/ExerciseShuffleStartScreen';
 import ExerciseShuffleTransitionScreen from '../screens/ExerciseShuffleTransitionScreen';
@@ -99,6 +100,11 @@ const AppNavigator: React.FC = () => {
           name="StudyTopic"
           component={StudyTopicScreen}
           options={{ title: 'Study Topic' }}
+        />
+        <Stack.Screen
+          name="StudyTopicShuffle"
+          component={StudyTopicShuffleScreen}
+          options={{ title: 'Study Session' }}
         />
         <Stack.Screen
           name="FillInTheBlank"

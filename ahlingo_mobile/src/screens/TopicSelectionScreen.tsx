@@ -19,6 +19,7 @@ import {
   getTopicsForConversation,
   getTopicsForTranslation,
   getTopicsForFillInBlank,
+  getTopicsWithProgressForExerciseType,
   getUserSettings,
   getMostRecentUser,
   getUserId,
@@ -74,30 +75,25 @@ const TopicSelectionScreen: React.FC<Props> = ({ navigation, route }) => {
       // Get user ID for progress tracking
       const userId = await getUserId(username);
       
-      // Load topics based on exercise type
-      let availableTopics: Topic[] = [];
-      if (exerciseType === 'pairs') {
-        availableTopics = await getTopicsForPairs(language, difficulty);
-      } else if (exerciseType === 'conversation') {
-        availableTopics = await getTopicsForConversation(language, difficulty);
-      } else if (exerciseType === 'translation') {
-        availableTopics = await getTopicsForTranslation(language, difficulty);
-      } else if (exerciseType === 'fill_in_blank') {
-        availableTopics = await getTopicsForFillInBlank(language, difficulty);
+      // Load topics with progress in a single optimized query
+      let topicsWithProgress: TopicWithProgress[] = [];
+      if (exerciseType === 'pairs' || exerciseType === 'conversation' || 
+          exerciseType === 'translation' || exerciseType === 'fill_in_blank') {
+        topicsWithProgress = await getTopicsWithProgressForExerciseType(
+          userId, 
+          exerciseType, 
+          language, 
+          difficulty
+        );
       } else {
         // Fallback to pairs for unknown exercise types
-        availableTopics = await getTopicsForPairs(language, difficulty);
+        topicsWithProgress = await getTopicsWithProgressForExerciseType(
+          userId, 
+          'pairs', 
+          language, 
+          difficulty
+        );
       }
-
-      // Fetch progress for each topic
-      const topicsWithProgress: TopicWithProgress[] = await Promise.all(
-        availableTopics.map(async (topic) => {
-          const progress = userId
-            ? await getTopicProgress(userId, topic.id, exerciseType, language, difficulty)
-            : { totalExercises: 0, completedExercises: 0, percentage: 0 };
-          return { ...topic, progress };
-        })
-      );
 
       setTopics(topicsWithProgress);
     } catch (error) {

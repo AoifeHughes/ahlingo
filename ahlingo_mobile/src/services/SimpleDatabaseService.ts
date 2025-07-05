@@ -11,6 +11,7 @@ import {
   ExerciseInfo,
   ShuffleExercise,
   FillInBlankExercise,
+  StudyTopicInfo,
 } from '../types';
 
 // Enable debug mode to see SQL logs
@@ -1013,6 +1014,279 @@ export const getTopicsForFillInBlank = async (
     return topics;
   } catch (error) {
     console.error('Failed to get topics for fill-in-blank:', error);
+    return [];
+  } finally {
+    await safeCloseDatabase(db);
+  }
+};
+
+// Optimized function to get topics with progress in a single query
+export const getTopicsWithProgressForExerciseType = async (
+  userId: number | null,
+  exerciseType: 'pairs' | 'conversation' | 'translation' | 'fill_in_blank',
+  language: string,
+  difficulty: string
+): Promise<TopicWithProgress[]> => {
+  let db: SQLiteDatabase | null = null;
+
+  try {
+    await ensureDatabaseCopied();
+
+    db = await SQLite.openDatabase(getDatabaseConfig());
+
+    // Single optimized query that gets topics and calculates progress
+    const query = `
+      SELECT 
+        t.id,
+        t.topic,
+        COUNT(DISTINCT ei.id) as total_exercises,
+        COUNT(DISTINCT CASE WHEN uea.is_correct = 1 THEN uea.exercise_id END) as completed_exercises,
+        CASE 
+          WHEN COUNT(DISTINCT ei.id) > 0 
+          THEN ROUND((COUNT(DISTINCT CASE WHEN uea.is_correct = 1 THEN uea.exercise_id END) * 100.0) / COUNT(DISTINCT ei.id))
+          ELSE 0 
+        END as percentage
+      FROM topics t
+      JOIN exercises_info ei ON t.id = ei.topic_id
+      JOIN languages l ON ei.language_id = l.id  
+      JOIN difficulties d ON ei.difficulty_id = d.id
+      ${exerciseType === 'pairs' ? 'JOIN pair_exercises pe ON ei.id = pe.exercise_id' : ''}
+      ${exerciseType === 'conversation' ? 'JOIN conversation_exercises ce ON ei.id = ce.exercise_id' : ''}
+      ${exerciseType === 'translation' ? 'JOIN translation_exercises te ON ei.id = te.exercise_id' : ''}
+      ${exerciseType === 'fill_in_blank' ? 'JOIN fill_in_blank_exercises fibe ON ei.id = fibe.exercise_id' : ''}
+      LEFT JOIN user_exercise_attempts uea ON ei.id = uea.exercise_id AND uea.user_id = ?
+      WHERE l.language = ?
+        AND d.difficulty_level = ?
+        AND ei.exercise_type = ?
+      GROUP BY t.id, t.topic
+      ORDER BY t.topic
+    `;
+
+    const params = userId ? [userId, language, difficulty, exerciseType] : [null, language, difficulty, exerciseType];
+    const results = await db.executeSql(query, params);
+
+    const topicsWithProgress: TopicWithProgress[] = [];
+    if (results && results[0]) {
+      for (let i = 0; i < results[0].rows.length; i++) {
+        const row = results[0].rows.item(i);
+        topicsWithProgress.push({
+          id: row.id,
+          topic: row.topic,
+          progress: {
+            totalExercises: row.total_exercises || 0,
+            completedExercises: row.completed_exercises || 0,
+            percentage: row.percentage || 0,
+          },
+        });
+      }
+    }
+
+    return topicsWithProgress;
+  } catch (error) {
+    console.error('Failed to get topics with progress:', error);
+    return [];
+  } finally {
+    await safeCloseDatabase(db);
+  }
+};
+
+// Function to get topics for Study Topic with available exercise types and overall progress
+export const getTopicsForStudy = async (
+  userId: number | null,
+  language: string,
+  difficulty: string
+): Promise<StudyTopicInfo[]> => {
+  let db: SQLiteDatabase | null = null;
+
+  try {
+    await ensureDatabaseCopied();
+
+    db = await SQLite.openDatabase(getDatabaseConfig());
+
+    // Query to get topics with available exercise types and overall progress
+    const query = `
+      SELECT 
+        t.id,
+        t.topic,
+        GROUP_CONCAT(DISTINCT ei.exercise_type) as exercise_types,
+        COUNT(DISTINCT ei.id) as total_exercises,
+        COUNT(DISTINCT CASE WHEN uea.is_correct = 1 THEN uea.exercise_id END) as completed_exercises,
+        CASE 
+          WHEN COUNT(DISTINCT ei.id) > 0 
+          THEN ROUND((COUNT(DISTINCT CASE WHEN uea.is_correct = 1 THEN uea.exercise_id END) * 100.0) / COUNT(DISTINCT ei.id))
+          ELSE 0 
+        END as percentage
+      FROM topics t
+      JOIN exercises_info ei ON t.id = ei.topic_id
+      JOIN languages l ON ei.language_id = l.id  
+      JOIN difficulties d ON ei.difficulty_id = d.id
+      LEFT JOIN user_exercise_attempts uea ON ei.id = uea.exercise_id AND uea.user_id = ?
+      WHERE l.language = ?
+        AND d.difficulty_level = ?
+        AND ei.exercise_type IN ('pairs', 'conversation', 'translation', 'fill_in_blank')
+      GROUP BY t.id, t.topic
+      HAVING COUNT(DISTINCT ei.id) >= 5
+      ORDER BY t.topic
+    `;
+
+    const params = userId ? [userId, language, difficulty] : [null, language, difficulty];
+    const results = await db.executeSql(query, params);
+
+    const studyTopics: StudyTopicInfo[] = [];
+    if (results && results[0]) {
+      for (let i = 0; i < results[0].rows.length; i++) {
+        const row = results[0].rows.item(i);
+        const exerciseTypesStr = row.exercise_types || '';
+        const availableExerciseTypes = exerciseTypesStr
+          .split(',')
+          .filter((type: string) => type && ['pairs', 'conversation', 'translation', 'fill_in_blank'].includes(type))
+          .sort() as ('pairs' | 'conversation' | 'translation' | 'fill_in_blank')[];
+
+        studyTopics.push({
+          id: row.id,
+          topic: row.topic,
+          availableExerciseTypes,
+          totalExercises: row.total_exercises || 0,
+          completedExercises: row.completed_exercises || 0,
+          percentage: row.percentage || 0,
+        });
+      }
+    }
+
+    return studyTopics;
+  } catch (error) {
+    console.error('Failed to get topics for study:', error);
+    return [];
+  } finally {
+    await safeCloseDatabase(db);
+  }
+};
+
+// Function to get 5 random mixed exercises from a single topic
+export const getRandomMixedExercisesForTopic = async (
+  topicId: number,
+  userId: number | null,
+  language: string,
+  difficulty: string
+): Promise<ShuffleExercise[]> => {
+  let db: SQLiteDatabase | null = null;
+
+  try {
+    await ensureDatabaseCopied();
+
+    db = await SQLite.openDatabase(getDatabaseConfig());
+
+    // Get available exercise types for this topic
+    const typesQuery = `
+      SELECT DISTINCT ei.exercise_type
+      FROM exercises_info ei
+      JOIN languages l ON ei.language_id = l.id
+      JOIN difficulties d ON ei.difficulty_id = d.id
+      WHERE ei.topic_id = ?
+        AND l.language = ?
+        AND d.difficulty_level = ?
+        AND ei.exercise_type IN ('pairs', 'conversation', 'translation', 'fill_in_blank')
+    `;
+
+    const typesResults = await db.executeSql(typesQuery, [topicId, language, difficulty]);
+    
+    if (!typesResults || !typesResults[0] || typesResults[0].rows.length === 0) {
+      return [];
+    }
+
+    const availableTypes: ('pairs' | 'conversation' | 'translation' | 'fill_in_blank')[] = [];
+    for (let i = 0; i < typesResults[0].rows.length; i++) {
+      availableTypes.push(typesResults[0].rows.item(i).exercise_type);
+    }
+
+    const exercises: ShuffleExercise[] = [];
+    const targetCount = 5;
+
+    // Get topic name
+    const topicQuery = 'SELECT topic FROM topics WHERE id = ?';
+    const topicResults = await db.executeSql(topicQuery, [topicId]);
+    const topicName = topicResults[0].rows.length > 0 ? topicResults[0].rows.item(0).topic : 'Unknown Topic';
+
+    // Try to get exercises with preference for untried ones if userId is provided
+    for (let attempt = 0; attempt < targetCount; attempt++) {
+      const randomType = availableTypes[Math.floor(Math.random() * availableTypes.length)];
+      
+      let exerciseQuery: string;
+      let queryParams: any[];
+
+      if (userId) {
+        // Try to get untried exercises first
+        exerciseQuery = `
+          SELECT ei.*
+          FROM exercises_info ei
+          JOIN languages l ON ei.language_id = l.id
+          JOIN difficulties d ON ei.difficulty_id = d.id
+          LEFT JOIN user_exercise_attempts uea ON ei.id = uea.exercise_id AND uea.user_id = ?
+          WHERE ei.topic_id = ?
+            AND l.language = ?
+            AND d.difficulty_level = ?
+            AND ei.exercise_type = ?
+            AND uea.exercise_id IS NULL
+          ORDER BY RANDOM()
+          LIMIT 1
+        `;
+        queryParams = [userId, topicId, language, difficulty, randomType];
+      } else {
+        exerciseQuery = `
+          SELECT ei.*
+          FROM exercises_info ei
+          JOIN languages l ON ei.language_id = l.id
+          JOIN difficulties d ON ei.difficulty_id = d.id
+          WHERE ei.topic_id = ?
+            AND l.language = ?
+            AND d.difficulty_level = ?
+            AND ei.exercise_type = ?
+          ORDER BY RANDOM()
+          LIMIT 1
+        `;
+        queryParams = [topicId, language, difficulty, randomType];
+      }
+
+      const results = await db.executeSql(exerciseQuery, queryParams);
+
+      if (results && results[0] && results[0].rows.length > 0) {
+        const exerciseInfo = results[0].rows.item(0);
+        exercises.push({
+          exerciseInfo,
+          exerciseType: randomType,
+          topicName,
+        });
+      } else if (userId) {
+        // If no untried exercises, fall back to any exercise of this type
+        const fallbackQuery = `
+          SELECT ei.*
+          FROM exercises_info ei
+          JOIN languages l ON ei.language_id = l.id
+          JOIN difficulties d ON ei.difficulty_id = d.id
+          WHERE ei.topic_id = ?
+            AND l.language = ?
+            AND d.difficulty_level = ?
+            AND ei.exercise_type = ?
+          ORDER BY RANDOM()
+          LIMIT 1
+        `;
+        
+        const fallbackResults = await db.executeSql(fallbackQuery, [topicId, language, difficulty, randomType]);
+        
+        if (fallbackResults && fallbackResults[0] && fallbackResults[0].rows.length > 0) {
+          const exerciseInfo = fallbackResults[0].rows.item(0);
+          exercises.push({
+            exerciseInfo,
+            exerciseType: randomType,
+            topicName,
+          });
+        }
+      }
+    }
+
+    return exercises;
+  } catch (error) {
+    console.error('Failed to get random mixed exercises for topic:', error);
     return [];
   } finally {
     await safeCloseDatabase(db);

@@ -23,6 +23,13 @@ export interface TopicWithProgress extends Topic {
   };
 }
 
+export interface StudyTopicInfo extends Topic {
+  availableExerciseTypes: ('pairs' | 'conversation' | 'translation' | 'fill_in_blank')[];
+  totalExercises: number;
+  completedExercises: number;
+  percentage: number;
+}
+
 export interface Difficulty {
   id: number;
   difficulty_level: string;
@@ -198,6 +205,11 @@ export type RootStackParamList = {
   RetryMistakes: undefined;
   // New feature screens
   StudyTopic: undefined;
+  StudyTopicShuffle: { 
+    topicId: number;
+    topicName: string;
+    exercises: ShuffleExercise[];
+  };
   FillInTheBlank: { 
     topicId?: number;
     shuffleContext?: ExerciseShuffleContext;
