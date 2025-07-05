@@ -167,7 +167,7 @@ async function ensureDatabaseCopied() {
     const bundlePath =
       Platform.OS === 'ios'
         ? `${RNFS.MainBundlePath}/${databaseName}`
-        : `android_asset/${databaseName}`;
+        : `android_asset/database/${databaseName}`;
 
     const documentsPath =
       Platform.OS === 'ios'
@@ -184,7 +184,7 @@ async function ensureDatabaseCopied() {
       if (Platform.OS === 'ios') {
         await RNFS.copyFile(bundlePath, databasePath);
       } else {
-        await RNFS.copyFileAssets(databaseName, databasePath);
+        await RNFS.copyFileAssets(`database/${databaseName}`, databasePath);
       }
 
       console.log('Database copied successfully to:', databasePath);
