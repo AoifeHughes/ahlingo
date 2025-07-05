@@ -174,6 +174,12 @@ const ExerciseShuffleStartScreen: React.FC<Props> = ({ navigation, route }) => {
           exerciseInfo: firstExercise.exerciseInfo,
         });
         break;
+      case 'fill_in_blank':
+        navigation.navigate('FillInTheBlank', {
+          shuffleContext,
+          exerciseInfo: firstExercise.exerciseInfo,
+        });
+        break;
     }
   };
 

@@ -141,6 +141,12 @@ const ExerciseShuffleTransitionScreen: React.FC<Props> = ({ navigation, route })
               exerciseInfo: nextExerciseData.exerciseInfo,
             });
             break;
+          case 'fill_in_blank':
+            navigation.navigate('FillInTheBlank', {
+              shuffleContext,
+              exerciseInfo: nextExerciseData.exerciseInfo,
+            });
+            break;
         }
       }
     }

@@ -1894,7 +1894,7 @@ export const getRandomMixedExercises = async (
     db = await SQLite.openDatabase(getDatabaseConfig());
 
     const shuffleExercises: ShuffleExercise[] = [];
-    const exerciseTypes = ['pairs', 'conversation', 'translation'];
+    const exerciseTypes = ['pairs', 'conversation', 'translation', 'fill_in_blank'];
     const usedTopics = new Set<number>();
 
     for (let i = 0; i < 5; i++) {
@@ -1915,6 +1915,7 @@ export const getRandomMixedExercises = async (
           ${exerciseType === 'pairs' ? 'JOIN pair_exercises pe ON ei.id = pe.exercise_id' : ''}
           ${exerciseType === 'conversation' ? 'JOIN conversation_exercises ce ON ei.id = ce.exercise_id' : ''}
           ${exerciseType === 'translation' ? 'JOIN translation_exercises te ON ei.id = te.exercise_id' : ''}
+          ${exerciseType === 'fill_in_blank' ? 'JOIN fill_in_blank_exercises fibe ON ei.id = fibe.exercise_id' : ''}
           LEFT JOIN user_exercise_attempts uea ON ei.id = uea.exercise_id AND uea.user_id = ?
           WHERE ei.exercise_type = ?
             AND l.language = ?
@@ -1935,6 +1936,7 @@ export const getRandomMixedExercises = async (
           ${exerciseType === 'pairs' ? 'JOIN pair_exercises pe ON ei.id = pe.exercise_id' : ''}
           ${exerciseType === 'conversation' ? 'JOIN conversation_exercises ce ON ei.id = ce.exercise_id' : ''}
           ${exerciseType === 'translation' ? 'JOIN translation_exercises te ON ei.id = te.exercise_id' : ''}
+          ${exerciseType === 'fill_in_blank' ? 'JOIN fill_in_blank_exercises fibe ON ei.id = fibe.exercise_id' : ''}
           WHERE ei.exercise_type = ?
             AND l.language = ?
             AND d.difficulty_level = ?
@@ -1959,7 +1961,7 @@ export const getRandomMixedExercises = async (
             exercise_type: row.exercise_type,
             lesson_id: row.lesson_id,
           },
-          exerciseType: row.exercise_type as 'pairs' | 'conversation' | 'translation',
+          exerciseType: row.exercise_type as 'pairs' | 'conversation' | 'translation' | 'fill_in_blank',
           topicName: row.topic_name,
         });
         usedTopics.add(row.topic_id);
@@ -1974,6 +1976,7 @@ export const getRandomMixedExercises = async (
           ${exerciseType === 'pairs' ? 'JOIN pair_exercises pe ON ei.id = pe.exercise_id' : ''}
           ${exerciseType === 'conversation' ? 'JOIN conversation_exercises ce ON ei.id = ce.exercise_id' : ''}
           ${exerciseType === 'translation' ? 'JOIN translation_exercises te ON ei.id = te.exercise_id' : ''}
+          ${exerciseType === 'fill_in_blank' ? 'JOIN fill_in_blank_exercises fibe ON ei.id = fibe.exercise_id' : ''}
           WHERE ei.exercise_type = ?
             AND l.language = ?
             AND d.difficulty_level = ?
@@ -1996,7 +1999,7 @@ export const getRandomMixedExercises = async (
               exercise_type: row.exercise_type,
               lesson_id: row.lesson_id,
             },
-            exerciseType: row.exercise_type as 'pairs' | 'conversation' | 'translation',
+            exerciseType: row.exercise_type as 'pairs' | 'conversation' | 'translation' | 'fill_in_blank',
             topicName: row.topic_name,
           });
           usedTopics.add(row.topic_id);
