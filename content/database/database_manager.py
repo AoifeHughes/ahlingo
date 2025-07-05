@@ -108,6 +108,7 @@ class LanguageDB:
                 incorrect_1 TEXT NOT NULL,
                 incorrect_2 TEXT NOT NULL,
                 blank_position INTEGER NOT NULL,
+                translation TEXT NOT NULL,
                 FOREIGN KEY (exercise_id) REFERENCES exercises_info (id)
             )""",
             """CREATE TABLE IF NOT EXISTS user_exercise_attempts (
@@ -769,6 +770,7 @@ class LanguageDB:
         incorrect_1: str,
         incorrect_2: str,
         blank_position: int,
+        translation: str,
         lesson_id: str = None,
     ) -> int:
         """Add a fill-in-blank exercise to the database."""
@@ -794,8 +796,8 @@ class LanguageDB:
 
         self.cursor.execute(
             """INSERT INTO fill_in_blank_exercises
-               (exercise_id, sentence, correct_answer, incorrect_1, incorrect_2, blank_position)
-               VALUES (?, ?, ?, ?, ?, ?)""",
+               (exercise_id, sentence, correct_answer, incorrect_1, incorrect_2, blank_position, translation)
+               VALUES (?, ?, ?, ?, ?, ?, ?)""",
             (
                 exercise_id,
                 sentence,
@@ -803,6 +805,7 @@ class LanguageDB:
                 incorrect_1,
                 incorrect_2,
                 blank_position,
+                translation,
             ),
         )
 

@@ -31,6 +31,7 @@ class FillInBlankExercise(BaseModel):
     incorrect_1: str = Field(..., description="First incorrect option")
     incorrect_2: str = Field(..., description="Second incorrect option")
     blank_position: int = Field(..., description="Position of the blank in the sentence (0-indexed)")
+    translation: str = Field(..., description="Complete English sentence translation")
 
 
 def create_pair_schema(language: str):

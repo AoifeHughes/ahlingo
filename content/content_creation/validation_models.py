@@ -37,12 +37,19 @@ class TranslationValidation(ValidationResult):
     uses_natural_language: bool = Field(description="Does the translation use natural, idiomatic language?")
 
 
+class FillInBlankValidation(ValidationResult):
+    """Extended validation for fill-in-blank exercises."""
+    translation_matches_original: bool = Field(description="Does the English translation accurately convey the meaning of the original sentence?")
+    answer_options_appropriate: bool = Field(description="Are the answer options appropriate and at the right difficulty level?")
+
+
 def get_validation_schema(exercise_type: str) -> str:
     """Get JSON schema for validation based on exercise type."""
     schemas = {
         "conversation": ConversationValidation.model_json_schema(),
         "pair": PairValidation.model_json_schema(),
         "translation": TranslationValidation.model_json_schema(),
+        "fill_in_blank": FillInBlankValidation.model_json_schema(),
     }
     
     return json.dumps(schemas.get(exercise_type, ValidationResult.model_json_schema()))
@@ -68,6 +75,8 @@ def parse_validation_result(response_text: str, exercise_type: str) -> Validatio
             return PairValidation(**data)
         elif exercise_type == "translation":
             return TranslationValidation(**data)
+        elif exercise_type == "fill_in_blank":
+            return FillInBlankValidation(**data)
         else:
             return ValidationResult(**data)
             

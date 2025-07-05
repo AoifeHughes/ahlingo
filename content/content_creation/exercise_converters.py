@@ -163,12 +163,57 @@ Please evaluate the following aspects and respond with a JSON object:
 Respond only with valid JSON matching the expected schema."""
 
 
+class FillInBlankConverter(ExerciseConverter):
+    """Converter for fill-in-blank exercises."""
+    
+    def convert_to_text(self, exercise_data: Dict[str, Any]) -> str:
+        """Convert fill-in-blank exercise to readable format."""
+        sentence = exercise_data.get('sentence', '')
+        correct_answer = exercise_data.get('correct_answer', '')
+        incorrect_1 = exercise_data.get('incorrect_1', '')
+        incorrect_2 = exercise_data.get('incorrect_2', '')
+        translation = exercise_data.get('translation', '')
+        blank_position = exercise_data.get('blank_position', 0)
+        
+        text_parts = ["=== FILL-IN-BLANK EXERCISE ==="]
+        text_parts.append(f"Sentence: {sentence}")
+        text_parts.append(f"Correct Answer: {correct_answer}")
+        text_parts.append(f"Incorrect Option 1: {incorrect_1}")
+        text_parts.append(f"Incorrect Option 2: {incorrect_2}")
+        text_parts.append(f"Blank Position: {blank_position}")
+        text_parts.append(f"English Translation: {translation}")
+        
+        return "\n".join(text_parts)
+    
+    def get_validation_prompt(self, exercise_text: str) -> str:
+        """Generate validation prompt for fill-in-blank exercises."""
+        return f"""You are a language learning expert. Please validate this {self.language} fill-in-blank exercise for {self.level} level learners.
+
+EXERCISE TO VALIDATE:
+{exercise_text}
+
+Please evaluate the following aspects and respond with a JSON object:
+
+1. is_correct_language: Is the {self.language} text actually in {self.language}?
+2. has_correct_grammar: Is the {self.language} grammar correct?
+3. is_translation_accurate: Does the English translation accurately convey the meaning?
+4. translation_matches_original: Does the English translation match the meaning of the complete {self.language} sentence?
+5. answer_options_appropriate: Are the answer options appropriate and at the right difficulty level?
+6. is_culturally_appropriate: Is the content culturally appropriate?
+7. is_educational_quality: Is this useful for language learning?
+8. overall_quality_score: Rate from 1-10 (10 = excellent)
+9. issues_found: List any specific problems found
+
+Respond only with valid JSON matching the expected schema."""
+
+
 def get_converter(exercise_type: str, language: str, level: str) -> ExerciseConverter:
     """Factory function to get appropriate converter for exercise type."""
     converters = {
         'conversation': ConversationConverter,
         'pair': PairConverter,
         'translation': TranslationConverter,
+        'fill_in_blank': FillInBlankConverter,
     }
     
     converter_class = converters.get(exercise_type.lower())
@@ -191,6 +236,10 @@ def identify_exercise_type(exercise_data: Dict[str, Any]) -> str:
     # Check for translation-specific fields
     if 'language_1_content' in exercise_data and 'language_2_content' in exercise_data:
         return 'translation'
+    
+    # Check for fill-in-blank specific fields
+    if any(key in exercise_data for key in ['sentence', 'correct_answer', 'incorrect_1', 'incorrect_2', 'blank_position']):
+        return 'fill_in_blank'
     
     # Fallback: try to infer from other clues
     if any(key in exercise_data for key in ['speaker', 'message']):

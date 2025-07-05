@@ -170,7 +170,7 @@ def validate_fill_in_blank(data: list, language: str) -> list:
         if not isinstance(item, dict):
             raise ValidationError(f"Fill-in-blank {i}: Expected dict, got {type(item)}")
 
-        required_fields = ["sentence", "correct_answer", "incorrect_1", "incorrect_2", "blank_position"]
+        required_fields = ["sentence", "correct_answer", "incorrect_1", "incorrect_2", "blank_position", "translation"]
         for field in required_fields:
             if field not in item:
                 raise ValidationError(f"Fill-in-blank {i}: Missing required field '{field}'")
@@ -179,6 +179,7 @@ def validate_fill_in_blank(data: list, language: str) -> list:
         correct_answer = item["correct_answer"].strip()
         incorrect_1 = item["incorrect_1"].strip()
         incorrect_2 = item["incorrect_2"].strip()
+        translation = item["translation"].strip()
 
         # Validate sentence has content and contains a blank
         if not sentence:
@@ -195,6 +196,10 @@ def validate_fill_in_blank(data: list, language: str) -> list:
         # Validate answers are not empty
         if not correct_answer or not incorrect_1 or not incorrect_2:
             raise ValidationError(f"Fill-in-blank {i}: All answer options must be non-empty")
+        
+        # Validate translation is not empty
+        if not translation:
+            raise ValidationError(f"Fill-in-blank {i}: Translation must be non-empty")
 
         # Validate answers are different
         answers = [correct_answer, incorrect_1, incorrect_2]
@@ -276,7 +281,7 @@ def generate_conversations(model, language: str, level: str, topic: str):
     system_content = f"""You are a {language} language learning tool. Generate {level} level {language} conversations about "{topic}".
 
 Create 2-4 conversation exercises. Each should have:
-- 2-10 dialogue turns between speakers
+- 2-5 dialogue turns between speakers
 - Natural, realistic dialogue for {level} learners
 - Progressive conversations that build naturally
 - Each turn should add new information or move the conversation forward
@@ -356,7 +361,7 @@ def generate_pairs(model, language: str, level: str, topic: str):
     # Create system message with clear instructions
     system_content = f"""You are a {language} language learning tool. Generate vocabulary pairs for "{topic}".
 
-Create EXACTLY 10 word pairs at {level} level:
+Create EXACTLY 5 word pairs at {level} level:
 - English word or phrase paired with {language} translation
 - Mix of nouns, verbs, adjectives, and adverbs
 - Common, practical vocabulary related to {topic}
@@ -380,7 +385,7 @@ Create EXACTLY 10 word pairs at {level} level:
                     {"role": "assistant", "content": examples_content},
                     {
                         "role": "user",
-                        "content": f"Now generate 10 new word pairs for the topic: {topic}",
+                        "content": f"Now generate 5 new word pairs for the topic: {topic}",
                     },
                 ]
             )
@@ -408,7 +413,7 @@ Create EXACTLY 10 word pairs at {level} level:
         examples_context = ""
         if language in default_pairs_assistants:
             examples_content = default_pairs_assistants[language]["content"]
-            examples_context = f"\n\nReference examples (for format only):\n{examples_content}\n\nNow generate 10 NEW word pairs for the topic: {topic}"
+            examples_context = f"\n\nReference examples (for format only):\n{examples_content}\n\nNow generate 5 NEW word pairs for the topic: {topic}"
 
         full_prompt = system_content + examples_context
         result = generator(full_prompt)
@@ -509,9 +514,10 @@ def generate_fill_in_blank(model, language: str, level: str, topic: str):
                 "correct_answer": {{"type": "string"}},
                 "incorrect_1": {{"type": "string"}},
                 "incorrect_2": {{"type": "string"}},
-                "blank_position": {{"type": "integer"}}
+                "blank_position": {{"type": "integer"}},
+                "translation": {{"type": "string"}}
             }},
-            "required": ["sentence", "correct_answer", "incorrect_1", "incorrect_2", "blank_position"]
+            "required": ["sentence", "correct_answer", "incorrect_1", "incorrect_2", "blank_position", "translation"]
         }}
     }}"""
 
@@ -523,6 +529,7 @@ CRITICAL REQUIREMENTS:
 2. Each sentence must contain EXACTLY ONE underscore (_) representing the blank
 3. Each exercise must have EXACTLY 3 answer options that are COMPLETELY DIFFERENT from each other
 4. The blank_position must be the correct word position (counting from 0)
+5. The translation must be the complete English sentence with the blank filled in
 
 FORMAT REQUIREMENTS:
 - sentence: A {language} sentence with exactly one _ (underscore) where a word is missing
@@ -530,6 +537,7 @@ FORMAT REQUIREMENTS:
 - incorrect_1: A plausible but wrong alternative (different from correct_answer)
 - incorrect_2: Another plausible but wrong alternative (different from both correct_answer and incorrect_1)
 - blank_position: Integer showing position of the blank (0 = first word, 1 = second word, etc.)
+- translation: The complete English translation of the sentence with the correct answer filled in
 
 CONTENT GUIDELINES:
 - Focus on {topic}-related vocabulary and grammar
@@ -537,11 +545,12 @@ CONTENT GUIDELINES:
 - Make incorrect options plausible but clearly wrong in context
 - Use sentences appropriate for {level} learners
 - Test different word types: nouns, verbs, adjectives, etc.
+- The translation should accurately convey the meaning of the complete {language} sentence
 
 EXAMPLE:
-{{"sentence": "Je mange une _ rouge", "correct_answer": "pomme", "incorrect_1": "orange", "incorrect_2": "banane", "blank_position": 3}}
+{{"sentence": "Je mange une _ rouge", "correct_answer": "pomme", "incorrect_1": "orange", "incorrect_2": "banane", "blank_position": 3, "translation": "I eat a red apple"}}
 
-Remember: All three answer options must be unique, and there must be exactly one blank per sentence."""
+Remember: All three answer options must be unique, there must be exactly one blank per sentence, and the translation must be accurate."""
 
     # Use structured generation with proper message format
     if hasattr(model, "chat") and hasattr(model.chat, "completions"):

@@ -179,7 +179,7 @@ def process_response(
                             break
 
                         if (
-                            len(cleaned_pairs) < 5
+                            len(cleaned_pairs) < 3
                         ):  # Minimum threshold for useful word pair exercise
                             print(
                                 f"Too few valid pairs ({len(cleaned_pairs)}), skipping batch insertion"
@@ -237,11 +237,12 @@ def process_response(
                     incorrect_1 = clean_text(exercise["incorrect_1"])
                     incorrect_2 = clean_text(exercise["incorrect_2"])
                     blank_position = exercise["blank_position"]
+                    translation = clean_text(exercise["translation"])
 
                     # Additional validation for database insertion
-                    if not sentence or not correct_answer or not incorrect_1 or not incorrect_2:
+                    if not sentence or not correct_answer or not incorrect_1 or not incorrect_2 or not translation:
                         print(
-                            f"Skipping fill-in-blank exercise {idx + 1} with empty sentence or answer options"
+                            f"Skipping fill-in-blank exercise {idx + 1} with empty sentence, answer options, or translation"
                         )
                         continue
 
@@ -269,6 +270,7 @@ def process_response(
                         incorrect_1=incorrect_1,
                         incorrect_2=incorrect_2,
                         blank_position=blank_position,
+                        translation=translation,
                         lesson_id=lesson_id,
                     )
             except Exception as e:
