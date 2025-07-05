@@ -16,9 +16,7 @@ import { RootState } from '../store';
 import { useTheme } from '../contexts/ThemeContext';
 import {
   getRandomMixedExercises,
-  getUserSettings,
-  getMostRecentUser,
-  getUserId,
+  getUserContext,
 } from '../services/SimpleDatabaseService';
 
 type ExerciseShuffleStartScreenNavigationProp = NativeStackNavigationProp<
@@ -78,17 +76,19 @@ const ExerciseShuffleStartScreen: React.FC<Props> = ({ navigation, route }) => {
     try {
       setLoading(true);
 
-      // Get user settings
-      const username = await getMostRecentUser();
-      const userSettings = await getUserSettings(username);
-      const language = userSettings.language || settings.language || 'French';
-      const difficulty = userSettings.difficulty || settings.difficulty || 'Beginner';
+      // Get complete user context in single call
+      const userContext = await getUserContext();
+      
+      if (!userContext) {
+        Alert.alert('Error', 'Failed to initialize user. Please try again.');
+        return;
+      }
 
-      // Get user ID for prioritizing untried exercises
-      const userId = await getUserId(username);
+      const language = userContext.settings.language || settings.language || 'French';
+      const difficulty = userContext.settings.difficulty || settings.difficulty || 'Beginner';
 
       // Get 5 random mixed exercises
-      const loadedExercises = await getRandomMixedExercises(userId, language, difficulty);
+      const loadedExercises = await getRandomMixedExercises(userContext.userId, language, difficulty);
 
       if (loadedExercises.length === 0) {
         Alert.alert(

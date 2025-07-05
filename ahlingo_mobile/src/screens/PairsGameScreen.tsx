@@ -18,10 +18,8 @@ import PairButton from '../components/PairButton';
 import {
   getRandomExerciseForTopic,
   getPairExercises,
-  getUserSettings,
-  getMostRecentUser,
-  getUserId,
-  recordExerciseAttempt,
+  getUserContext,
+  recordExerciseAttemptForCurrentUser,
 } from '../services/SimpleDatabaseService';
 import { useTheme } from '../contexts/ThemeContext';
 
@@ -127,12 +125,16 @@ const PairsGameScreen: React.FC<Props> = ({ route, navigation }) => {
     try {
       setLoading(true);
 
-      // Get user settings
-      const username = await getMostRecentUser();
-      const userSettings = await getUserSettings(username);
-      const language = userSettings.language || settings.language || 'French';
-      const difficulty =
-        userSettings.difficulty || settings.difficulty || 'Beginner';
+      // Get complete user context in single call
+      const userContext = await getUserContext();
+      
+      if (!userContext) {
+        Alert.alert('Error', 'Failed to initialize user. Please try again.');
+        return;
+      }
+
+      const language = userContext.settings.language || settings.language || 'French';
+      const difficulty = userContext.settings.difficulty || settings.difficulty || 'Beginner';
 
       setUserLanguage(language);
       setUserDifficulty(difficulty);
@@ -143,15 +145,12 @@ const PairsGameScreen: React.FC<Props> = ({ route, navigation }) => {
       if (shuffleContext && exerciseInfo) {
         exercise = exerciseInfo;
       } else if (topicId) {
-        // Get user ID for prioritizing untried exercises
-        const userId = await getUserId(username);
-
         // Get random exercise for this topic (prioritizing untried exercises)
         exercise = await getRandomExerciseForTopic(
           topicId,
           language,
           difficulty,
-          userId
+          userContext.userId
         );
       }
 
@@ -288,16 +287,10 @@ const PairsGameScreen: React.FC<Props> = ({ route, navigation }) => {
       // Check if all pairs are matched (exercise completed)
       if (newMatchedPairs.length === pairs.length) {
         // Record exercise completion
-        try {
-          const username = await getMostRecentUser();
-          const userId = await getUserId(username);
-          if (userId && currentExercise) {
-            // Exercise is considered successful only if user had no incorrect attempts
-            const isSuccessful = gameState.incorrectCount === 0;
-            await recordExerciseAttempt(userId, currentExercise.id, isSuccessful);
-          }
-        } catch (error) {
-          console.error('Failed to record exercise completion:', error);
+        if (currentExercise) {
+          // Exercise is considered successful only if user had no incorrect attempts
+          const isSuccessful = gameState.incorrectCount === 0;
+          await recordExerciseAttemptForCurrentUser(currentExercise.id, isSuccessful);
         }
 
         // Handle shuffle mode completion

@@ -20,9 +20,7 @@ import {
   getTopicsForTranslation,
   getTopicsForFillInBlank,
   getTopicsWithProgressForExerciseType,
-  getUserSettings,
-  getMostRecentUser,
-  getUserId,
+  getUserContext,
   getTopicProgress,
 } from '../services/SimpleDatabaseService';
 import { useTheme } from '../contexts/ThemeContext';
@@ -61,26 +59,26 @@ const TopicSelectionScreen: React.FC<Props> = ({ navigation, route }) => {
     try {
       setLoading(true);
 
-      // Get current user settings from database
-      const username = await getMostRecentUser();
-      const userSettings = await getUserSettings(username);
+      // Get complete user context in single call
+      const userContext = await getUserContext();
+      
+      if (!userContext) {
+        Alert.alert('Error', 'Failed to initialize user. Please try again.');
+        return;
+      }
 
-      const language = userSettings.language || settings.language || 'French';
-      const difficulty =
-        userSettings.difficulty || settings.difficulty || 'Beginner';
+      const language = userContext.settings.language || settings.language || 'French';
+      const difficulty = userContext.settings.difficulty || settings.difficulty || 'Beginner';
 
       setUserLanguage(language);
       setUserDifficulty(difficulty);
-
-      // Get user ID for progress tracking
-      const userId = await getUserId(username);
       
       // Load topics with progress in a single optimized query
       let topicsWithProgress: TopicWithProgress[] = [];
       if (exerciseType === 'pairs' || exerciseType === 'conversation' || 
           exerciseType === 'translation' || exerciseType === 'fill_in_blank') {
         topicsWithProgress = await getTopicsWithProgressForExerciseType(
-          userId, 
+          userContext.userId, 
           exerciseType, 
           language, 
           difficulty
@@ -88,7 +86,7 @@ const TopicSelectionScreen: React.FC<Props> = ({ navigation, route }) => {
       } else {
         // Fallback to pairs for unknown exercise types
         topicsWithProgress = await getTopicsWithProgressForExerciseType(
-          userId, 
+          userContext.userId, 
           'pairs', 
           language, 
           difficulty

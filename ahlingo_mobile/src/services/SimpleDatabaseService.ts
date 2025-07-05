@@ -1810,6 +1810,531 @@ export const getUserId = async (username: string): Promise<number | null> => {
   }
 };
 
+// Optimized function to get complete user context in single database call
+export const getUserContext = async (): Promise<{
+  username: string;
+  userId: number | null;
+  settings: {
+    language: string;
+    difficulty: string;
+  };
+} | null> => {
+  let db: SQLiteDatabase | null = null;
+
+  try {
+    await ensureDatabaseCopied();
+
+    db = await withTimeout(
+      SQLite.openDatabase(getDatabaseConfig()),
+      3000
+    );
+
+    // Get most recent user
+    const userResults = await withTimeout(
+      db.executeSql('SELECT name FROM users ORDER BY last_login DESC LIMIT 1'),
+      5000
+    );
+
+    if (!userResults || !userResults[0] || userResults[0].rows.length === 0) {
+      return null;
+    }
+
+    const username = userResults[0].rows.item(0).name;
+
+    // Get user ID and settings in single query using JOIN
+    const contextQuery = `
+      SELECT 
+        u.id as user_id,
+        GROUP_CONCAT(
+          CASE 
+            WHEN us.setting_name = 'language' THEN us.setting_value 
+          END
+        ) as language,
+        GROUP_CONCAT(
+          CASE 
+            WHEN us.setting_name = 'difficulty' THEN us.setting_value 
+          END
+        ) as difficulty
+      FROM users u
+      LEFT JOIN user_settings us ON u.id = us.user_id AND us.setting_name IN ('language', 'difficulty')
+      WHERE u.name = ?
+      GROUP BY u.id
+    `;
+
+    const contextResults = await withTimeout(
+      db.executeSql(contextQuery, [username]),
+      5000
+    );
+
+    if (!contextResults || !contextResults[0] || contextResults[0].rows.length === 0) {
+      return null;
+    }
+
+    const row = contextResults[0].rows.item(0);
+    
+    // If no settings exist, create defaults
+    let language = row.language;
+    let difficulty = row.difficulty;
+
+    if (!language || !difficulty) {
+      if (!language) {
+        language = 'French';
+        await db.executeSql(
+          'INSERT OR REPLACE INTO user_settings (user_id, setting_name, setting_value) VALUES (?, ?, ?)',
+          [row.user_id, 'language', language]
+        );
+      }
+      
+      if (!difficulty) {
+        difficulty = 'Beginner';
+        await db.executeSql(
+          'INSERT OR REPLACE INTO user_settings (user_id, setting_name, setting_value) VALUES (?, ?, ?)',
+          [row.user_id, 'difficulty', difficulty]
+        );
+      }
+    }
+
+    return {
+      username,
+      userId: row.user_id,
+      settings: {
+        language: language || 'French',
+        difficulty: difficulty || 'Beginner',
+      },
+    };
+  } catch (error) {
+    console.error('Failed to get user context:', error);
+    return null;
+  } finally {
+    await safeCloseDatabase(db);
+  }
+};
+
+// Simplified function to record exercise attempt for current user
+export const recordExerciseAttemptForCurrentUser = async (
+  exerciseId: number,
+  isCorrect: boolean
+): Promise<void> => {
+  try {
+    const userContext = await getUserContext();
+    if (userContext && userContext.userId) {
+      await recordExerciseAttempt(userContext.userId, exerciseId, isCorrect);
+    }
+  } catch (error) {
+    console.error('Failed to record exercise attempt for current user:', error);
+  }
+};
+
+// Combined function to get conversation exercise with data and topic name in single call
+export const getConversationExerciseWithData = async (
+  topicId: number,
+  language: string,
+  difficulty: string,
+  userId?: number | null
+): Promise<{
+  exercise: ExerciseInfo;
+  conversationData: any[];
+  topicName: string;
+  correctSummary: string;
+  wrongSummaries: string[];
+} | null> => {
+  let db: SQLiteDatabase | null = null;
+
+  try {
+    await ensureDatabaseCopied();
+    db = await SQLite.openDatabase(getDatabaseConfig());
+
+    // First get the exercise (reusing existing logic)
+    let exercise: ExerciseInfo | null = null;
+
+    if (userId) {
+      // Try to get an exercise that hasn't been attempted
+      const untriedQuery = `
+        SELECT ei.* FROM exercises_info ei
+        JOIN languages l ON ei.language_id = l.id
+        JOIN difficulties d ON ei.difficulty_id = d.id
+        JOIN conversation_exercises ce ON ei.id = ce.exercise_id
+        LEFT JOIN user_exercise_attempts uea ON ei.id = uea.exercise_id AND uea.user_id = ?
+        WHERE ei.topic_id = ?
+          AND l.language = ?
+          AND d.difficulty_level = ?
+          AND ei.exercise_type = 'conversation'
+          AND uea.exercise_id IS NULL
+        ORDER BY RANDOM()
+        LIMIT 1
+      `;
+
+      const untriedResults = await db.executeSql(untriedQuery, [userId, topicId, language, difficulty]);
+
+      if (untriedResults && untriedResults[0] && untriedResults[0].rows.length > 0) {
+        exercise = untriedResults[0].rows.item(0);
+      }
+    }
+
+    if (!exercise) {
+      // Fall back to random selection
+      const randomQuery = `
+        SELECT ei.* FROM exercises_info ei
+        JOIN languages l ON ei.language_id = l.id
+        JOIN difficulties d ON ei.difficulty_id = d.id
+        JOIN conversation_exercises ce ON ei.id = ce.exercise_id
+        WHERE ei.topic_id = ?
+          AND l.language = ?
+          AND d.difficulty_level = ?
+          AND ei.exercise_type = 'conversation'
+        ORDER BY RANDOM()
+        LIMIT 1
+      `;
+
+      const results = await db.executeSql(randomQuery, [topicId, language, difficulty]);
+
+      if (results && results[0] && results[0].rows.length > 0) {
+        exercise = results[0].rows.item(0);
+      }
+    }
+
+    if (!exercise) {
+      return null;
+    }
+
+    // Now get all related data in parallel
+    const [conversationResults, topicResults, summaryResults, wrongSummariesResults] = await Promise.all([
+      // Get conversation data
+      db.executeSql('SELECT * FROM conversation_exercises WHERE exercise_id = ? ORDER BY id', [exercise.id]),
+      
+      // Get topic name
+      db.executeSql('SELECT t.topic FROM topics t JOIN exercises_info ei ON t.id = ei.topic_id WHERE ei.id = ?', [exercise.id]),
+      
+      // Get correct summary
+      db.executeSql('SELECT summary FROM conversation_summaries WHERE exercise_id = ? AND is_correct = 1', [exercise.id]),
+      
+      // Get wrong summaries
+      db.executeSql('SELECT summary FROM conversation_summaries WHERE exercise_id != ? AND is_correct = 1 ORDER BY RANDOM() LIMIT 2', [exercise.id])
+    ]);
+
+    // Process conversation data
+    const conversationData: any[] = [];
+    if (conversationResults && conversationResults[0]) {
+      for (let i = 0; i < conversationResults[0].rows.length; i++) {
+        conversationData.push(conversationResults[0].rows.item(i));
+      }
+    }
+
+    // Get topic name
+    const topicName = topicResults && topicResults[0] && topicResults[0].rows.length > 0 
+      ? topicResults[0].rows.item(0).topic 
+      : 'Unknown Topic';
+
+    // Get correct summary
+    const correctSummary = summaryResults && summaryResults[0] && summaryResults[0].rows.length > 0
+      ? summaryResults[0].rows.item(0).summary
+      : '';
+
+    // Get wrong summaries
+    const wrongSummaries: string[] = [];
+    if (wrongSummariesResults && wrongSummariesResults[0]) {
+      for (let i = 0; i < wrongSummariesResults[0].rows.length; i++) {
+        wrongSummaries.push(wrongSummariesResults[0].rows.item(i).summary);
+      }
+    }
+
+    return {
+      exercise,
+      conversationData,
+      topicName,
+      correctSummary,
+      wrongSummaries,
+    };
+  } catch (error) {
+    console.error('Failed to get conversation exercise with data:', error);
+    return null;
+  } finally {
+    await safeCloseDatabase(db);
+  }
+};
+
+// Combined function to get translation exercise with data in single call
+export const getTranslationExerciseWithData = async (
+  topicId: number,
+  language: string,
+  difficulty: string,
+  userId?: number | null
+): Promise<{
+  exercise: ExerciseInfo;
+  translationData: any[];
+} | null> => {
+  let db: SQLiteDatabase | null = null;
+
+  try {
+    await ensureDatabaseCopied();
+    db = await SQLite.openDatabase(getDatabaseConfig());
+
+    // First get the exercise (reusing existing logic)
+    let exercise: ExerciseInfo | null = null;
+
+    if (userId) {
+      // Try to get an exercise that hasn't been attempted
+      const untriedQuery = `
+        SELECT ei.* FROM exercises_info ei
+        JOIN languages l ON ei.language_id = l.id
+        JOIN difficulties d ON ei.difficulty_id = d.id
+        JOIN translation_exercises te ON ei.id = te.exercise_id
+        LEFT JOIN user_exercise_attempts uea ON ei.id = uea.exercise_id AND uea.user_id = ?
+        WHERE ei.topic_id = ?
+          AND l.language = ?
+          AND d.difficulty_level = ?
+          AND ei.exercise_type = 'translation'
+          AND uea.exercise_id IS NULL
+        ORDER BY RANDOM()
+        LIMIT 1
+      `;
+
+      const untriedResults = await db.executeSql(untriedQuery, [userId, topicId, language, difficulty]);
+
+      if (untriedResults && untriedResults[0] && untriedResults[0].rows.length > 0) {
+        exercise = untriedResults[0].rows.item(0);
+      }
+    }
+
+    if (!exercise) {
+      // Fall back to random selection
+      const randomQuery = `
+        SELECT ei.* FROM exercises_info ei
+        JOIN languages l ON ei.language_id = l.id
+        JOIN difficulties d ON ei.difficulty_id = d.id
+        JOIN translation_exercises te ON ei.id = te.exercise_id
+        WHERE ei.topic_id = ?
+          AND l.language = ?
+          AND d.difficulty_level = ?
+          AND ei.exercise_type = 'translation'
+        ORDER BY RANDOM()
+        LIMIT 1
+      `;
+
+      const results = await db.executeSql(randomQuery, [topicId, language, difficulty]);
+
+      if (results && results[0] && results[0].rows.length > 0) {
+        exercise = results[0].rows.item(0);
+      }
+    }
+
+    if (!exercise) {
+      return null;
+    }
+
+    // Get translation data
+    const translationResults = await db.executeSql(
+      'SELECT * FROM translation_exercises WHERE exercise_id = ?',
+      [exercise.id]
+    );
+
+    const translationData: any[] = [];
+    if (translationResults && translationResults[0]) {
+      for (let i = 0; i < translationResults[0].rows.length; i++) {
+        translationData.push(translationResults[0].rows.item(i));
+      }
+    }
+
+    return {
+      exercise,
+      translationData,
+    };
+  } catch (error) {
+    console.error('Failed to get translation exercise with data:', error);
+    return null;
+  } finally {
+    await safeCloseDatabase(db);
+  }
+};
+
+// Combined function to get fill-in-blank exercise with data in single call
+export const getFillInBlankExerciseWithData = async (
+  topicId: number,
+  language: string,
+  difficulty: string,
+  userId?: number | null
+): Promise<{
+  exercise: ExerciseInfo;
+  fillInBlankData: any[];
+} | null> => {
+  let db: SQLiteDatabase | null = null;
+
+  try {
+    await ensureDatabaseCopied();
+    db = await SQLite.openDatabase(getDatabaseConfig());
+
+    // First get the exercise (reusing existing logic)
+    let exercise: ExerciseInfo | null = null;
+
+    if (userId) {
+      // Try to get an exercise that hasn't been attempted
+      const untriedQuery = `
+        SELECT ei.* FROM exercises_info ei
+        JOIN languages l ON ei.language_id = l.id
+        JOIN difficulties d ON ei.difficulty_id = d.id
+        JOIN fill_in_blank_exercises fibe ON ei.id = fibe.exercise_id
+        LEFT JOIN user_exercise_attempts uea ON ei.id = uea.exercise_id AND uea.user_id = ?
+        WHERE ei.topic_id = ?
+          AND l.language = ?
+          AND d.difficulty_level = ?
+          AND ei.exercise_type = 'fill_in_blank'
+          AND uea.exercise_id IS NULL
+        ORDER BY RANDOM()
+        LIMIT 1
+      `;
+
+      const untriedResults = await db.executeSql(untriedQuery, [userId, topicId, language, difficulty]);
+
+      if (untriedResults && untriedResults[0] && untriedResults[0].rows.length > 0) {
+        exercise = untriedResults[0].rows.item(0);
+      }
+    }
+
+    if (!exercise) {
+      // Fall back to random selection
+      const randomQuery = `
+        SELECT ei.* FROM exercises_info ei
+        JOIN languages l ON ei.language_id = l.id
+        JOIN difficulties d ON ei.difficulty_id = d.id
+        JOIN fill_in_blank_exercises fibe ON ei.id = fibe.exercise_id
+        WHERE ei.topic_id = ?
+          AND l.language = ?
+          AND d.difficulty_level = ?
+          AND ei.exercise_type = 'fill_in_blank'
+        ORDER BY RANDOM()
+        LIMIT 1
+      `;
+
+      const results = await db.executeSql(randomQuery, [topicId, language, difficulty]);
+
+      if (results && results[0] && results[0].rows.length > 0) {
+        exercise = results[0].rows.item(0);
+      }
+    }
+
+    if (!exercise) {
+      return null;
+    }
+
+    // Get fill-in-blank data
+    const fillInBlankResults = await db.executeSql(
+      'SELECT * FROM fill_in_blank_exercises WHERE exercise_id = ?',
+      [exercise.id]
+    );
+
+    const fillInBlankData: any[] = [];
+    if (fillInBlankResults && fillInBlankResults[0]) {
+      for (let i = 0; i < fillInBlankResults[0].rows.length; i++) {
+        fillInBlankData.push(fillInBlankResults[0].rows.item(i));
+      }
+    }
+
+    return {
+      exercise,
+      fillInBlankData,
+    };
+  } catch (error) {
+    console.error('Failed to get fill-in-blank exercise with data:', error);
+    return null;
+  } finally {
+    await safeCloseDatabase(db);
+  }
+};
+
+// Combined function to get pairs exercise with data in single call
+export const getPairsExerciseWithData = async (
+  topicId: number,
+  language: string,
+  difficulty: string,
+  userId?: number | null
+): Promise<{
+  exercise: ExerciseInfo;
+  pairData: any[];
+} | null> => {
+  let db: SQLiteDatabase | null = null;
+
+  try {
+    await ensureDatabaseCopied();
+    db = await SQLite.openDatabase(getDatabaseConfig());
+
+    // First get the exercise (reusing existing logic)
+    let exercise: ExerciseInfo | null = null;
+
+    if (userId) {
+      // Try to get an exercise that hasn't been attempted
+      const untriedQuery = `
+        SELECT ei.* FROM exercises_info ei
+        JOIN languages l ON ei.language_id = l.id
+        JOIN difficulties d ON ei.difficulty_id = d.id
+        JOIN pair_exercises pe ON ei.id = pe.exercise_id
+        LEFT JOIN user_exercise_attempts uea ON ei.id = uea.exercise_id AND uea.user_id = ?
+        WHERE ei.topic_id = ?
+          AND l.language = ?
+          AND d.difficulty_level = ?
+          AND ei.exercise_type = 'pairs'
+          AND uea.exercise_id IS NULL
+        ORDER BY RANDOM()
+        LIMIT 1
+      `;
+
+      const untriedResults = await db.executeSql(untriedQuery, [userId, topicId, language, difficulty]);
+
+      if (untriedResults && untriedResults[0] && untriedResults[0].rows.length > 0) {
+        exercise = untriedResults[0].rows.item(0);
+      }
+    }
+
+    if (!exercise) {
+      // Fall back to random selection
+      const randomQuery = `
+        SELECT ei.* FROM exercises_info ei
+        JOIN languages l ON ei.language_id = l.id
+        JOIN difficulties d ON ei.difficulty_id = d.id
+        JOIN pair_exercises pe ON ei.id = pe.exercise_id
+        WHERE ei.topic_id = ?
+          AND l.language = ?
+          AND d.difficulty_level = ?
+          AND ei.exercise_type = 'pairs'
+        ORDER BY RANDOM()
+        LIMIT 1
+      `;
+
+      const results = await db.executeSql(randomQuery, [topicId, language, difficulty]);
+
+      if (results && results[0] && results[0].rows.length > 0) {
+        exercise = results[0].rows.item(0);
+      }
+    }
+
+    if (!exercise) {
+      return null;
+    }
+
+    // Get pairs data
+    const pairResults = await db.executeSql(
+      'SELECT * FROM pair_exercises WHERE exercise_id = ?',
+      [exercise.id]
+    );
+
+    const pairData: any[] = [];
+    if (pairResults && pairResults[0]) {
+      for (let i = 0; i < pairResults[0].rows.length; i++) {
+        pairData.push(pairResults[0].rows.item(i));
+      }
+    }
+
+    return {
+      exercise,
+      pairData,
+    };
+  } catch (error) {
+    console.error('Failed to get pairs exercise with data:', error);
+    return null;
+  } finally {
+    await safeCloseDatabase(db);
+  }
+};
+
 // Get user stats by topic
 export const getUserStatsByTopic = async (userId: number): Promise<any[]> => {
   let db: SQLiteDatabase | null = null;

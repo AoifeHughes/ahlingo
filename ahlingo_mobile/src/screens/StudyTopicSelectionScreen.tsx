@@ -17,9 +17,7 @@ import { RootState } from '../store';
 import {
   getTopicsForStudy,
   getRandomMixedExercisesForTopic,
-  getUserSettings,
-  getMostRecentUser,
-  getUserId,
+  getUserContext,
 } from '../services/SimpleDatabaseService';
 import { useTheme } from '../contexts/ThemeContext';
 
@@ -55,21 +53,22 @@ const StudyTopicSelectionScreen: React.FC<Props> = ({ navigation, route }) => {
     try {
       setLoading(true);
 
-      // Get current user settings from database
-      const username = await getMostRecentUser();
-      const userSettings = await getUserSettings(username);
+      // Get complete user context in single call
+      const userContext = await getUserContext();
+      
+      if (!userContext) {
+        Alert.alert('Error', 'Failed to initialize user. Please try again.');
+        return;
+      }
 
-      const language = userSettings.language || settings.language || 'French';
-      const difficulty = userSettings.difficulty || settings.difficulty || 'Beginner';
+      const language = userContext.settings.language || settings.language || 'French';
+      const difficulty = userContext.settings.difficulty || settings.difficulty || 'Beginner';
 
       setUserLanguage(language);
       setUserDifficulty(difficulty);
-
-      // Get user ID for progress tracking
-      const userId = await getUserId(username);
       
       // Load topics with progress and available exercise types
-      const studyTopics = await getTopicsForStudy(userId, language, difficulty);
+      const studyTopics = await getTopicsForStudy(userContext.userId, language, difficulty);
       setTopics(studyTopics);
     } catch (error) {
       console.error('Failed to load study topics:', error);
@@ -83,17 +82,21 @@ const StudyTopicSelectionScreen: React.FC<Props> = ({ navigation, route }) => {
     try {
       setLoading(true);
 
-      // Get user settings
-      const username = await getMostRecentUser();
-      const userSettings = await getUserSettings(username);
-      const language = userSettings.language || settings.language || 'French';
-      const difficulty = userSettings.difficulty || settings.difficulty || 'Beginner';
-      const userId = await getUserId(username);
+      // Get complete user context in single call
+      const userContext = await getUserContext();
+      
+      if (!userContext) {
+        Alert.alert('Error', 'Failed to initialize user. Please try again.');
+        return;
+      }
+
+      const language = userContext.settings.language || settings.language || 'French';
+      const difficulty = userContext.settings.difficulty || settings.difficulty || 'Beginner';
 
       // Get 5 random mixed exercises for this topic
       const exercises = await getRandomMixedExercisesForTopic(
         topic.id,
-        userId,
+        userContext.userId,
         language,
         difficulty
       );

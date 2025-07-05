@@ -18,10 +18,8 @@ import { WordButton, AnswerBox } from '../components';
 import {
   getRandomTranslationExerciseForTopic,
   getTranslationExerciseData,
-  getUserSettings,
-  getMostRecentUser,
-  getUserId,
-  recordExerciseAttempt,
+  getUserContext,
+  recordExerciseAttemptForCurrentUser,
 } from '../services/SimpleDatabaseService';
 import { useTheme } from '../contexts/ThemeContext';
 
@@ -149,12 +147,16 @@ const TranslationExercisesScreen: React.FC<Props> = ({ route, navigation }) => {
     try {
       setLoading(true);
 
-      // Get user settings
-      const username = await getMostRecentUser();
-      const userSettings = await getUserSettings(username);
-      const language = userSettings.language || settings.language || 'French';
-      const difficulty =
-        userSettings.difficulty || settings.difficulty || 'Beginner';
+      // Get complete user context in single call
+      const userContext = await getUserContext();
+      
+      if (!userContext) {
+        Alert.alert('Error', 'Failed to initialize user. Please try again.');
+        return;
+      }
+
+      const language = userContext.settings.language || settings.language || 'French';
+      const difficulty = userContext.settings.difficulty || settings.difficulty || 'Beginner';
 
       setUserLanguage(language);
       setUserDifficulty(difficulty);
@@ -165,15 +167,12 @@ const TranslationExercisesScreen: React.FC<Props> = ({ route, navigation }) => {
       if (shuffleContext && exerciseInfo) {
         exercise = exerciseInfo;
       } else if (topicId) {
-        // Get user ID for prioritizing untried exercises
-        const userId = await getUserId(username);
-
         // Get random translation exercise for this topic (prioritizing untried exercises)
         exercise = await getRandomTranslationExerciseForTopic(
           topicId,
           language,
           difficulty,
-          userId
+          userContext.userId
         );
       }
 
@@ -292,14 +291,8 @@ const TranslationExercisesScreen: React.FC<Props> = ({ route, navigation }) => {
       cleanCorrectAnswer.toLowerCase().trim();
 
     // Record the exercise attempt
-    try {
-      const username = await getMostRecentUser();
-      const userId = await getUserId(username);
-      if (userId && currentExercise) {
-        await recordExerciseAttempt(userId, currentExercise.id, isCorrect);
-      }
-    } catch (error) {
-      console.error('Failed to record exercise attempt:', error);
+    if (currentExercise) {
+      await recordExerciseAttemptForCurrentUser(currentExercise.id, isCorrect);
     }
 
     setGameState(prev => ({

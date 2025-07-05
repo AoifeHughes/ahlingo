@@ -12,9 +12,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types';
 import {
   getUserFailedExercises,
-  getMostRecentUser,
-  getUserSettings,
-  getUserId,
+  getUserContext,
 } from '../services/SimpleDatabaseService';
 import { useTheme } from '../contexts/ThemeContext';
 
@@ -51,20 +49,16 @@ const RetryMistakesScreen: React.FC<Props> = ({ navigation }) => {
     try {
       setLoading(true);
 
-      // Get user settings (this creates user if doesn't exist)
-      const username = await getMostRecentUser();
-      const userSettings = await getUserSettings(username);
+      // Get complete user context in single call
+      const userContext = await getUserContext();
 
-      // Now get the user ID
-      const userId = await getUserId(username);
-
-      if (!userId) {
+      if (!userContext || !userContext.userId) {
         setLoading(false);
         Alert.alert('Error', 'Failed to initialize user. Please try again.');
         return;
       }
 
-      const failed = await getUserFailedExercises(userId);
+      const failed = await getUserFailedExercises(userContext.userId);
       setFailedExercises(failed);
     } catch (error) {
       console.error('Failed to load failed exercises:', error);
