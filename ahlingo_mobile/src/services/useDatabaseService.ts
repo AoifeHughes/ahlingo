@@ -9,10 +9,10 @@ import {
 import { Language, Topic, Difficulty } from '../types';
 
 // Simple hook that assumes database is always ready
-// since SimpleDatabaseService handles initialization per call
+// since RefactoredDatabaseService handles initialization per call
 export const useDatabaseService = () => {
   return {
-    isInitialized: true, // Always ready with SimpleDatabaseService
+    isInitialized: true, // Always ready with RefactoredDatabaseService
     error: null,
   };
 };
@@ -54,7 +54,7 @@ export const useTopics = (language?: string, difficulty?: string) => {
       try {
         setLoading(true);
         // Note: For now just get all topics since getTopicsByLanguageAndDifficulty
-        // isn't implemented in SimpleDatabaseService yet
+        // isn't implemented in RefactoredDatabaseService yet
         const result = await getTopics();
         setTopics(result);
         setError(null);

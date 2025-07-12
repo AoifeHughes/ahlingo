@@ -45,6 +45,7 @@ interface GameState {
   hasSubmitted: boolean;
   isCorrect: boolean | null;
   score: number;
+  translation?: string;
 }
 
 const FillInTheBlankScreen: React.FC<Props> = ({ route, navigation }) => {
@@ -195,6 +196,7 @@ const FillInTheBlankScreen: React.FC<Props> = ({ route, navigation }) => {
     const correctAnswer = fillInBlank.correct_answer.trim();
     const incorrect1 = fillInBlank.incorrect_1.trim();
     const incorrect2 = fillInBlank.incorrect_2.trim();
+    const translation = fillInBlank.translation;
 
     // Combine correct and incorrect answers and shuffle them
     const allWords = [correctAnswer, incorrect1, incorrect2].sort(() => Math.random() - 0.5);
@@ -207,6 +209,7 @@ const FillInTheBlankScreen: React.FC<Props> = ({ route, navigation }) => {
       hasSubmitted: false,
       isCorrect: null,
       score: 0,
+      translation,
     });
   };
 
@@ -331,11 +334,31 @@ const FillInTheBlankScreen: React.FC<Props> = ({ route, navigation }) => {
           >
             {gameState.isCorrect ? '✅ Correct!' : '❌ Incorrect. Try again!'}
           </Text>
+          
+          {/* Show the complete correct sentence */}
+          <View style={styles.correctSentenceContainer}>
+            <Text style={styles.correctSentenceLabel}>Complete sentence:</Text>
+            <Text style={styles.correctSentenceText}>
+              {gameState.sentence.replace('_', gameState.correctAnswer)}
+            </Text>
+          </View>
+
+          {/* Show translation if available */}
+          {gameState.translation && (
+            <View style={styles.translationContainer}>
+              <Text style={styles.translationLabel}>Translation:</Text>
+              <Text style={styles.translationText}>
+                {gameState.translation}
+              </Text>
+            </View>
+          )}
+
           {!gameState.isCorrect && (
             <Text style={styles.correctAnswerText}>
               Correct answer: {gameState.correctAnswer}
             </Text>
           )}
+          
           <TouchableOpacity
             style={styles.nextButton}
             onPress={handleNextExercise}
@@ -480,6 +503,49 @@ const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) => Sty
     color: currentTheme.colors.textSecondary,
     textAlign: 'center',
     marginBottom: currentTheme.spacing.md,
+    fontStyle: 'italic',
+  },
+  correctSentenceContainer: {
+    backgroundColor: currentTheme.colors.primaryLight + '20',
+    padding: currentTheme.spacing.md,
+    borderRadius: currentTheme.borderRadius.base,
+    marginVertical: currentTheme.spacing.sm,
+    borderWidth: 1,
+    borderColor: currentTheme.colors.primaryLight,
+  },
+  correctSentenceLabel: {
+    fontSize: currentTheme.typography.fontSizes.sm,
+    color: currentTheme.colors.textSecondary,
+    fontWeight: currentTheme.typography.fontWeights.semibold,
+    marginBottom: currentTheme.spacing.xs,
+    textAlign: 'center',
+  },
+  correctSentenceText: {
+    fontSize: currentTheme.typography.fontSizes.lg,
+    color: currentTheme.colors.primary,
+    fontWeight: currentTheme.typography.fontWeights.semibold,
+    textAlign: 'center',
+  },
+  translationContainer: {
+    backgroundColor: currentTheme.colors.success + '20',
+    padding: currentTheme.spacing.md,
+    borderRadius: currentTheme.borderRadius.base,
+    marginVertical: currentTheme.spacing.sm,
+    borderWidth: 1,
+    borderColor: currentTheme.colors.success,
+  },
+  translationLabel: {
+    fontSize: currentTheme.typography.fontSizes.sm,
+    color: currentTheme.colors.textSecondary,
+    fontWeight: currentTheme.typography.fontWeights.semibold,
+    marginBottom: currentTheme.spacing.xs,
+    textAlign: 'center',
+  },
+  translationText: {
+    fontSize: currentTheme.typography.fontSizes.lg,
+    color: currentTheme.colors.success,
+    fontWeight: currentTheme.typography.fontWeights.medium,
+    textAlign: 'center',
     fontStyle: 'italic',
   },
   nextButton: {

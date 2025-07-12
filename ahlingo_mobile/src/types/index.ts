@@ -71,6 +71,7 @@ export interface FillInBlankExercise {
   incorrect_1: string; // First distractor (e.g., "suis")
   incorrect_2: string; // Second distractor (e.g., "ai")
   blank_position: number; // Position of blank in sentence (e.g., 2)
+  translation?: string; // English translation of the complete sentence (e.g., "Hello, my name is Jacques.")
 }
 
 export interface ConversationExercise {

@@ -103,7 +103,8 @@ export const getRandomTranslationExerciseForTopic = (
 export const getRandomFillInBlankExerciseForTopic = (
   topicId: number,
   language: string,
-  difficulty: string
+  difficulty: string,
+  userId?: number | null
 ) =>
   getRandomExerciseForTopicBase(topicId, language, difficulty, 'fill_in_blank');
 
