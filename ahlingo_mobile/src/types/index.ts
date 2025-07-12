@@ -204,6 +204,7 @@ export type RootStackParamList = {
   Settings: undefined;
   Stats: undefined;
   RetryMistakes: undefined;
+  About: undefined;
   // New feature screens
   StudyTopic: undefined;
   StudyTopicShuffle: { 

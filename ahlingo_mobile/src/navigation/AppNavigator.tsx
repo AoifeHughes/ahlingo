@@ -20,6 +20,7 @@ import FillInTheBlankScreen from '../screens/FillInTheBlankScreen';
 import ExerciseShuffleStartScreen from '../screens/ExerciseShuffleStartScreen';
 import ExerciseShuffleTransitionScreen from '../screens/ExerciseShuffleTransitionScreen';
 import ExerciseShuffleSummaryScreen from '../screens/ExerciseShuffleSummaryScreen';
+import AboutScreen from '../screens/AboutScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -128,6 +129,11 @@ const AppNavigator: React.FC = () => {
           name="ExerciseShuffleSummary"
           component={ExerciseShuffleSummaryScreen}
           options={{ title: 'Shuffle Results' }}
+        />
+        <Stack.Screen
+          name="About"
+          component={AboutScreen}
+          options={{ headerShown: false }}
         />
       </Stack.Navigator>
     </NavigationContainer>

@@ -92,6 +92,12 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
       icon: '🔄',
       exerciseType: null,
     },
+    {
+      title: 'About',
+      screen: 'About' as keyof RootStackParamList,
+      icon: 'ℹ️',
+      exerciseType: null,
+    },
   ].map((item, index) => ({
     ...item,
     color: themeColors[index % themeColors.length],
