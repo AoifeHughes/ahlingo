@@ -16,7 +16,7 @@ echo -e "${BLUE}📱 Android Icon Generator for AhLingo${NC}"
 echo "=============================================="
 
 # Check if logo.png exists
-LOGO_PATH="../assets/logo.png"
+LOGO_PATH="./assets/logo.png"
 if [ ! -f "$LOGO_PATH" ]; then
     echo -e "${RED}❌ Error: logo.png not found at $LOGO_PATH${NC}"
     echo "Please make sure logo.png exists in the assets directory."

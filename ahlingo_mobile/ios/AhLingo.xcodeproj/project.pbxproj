@@ -12,7 +12,7 @@
 		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		845C351700F0D4DF2BAA96BD /* libPods-AhLingo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 495186323FD14DEDCE363B18 /* libPods-AhLingo.a */; };
-		F3D4CD67016C4F27940B0503 /* languageLearningDatabase.db in Resources */ = {isa = PBXBuildFile; fileRef = 95B8D38680FE4D539E05389C /* languageLearningDatabase.db */; };
+		5D21304C6F054539B8BC6C59 /* languageLearningDatabase.db in Resources */ = {isa = PBXBuildFile; fileRef = 188AC33B49A44C11B5DF7856 /* languageLearningDatabase.db */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,7 +26,7 @@
 		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = AhLingo/AppDelegate.swift; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = AhLingo/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		95B8D38680FE4D539E05389C /* languageLearningDatabase.db */ = {isa = PBXFileReference; name = "languageLearningDatabase.db"; path = "../assets/databases/languageLearningDatabase.db"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		188AC33B49A44C11B5DF7856 /* languageLearningDatabase.db */ = {isa = PBXFileReference; name = "languageLearningDatabase.db"; path = "../assets/databases/languageLearningDatabase.db"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,7 +95,7 @@
 		B9F7B0DC1D0F4095A195CE7E /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				95B8D38680FE4D539E05389C /* languageLearningDatabase.db */,
+				188AC33B49A44C11B5DF7856 /* languageLearningDatabase.db */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -172,7 +172,7 @@
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				31F070B7A76AA688C3401979 /* PrivacyInfo.xcprivacy in Resources */,
-				F3D4CD67016C4F27940B0503 /* languageLearningDatabase.db in Resources */,
+				5D21304C6F054539B8BC6C59 /* languageLearningDatabase.db in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

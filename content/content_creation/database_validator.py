@@ -86,6 +86,12 @@ class DatabaseValidator:
             for exercise in trans_exercises:
                 exercise['exercise_type'] = 'translation'
                 exercises.append(exercise)
+            
+            # Get fill-in-blank exercises
+            fill_exercises = db.get_all_fill_in_blank_exercises()
+            for exercise in fill_exercises:
+                exercise['exercise_type'] = 'fill_in_blank'
+                exercises.append(exercise)
         
         return exercises
     
@@ -285,6 +291,8 @@ class DatabaseValidator:
                         db.remove_pair_exercises(exercise_ids)
                     elif ex_type == 'translation':
                         db.remove_translation_exercises(exercise_ids)
+                    elif ex_type == 'fill_in_blank':
+                        db.remove_fill_in_blank_exercises(exercise_ids)
                     
                     removal_stats['removed_ids'].extend(exercise_ids)
         
