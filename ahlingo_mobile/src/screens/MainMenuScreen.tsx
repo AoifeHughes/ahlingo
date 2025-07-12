@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Dimensions,
   Alert,
+  ScrollView,
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types';
@@ -22,7 +23,7 @@ interface Props {
 }
 
 const { width } = Dimensions.get('window');
-const cardSize = (width - 80) / 3; // 3 cards per row with padding
+const cardSize = (width - 60) / 2; // 2 cards per row with padding
 
 const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
   const { theme } = useTheme();
@@ -156,8 +157,12 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
           </TouchableOpacity>
         </View>
 
-        <View style={styles.cardsContainer}>
-          {/* All exercise cards (3x3 grid) */}
+        <ScrollView 
+          style={styles.scrollContainer}
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
+          {/* All exercise cards (2 column grid) */}
           <View style={styles.exercisesGrid}>
             {exerciseItems.map((item, index) => (
               <TouchableOpacity
@@ -174,7 +179,7 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
               </TouchableOpacity>
             ))}
           </View>
-        </View>
+        </ScrollView>
 
         <View style={styles.footer}>
           <Text style={styles.footerText}>
@@ -223,10 +228,13 @@ const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) => Sty
     fontSize: currentTheme.typography.fontSizes['2xl'],
     color: currentTheme.colors.background,
   },
-  cardsContainer: {
+  scrollContainer: {
     flex: 1,
+  },
+  scrollContent: {
     paddingHorizontal: currentTheme.spacing.xl,
     paddingVertical: currentTheme.spacing.xl,
+    paddingBottom: currentTheme.spacing['2xl'],
   },
   exercisesGrid: {
     flexDirection: 'row',
@@ -237,7 +245,7 @@ const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) => Sty
     width: cardSize,
     height: cardSize,
     borderRadius: currentTheme.spacing.xl,
-    marginBottom: currentTheme.spacing.md,
+    marginBottom: currentTheme.spacing.lg,
     ...currentTheme.shadows.lg,
     justifyContent: 'center',
     alignItems: 'center',
@@ -247,17 +255,18 @@ const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) => Sty
     justifyContent: 'center',
   },
   cardIcon: {
-    fontSize: currentTheme.spacing['5xl'],
-    marginBottom: currentTheme.spacing.md,
+    fontSize: 72,
+    marginBottom: currentTheme.spacing.lg,
   },
   cardTitle: {
-    fontSize: currentTheme.typography.fontSizes.base,
+    fontSize: currentTheme.typography.fontSizes.lg,
     fontWeight: currentTheme.typography.fontWeights.semibold,
     color: currentTheme.colors.background,
     textAlign: 'center',
     textShadowColor: 'rgba(0, 0, 0, 0.3)',
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 2,
+    paddingHorizontal: currentTheme.spacing.sm,
   },
   footer: {
     paddingVertical: currentTheme.spacing.xl,
