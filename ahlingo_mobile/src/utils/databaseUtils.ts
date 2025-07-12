@@ -172,7 +172,51 @@ export const ensureDatabaseCopied = async (): Promise<void> => {
       if (Platform.OS === 'ios') {
         await RNFS.copyFile(bundlePath, databasePath);
       } else {
-        await RNFS.copyFileAssets(DATABASE_CONFIG.NAME, databasePath);
+        // Enhanced Android debugging
+        console.log('Android: Attempting to copy database...');
+        console.log('Looking for:', `databases/${DATABASE_CONFIG.NAME}`);
+        console.log('Target path:', databasePath);
+        
+        try {
+          // Try to list all assets to see what's available
+          console.log('Attempting to read Android assets directory...');
+          // Note: RNFS doesn't support listing Android assets directly
+          // We'll try different paths to help debug
+          
+          // Try the expected path first
+          await RNFS.copyFileAssets(`databases/${DATABASE_CONFIG.NAME}`, databasePath);
+        } catch (androidError) {
+          console.error('Android copy failed with databases/ path:', androidError);
+          
+          // Try alternative paths
+          console.log('Trying alternative paths...');
+          
+          try {
+            // Try without subdirectory
+            console.log('Trying root assets path:', DATABASE_CONFIG.NAME);
+            await RNFS.copyFileAssets(DATABASE_CONFIG.NAME, databasePath);
+          } catch (rootError) {
+            console.error('Root path also failed:', rootError);
+            
+            try {
+              // Try with database (singular)
+              console.log('Trying database/ (singular) path:', `database/${DATABASE_CONFIG.NAME}`);
+              await RNFS.copyFileAssets(`database/${DATABASE_CONFIG.NAME}`, databasePath);
+            } catch (singularError) {
+              console.error('Singular database/ path failed:', singularError);
+              
+              // Try custom directory
+              try {
+                console.log('Trying custom/ path:', `custom/${DATABASE_CONFIG.NAME}`);
+                await RNFS.copyFileAssets(`custom/${DATABASE_CONFIG.NAME}`, databasePath);
+              } catch (customError) {
+                console.error('Custom path failed:', customError);
+                console.error('All paths attempted have failed. Database file not found in Android assets.');
+                throw androidError; // Throw the original error
+              }
+            }
+          }
+        }
       }
 
       console.log('Database copied successfully to:', databasePath);

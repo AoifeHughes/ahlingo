@@ -131,6 +131,54 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
       );
       setAvailableModels(models);
       
+      // Check if we have valid configuration
+      const hasServerUrl = userSettings.server_url && userSettings.server_url.trim() !== '';
+      const hasLocalModels = includeLocal && models.some(m => m.isLocal && m.isDownloaded);
+      const hasRemoteModels = hasServerUrl && models.some(m => !m.isLocal);
+      
+      // Show warning if no valid configuration or models
+      if (!hasServerUrl && !includeLocal) {
+        Alert.alert(
+          'No AI Server Configured',
+          'To use Chat Practice, you need to configure an AI server in Settings or enable local models.\n\nGo to Settings → AI Server to set up your server configuration.',
+          [
+            { text: 'Go to Settings', onPress: () => navigation.navigate('Settings') },
+            { text: 'Cancel', onPress: () => navigation.goBack() }
+          ]
+        );
+        return;
+      }
+      
+      if (models.length === 0) {
+        const message = hasServerUrl 
+          ? `No AI models available. Please check your server configuration in Settings or try enabling local models.\n\nServer: ${userSettings.server_url}`
+          : 'No AI models available. Please configure a server in Settings or enable local models.';
+          
+        Alert.alert(
+          'No AI Models Available',
+          message,
+          [
+            { text: 'Go to Settings', onPress: () => navigation.navigate('Settings') },
+            { text: 'Cancel', onPress: () => navigation.goBack() }
+          ]
+        );
+        return;
+      }
+      
+      if (!hasLocalModels && !hasRemoteModels) {
+        Alert.alert(
+          'No Working AI Models',
+          'Models were found but none are accessible:\n\n' +
+          (hasServerUrl ? '• Server models: Connection failed\n' : '• No server configured\n') +
+          (includeLocal ? '• Local models: None downloaded' : '• Local models: Disabled'),
+          [
+            { text: 'Go to Settings', onPress: () => navigation.navigate('Settings') },
+            { text: 'Cancel', onPress: () => navigation.goBack() }
+          ]
+        );
+        return;
+      }
+      
       // Set the first available model as default if none selected
       if (models.length > 0 && !selectedModel) {
         // Prefer local models if available and preference is set
@@ -157,9 +205,17 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
       console.log('✅ Loaded models:', models);
     } catch (error) {
       console.error('Failed to load models:', error);
-      // Don't show alert here, just log the error
+      // Show alert for critical errors
+      Alert.alert(
+        'Failed to Load AI Models',
+        'There was an error loading AI models. Please check your network connection and server settings.',
+        [
+          { text: 'Go to Settings', onPress: () => navigation.navigate('Settings') },
+          { text: 'Cancel', onPress: () => navigation.goBack() }
+        ]
+      );
     }
-  }, [settings.username]); // Removed selectedModel dependency to prevent reloading on model change
+  }, [settings.username, navigation]); // Added navigation to dependencies
 
   useEffect(() => {
     const initialize = async () => {

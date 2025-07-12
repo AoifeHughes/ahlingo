@@ -6,6 +6,7 @@ import {
   StatusBar,
   TouchableOpacity,
   Dimensions,
+  Alert,
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types';
@@ -95,7 +96,7 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
     color: themeColors[index % themeColors.length],
   }));
 
-  const handleExercisePress = (item: (typeof exerciseItems)[0]) => {
+  const handleExercisePress = async (item: (typeof exerciseItems)[0]) => {
     if (item.exerciseType) {
       navigation.navigate('TopicSelection', {
         exerciseType: item.exerciseType as
@@ -107,6 +108,32 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
     } else if (item.title === 'Exercise Shuffle') {
       // Navigate directly to shuffle start screen
       navigation.navigate('ExerciseShuffleStart', { exercises: [] });
+    } else if (item.title === 'Chat Practice') {
+      // Quick validation before navigating to Chat Practice
+      try {
+        const { getUserSettings } = await import('../services/RefactoredDatabaseService');
+        const userSettings = await getUserSettings('default_user'); // Use default for quick check
+        
+        const hasServerUrl = userSettings.server_url && userSettings.server_url.trim() !== '';
+        const hasLocalEnabled = userSettings.enable_local_models === 'true';
+        
+        if (!hasServerUrl && !hasLocalEnabled) {
+          Alert.alert(
+            'AI Server Setup Required',
+            'Chat Practice requires an AI server or local models to be configured.\n\nWould you like to set this up now?',
+            [
+              { text: 'Setup Now', onPress: () => navigation.navigate('Settings') },
+              { text: 'Maybe Later', style: 'cancel' }
+            ]
+          );
+          return;
+        }
+      } catch (error) {
+        console.error('Failed to check AI configuration:', error);
+        // Continue to chat screen for detailed error handling
+      }
+      
+      navigation.navigate(item.screen as any);
     } else {
       navigation.navigate(item.screen as any);
     }
