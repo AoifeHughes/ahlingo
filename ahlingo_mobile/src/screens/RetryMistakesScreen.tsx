@@ -13,7 +13,7 @@ import { RootStackParamList } from '../types';
 import {
   getUserFailedExercises,
   getUserContext,
-} from '../services/SimpleDatabaseService';
+} from '../services/RefactoredDatabaseService';
 import { useTheme } from '../contexts/ThemeContext';
 
 type RetryMistakesScreenNavigationProp = NativeStackNavigationProp<

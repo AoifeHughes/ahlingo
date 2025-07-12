@@ -20,7 +20,7 @@ import {
   getTranslationExerciseData,
   getUserContext,
   recordExerciseAttemptForCurrentUser,
-} from '../services/SimpleDatabaseService';
+} from '../services/RefactoredDatabaseService';
 import { useTheme } from '../contexts/ThemeContext';
 
 type TranslationExercisesScreenRouteProp = RouteProp<

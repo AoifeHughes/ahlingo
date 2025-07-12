@@ -17,7 +17,7 @@ import {
   getMostRecentUser,
   getUserSettings,
   getUserId,
-} from '../services/SimpleDatabaseService';
+} from '../services/RefactoredDatabaseService';
 import { useTheme } from '../contexts/ThemeContext';
 
 type StatsScreenNavigationProp = NativeStackNavigationProp<

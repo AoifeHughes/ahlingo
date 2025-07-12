@@ -8,7 +8,7 @@ import {
   getTranslationExerciseWithData,
   getFillInBlankExerciseWithData,
   getPairsExerciseWithData,
-} from '../SimpleDatabaseService';
+} from '../RefactoredDatabaseService';
 import { createMockDatabaseResult, createExercise, mockUserContext } from '../../test-utils/factories';
 
 // Mock SQLite

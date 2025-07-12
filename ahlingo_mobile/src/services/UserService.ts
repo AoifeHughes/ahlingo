@@ -228,3 +228,145 @@ export const getUserSettingsWithValidation = async (
 
   return { settings, userId };
 };
+
+/**
+ * Get current user context (user info and settings)
+ */
+export const getUserContext = async (): Promise<{
+  username: string;
+  userId: number | null;
+  settings: {
+    language: string;
+    difficulty: string;
+  };
+}> => {
+  try {
+    const username = await getMostRecentUser();
+    const userId = await getUserId(username);
+    const settings = await getUserSettings(username);
+
+    // If no settings exist, get defaults from database
+    let language = settings.language;
+    let difficulty = settings.difficulty;
+
+    if (!language || !difficulty) {
+      // Get defaults directly from database to avoid circular dependencies
+      if (!language) {
+        try {
+          const languageResult = await executeSqlSingle(
+            SQL_QUERIES.GET_LANGUAGES,
+            [],
+            TIMEOUTS.QUERY_MEDIUM
+          );
+          language = languageResult && languageResult.rows && languageResult.rows.length > 0 
+            ? languageResult.rows.item(0).language 
+            : 'English';
+        } catch (error) {
+          console.error('Failed to get default language:', error);
+          language = 'English';
+        }
+      }
+      
+      if (!difficulty) {
+        try {
+          const difficultyResult = await executeSqlSingle(
+            SQL_QUERIES.GET_DIFFICULTIES,
+            [],
+            TIMEOUTS.QUERY_MEDIUM
+          );
+          difficulty = difficultyResult && difficultyResult.rows && difficultyResult.rows.length > 0
+            ? difficultyResult.rows.item(0).difficulty_level
+            : 'Beginner';
+        } catch (error) {
+          console.error('Failed to get default difficulty:', error);
+          difficulty = 'Beginner';
+        }
+      }
+    }
+
+    return {
+      username,
+      userId,
+      settings: {
+        language,
+        difficulty,
+      },
+    };
+  } catch (error) {
+    console.error('Failed to get user context:', error);
+    // Even on error, try to get database defaults
+    try {
+      let language = 'English';
+      let difficulty = 'Beginner';
+      
+      try {
+        const languageResult = await executeSqlSingle(SQL_QUERIES.GET_LANGUAGES, [], TIMEOUTS.QUERY_MEDIUM);
+        if (languageResult && languageResult.rows && languageResult.rows.length > 0) {
+          language = languageResult.rows.item(0).language;
+        }
+      } catch (langError) {
+        console.error('Failed to get fallback language:', langError);
+      }
+      
+      try {
+        const difficultyResult = await executeSqlSingle(SQL_QUERIES.GET_DIFFICULTIES, [], TIMEOUTS.QUERY_MEDIUM);
+        if (difficultyResult && difficultyResult.rows && difficultyResult.rows.length > 0) {
+          difficulty = difficultyResult.rows.item(0).difficulty_level;
+        }
+      } catch (diffError) {
+        console.error('Failed to get fallback difficulty:', diffError);
+      }
+      
+      return {
+        username: 'default_user',
+        userId: null,
+        settings: {
+          language,
+          difficulty,
+        },
+      };
+    } catch (dbError) {
+      console.error('Failed to get database defaults:', dbError);
+      // Last resort fallback
+      return {
+        username: 'default_user',
+        userId: null,
+        settings: {
+          language: 'English',
+          difficulty: 'Beginner',
+        },
+      };
+    }
+  }
+};
+
+/**
+ * Reset user data (delete all user attempts and settings)
+ */
+export const resetUserData = async (username: string): Promise<void> => {
+  try {
+    const userId = await getUserId(username);
+    if (!userId) {
+      throw new Error('User not found');
+    }
+
+    // Delete user exercise attempts
+    await executeSqlSingle(
+      'DELETE FROM user_exercise_attempts WHERE user_id = ?',
+      [userId],
+      TIMEOUTS.QUERY_MEDIUM
+    );
+
+    // Delete user settings 
+    await executeSqlSingle(
+      'DELETE FROM user_settings WHERE user_id = ?',
+      [userId],
+      TIMEOUTS.QUERY_MEDIUM
+    );
+
+    console.log('✅ User data reset successfully for:', username);
+  } catch (error) {
+    console.error('Failed to reset user data:', error);
+    throw error;
+  }
+};

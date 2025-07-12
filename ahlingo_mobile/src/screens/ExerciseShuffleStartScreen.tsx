@@ -17,7 +17,7 @@ import { useTheme } from '../contexts/ThemeContext';
 import {
   getRandomMixedExercises,
   getUserContext,
-} from '../services/SimpleDatabaseService';
+} from '../services/RefactoredDatabaseService';
 
 type ExerciseShuffleStartScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,

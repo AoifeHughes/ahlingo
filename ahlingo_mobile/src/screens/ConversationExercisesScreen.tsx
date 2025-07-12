@@ -23,7 +23,7 @@ import {
   getTopicNameForExercise,
   getUserContext,
   recordExerciseAttemptForCurrentUser,
-} from '../services/SimpleDatabaseService';
+} from '../services/RefactoredDatabaseService';
 import { useTheme } from '../contexts/ThemeContext';
 
 type ConversationExercisesScreenNavigationProp = NativeStackNavigationProp<

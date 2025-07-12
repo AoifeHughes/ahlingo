@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { setTheme as setGlobalTheme, getCurrentTheme, getTheme, ThemeVariant } from '../utils/theme';
-import { getUserSettings, getMostRecentUser, setUserSetting } from '../services/SimpleDatabaseService';
+import { getUserSettings, getMostRecentUser, setUserSetting } from '../services/RefactoredDatabaseService';
 
 interface ThemeContextType {
   theme: ReturnType<typeof getTheme>;

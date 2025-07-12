@@ -18,7 +18,7 @@ import {
   getTopicsForStudy,
   getRandomMixedExercisesForTopic,
   getUserContext,
-} from '../services/SimpleDatabaseService';
+} from '../services/RefactoredDatabaseService';
 import { useTheme } from '../contexts/ThemeContext';
 
 type StudyTopicSelectionScreenNavigationProp = NativeStackNavigationProp<

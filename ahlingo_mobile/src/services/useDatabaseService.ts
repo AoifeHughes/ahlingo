@@ -5,7 +5,7 @@ import {
   getDifficulties,
   getUserSettings,
   setUserSetting,
-} from './SimpleDatabaseService';
+} from './RefactoredDatabaseService';
 import { Language, Topic, Difficulty } from '../types';
 
 // Simple hook that assumes database is always ready

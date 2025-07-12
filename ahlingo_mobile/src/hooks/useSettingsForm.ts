@@ -14,7 +14,7 @@ import {
   setUserSetting,
   updateUserLogin,
   resetUserData,
-} from '../services/SimpleDatabaseService';
+} from '../services/RefactoredDatabaseService';
 import { Language, Difficulty } from '../types';
 import { DropdownItem } from '../components/Dropdown';
 import { getAvailableThemes, ThemeVariant } from '../utils/theme';

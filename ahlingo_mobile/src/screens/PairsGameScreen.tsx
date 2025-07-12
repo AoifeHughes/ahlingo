@@ -20,7 +20,7 @@ import {
   getPairExercises,
   getUserContext,
   recordExerciseAttemptForCurrentUser,
-} from '../services/SimpleDatabaseService';
+} from '../services/RefactoredDatabaseService';
 import { useTheme } from '../contexts/ThemeContext';
 
 type PairsGameScreenRouteProp = RouteProp<RootStackParamList, 'PairsGame'>;

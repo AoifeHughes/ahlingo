@@ -45,7 +45,8 @@ export const SQL_QUERIES = {
     const exerciseTableMap = {
       'pairs': 'pair_exercises pe',
       'conversation': 'conversation_exercises ce', 
-      'translation': 'translation_exercises te'
+      'translation': 'translation_exercises te',
+      'fill_in_blank': 'fill_in_blank_exercises fibe'
     };
     const joinTable = exerciseTableMap[exerciseType as keyof typeof exerciseTableMap] || 'pair_exercises pe';
     
@@ -63,17 +64,28 @@ export const SQL_QUERIES = {
     `;
   },
 
-  GET_RANDOM_EXERCISE: (exerciseType: string) => `
-    SELECT ei.* FROM exercises_info ei
-    JOIN languages l ON ei.language_id = l.id
-    JOIN difficulties d ON ei.difficulty_id = d.id
-    WHERE ei.topic_id = ?
-      AND l.language = ?
-      AND d.difficulty_level = ?
-      AND ei.exercise_type = '${exerciseType}'
-    ORDER BY RANDOM()
-    LIMIT 1
-  `,
+  GET_RANDOM_EXERCISE: (exerciseType: string) => {
+    const exerciseTableJoins = {
+      'pairs': 'JOIN pair_exercises pe ON ei.id = pe.exercise_id',
+      'conversation': 'JOIN conversation_exercises ce ON ei.id = ce.exercise_id',
+      'translation': 'JOIN translation_exercises te ON ei.id = te.exercise_id',
+      'fill_in_blank': 'JOIN fill_in_blank_exercises fibe ON ei.id = fibe.exercise_id'
+    };
+    const dataJoin = exerciseTableJoins[exerciseType as keyof typeof exerciseTableJoins] || 'JOIN pair_exercises pe ON ei.id = pe.exercise_id';
+    
+    return `
+      SELECT DISTINCT ei.* FROM exercises_info ei
+      JOIN languages l ON ei.language_id = l.id
+      JOIN difficulties d ON ei.difficulty_id = d.id
+      ${dataJoin}
+      WHERE ei.topic_id = ?
+        AND l.language = ?
+        AND d.difficulty_level = ?
+        AND ei.exercise_type = '${exerciseType}'
+      ORDER BY RANDOM()
+      LIMIT 1
+    `;
+  },
 
   // Exercise data queries
   GET_PAIR_EXERCISES:
@@ -82,6 +94,8 @@ export const SQL_QUERIES = {
     'SELECT * FROM conversation_exercises WHERE exercise_id = ? ORDER BY id',
   GET_TRANSLATION_EXERCISES:
     'SELECT * FROM translation_exercises WHERE exercise_id = ? ORDER BY id',
+  GET_FILL_IN_BLANK_EXERCISES:
+    'SELECT * FROM fill_in_blank_exercises WHERE exercise_id = ? ORDER BY id',
   GET_EXERCISES_BY_LESSON:
     'SELECT * FROM exercises_info WHERE lesson_id = ? AND exercise_type = "pairs" ORDER BY id',
 

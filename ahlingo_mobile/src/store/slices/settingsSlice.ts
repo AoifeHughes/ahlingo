@@ -9,8 +9,8 @@ interface SettingsState {
 
 const initialState: SettingsState = {
   settings: {
-    language: 'French', // Default from Kivy app
-    difficulty: 'Beginner', // Default from Kivy app
+    language: '', // Will be loaded from database
+    difficulty: '', // Will be loaded from database
     userId: 1, // Default user
     enableLocalModels: false,
     preferLocalModels: false,

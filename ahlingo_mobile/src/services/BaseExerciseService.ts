@@ -79,6 +79,9 @@ export const getExerciseData = async (
       case 'translation':
         query = SQL_QUERIES.GET_TRANSLATION_EXERCISES;
         break;
+      case 'fill_in_blank':
+        query = SQL_QUERIES.GET_FILL_IN_BLANK_EXERCISES;
+        break;
       default:
         throw new Error(`Unknown exercise type: ${exerciseType}`);
     }

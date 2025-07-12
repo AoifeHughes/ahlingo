@@ -39,7 +39,7 @@ import {
   StreamingCallbacks
 } from '../services/OpenAIService';
 import { ModelService, ModelInfo } from '../services/ModelService';
-import { getUserSettings } from '../services/SimpleDatabaseService';
+import { getUserSettings } from '../services/RefactoredDatabaseService';
 import { useTheme } from '../contexts/ThemeContext';
 import LocalLlamaService from '../services/LocalLlamaService';
 

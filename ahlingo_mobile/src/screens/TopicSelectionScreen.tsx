@@ -22,7 +22,7 @@ import {
   getTopicsWithProgressForExerciseType,
   getUserContext,
   getTopicProgress,
-} from '../services/SimpleDatabaseService';
+} from '../services/RefactoredDatabaseService';
 import { useTheme } from '../contexts/ThemeContext';
 
 type TopicSelectionScreenNavigationProp = NativeStackNavigationProp<
