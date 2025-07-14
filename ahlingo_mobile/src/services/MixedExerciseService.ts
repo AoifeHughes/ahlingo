@@ -27,7 +27,30 @@ export const getTopicsWithProgressForExerciseType = async (
 ): Promise<TopicWithProgress[]> => {
   return executeQuery(async (db) => {
     // Single optimized query that gets topics and calculates progress
-    const query = `
+    // For pairs exercises, only count exercises that have actual pair data
+    const query = exerciseType === 'pairs' ? `
+      SELECT 
+        t.id,
+        t.topic,
+        COUNT(DISTINCT pe.exercise_id) as total_exercises,
+        COUNT(DISTINCT CASE WHEN uea.is_correct = 1 THEN uea.exercise_id END) as completed_exercises,
+        CASE 
+          WHEN COUNT(DISTINCT pe.exercise_id) = 0 THEN 0
+          ELSE ROUND((COUNT(DISTINCT CASE WHEN uea.is_correct = 1 THEN uea.exercise_id END) * 100.0) / COUNT(DISTINCT pe.exercise_id), 1)
+        END as percentage
+      FROM topics t
+      LEFT JOIN exercises_info ei ON t.id = ei.topic_id
+      LEFT JOIN languages l ON ei.language_id = l.id
+      LEFT JOIN difficulties d ON ei.difficulty_id = d.id
+      INNER JOIN pair_exercises pe ON ei.id = pe.exercise_id
+      LEFT JOIN user_exercise_attempts uea ON ei.id = uea.exercise_id AND uea.user_id = ?
+      WHERE ei.exercise_type = ?
+        AND l.language = ?
+        AND d.difficulty_level = ?
+      GROUP BY t.id, t.topic
+      HAVING COUNT(DISTINCT pe.exercise_id) > 0
+      ORDER BY t.topic;
+    ` : `
       SELECT 
         t.id,
         t.topic,
@@ -239,16 +262,39 @@ export const getTopicsForStudy = async (
   difficulty: string
 ): Promise<StudyTopicInfo[]> => {
   return executeQuery(async (db) => {
+    // Complex query to properly count exercises with data
+    // For pairs, only count exercises with actual pair data
+    // For other types, count all exercises (they have 1:1 data relationship)
     const query = `
       SELECT 
         t.id,
         t.topic,
-        COUNT(DISTINCT ei.id) as total_exercises,
+        (
+          -- Count non-pairs exercises normally
+          COALESCE((
+            SELECT COUNT(DISTINCT ei2.id) 
+            FROM exercises_info ei2 
+            JOIN languages l2 ON ei2.language_id = l2.id
+            JOIN difficulties d2 ON ei2.difficulty_id = d2.id
+            WHERE ei2.topic_id = t.id 
+              AND ei2.exercise_type != 'pairs'
+              AND l2.language = ?
+              AND d2.difficulty_level = ?
+          ), 0) +
+          -- Count pairs exercises only if they have data
+          COALESCE((
+            SELECT COUNT(DISTINCT pe.exercise_id) 
+            FROM exercises_info ei3
+            JOIN languages l3 ON ei3.language_id = l3.id
+            JOIN difficulties d3 ON ei3.difficulty_id = d3.id
+            INNER JOIN pair_exercises pe ON ei3.id = pe.exercise_id
+            WHERE ei3.topic_id = t.id 
+              AND ei3.exercise_type = 'pairs'
+              AND l3.language = ?
+              AND d3.difficulty_level = ?
+          ), 0)
+        ) as total_exercises,
         COUNT(DISTINCT CASE WHEN uea.is_correct = 1 THEN uea.exercise_id END) as completed_exercises,
-        CASE 
-          WHEN COUNT(DISTINCT ei.id) = 0 THEN 0
-          ELSE ROUND((COUNT(DISTINCT CASE WHEN uea.is_correct = 1 THEN uea.exercise_id END) * 100.0) / COUNT(DISTINCT ei.id), 1)
-        END as percentage,
         GROUP_CONCAT(DISTINCT ei.exercise_type) as exercise_types
       FROM topics t
       JOIN exercises_info ei ON t.id = ei.topic_id
@@ -258,21 +304,57 @@ export const getTopicsForStudy = async (
       WHERE l.language = ?
         AND d.difficulty_level = ?
       GROUP BY t.id, t.topic
-      HAVING COUNT(DISTINCT ei.id) > 0
+      HAVING (
+        -- Count non-pairs exercises normally
+        COALESCE((
+          SELECT COUNT(DISTINCT ei2.id) 
+          FROM exercises_info ei2 
+          JOIN languages l2 ON ei2.language_id = l2.id
+          JOIN difficulties d2 ON ei2.difficulty_id = d2.id
+          WHERE ei2.topic_id = t.id 
+            AND ei2.exercise_type != 'pairs'
+            AND l2.language = ?
+            AND d2.difficulty_level = ?
+        ), 0) +
+        -- Count pairs exercises only if they have data
+        COALESCE((
+          SELECT COUNT(DISTINCT pe.exercise_id) 
+          FROM exercises_info ei3
+          JOIN languages l3 ON ei3.language_id = l3.id
+          JOIN difficulties d3 ON ei3.difficulty_id = d3.id
+          INNER JOIN pair_exercises pe ON ei3.id = pe.exercise_id
+          WHERE ei3.topic_id = t.id 
+            AND ei3.exercise_type = 'pairs'
+            AND l3.language = ?
+            AND d3.difficulty_level = ?
+        ), 0)
+      ) > 0
       ORDER BY t.topic
     `;
 
-    const result = await db.executeSql(query, [userId, language, difficulty]);
+    const result = await db.executeSql(query, [
+      language, difficulty, // for non-pairs count
+      language, difficulty, // for pairs count  
+      userId, language, difficulty, // for main query
+      language, difficulty, // for having clause non-pairs
+      language, difficulty  // for having clause pairs
+    ]);
     const rows = rowsToArray<any>(result[0].rows);
 
-    return rows.map(row => ({
-      id: row.id,
-      topic: row.topic,
-      totalExercises: row.total_exercises,
-      completedExercises: row.completed_exercises,
-      percentage: row.percentage,
-      availableExerciseTypes: row.exercise_types ? row.exercise_types.split(',') as ('pairs' | 'conversation' | 'translation' | 'fill_in_blank')[] : []
-    }));
+    return rows.map(row => {
+      const totalExercises = row.total_exercises;
+      const completedExercises = row.completed_exercises;
+      const percentage = totalExercises > 0 ? Math.round((completedExercises * 100) / totalExercises) : 0;
+      
+      return {
+        id: row.id,
+        topic: row.topic,
+        totalExercises,
+        completedExercises,
+        percentage,
+        availableExerciseTypes: row.exercise_types ? row.exercise_types.split(',') as ('pairs' | 'conversation' | 'translation' | 'fill_in_blank')[] : []
+      };
+    });
   });
 };
 
@@ -287,7 +369,21 @@ export const getTopicProgress = async (
   difficulty: string
 ): Promise<{ totalExercises: number; completedExercises: number; percentage: number }> => {
   return executeQuery(async (db) => {
-    const query = `
+    // For pairs exercises, only count exercises that have actual pair data
+    const query = exerciseType === 'pairs' ? `
+      SELECT 
+        COUNT(DISTINCT pe.exercise_id) as total_exercises,
+        COUNT(DISTINCT CASE WHEN uea.is_correct = 1 THEN uea.exercise_id END) as completed_exercises
+      FROM exercises_info ei
+      JOIN languages l ON ei.language_id = l.id
+      JOIN difficulties d ON ei.difficulty_id = d.id
+      INNER JOIN pair_exercises pe ON ei.id = pe.exercise_id
+      LEFT JOIN user_exercise_attempts uea ON ei.id = uea.exercise_id AND uea.user_id = ?
+      WHERE ei.topic_id = ?
+        AND ei.exercise_type = ?
+        AND l.language = ?
+        AND d.difficulty_level = ?
+    ` : `
       SELECT 
         COUNT(DISTINCT ei.id) as total_exercises,
         COUNT(DISTINCT CASE WHEN uea.is_correct = 1 THEN uea.exercise_id END) as completed_exercises

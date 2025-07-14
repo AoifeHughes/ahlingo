@@ -241,33 +241,21 @@ Create 5-8 sentence pairs at {level} level:
     return [TranslationPairModel(**item) for item in result]
 
 
-def generate_complete_sentence(model, language: str, level: str, topic: str):
-    """Generate a complete sentence without blanks."""
+def generate_complete_sentences_bulk(model, language: str, level: str, topic: str, count: int = 5):
+    """Generate multiple complete sentences at once for efficiency."""
     
-    # Add variety to the prompts to avoid repetition
-    import random
-    
-    variety_prompts = [
-        f"Generate a {language} sentence about {topic} using different vocabulary.",
-        f"Create a {language} sentence related to {topic} with varied sentence structure.",
-        f"Write a {language} sentence about {topic} using different verbs or adjectives.",
-        f"Generate a {language} sentence about {topic} from a different perspective.",
-        f"Create a {language} sentence about {topic} with different grammar patterns."
-    ]
-    
-    base_prompt = random.choice(variety_prompts)
-    
-    system_content = f"""You are a {language} language learning tool. {base_prompt}
+    system_content = f"""You are a {language} language learning tool. Generate {count} different, complete, grammatically correct {language} sentences about "{topic}" at {level} level.
 
 REQUIREMENTS:
-- Generate exactly ONE complete sentence
-- The sentence should be natural and grammatically correct
+- Generate exactly {count} complete sentences
+- Each sentence should be natural and grammatically correct
 - Use vocabulary appropriate for {level} learners
 - Focus on {topic}-related content
-- The sentence should be 3-15 words long
+- Each sentence should be 3-15 words long
 - Include varied word types (nouns, verbs, adjectives, etc.)
-- Make it practical and useful for language learning
-- Make each sentence unique and different from others
+- Make sentences practical and useful for language learning
+- Make each sentence unique with different vocabulary and structure
+- Vary the grammar patterns (different subjects, verbs, tenses when appropriate)
 
 Examples of good sentences:
 - "Je conduis ma voiture bleue" (I drive my blue car)
@@ -275,27 +263,32 @@ Examples of good sentences:
 - "Elle porte une robe rouge" (She wears a red dress)
 - "Nous allons à l'école demain" (We go to school tomorrow)
 
-Generate ONE sentence that follows these guidelines."""
+Generate {count} different sentences that follow these guidelines, each with its English translation."""
 
-    # Use simple JSON schema for single sentence
-    sentence_schema = {
-        "type": "object",
-        "properties": {
-            "sentence": {
-                "type": "string",
-                "minLength": 5,
-                "maxLength": 150
+    # Use JSON schema for multiple sentences
+    sentences_schema = {
+        "type": "array",
+        "items": {
+            "type": "object",
+            "properties": {
+                "sentence": {
+                    "type": "string",
+                    "minLength": 5,
+                    "maxLength": 150
+                },
+                "translation": {
+                    "type": "string",
+                    "minLength": 5,
+                    "maxLength": 150
+                }
             },
-            "translation": {
-                "type": "string",
-                "minLength": 5,
-                "maxLength": 150
-            }
+            "required": ["sentence", "translation"]
         },
-        "required": ["sentence", "translation"]
+        "minItems": count,
+        "maxItems": count
     }
     
-    generator = outlines.generate.json(model, json.dumps(sentence_schema))
+    generator = outlines.generate.json(model, json.dumps(sentences_schema))
     result = generator(system_content)
     
     if isinstance(result, str):
@@ -304,37 +297,40 @@ Generate ONE sentence that follows these guidelines."""
     return result
 
 
+def generate_complete_sentence(model, language: str, level: str, topic: str):
+    """Generate a single complete sentence (wrapper for bulk generation)."""
+    bulk_result = generate_complete_sentences_bulk(model, language, level, topic, count=1)
+    return bulk_result[0] if bulk_result else {"sentence": "", "translation": ""}
+
+
 def select_word_to_remove(sentence: str, language: str = "French"):
-    """Select a suitable word to remove from the sentence."""
+    """Select a suitable word to remove from the sentence using heuristics instead of hardcoded lists."""
     words = sentence.split()
     
-    # Common articles and prepositions to skip (expand as needed)
-    skip_words = {
-        "French": {"le", "la", "les", "un", "une", "des", "du", "de", "à", "au", "aux", "dans", "sur", "avec", "pour", "par", "sans", "sous", "entre", "et", "ou", "mais", "donc", "car", "ni", "que", "qui", "quoi", "dont", "où", "ce", "cet", "cette", "ces", "mon", "ma", "mes", "ton", "ta", "tes", "son", "sa", "ses", "notre", "nos", "votre", "vos", "leur", "leurs"},
-        "German": {"der", "die", "das", "den", "dem", "des", "ein", "eine", "einen", "einem", "einer", "eines", "und", "oder", "aber", "denn", "sondern", "in", "an", "auf", "zu", "mit", "von", "bei", "nach", "aus", "über", "unter", "zwischen", "durch", "für", "gegen", "ohne", "um", "bis", "seit", "während", "wegen", "statt", "trotz", "mein", "meine", "meinen", "meinem", "meiner", "meines", "dein", "deine", "deinen", "deinem", "deiner", "deines", "sein", "seine", "seinen", "seinem", "seiner", "seines", "ihr", "ihre", "ihren", "ihrem", "ihrer", "ihres", "unser", "unsere", "unseren", "unserem", "unserer", "unseres", "euer", "eure", "euren", "eurem", "eurer", "eures"},
-        "Spanish": {"el", "la", "los", "las", "un", "una", "unos", "unas", "del", "de", "a", "al", "en", "con", "por", "para", "sin", "sobre", "bajo", "entre", "hasta", "desde", "durante", "según", "contra", "hacia", "mediante", "salvo", "excepto", "y", "o", "pero", "sino", "aunque", "porque", "si", "que", "quien", "cual", "cuyo", "donde", "cuando", "como", "este", "esta", "estos", "estas", "ese", "esa", "esos", "esas", "aquel", "aquella", "aquellos", "aquellas", "mi", "mis", "tu", "tus", "su", "sus", "nuestro", "nuestra", "nuestros", "nuestras", "vuestro", "vuestra", "vuestros", "vuestras"}
-    }
-    
-    # Get skip words for the language, default to French if not found
-    skip_set = skip_words.get(language, skip_words["French"])
-    
-    # Find suitable words (not articles, prepositions, or punctuation)
+    # Find suitable words using language-agnostic heuristics
     suitable_words = []
     for i, word in enumerate(words):
         # Clean word of punctuation for checking
         clean_word = word.lower().rstrip('.,!?;:')
         
-        # Skip if it's an article/preposition or too short
-        if clean_word not in skip_set and len(clean_word) > 1:
-            suitable_words.append((i, word))
+        # Skip very short words (likely articles/prepositions)
+        if len(clean_word) <= 2:
+            continue
+            
+        # Skip words that are all punctuation
+        if not any(c.isalpha() for c in clean_word):
+            continue
+            
+        # Prefer longer, content-bearing words
+        suitable_words.append((i, word, len(clean_word)))
     
-    # If no suitable words found, return the longest word
+    # If no suitable words found, use the longest word
     if not suitable_words:
-        longest_word = max(words, key=len)
+        longest_word = max(words, key=lambda w: len(w.rstrip('.,!?;:')))
         return words.index(longest_word), longest_word
     
-    # Prefer words in the middle of the sentence, then longer words
-    suitable_words.sort(key=lambda x: (abs(x[0] - len(words)//2), -len(x[1])))
+    # Sort by: middle position preference, then word length (longer better)
+    suitable_words.sort(key=lambda x: (abs(x[0] - len(words)//2), -x[2]))
     
     return suitable_words[0][0], suitable_words[0][1]
 
@@ -349,9 +345,10 @@ CORRECT ANSWER: "{correct_answer}"
 REQUIREMENTS:
 - Generate exactly 2 incorrect alternatives
 - Each alternative must be a single word (no phrases)
+- CRITICAL: Both alternatives MUST be different from "{correct_answer}"
+- CRITICAL: Both alternatives MUST be different from each other
 - Alternatives should be the same part of speech as the correct answer
 - Alternatives should be plausible but clearly wrong in this context
-- Alternatives should be different from each other
 - Use vocabulary appropriate for {level} learners
 - Make sure the alternatives would make the sentence grammatically incorrect or nonsensical
 
@@ -359,9 +356,9 @@ Example:
 Sentence: "Je conduis ma voiture bleue"
 Correct: "voiture"
 Good alternatives: "maison" (you can't drive a house), "chemise" (you can't drive a shirt)
-Bad alternatives: "auto" (too similar to correct answer), "rouge bleue" (multiple words)
+Bad alternatives: "voiture" (same as correct answer!), "auto" (too similar to correct answer), "rouge bleue" (multiple words)
 
-Generate 2 single-word alternatives that are obviously wrong in this context."""
+Generate 2 single-word alternatives that are obviously wrong in this context and different from "{correct_answer}"."""
 
     # Use simple JSON schema for alternatives
     alternatives_schema = {
@@ -391,55 +388,50 @@ Generate 2 single-word alternatives that are obviously wrong in this context."""
 
 
 def generate_fill_in_blank_simple(model, language: str, level: str, topic: str):
-    """Generate fill-in-blank exercises using the simplified approach."""
+    """Generate fill-in-blank exercises using the simplified bulk approach."""
     exercises = []
     
-    # Generate 5-8 exercises with some variation
-    for i in range(6):
-        try:
-            # Step 1: Generate complete sentence (add variation prompt)
-            variation_prompt = f"Generate a different sentence about {topic} (attempt {i+1})"
-            sentence_data = generate_complete_sentence(model, language, level, topic)
-            complete_sentence = sentence_data["sentence"]
-            translation = sentence_data["translation"]
-            
-            # Skip if we've already generated this sentence
-            if any(ex.get("original_sentence") == complete_sentence for ex in exercises):
+    try:
+        # Step 1: Generate 5 complete sentences at once
+        sentences_data = generate_complete_sentences_bulk(model, language, level, topic, count=5)
+        
+        for sentence_data in sentences_data:
+            try:
+                complete_sentence = sentence_data["sentence"]
+                translation = sentence_data["translation"]
+                
+                # Step 2: Select word to remove
+                blank_position, correct_answer = select_word_to_remove(complete_sentence, language)
+                
+                # Step 3: Create sentence with blank
+                words = complete_sentence.split()
+                words[blank_position] = "_"
+                sentence_with_blank = " ".join(words)
+                
+                # Step 4: Generate incorrect options
+                incorrect_1, incorrect_2 = generate_incorrect_options(
+                    model, complete_sentence, correct_answer, language, level
+                )
+                
+                # Step 5: Create exercise
+                exercise = {
+                    "sentence": sentence_with_blank,
+                    "correct_answer": correct_answer,
+                    "incorrect_1": incorrect_1,
+                    "incorrect_2": incorrect_2,
+                    "blank_position": blank_position,
+                    "translation": translation
+                }
+                
+                exercises.append(exercise)
+                
+            except Exception as e:
+                print(f"Error processing sentence '{sentence_data.get('sentence', 'unknown')}': {e}")
                 continue
-            
-            # Step 2: Select word to remove
-            blank_position, correct_answer = select_word_to_remove(complete_sentence, language)
-            
-            # Step 3: Create sentence with blank
-            words = complete_sentence.split()
-            words[blank_position] = "_"
-            sentence_with_blank = " ".join(words)
-            
-            # Step 4: Generate incorrect options
-            incorrect_1, incorrect_2 = generate_incorrect_options(
-                model, complete_sentence, correct_answer, language, level
-            )
-            
-            # Step 5: Create exercise
-            exercise = {
-                "sentence": sentence_with_blank,
-                "correct_answer": correct_answer,
-                "incorrect_1": incorrect_1,
-                "incorrect_2": incorrect_2,
-                "blank_position": blank_position,
-                "translation": translation,
-                "original_sentence": complete_sentence  # Keep for duplicate checking
-            }
-            
-            exercises.append(exercise)
-            
-        except Exception as e:
-            print(f"Error generating exercise {i+1}: {e}")
-            continue
-    
-    # Remove the original_sentence field before returning
-    for exercise in exercises:
-        exercise.pop("original_sentence", None)
+                
+    except Exception as e:
+        print(f"Error generating bulk sentences: {e}")
+        return []
     
     return exercises
 
@@ -474,6 +466,7 @@ def generate_lessons_data_structured(
     lesson_kinds: List[str] = ["conversations", "pairs", "translations", "fill_in_blank"],
     model=None,  # Allow passing model to reuse it
     max_retries: int = 5,
+    log_path: str = None,
 ):
     """Drop-in replacement for your generate_lessons_data using Outlines with validation and retry logic."""
 
@@ -522,6 +515,12 @@ def generate_lessons_data_structured(
                     
                     if attempt == max_retries - 1:
                         logging.error(f"Max retries reached for {lesson_kind} {language}-{level}-{topic}")
+                        # Log to CSV if log_path is provided
+                        if log_path:
+                            from .generate_lessons import log_failure
+                            log_failure(log_path, language, level, topic, lesson_kind,
+                                      lesson_id, None, "GenerationError", str(e), 
+                                      f"Failed after {max_retries} attempts")
                         import traceback
                         traceback.print_exc()
                     continue

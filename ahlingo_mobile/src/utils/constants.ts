@@ -117,15 +117,44 @@ export const SQL_QUERIES = {
       t.id as topic_id,
       COUNT(DISTINCT uea.exercise_id) as attempted_exercises,
       COUNT(DISTINCT CASE WHEN uea.is_correct = 1 THEN uea.exercise_id END) as correct_exercises,
-      COUNT(DISTINCT ei.id) as total_exercises,
-      ROUND(
-        CAST(COUNT(DISTINCT CASE WHEN uea.is_correct = 1 THEN uea.exercise_id END) AS FLOAT) /
-        CAST(COUNT(DISTINCT ei.id) AS FLOAT) * 100, 1
-      ) as completion_percentage
+      (
+        -- Count non-pairs exercises normally
+        COALESCE((
+          SELECT COUNT(DISTINCT ei2.id) 
+          FROM exercises_info ei2 
+          WHERE ei2.topic_id = t.id 
+            AND ei2.exercise_type != 'pairs'
+        ), 0) +
+        -- Count pairs exercises only if they have data
+        COALESCE((
+          SELECT COUNT(DISTINCT pe.exercise_id) 
+          FROM exercises_info ei3
+          INNER JOIN pair_exercises pe ON ei3.id = pe.exercise_id
+          WHERE ei3.topic_id = t.id 
+            AND ei3.exercise_type = 'pairs'
+        ), 0)
+      ) as total_exercises
     FROM topics t
     LEFT JOIN exercises_info ei ON t.id = ei.topic_id
     LEFT JOIN user_exercise_attempts uea ON ei.id = uea.exercise_id AND uea.user_id = ?
     GROUP BY t.id, t.topic
+    HAVING (
+      -- Count non-pairs exercises normally
+      COALESCE((
+        SELECT COUNT(DISTINCT ei2.id) 
+        FROM exercises_info ei2 
+        WHERE ei2.topic_id = t.id 
+          AND ei2.exercise_type != 'pairs'
+      ), 0) +
+      -- Count pairs exercises only if they have data
+      COALESCE((
+        SELECT COUNT(DISTINCT pe.exercise_id) 
+        FROM exercises_info ei3
+        INNER JOIN pair_exercises pe ON ei3.id = pe.exercise_id
+        WHERE ei3.topic_id = t.id 
+          AND ei3.exercise_type = 'pairs'
+      ), 0)
+    ) > 0
     ORDER BY t.topic
   `,
 
@@ -133,15 +162,21 @@ export const SQL_QUERIES = {
     SELECT
       COUNT(DISTINCT uea.exercise_id) as total_attempted,
       COUNT(DISTINCT CASE WHEN uea.is_correct = 1 THEN uea.exercise_id END) as total_correct,
-      COUNT(DISTINCT ei.id) as total_available,
-      ROUND(
-        CAST(COUNT(DISTINCT CASE WHEN uea.is_correct = 1 THEN uea.exercise_id END) AS FLOAT) /
-        CAST(COUNT(DISTINCT ei.id) AS FLOAT) * 100, 1
-      ) as overall_completion_percentage,
-      ROUND(
-        CAST(COUNT(DISTINCT CASE WHEN uea.is_correct = 1 THEN uea.exercise_id END) AS FLOAT) /
-        CAST(COUNT(DISTINCT uea.exercise_id) AS FLOAT) * 100, 1
-      ) as success_rate
+      (
+        -- Count non-pairs exercises normally
+        COALESCE((
+          SELECT COUNT(DISTINCT ei2.id) 
+          FROM exercises_info ei2 
+          WHERE ei2.exercise_type != 'pairs'
+        ), 0) +
+        -- Count pairs exercises only if they have data
+        COALESCE((
+          SELECT COUNT(DISTINCT pe.exercise_id) 
+          FROM exercises_info ei3
+          INNER JOIN pair_exercises pe ON ei3.id = pe.exercise_id
+          WHERE ei3.exercise_type = 'pairs'
+        ), 0)
+      ) as total_available
     FROM exercises_info ei
     LEFT JOIN user_exercise_attempts uea ON ei.id = uea.exercise_id AND uea.user_id = ?
   `,

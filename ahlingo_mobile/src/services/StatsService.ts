@@ -52,7 +52,17 @@ export const getUserStatsByTopic = async (
       TIMEOUTS.QUERY_LONG
     );
 
-    return results ? rowsToArray<TopicStats>(results.rows) : [];
+    if (!results || !results.rows) {
+      return [];
+    }
+
+    const stats = rowsToArray<any>(results.rows);
+    return stats.map(stat => ({
+      ...stat,
+      completion_percentage: stat.total_exercises > 0 
+        ? Math.round((stat.correct_exercises * 100) / stat.total_exercises) 
+        : 0
+    }));
   } catch (error) {
     console.error('Failed to get user stats by topic:', error);
     return [];
@@ -82,7 +92,18 @@ export const getUserProgressSummary = async (
     );
 
     if (results && results.rows && results.rows.length > 0) {
-      return results.rows.item(0);
+      const row = results.rows.item(0);
+      return {
+        total_attempted: row.total_attempted,
+        total_correct: row.total_correct,
+        total_available: row.total_available,
+        overall_completion_percentage: row.total_available > 0 
+          ? Math.round((row.total_correct * 100) / row.total_available) 
+          : 0,
+        success_rate: row.total_attempted > 0 
+          ? Math.round((row.total_correct * 100) / row.total_attempted) 
+          : 0
+      };
     }
 
     return getDefaultProgressSummary();
