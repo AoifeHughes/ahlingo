@@ -199,10 +199,13 @@ Please evaluate the following aspects and respond with a JSON object:
 3. is_translation_accurate: Does the English translation accurately convey the meaning?
 4. translation_matches_original: Does the English translation match the meaning of the complete {self.language} sentence?
 5. answer_options_appropriate: Are the answer options appropriate and at the right difficulty level?
-6. is_culturally_appropriate: Is the content culturally appropriate?
-7. is_educational_quality: Is this useful for language learning?
-8. overall_quality_score: Rate from 1-10 (10 = excellent)
-9. issues_found: List any specific problems found
+6. is_unambiguous: CRITICAL - Is there only ONE clearly correct answer? Check if multiple options could work (like "brother/sister/mother" for family, or similar words that could all fit). The exercise should have contextual clues that make only one option correct.
+7. is_culturally_appropriate: Is the content culturally appropriate?
+8. is_educational_quality: Is this useful for language learning?
+9. overall_quality_score: Rate from 1-10 (10 = excellent). DEDUCT points for ambiguous exercises.
+10. issues_found: List any specific problems found, especially ambiguity issues
+
+AMBIGUITY CHECK: If you can imagine a scenario where multiple answer options could reasonably fit in the sentence, mark is_unambiguous as false and explain why in issues_found.
 
 Respond only with valid JSON matching the expected schema."""
 

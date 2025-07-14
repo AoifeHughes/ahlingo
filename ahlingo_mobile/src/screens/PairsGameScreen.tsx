@@ -46,6 +46,7 @@ interface GameState {
   matchedPairs: number[];
   correctCount: number;
   incorrectCount: number;
+  showCompletionMessage: boolean;
 }
 
 const PairsGameScreen: React.FC<Props> = ({ route, navigation }) => {
@@ -219,6 +220,7 @@ const PairsGameScreen: React.FC<Props> = ({ route, navigation }) => {
       matchedPairs: [],
       correctCount: 0,
       incorrectCount: 0,
+      showCompletionMessage: false,
     });
   };
 
@@ -286,6 +288,12 @@ const PairsGameScreen: React.FC<Props> = ({ route, navigation }) => {
 
       // Check if all pairs are matched (exercise completed)
       if (newMatchedPairs.length === pairs.length) {
+        // Show completion message
+        setGameState(prevState => ({
+          ...prevState,
+          showCompletionMessage: true,
+        }));
+
         // Record exercise completion
         if (currentExercise) {
           // Exercise is considered successful only if user had no incorrect attempts
@@ -323,6 +331,16 @@ const PairsGameScreen: React.FC<Props> = ({ route, navigation }) => {
     loadGameData();
   };
 
+  const handleContinue = () => {
+    if (shuffleContext) {
+      const isSuccessful = gameState.incorrectCount === 0;
+      shuffleContext.onComplete(isSuccessful);
+    } else {
+      // Load new exercise
+      loadGameData();
+    }
+  };
+
   const styles = createStyles(theme);
 
   if (loading) {
@@ -345,22 +363,6 @@ const PairsGameScreen: React.FC<Props> = ({ route, navigation }) => {
         </View>
       )}
 
-      {/* Next exercise button for shuffle mode when completed */}
-      {shuffleContext && gameState.matchedPairs.length === pairs.length && pairs.length > 0 && (
-        <View style={styles.header}>
-          <TouchableOpacity 
-            style={[styles.refreshButton, { backgroundColor: gameState.incorrectCount === 0 ? theme.colors.success : theme.colors.primary }]} 
-            onPress={() => {
-              const isSuccessful = gameState.incorrectCount === 0;
-              shuffleContext.onComplete(isSuccessful);
-            }}
-          >
-            <Text style={styles.refreshButtonText}>
-              {gameState.incorrectCount === 0 ? '✅ Perfect! Next Exercise' : '➡️ Next Exercise'}
-            </Text>
-          </TouchableOpacity>
-        </View>
-      )}
 
       {/* Score display */}
       <View style={styles.scoreContainer}>
@@ -414,6 +416,37 @@ const PairsGameScreen: React.FC<Props> = ({ route, navigation }) => {
           </ScrollView>
         </View>
       </View>
+
+      {/* Completion Message Overlay */}
+      {gameState.showCompletionMessage && (
+        <View style={styles.completionOverlay}>
+          <View style={styles.completionMessage}>
+            <Text style={styles.completionTitle}>
+              {gameState.incorrectCount === 0 ? '🎉 Perfect!' : '✅ Exercise Complete!'}
+            </Text>
+            <Text style={styles.completionText}>
+              {gameState.incorrectCount === 0 
+                ? 'All pairs matched with no mistakes!'
+                : `All pairs matched! ${gameState.correctCount} correct, ${gameState.incorrectCount} incorrect.`
+              }
+            </Text>
+            <TouchableOpacity 
+              style={[
+                styles.continueButton,
+                { backgroundColor: gameState.incorrectCount === 0 ? theme.colors.success : theme.colors.primary }
+              ]}
+              onPress={handleContinue}
+            >
+              <Text style={styles.continueButtonText}>
+                {shuffleContext 
+                  ? (gameState.incorrectCount === 0 ? '✅ Perfect! Next Exercise' : '➡️ Next Exercise')
+                  : 'Next Exercise'
+                }
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
     </View>
   );
 };
@@ -479,6 +512,52 @@ const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) => Sty
   },
   scrollContent: {
     paddingVertical: currentTheme.spacing.lg,
+  },
+  completionOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1000,
+  },
+  completionMessage: {
+    backgroundColor: currentTheme.colors.surface,
+    padding: currentTheme.spacing['2xl'],
+    borderRadius: currentTheme.borderRadius.lg,
+    alignItems: 'center',
+    maxWidth: '80%',
+    ...currentTheme.shadows.lg,
+  },
+  completionTitle: {
+    fontSize: currentTheme.typography.fontSizes['2xl'],
+    fontWeight: currentTheme.typography.fontWeights.bold,
+    color: currentTheme.colors.text,
+    marginBottom: currentTheme.spacing.lg,
+    textAlign: 'center',
+  },
+  completionText: {
+    fontSize: currentTheme.typography.fontSizes.lg,
+    color: currentTheme.colors.textSecondary,
+    marginBottom: currentTheme.spacing['2xl'],
+    textAlign: 'center',
+    lineHeight: 24,
+  },
+  continueButton: {
+    paddingVertical: currentTheme.spacing.lg,
+    paddingHorizontal: currentTheme.spacing['2xl'],
+    borderRadius: currentTheme.borderRadius.base,
+    minWidth: 200,
+    alignItems: 'center',
+    ...currentTheme.shadows.base,
+  },
+  continueButtonText: {
+    color: currentTheme.colors.surface,
+    fontSize: currentTheme.typography.fontSizes.lg,
+    fontWeight: currentTheme.typography.fontWeights.bold,
   },
 });
 

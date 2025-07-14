@@ -5,13 +5,15 @@ Test script for the new Outlines-based generation system.
 
 import sys
 import os
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from content_creation.generate_lessons import (
-    generate_lessons_data,
-    process_structured_response,
-)
+from content_creation.outlines_generator import generate_lessons_data_structured
+from content_creation.generate_lessons import process_response
 from database.database_manager import LanguageDB
 
 
@@ -28,7 +30,7 @@ def test_generation():
         # Test generation for each exercise type
         lesson_kinds = ["conversations"]  # Start with just conversations for testing
 
-        for lesson_kind, lesson_id, structured_response in generate_lessons_data(
+        for lesson_kind, lesson_id, structured_response in generate_lessons_data_structured(
             language=language,
             level=level,
             topic=topic,
@@ -47,9 +49,9 @@ def test_generation():
             db = LanguageDB(":memory:")
 
             try:
-                process_structured_response(
+                process_response(
                     db=db,
-                    structured_data=structured_response,
+                    response=structured_response,
                     language=language,
                     topic=topic,
                     level=level,

@@ -13,7 +13,8 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { store } from './src/store';
 import AppNavigator from './src/navigation/AppNavigator';
-import { initializeDatabase, logDatabaseTables } from './src/services/RefactoredDatabaseService';
+import { initializeDatabase, logDatabaseTables, getUserContext } from './src/services/RefactoredDatabaseService';
+import { setSettings } from './src/store/slices/settingsSlice';
 import { ThemeProvider } from './src/contexts/ThemeContext';
 
 function AppContent(): React.JSX.Element {
@@ -30,6 +31,27 @@ function AppContent(): React.JSX.Element {
 
         // Log database tables to verify everything works
         await logDatabaseTables();
+
+        // Load user settings from database and update Redux store
+        try {
+          const userContext = await getUserContext();
+          console.log('👤 User context loaded:', userContext);
+          
+          store.dispatch(setSettings({
+            language: userContext.settings.language,
+            difficulty: userContext.settings.difficulty,
+            userId: userContext.userId || 1,
+          }));
+          console.log('✅ User settings loaded into Redux store');
+        } catch (settingsError) {
+          console.error('⚠️ Failed to load user settings, using defaults:', settingsError);
+          // Fallback to defaults if settings loading fails
+          store.dispatch(setSettings({
+            language: 'English',
+            difficulty: 'Beginner',
+            userId: 1,
+          }));
+        }
 
         console.log('✅ App initialized successfully');
       } catch (error) {

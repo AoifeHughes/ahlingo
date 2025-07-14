@@ -41,6 +41,7 @@ class FillInBlankValidation(ValidationResult):
     """Extended validation for fill-in-blank exercises."""
     translation_matches_original: bool = Field(description="Does the English translation accurately convey the meaning of the original sentence?")
     answer_options_appropriate: bool = Field(description="Are the answer options appropriate and at the right difficulty level?")
+    is_unambiguous: bool = Field(description="Is there only ONE clearly correct answer? (No ambiguous situations where multiple options could work)")
 
 
 def get_validation_schema(exercise_type: str) -> str:

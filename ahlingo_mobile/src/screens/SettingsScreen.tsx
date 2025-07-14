@@ -40,21 +40,21 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
     isResetting,
     updateFormData,
     handleReset,
-  } = useSettingsForm();
+  } = useSettingsForm(navigation);
 
   const localModelsHook = useLocalModels(formData.enableLocalModels);
 
   const confirmReset = () => {
     Alert.alert(
-      'Reset User Data',
-      'Are you sure you want to reset all your progress and chat history? This action cannot be undone.\n\nThis will:\n• Clear all exercise progress\n• Delete chat history\n• Keep all lessons intact\n\nYour settings will remain unchanged.',
+      'Reset App Completely',
+      'Are you sure you want to reset the entire app? This action cannot be undone.\n\nThis will:\n• Delete all user accounts\n• Clear all exercise progress\n• Delete chat history\n• Reset all settings\n• Return to welcome screen\n\nLessons will remain intact.',
       [
         {
           text: 'Cancel',
           style: 'cancel',
         },
         {
-          text: 'Reset',
+          text: 'Reset App',
           style: 'destructive',
           onPress: handleReset,
         },
@@ -102,10 +102,10 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
           <View style={styles.dangerZone} testID="danger-zone">
             <Text style={styles.dangerZoneTitle}>Danger Zone</Text>
             <Text style={styles.dangerZoneDescription}>
-              Reset your learning progress and chat history. This action cannot be undone.
+              Reset the entire app and return to the welcome screen. This will delete all user accounts, progress, and settings.
             </Text>
             <Button
-              title={isResetting ? 'Resetting...' : 'Reset User Data'}
+              title={isResetting ? 'Resetting App...' : 'Reset App Completely'}
               buttonStyle={styles.resetButton}
               titleStyle={styles.resetButtonText}
               onPress={confirmReset}

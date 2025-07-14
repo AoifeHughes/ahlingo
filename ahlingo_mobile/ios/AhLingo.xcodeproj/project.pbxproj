@@ -290,14 +290,13 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.01;
+				MARKETING_VERSION = 1.1.1;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.deltasolutions.ahlingo;
-				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = org.ah.ahlingo;
+				PRODUCT_BUNDLE_IDENTIFIER = org.ah.ahlingo;
 				PRODUCT_NAME = AhLingo;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -324,14 +323,13 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.01;
+				MARKETING_VERSION = 1.1.1;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.deltasolutions.ahlingo;
-				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = org.ah.ahlingo;
+				PRODUCT_BUNDLE_IDENTIFIER = org.ah.ahlingo;
 				PRODUCT_NAME = AhLingo;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;

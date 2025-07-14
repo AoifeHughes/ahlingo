@@ -8,6 +8,7 @@ import outlines
 from typing import List, Dict, Any
 import uuid
 import json
+import logging
 from .models import ConversationExercise, create_pair_schema
 
 
@@ -26,215 +27,18 @@ class ValidationError(Exception):
     pass
 
 
-def validate_conversations(data: list, language: str) -> list:
-    """Validate conversation exercise data."""
-    if not isinstance(data, list):
-        raise ValidationError(f"Expected list, got {type(data)}")
-
-    if not data:
-        raise ValidationError("Empty conversation data")
-
-    validated_data = []
-    for i, item in enumerate(data):
-        if not isinstance(item, dict):
-            raise ValidationError(f"Conversation {i}: Expected dict, got {type(item)}")
-
-        if "conversation" not in item or "conversation_summary" not in item:
-            raise ValidationError(f"Conversation {i}: Missing required fields")
-
-        conversation = item["conversation"]
-        if not isinstance(conversation, list) or len(conversation) < 1:
-            raise ValidationError(
-                f"Conversation {i}: Must have at least 1 dialogue turn"
-            )
-
-        # Check for repetitive patterns
-        messages = [
-            turn.get("message", "") for turn in conversation if isinstance(turn, dict)
-        ]
-        if len(set(messages)) < len(messages) * 0.7:  # Less than 70% unique messages
-            raise ValidationError(f"Conversation {i}: Too repetitive")
-
-        validated_data.append(item)
-
-    return validated_data
-
-
-def validate_pairs(data: list, language: str) -> list:
-    """Validate word pairs data."""
-    if not isinstance(data, list):
-        raise ValidationError(f"Expected list, got {type(data)}")
-
-    if not (5 <= len(data) <= 15):
-        raise ValidationError(f"Expected 5-15 pairs, got {len(data)}")
-
-    english_words = []
-    target_words = []
-
-    for i, item in enumerate(data):
-        if not isinstance(item, dict):
-            raise ValidationError(f"Pair {i}: Expected dict, got {type(item)}")
-
-        if "English" not in item or language not in item:
-            raise ValidationError(
-                f"Pair {i}: Missing required fields 'English' or '{language}'"
-            )
-
-        english_word = item["English"].strip()
-        target_word = item[language].strip()
-
-        if not english_word or not target_word:
-            raise ValidationError(f"Pair {i}: Empty words not allowed")
-
-        # Check for reasonable length (not excessively long phrases)
-        if len(english_word.split()) > 10 or len(target_word.split()) > 10:
-            raise ValidationError(
-                f"Pair {i}: Phrases too long, should be words or short phrases"
-            )
-
-        english_words.append(english_word.lower())
-        target_words.append(target_word.lower())
-
-    # Check for duplicates and remove them if found
-    original_length = len(data)
-    
-    # Remove duplicates while preserving order
-    seen_english = set()
-    seen_target = set()
-    unique_data = []
-    
-    for item in data:
-        english_word = item["English"].strip().lower()
-        target_word = item[language].strip().lower()
-        
-        if english_word not in seen_english and target_word not in seen_target:
-            seen_english.add(english_word)
-            seen_target.add(target_word)
-            unique_data.append(item)
-    
-    # Check if we have enough pairs after removing duplicates
-    if len(unique_data) < 5:
-        raise ValidationError(f"After removing duplicates, only {len(unique_data)} pairs remain (minimum 5 required)")
-    
-    # If we removed duplicates, print a warning but continue
-    if len(unique_data) != original_length:
-        print(f"Warning: Removed {original_length - len(unique_data)} duplicate pairs, proceeding with {len(unique_data)} unique pairs")
-    
-    # Update the data to use the deduplicated version
-    data = unique_data
-
-    return data
-
-
-def validate_translations(data: list, language: str) -> list:
-    """Validate sentence translations data."""
-    if not isinstance(data, list):
-        raise ValidationError(f"Expected list, got {type(data)}")
-
-    if not (3 <= len(data) <= 10):
-        raise ValidationError(f"Expected 3-10 translations, got {len(data)}")
-
-    for i, item in enumerate(data):
-        if not isinstance(item, dict):
-            raise ValidationError(f"Translation {i}: Expected dict, got {type(item)}")
-
-        if "English" not in item or language not in item:
-            raise ValidationError(
-                f"Translation {i}: Missing required fields 'English' or '{language}'"
-            )
-
-        english_sentence = item["English"].strip()
-        target_sentence = item[language].strip()
-
-        if not english_sentence or not target_sentence:
-            raise ValidationError(f"Translation {i}: Empty sentences not allowed")
-
-        # Check for reasonable sentence length (allow some flexibility for different languages)
-        if len(english_sentence.split()) < 1 or len(target_sentence.split()) < 1:
-            raise ValidationError(
-                f"Translation {i}: Sentences too short, expected meaningful phrases or sentences"
-            )
-
-    return data
-
-
-def validate_fill_in_blank(data: list, language: str) -> list:
-    """Validate fill-in-blank exercise data."""
-    if not isinstance(data, list):
-        raise ValidationError(f"Expected list, got {type(data)}")
-
-    if not (3 <= len(data) <= 10):
-        raise ValidationError(f"Expected 3-10 fill-in-blank exercises, got {len(data)}")
-
-    for i, item in enumerate(data):
-        if not isinstance(item, dict):
-            raise ValidationError(f"Fill-in-blank {i}: Expected dict, got {type(item)}")
-
-        required_fields = ["sentence", "correct_answer", "incorrect_1", "incorrect_2", "blank_position", "translation"]
-        for field in required_fields:
-            if field not in item:
-                raise ValidationError(f"Fill-in-blank {i}: Missing required field '{field}'")
-
-        sentence = item["sentence"].strip()
-        correct_answer = item["correct_answer"].strip()
-        incorrect_1 = item["incorrect_1"].strip()
-        incorrect_2 = item["incorrect_2"].strip()
-        translation = item["translation"].strip()
-
-        # Validate sentence has content and contains a blank
-        if not sentence:
-            raise ValidationError(f"Fill-in-blank {i}: Empty sentence not allowed")
-        
-        if "_" not in sentence:
-            raise ValidationError(f"Fill-in-blank {i}: Sentence must contain a blank (_)")
-        
-        # Count blanks - should have exactly one
-        blank_count = sentence.count("_")
-        if blank_count != 1:
-            raise ValidationError(f"Fill-in-blank {i}: Sentence must contain exactly one blank, found {blank_count}")
-
-        # Validate answers are not empty
-        if not correct_answer or not incorrect_1 or not incorrect_2:
-            raise ValidationError(f"Fill-in-blank {i}: All answer options must be non-empty")
-        
-        # Validate translation is not empty
-        if not translation:
-            raise ValidationError(f"Fill-in-blank {i}: Translation must be non-empty")
-
-        # Validate answers are different
-        answers = [correct_answer, incorrect_1, incorrect_2]
-        if len(set(answers)) != len(answers):
-            raise ValidationError(f"Fill-in-blank {i}: Answer options must be unique")
-
-        # Validate blank position
-        blank_position = item["blank_position"]
-        if not isinstance(blank_position, int):
-            raise ValidationError(f"Fill-in-blank {i}: blank_position must be an integer")
-        
-        # Count words in sentence (replace _ with correct answer to count properly)
-        sentence_with_answer = sentence.replace("_", correct_answer)
-        word_count = len(sentence_with_answer.split())
-        
-        if blank_position < 0 or blank_position >= word_count:
-            raise ValidationError(f"Fill-in-blank {i}: blank_position {blank_position} out of range for sentence with {word_count} words")
-
-        # Validate sentence length (reasonable bounds)
-        if word_count < 3 or word_count > 20:
-            raise ValidationError(f"Fill-in-blank {i}: Sentence length should be 3-20 words, got {word_count}")
-
-    return data
-
-
 def setup_outlines_model():
     """Setup Outlines with centralized configuration."""
     import warnings
+    import logging
 
+    # Suppress specific warnings that are not actionable
     warnings.filterwarnings(
         "ignore", category=RuntimeWarning, message=".*Event loop is closed.*"
     )
 
     try:
-        # Use centralized config
+        # Use centralized config for outlines model
         model = outlines.models.openai(
             MODEL_CONFIG["model_name"],
             base_url=MODEL_CONFIG["base_url"],
@@ -242,20 +46,55 @@ def setup_outlines_model():
         )
         return model
     except Exception as e:
-        print(f"Error setting up outlines model: {e}")
-        # Fallback to direct OpenAI client
-        client = openai.OpenAI(
-            base_url=MODEL_CONFIG["base_url"], api_key=MODEL_CONFIG["api_key"]
-        )
-        return client
+        logging.error(f"Failed to setup outlines model: {e}")
+        raise RuntimeError(f"Could not initialize outlines model: {e}") from e
+
+
+def parse_assistant_examples(assistant_content: str) -> List[Dict]:
+    """Parse assistant examples from JSON string into structured format."""
+    try:
+        return json.loads(assistant_content)
+    except json.JSONDecodeError as e:
+        logging.warning(f"Failed to parse assistant examples: {e}")
+        return []
+
+
+def format_examples_for_prompt(examples: List[Dict], max_examples: int = 2) -> str:
+    """Format examples for inclusion in the prompt."""
+    if not examples:
+        return ""
+    
+    # Take only the first few examples to avoid overwhelming the prompt
+    limited_examples = examples[:max_examples]
+    
+    formatted_examples = []
+    for example in limited_examples:
+        formatted_examples.append(json.dumps(example, ensure_ascii=False, indent=2))
+    
+    return "\n\n".join(formatted_examples)
 
 
 def generate_conversations(model, language: str, level: str, topic: str):
     """Generate conversation exercises with guaranteed structure."""
     from .assistants import default_conversation_assistants
+    from .models import ConversationExercise
+    from typing import List
 
-    # JSON schema for conversation exercises (as string for outlines)
-    schema = """{
+    # Create system message with clear instructions
+    system_content = f"""You are a {language} language learning tool. Generate {level} level {language} conversations about "{topic}".
+
+Create 2-4 conversation exercises. Each should have:
+- 2-5 dialogue turns between speakers
+- Natural, realistic dialogue for {level} learners
+- Progressive conversations that build naturally
+- Each turn should add new information or move the conversation forward
+- A clear conversation summary in English
+- Speakers with appropriate {language} names
+
+Avoid repetitive patterns. Focus on practical situations related to {topic}."""
+
+    # Use structured generation with simpler JSON schema
+    list_schema = {
         "type": "array",
         "items": {
             "type": "object",
@@ -275,88 +114,33 @@ def generate_conversations(model, language: str, level: str, topic: str):
             },
             "required": ["conversation", "conversation_summary"]
         }
-    }"""
+    }
+    generator = outlines.generate.json(model, json.dumps(list_schema))
 
-    # Create system message with clear instructions
-    system_content = f"""You are a {language} language learning tool. Generate {level} level {language} conversations about "{topic}".
+    # Create enhanced prompt with examples context
+    examples_context = ""
+    if language in default_conversation_assistants:
+        examples_content = default_conversation_assistants[language]["content"]
+        examples = parse_assistant_examples(examples_content)
+        if examples:
+            formatted_examples = format_examples_for_prompt(examples)
+            examples_context = f"\n\nReference examples (for structure only):\n{formatted_examples}\n\nNow generate NEW conversations for the topic: {topic}"
 
-Create 2-4 conversation exercises. Each should have:
-- 2-5 dialogue turns between speakers
-- Natural, realistic dialogue for {level} learners
-- Progressive conversations that build naturally
-- Each turn should add new information or move the conversation forward
-- A clear conversation summary in English
-- Speakers with appropriate {language} names
-
-Avoid repetitive patterns. Focus on practical situations related to {topic}."""
-
-    # Use structured generation with proper message format
-    if hasattr(model, "chat") and hasattr(model.chat, "completions"):
-        # For OpenAI client fallback
-        messages = [
-            {"role": "system", "content": system_content},
-            {"role": "user", "content": "Generate conversation examples"},
-        ]
-
-        # Add assistant examples if available
-        if language in default_conversation_assistants:
-            examples_content = default_conversation_assistants[language]["content"]
-            messages.extend(
-                [
-                    {"role": "assistant", "content": examples_content},
-                    {
-                        "role": "user",
-                        "content": f"Now generate new conversations for the topic: {topic}",
-                    },
-                ]
-            )
-
-        # Use OpenAI client with JSON schema (manual parsing)
-        completion = model.chat.completions.create(
-            model=MODEL_CONFIG["model_name"],
-            messages=messages,
-            temperature=MODEL_CONFIG["temperature"],
-        )
-        result_text = completion.choices[0].message.content
-        # Extract JSON array from response
-        import re
-
-        json_match = re.search(r"\[.*\]", result_text, re.DOTALL)
-        if json_match:
-            return json.loads(json_match.group())
-        else:
-            return json.loads(result_text)
-    else:
-        # For outlines model with structured generation
-        generator = outlines.generate.json(model, schema)
-
-        # Create enhanced prompt with examples context
-        examples_context = ""
-        if language in default_conversation_assistants:
-            examples_content = default_conversation_assistants[language]["content"]
-            examples_context = f"\n\nReference examples (for structure only):\n{examples_content}\n\nNow generate NEW conversations for the topic: {topic}"
-
-        full_prompt = system_content + examples_context
-        result = generator(full_prompt)
-        return json.loads(result)
+    full_prompt = system_content + examples_context
+    result = generator(full_prompt)
+    
+    # Convert JSON result to Pydantic models
+    if isinstance(result, str):
+        result = json.loads(result)
+    
+    return [ConversationExercise(**item) for item in result]
 
 
 def generate_pairs(model, language: str, level: str, topic: str):
-    """Generate word pairs with guaranteed structure - creates exactly 10 pairs per exercise."""
+    """Generate word pairs with guaranteed structure - creates exactly 5 pairs per exercise."""
     from .assistants import default_pairs_assistants
-
-    # JSON schema for word pairs (as string for outlines)
-    schema = f"""{{
-        "type": "array",
-        "items": {{
-            "type": "object",
-            "properties": {{
-                "English": {{"type": "string"}},
-                "{language}": {{"type": "string"}}
-            }},
-            "required": ["English", "{language}"]
-        }}
-    }}"""
+    from .models import create_dynamic_word_pair_model
+    from typing import List
 
     # Create system message with clear instructions
     system_content = f"""You are a {language} language learning tool. Generate vocabulary pairs for "{topic}".
@@ -369,73 +153,46 @@ Create EXACTLY 5 word pairs at {level} level:
 - Each pair must be unique within this set
 - Create diverse vocabulary covering different aspects of {topic}"""
 
-    # Use structured generation with proper message format
-    if hasattr(model, "chat") and hasattr(model.chat, "completions"):
-        # For OpenAI client fallback
-        messages = [
-            {"role": "system", "content": system_content},
-            {"role": "user", "content": "Generate word pair examples"},
-        ]
+    # Use structured generation with simpler JSON schema
+    list_schema = {
+        "type": "array",
+        "items": {
+            "type": "object",
+            "properties": {
+                "English": {"type": "string"},
+                language: {"type": "string"}
+            },
+            "required": ["English", language]
+        }
+    }
+    generator = outlines.generate.json(model, json.dumps(list_schema))
 
-        # Add assistant examples if available
-        if language in default_pairs_assistants:
-            examples_content = default_pairs_assistants[language]["content"]
-            messages.extend(
-                [
-                    {"role": "assistant", "content": examples_content},
-                    {
-                        "role": "user",
-                        "content": f"Now generate 5 new word pairs for the topic: {topic}",
-                    },
-                ]
-            )
+    # Create enhanced prompt with examples context
+    examples_context = ""
+    if language in default_pairs_assistants:
+        examples_content = default_pairs_assistants[language]["content"]
+        examples = parse_assistant_examples(examples_content)
+        if examples:
+            formatted_examples = format_examples_for_prompt(examples)
+            examples_context = f"\n\nReference examples (for format only):\n{formatted_examples}\n\nNow generate 5 NEW word pairs for the topic: {topic}"
 
-        # Use OpenAI client with JSON schema (manual parsing)
-        completion = model.chat.completions.create(
-            model=MODEL_CONFIG["model_name"],
-            messages=messages,
-            temperature=MODEL_CONFIG["temperature"],
-        )
-        result_text = completion.choices[0].message.content
-        # Extract JSON array from response
-        import re
-
-        json_match = re.search(r"\[.*\]", result_text, re.DOTALL)
-        if json_match:
-            return json.loads(json_match.group())
-        else:
-            return json.loads(result_text)
-    else:
-        # For outlines model with structured generation
-        generator = outlines.generate.json(model, schema)
-
-        # Create enhanced prompt with examples context
-        examples_context = ""
-        if language in default_pairs_assistants:
-            examples_content = default_pairs_assistants[language]["content"]
-            examples_context = f"\n\nReference examples (for format only):\n{examples_content}\n\nNow generate 5 NEW word pairs for the topic: {topic}"
-
-        full_prompt = system_content + examples_context
-        result = generator(full_prompt)
-        return json.loads(result)
+    full_prompt = system_content + examples_context
+    result = generator(full_prompt)
+    
+    # Convert JSON result to Pydantic models
+    if isinstance(result, str):
+        result = json.loads(result)
+    
+    # Create dynamic model and validate
+    WordPairModel = create_dynamic_word_pair_model(language)
+    return [WordPairModel(**item) for item in result]
 
 
 def generate_translations(model, language: str, level: str, topic: str):
     """Generate sentence translations with guaranteed structure."""
     from .assistants import default_translation_assistants
-
-    # JSON schema for sentence translations (as string for outlines)
-    schema = f"""{{
-        "type": "array",
-        "items": {{
-            "type": "object",
-            "properties": {{
-                "English": {{"type": "string"}},
-                "{language}": {{"type": "string"}}
-            }},
-            "required": ["English", "{language}"]
-        }}
-    }}"""
+    from .models import create_dynamic_translation_pair_model
+    from typing import List
 
     # Create system message with enhanced instructions
     system_content = f"""You are a {language} language learning tool. Generate sentence translations for "{topic}".
@@ -449,158 +206,264 @@ Create 5-8 sentence pairs at {level} level:
 - Vary sentence length and complexity for comprehensive practice
 - Include cultural context when relevant to {topic}"""
 
-    # Use structured generation with proper message format
-    if hasattr(model, "chat") and hasattr(model.chat, "completions"):
-        # For OpenAI client fallback
-        messages = [
-            {"role": "system", "content": system_content},
-            {"role": "user", "content": "Generate sentence translation examples"},
-        ]
+    # Use structured generation with simpler JSON schema
+    list_schema = {
+        "type": "array",
+        "items": {
+            "type": "object",
+            "properties": {
+                "English": {"type": "string"},
+                language: {"type": "string"}
+            },
+            "required": ["English", language]
+        }
+    }
+    generator = outlines.generate.json(model, json.dumps(list_schema))
 
-        # Add assistant examples if available
-        if language in default_translation_assistants:
-            examples_content = default_translation_assistants[language]["content"]
-            messages.extend(
-                [
-                    {"role": "assistant", "content": examples_content},
-                    {
-                        "role": "user",
-                        "content": f"Now generate 5-8 new sentence translations for the topic: {topic}",
-                    },
-                ]
+    # Create enhanced prompt with examples context
+    examples_context = ""
+    if language in default_translation_assistants:
+        examples_content = default_translation_assistants[language]["content"]
+        examples = parse_assistant_examples(examples_content)
+        if examples:
+            formatted_examples = format_examples_for_prompt(examples)
+            examples_context = f"\n\nReference examples (for format only):\n{formatted_examples}\n\nNow generate 5-8 NEW sentence translations for the topic: {topic}"
+
+    full_prompt = system_content + examples_context
+    result = generator(full_prompt)
+    
+    # Convert JSON result to Pydantic models
+    if isinstance(result, str):
+        result = json.loads(result)
+    
+    # Create dynamic model and validate
+    TranslationPairModel = create_dynamic_translation_pair_model(language)
+    return [TranslationPairModel(**item) for item in result]
+
+
+def generate_complete_sentence(model, language: str, level: str, topic: str):
+    """Generate a complete sentence without blanks."""
+    
+    # Add variety to the prompts to avoid repetition
+    import random
+    
+    variety_prompts = [
+        f"Generate a {language} sentence about {topic} using different vocabulary.",
+        f"Create a {language} sentence related to {topic} with varied sentence structure.",
+        f"Write a {language} sentence about {topic} using different verbs or adjectives.",
+        f"Generate a {language} sentence about {topic} from a different perspective.",
+        f"Create a {language} sentence about {topic} with different grammar patterns."
+    ]
+    
+    base_prompt = random.choice(variety_prompts)
+    
+    system_content = f"""You are a {language} language learning tool. {base_prompt}
+
+REQUIREMENTS:
+- Generate exactly ONE complete sentence
+- The sentence should be natural and grammatically correct
+- Use vocabulary appropriate for {level} learners
+- Focus on {topic}-related content
+- The sentence should be 3-15 words long
+- Include varied word types (nouns, verbs, adjectives, etc.)
+- Make it practical and useful for language learning
+- Make each sentence unique and different from others
+
+Examples of good sentences:
+- "Je conduis ma voiture bleue" (I drive my blue car)
+- "Le chat mange sa nourriture" (The cat eats its food)
+- "Elle porte une robe rouge" (She wears a red dress)
+- "Nous allons à l'école demain" (We go to school tomorrow)
+
+Generate ONE sentence that follows these guidelines."""
+
+    # Use simple JSON schema for single sentence
+    sentence_schema = {
+        "type": "object",
+        "properties": {
+            "sentence": {
+                "type": "string",
+                "minLength": 5,
+                "maxLength": 150
+            },
+            "translation": {
+                "type": "string",
+                "minLength": 5,
+                "maxLength": 150
+            }
+        },
+        "required": ["sentence", "translation"]
+    }
+    
+    generator = outlines.generate.json(model, json.dumps(sentence_schema))
+    result = generator(system_content)
+    
+    if isinstance(result, str):
+        result = json.loads(result)
+    
+    return result
+
+
+def select_word_to_remove(sentence: str, language: str = "French"):
+    """Select a suitable word to remove from the sentence."""
+    words = sentence.split()
+    
+    # Common articles and prepositions to skip (expand as needed)
+    skip_words = {
+        "French": {"le", "la", "les", "un", "une", "des", "du", "de", "à", "au", "aux", "dans", "sur", "avec", "pour", "par", "sans", "sous", "entre", "et", "ou", "mais", "donc", "car", "ni", "que", "qui", "quoi", "dont", "où", "ce", "cet", "cette", "ces", "mon", "ma", "mes", "ton", "ta", "tes", "son", "sa", "ses", "notre", "nos", "votre", "vos", "leur", "leurs"},
+        "German": {"der", "die", "das", "den", "dem", "des", "ein", "eine", "einen", "einem", "einer", "eines", "und", "oder", "aber", "denn", "sondern", "in", "an", "auf", "zu", "mit", "von", "bei", "nach", "aus", "über", "unter", "zwischen", "durch", "für", "gegen", "ohne", "um", "bis", "seit", "während", "wegen", "statt", "trotz", "mein", "meine", "meinen", "meinem", "meiner", "meines", "dein", "deine", "deinen", "deinem", "deiner", "deines", "sein", "seine", "seinen", "seinem", "seiner", "seines", "ihr", "ihre", "ihren", "ihrem", "ihrer", "ihres", "unser", "unsere", "unseren", "unserem", "unserer", "unseres", "euer", "eure", "euren", "eurem", "eurer", "eures"},
+        "Spanish": {"el", "la", "los", "las", "un", "una", "unos", "unas", "del", "de", "a", "al", "en", "con", "por", "para", "sin", "sobre", "bajo", "entre", "hasta", "desde", "durante", "según", "contra", "hacia", "mediante", "salvo", "excepto", "y", "o", "pero", "sino", "aunque", "porque", "si", "que", "quien", "cual", "cuyo", "donde", "cuando", "como", "este", "esta", "estos", "estas", "ese", "esa", "esos", "esas", "aquel", "aquella", "aquellos", "aquellas", "mi", "mis", "tu", "tus", "su", "sus", "nuestro", "nuestra", "nuestros", "nuestras", "vuestro", "vuestra", "vuestros", "vuestras"}
+    }
+    
+    # Get skip words for the language, default to French if not found
+    skip_set = skip_words.get(language, skip_words["French"])
+    
+    # Find suitable words (not articles, prepositions, or punctuation)
+    suitable_words = []
+    for i, word in enumerate(words):
+        # Clean word of punctuation for checking
+        clean_word = word.lower().rstrip('.,!?;:')
+        
+        # Skip if it's an article/preposition or too short
+        if clean_word not in skip_set and len(clean_word) > 1:
+            suitable_words.append((i, word))
+    
+    # If no suitable words found, return the longest word
+    if not suitable_words:
+        longest_word = max(words, key=len)
+        return words.index(longest_word), longest_word
+    
+    # Prefer words in the middle of the sentence, then longer words
+    suitable_words.sort(key=lambda x: (abs(x[0] - len(words)//2), -len(x[1])))
+    
+    return suitable_words[0][0], suitable_words[0][1]
+
+
+def generate_incorrect_options(model, sentence: str, correct_answer: str, language: str, level: str):
+    """Generate 2 incorrect options for the fill-in-blank exercise."""
+    system_content = f"""You are a {language} language learning tool. Given a sentence and the correct answer, generate 2 clearly incorrect alternatives.
+
+SENTENCE: "{sentence}"
+CORRECT ANSWER: "{correct_answer}"
+
+REQUIREMENTS:
+- Generate exactly 2 incorrect alternatives
+- Each alternative must be a single word (no phrases)
+- Alternatives should be the same part of speech as the correct answer
+- Alternatives should be plausible but clearly wrong in this context
+- Alternatives should be different from each other
+- Use vocabulary appropriate for {level} learners
+- Make sure the alternatives would make the sentence grammatically incorrect or nonsensical
+
+Example:
+Sentence: "Je conduis ma voiture bleue"
+Correct: "voiture"
+Good alternatives: "maison" (you can't drive a house), "chemise" (you can't drive a shirt)
+Bad alternatives: "auto" (too similar to correct answer), "rouge bleue" (multiple words)
+
+Generate 2 single-word alternatives that are obviously wrong in this context."""
+
+    # Use simple JSON schema for alternatives
+    alternatives_schema = {
+        "type": "object",
+        "properties": {
+            "incorrect_1": {
+                "type": "string",
+                "minLength": 2,
+                "maxLength": 30
+            },
+            "incorrect_2": {
+                "type": "string",
+                "minLength": 2,
+                "maxLength": 30
+            }
+        },
+        "required": ["incorrect_1", "incorrect_2"]
+    }
+    
+    generator = outlines.generate.json(model, json.dumps(alternatives_schema))
+    result = generator(system_content)
+    
+    if isinstance(result, str):
+        result = json.loads(result)
+    
+    return result["incorrect_1"], result["incorrect_2"]
+
+
+def generate_fill_in_blank_simple(model, language: str, level: str, topic: str):
+    """Generate fill-in-blank exercises using the simplified approach."""
+    exercises = []
+    
+    # Generate 5-8 exercises with some variation
+    for i in range(6):
+        try:
+            # Step 1: Generate complete sentence (add variation prompt)
+            variation_prompt = f"Generate a different sentence about {topic} (attempt {i+1})"
+            sentence_data = generate_complete_sentence(model, language, level, topic)
+            complete_sentence = sentence_data["sentence"]
+            translation = sentence_data["translation"]
+            
+            # Skip if we've already generated this sentence
+            if any(ex.get("original_sentence") == complete_sentence for ex in exercises):
+                continue
+            
+            # Step 2: Select word to remove
+            blank_position, correct_answer = select_word_to_remove(complete_sentence, language)
+            
+            # Step 3: Create sentence with blank
+            words = complete_sentence.split()
+            words[blank_position] = "_"
+            sentence_with_blank = " ".join(words)
+            
+            # Step 4: Generate incorrect options
+            incorrect_1, incorrect_2 = generate_incorrect_options(
+                model, complete_sentence, correct_answer, language, level
             )
-
-        # Use OpenAI client with JSON schema (manual parsing)
-        completion = model.chat.completions.create(
-            model=MODEL_CONFIG["model_name"],
-            messages=messages,
-            temperature=MODEL_CONFIG["temperature"],
-        )
-        result_text = completion.choices[0].message.content
-        # Extract JSON array from response
-        import re
-
-        json_match = re.search(r"\[.*\]", result_text, re.DOTALL)
-        if json_match:
-            return json.loads(json_match.group())
-        else:
-            return json.loads(result_text)
-    else:
-        # For outlines model with structured generation
-        generator = outlines.generate.json(model, schema)
-
-        # Create enhanced prompt with examples context
-        examples_context = ""
-        if language in default_translation_assistants:
-            examples_content = default_translation_assistants[language]["content"]
-            examples_context = f"\n\nReference examples (for format only):\n{examples_content}\n\nNow generate 5-8 NEW sentence translations for the topic: {topic}"
-
-        full_prompt = system_content + examples_context
-        result = generator(full_prompt)
-        return json.loads(result)
+            
+            # Step 5: Create exercise
+            exercise = {
+                "sentence": sentence_with_blank,
+                "correct_answer": correct_answer,
+                "incorrect_1": incorrect_1,
+                "incorrect_2": incorrect_2,
+                "blank_position": blank_position,
+                "translation": translation,
+                "original_sentence": complete_sentence  # Keep for duplicate checking
+            }
+            
+            exercises.append(exercise)
+            
+        except Exception as e:
+            print(f"Error generating exercise {i+1}: {e}")
+            continue
+    
+    # Remove the original_sentence field before returning
+    for exercise in exercises:
+        exercise.pop("original_sentence", None)
+    
+    return exercises
 
 
 def generate_fill_in_blank(model, language: str, level: str, topic: str):
-    """Generate fill-in-blank exercises with guaranteed structure."""
-    from .assistants import default_fill_in_blank_assistants
+    """Generate fill-in-blank exercises using the simplified approach."""
+    from .models import FillInBlankExercise
+    from typing import List
 
-    # JSON schema for fill-in-blank exercises (as string for outlines)
-    schema = f"""{{
-        "type": "array",
-        "items": {{
-            "type": "object",
-            "properties": {{
-                "sentence": {{"type": "string"}},
-                "correct_answer": {{"type": "string"}},
-                "incorrect_1": {{"type": "string"}},
-                "incorrect_2": {{"type": "string"}},
-                "blank_position": {{"type": "integer"}},
-                "translation": {{"type": "string"}}
-            }},
-            "required": ["sentence", "correct_answer", "incorrect_1", "incorrect_2", "blank_position", "translation"]
-        }}
-    }}"""
-
-    # Create system message with enhanced instructions
-    system_content = f"""You are a {language} language learning tool. Generate fill-in-blank exercises for "{topic}".
-
-CRITICAL REQUIREMENTS:
-1. Create exactly 5-8 fill-in-blank exercises at {level} level
-2. Each sentence must contain EXACTLY ONE underscore (_) representing the blank
-3. Each exercise must have EXACTLY 3 answer options that are COMPLETELY DIFFERENT from each other
-4. The blank_position must be the correct word position (counting from 0)
-5. The translation must be the complete English sentence with the blank filled in
-
-FORMAT REQUIREMENTS:
-- sentence: A {language} sentence with exactly one _ (underscore) where a word is missing
-- correct_answer: The correct word that fills the blank
-- incorrect_1: A plausible but wrong alternative (different from correct_answer)
-- incorrect_2: Another plausible but wrong alternative (different from both correct_answer and incorrect_1)
-- blank_position: Integer showing position of the blank (0 = first word, 1 = second word, etc.)
-- translation: The complete English translation of the sentence with the correct answer filled in
-
-CONTENT GUIDELINES:
-- Focus on {topic}-related vocabulary and grammar
-- Ensure incorrect options are the same part of speech as the correct answer
-- Make incorrect options plausible but clearly wrong in context
-- Use sentences appropriate for {level} learners
-- Test different word types: nouns, verbs, adjectives, etc.
-- The translation should accurately convey the meaning of the complete {language} sentence
-
-EXAMPLE:
-{{"sentence": "Je mange une _ rouge", "correct_answer": "pomme", "incorrect_1": "orange", "incorrect_2": "banane", "blank_position": 3, "translation": "I eat a red apple"}}
-
-Remember: All three answer options must be unique, there must be exactly one blank per sentence, and the translation must be accurate."""
-
-    # Use structured generation with proper message format
-    if hasattr(model, "chat") and hasattr(model.chat, "completions"):
-        # For OpenAI client fallback
-        messages = [
-            {"role": "system", "content": system_content},
-            {"role": "user", "content": "Generate fill-in-blank exercise examples"},
-        ]
-
-        # Add assistant examples if available
-        if language in default_fill_in_blank_assistants:
-            examples_content = default_fill_in_blank_assistants[language]["content"]
-            messages.extend(
-                [
-                    {"role": "assistant", "content": examples_content},
-                    {
-                        "role": "user",
-                        "content": f"Now generate 5-8 new fill-in-blank exercises for the topic: {topic}",
-                    },
-                ]
-            )
-
-        # Use OpenAI client with JSON schema (manual parsing)
-        completion = model.chat.completions.create(
-            model=MODEL_CONFIG["model_name"],
-            messages=messages,
-            temperature=MODEL_CONFIG["temperature"],
-        )
-        result_text = completion.choices[0].message.content
-        # Extract JSON array from response
-        import re
-
-        json_match = re.search(r"\[.*\]", result_text, re.DOTALL)
-        if json_match:
-            return json.loads(json_match.group())
-        else:
-            return json.loads(result_text)
-    else:
-        # For outlines model with structured generation
-        generator = outlines.generate.json(model, schema)
-
-        # Create enhanced prompt with examples context
-        examples_context = ""
-        if language in default_fill_in_blank_assistants:
-            examples_content = default_fill_in_blank_assistants[language]["content"]
-            examples_context = f"\n\nReference examples (for format only):\n{examples_content}\n\nNow generate 5-8 NEW fill-in-blank exercises for the topic: {topic}"
-
-        full_prompt = system_content + examples_context
-        result = generator(full_prompt)
-        return json.loads(result)
+    # Use the simplified approach
+    exercise_dicts = generate_fill_in_blank_simple(model, language, level, topic)
+    
+    # Convert to Pydantic models
+    exercises = []
+    for exercise_dict in exercise_dicts:
+        try:
+            exercise = FillInBlankExercise(**exercise_dict)
+            exercises.append(exercise)
+        except Exception as e:
+            print(f"Error converting exercise to Pydantic model: {e}")
+            print(f"Exercise data: {exercise_dict}")
+            continue
+    
+    return exercises
 
 
 def generate_lessons_data_structured(
@@ -618,14 +481,6 @@ def generate_lessons_data_structured(
     if model is None:
         model = setup_outlines_model()
 
-    # Validation function mapping
-    validators = {
-        "conversations": validate_conversations,
-        "pairs": validate_pairs,
-        "translations": validate_translations,
-        "fill_in_blank": validate_fill_in_blank,
-    }
-
     # Generation function mapping
     generators = {
         "conversations": generate_conversations,
@@ -641,56 +496,65 @@ def generate_lessons_data_structured(
             # Retry logic for failed generations
             for attempt in range(max_retries):
                 try:
-                    # Generate data
+                    # Generate data - now returns Pydantic model instances
                     data = generators[lesson_kind](model, language, level, topic)
 
-                    # Validate data
-                    validated_data = validators[lesson_kind](data, language)
+                    # Convert Pydantic models to dict for JSON serialization
+                    if hasattr(data, '__iter__') and not isinstance(data, (str, bytes)):
+                        # It's a list of models
+                        data_dicts = [item.dict() for item in data]
+                    else:
+                        # It's a single model
+                        data_dicts = data.dict()
 
                     # Convert to JSON string to match your existing interface
-                    json_response = json.dumps(validated_data, ensure_ascii=False)
+                    json_response = json.dumps(data_dicts, ensure_ascii=False)
+                    
+                    # Log success
+                    logging.info(f"Successfully generated {lesson_kind} for {language}-{level}-{topic} (attempt {attempt + 1})")
+                    
                     yield lesson_kind, lesson_id, json_response
                     break  # Success, exit retry loop
 
-                except ValidationError as ve:
-                    print(
-                        f"Validation failed for {lesson_kind} (attempt {attempt + 1}/{max_retries}): {ve}"
-                    )
-                    if attempt == max_retries - 1:
-                        print(
-                            f"Max retries reached for {lesson_kind} {language}-{level}-{topic}"
-                        )
-                    continue
-
                 except Exception as e:
-                    print(
-                        f"Error generating {lesson_kind} for {language}-{level}-{topic} (attempt {attempt + 1}/{max_retries}): {e}"
-                    )
+                    error_msg = f"Error generating {lesson_kind} for {language}-{level}-{topic} (attempt {attempt + 1}/{max_retries}): {e}"
+                    logging.warning(error_msg)
+                    
                     if attempt == max_retries - 1:
+                        logging.error(f"Max retries reached for {lesson_kind} {language}-{level}-{topic}")
                         import traceback
-
                         traceback.print_exc()
                     continue
 
 
 def test_outlines_generation():
     """Test that Outlines is working with your setup."""
+    import logging
+    
+    # Configure logging for the test
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+    
     model = setup_outlines_model()
 
     # Test conversation generation
     print("Testing conversation generation...")
     conversations = generate_conversations(model, "French", "beginner", "food")
-    print("Conversations:", json.dumps(conversations, indent=2, ensure_ascii=False))
+    print("Conversations:", json.dumps([conv.dict() for conv in conversations], indent=2, ensure_ascii=False))
 
     # Test pairs generation
     print("\nTesting pairs generation...")
     pairs = generate_pairs(model, "French", "beginner", "food")
-    print("Word Pairs:", json.dumps(pairs, indent=2, ensure_ascii=False))
+    print("Word Pairs:", json.dumps([pair.dict() for pair in pairs], indent=2, ensure_ascii=False))
 
     # Test translations
     print("\nTesting translations generation...")
     translations = generate_translations(model, "French", "beginner", "food")
-    print("Translations:", json.dumps(translations, indent=2, ensure_ascii=False))
+    print("Translations:", json.dumps([trans.dict() for trans in translations], indent=2, ensure_ascii=False))
+    
+    # Test fill-in-blank generation
+    print("\nTesting fill-in-blank generation...")
+    fill_in_blank = generate_fill_in_blank(model, "French", "beginner", "food")
+    print("Fill-in-blank:", json.dumps([fib.dict() for fib in fill_in_blank], indent=2, ensure_ascii=False))
 
 
 if __name__ == "__main__":

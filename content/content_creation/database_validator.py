@@ -64,34 +64,38 @@ class DatabaseValidator:
                 api_key=MODEL_CONFIG["api_key"]
             )
     
-    def get_all_exercises(self) -> List[Dict[str, Any]]:
-        """Retrieve all exercises from the database."""
+    def get_all_exercises(self, exercise_type_filter: Optional[str] = None) -> List[Dict[str, Any]]:
+        """Retrieve all exercises from the database, optionally filtered by type."""
         exercises = []
         
         with LanguageDB(self.db_path) as db:
             # Get conversation exercises
-            conv_exercises = db.get_all_conversation_exercises()
-            for exercise in conv_exercises:
-                exercise['exercise_type'] = 'conversation'
-                exercises.append(exercise)
+            if not exercise_type_filter or exercise_type_filter == 'conversation':
+                conv_exercises = db.get_all_conversation_exercises()
+                for exercise in conv_exercises:
+                    exercise['exercise_type'] = 'conversation'
+                    exercises.append(exercise)
             
             # Get pair exercises  
-            pair_exercises = db.get_all_pair_exercises()
-            for exercise in pair_exercises:
-                exercise['exercise_type'] = 'pair'
-                exercises.append(exercise)
+            if not exercise_type_filter or exercise_type_filter == 'pair':
+                pair_exercises = db.get_all_pair_exercises()
+                for exercise in pair_exercises:
+                    exercise['exercise_type'] = 'pair'
+                    exercises.append(exercise)
             
             # Get translation exercises
-            trans_exercises = db.get_all_translation_exercises()
-            for exercise in trans_exercises:
-                exercise['exercise_type'] = 'translation'
-                exercises.append(exercise)
+            if not exercise_type_filter or exercise_type_filter == 'translation':
+                trans_exercises = db.get_all_translation_exercises()
+                for exercise in trans_exercises:
+                    exercise['exercise_type'] = 'translation'
+                    exercises.append(exercise)
             
             # Get fill-in-blank exercises
-            fill_exercises = db.get_all_fill_in_blank_exercises()
-            for exercise in fill_exercises:
-                exercise['exercise_type'] = 'fill_in_blank'
-                exercises.append(exercise)
+            if not exercise_type_filter or exercise_type_filter == 'fill_in_blank':
+                fill_exercises = db.get_all_fill_in_blank_exercises()
+                for exercise in fill_exercises:
+                    exercise['exercise_type'] = 'fill_in_blank'
+                    exercises.append(exercise)
         
         return exercises
     
@@ -148,7 +152,7 @@ class DatabaseValidator:
                 issues_found=[f"Validation error: {str(e)}"]
             )
     
-    def validate_all_exercises(self, max_exercises: Optional[int] = None) -> Dict[str, Any]:
+    def validate_all_exercises(self, max_exercises: Optional[int] = None, exercise_type_filter: Optional[str] = None) -> Dict[str, Any]:
         """
         Validate all exercises in the database.
         
@@ -162,7 +166,7 @@ class DatabaseValidator:
             self.setup_model()
         
         print("Fetching exercises from database...")
-        exercises = self.get_all_exercises()
+        exercises = self.get_all_exercises(exercise_type_filter)
         
         if max_exercises:
             exercises = exercises[:max_exercises]

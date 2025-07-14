@@ -3,10 +3,12 @@
  * 
  * Handles mixed exercise functionality including topic progress tracking
  * and random mixed exercise generation for shuffle and study modes.
+ * Now includes smart randomization with anti-repetition logic.
  */
 
 import { executeQuery, executeSqlSingle, rowsToArray, getSingleRow } from '../utils/databaseUtils';
-import { TopicWithProgress, ShuffleExercise, ExerciseInfo, Topic, StudyTopicInfo } from '../types';
+import { TopicWithProgress, ShuffleExercise, ExerciseInfo, Topic, StudyTopicInfo, RecentExercise } from '../types';
+import { SmartRandomizer, DEFAULT_RANDOMIZATION_CONFIG } from '../utils/smartRandomization';
 
 export interface TopicProgress {
   totalExercises: number;
@@ -64,13 +66,14 @@ export const getTopicsWithProgressForExerciseType = async (
 };
 
 /**
- * Get random mixed exercises for a specific topic
+ * Get random mixed exercises for a specific topic with smart randomization
  */
 export const getRandomMixedExercisesForTopic = async (
   topicId: number,
   userId: number | null,
   language: string,
-  difficulty: string
+  difficulty: string,
+  recentExercises: RecentExercise[] = []
 ): Promise<ShuffleExercise[]> => {
   return executeQuery(async (db) => {
     // Get topic name first
@@ -109,7 +112,7 @@ export const getRandomMixedExercisesForTopic = async (
     }
 
     // Collect all verified exercises
-    const allExercises: { exerciseInfo: ExerciseInfo; exerciseType: string }[] = [];
+    const allExercises: ShuffleExercise[] = [];
     for (let i = 0; i < exercisesResult[0].rows.length; i++) {
       const exerciseRow = exercisesResult[0].rows.item(i);
       allExercises.push({
@@ -122,107 +125,108 @@ export const getRandomMixedExercisesForTopic = async (
           exercise_type: exerciseRow.exercise_type,
           lesson_id: exerciseRow.lesson_id
         },
-        exerciseType: exerciseRow.verified_exercise_type
+        exerciseType: exerciseRow.verified_exercise_type as 'pairs' | 'conversation' | 'translation' | 'fill_in_blank',
+        topicName: topicName
       });
     }
 
-    // Shuffle the exercises array
-    for (let i = allExercises.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [allExercises[i], allExercises[j]] = [allExercises[j], allExercises[i]];
-    }
+    // Use smart randomization with anti-repetition logic
+    const smartRandomizer = new SmartRandomizer(DEFAULT_RANDOMIZATION_CONFIG);
+    smartRandomizer.loadRecentExercises(recentExercises);
+    
+    // Return up to 10 exercises using smart selection
+    const selectedExercises = smartRandomizer.selectExercises(allExercises, Math.min(10, allExercises.length));
 
-    // Return up to 10 exercises
-    const selectedExercises = allExercises.slice(0, Math.min(10, allExercises.length));
-
-    return selectedExercises.map(exercise => ({
-      exerciseInfo: exercise.exerciseInfo,
-      exerciseType: exercise.exerciseType as 'pairs' | 'conversation' | 'translation' | 'fill_in_blank',
-      topicName: topicName
-    }));
+    return selectedExercises;
   });
 };
 
 /**
- * Get random mixed exercises across all topics
+ * Get random mixed exercises across all topics with smart randomization
  */
 export const getRandomMixedExercises = async (
   userId: number | null,
   language: string,
-  difficulty: string
+  difficulty: string,
+  recentExercises: RecentExercise[] = []
 ): Promise<ShuffleExercise[]> => {
   return executeQuery(async (db) => {
-    const shuffleExercises: ShuffleExercise[] = [];
-    const exerciseTypes = ['pairs', 'conversation', 'translation', 'fill_in_blank'];
-    const usedTopics = new Set<number>();
+    // Get all available exercises across all topics and types
+    let query: string;
+    let params: any[];
 
-    for (let i = 0; i < 5; i++) {
-      // Try to get an exercise of different types and topics
-      const exerciseType = exerciseTypes[i % exerciseTypes.length];
-      
-      let query: string;
-      let params: any[];
-
-      if (userId) {
-        // Prioritize untried exercises
-        query = `
-          SELECT ei.*, t.topic as topic_name
-          FROM exercises_info ei
-          JOIN languages l ON ei.language_id = l.id
-          JOIN difficulties d ON ei.difficulty_id = d.id
-          JOIN topics t ON ei.topic_id = t.id
-          LEFT JOIN user_exercise_attempts uea ON ei.id = uea.exercise_id AND uea.user_id = ?
-          WHERE ei.exercise_type = ?
-            AND l.language = ?
-            AND d.difficulty_level = ?
-            AND uea.exercise_id IS NULL
-          ORDER BY RANDOM()
-          LIMIT 1
-        `;
-        params = [userId, exerciseType, language, difficulty];
-      } else {
-        query = `
-          SELECT ei.*, t.topic as topic_name
-          FROM exercises_info ei
-          JOIN languages l ON ei.language_id = l.id
-          JOIN difficulties d ON ei.difficulty_id = d.id
-          JOIN topics t ON ei.topic_id = t.id
-          WHERE ei.exercise_type = ?
-            AND l.language = ?
-            AND d.difficulty_level = ?
-          ORDER BY RANDOM()
-          LIMIT 1
-        `;
-        params = [exerciseType, language, difficulty];
-      }
-
-      const result = await db.executeSql(query, params);
-      
-      if (result[0].rows.length > 0) {
-        const exerciseRow = result[0].rows.item(0);
-        
-        // Avoid duplicate topics if possible
-        if (!usedTopics.has(exerciseRow.topic_id) || usedTopics.size >= 3) {
-          usedTopics.add(exerciseRow.topic_id);
-          
-          shuffleExercises.push({
-            exerciseInfo: {
-              id: exerciseRow.id,
-              exercise_name: exerciseRow.exercise_name,
-              topic_id: exerciseRow.topic_id,
-              difficulty_id: exerciseRow.difficulty_id,
-              language_id: exerciseRow.language_id,
-              exercise_type: exerciseRow.exercise_type,
-              lesson_id: exerciseRow.lesson_id
-            },
-            exerciseType: exerciseType as 'pairs' | 'conversation' | 'translation' | 'fill_in_blank',
-            topicName: exerciseRow.topic_name
-          });
-        }
-      }
+    if (userId) {
+      // Prioritize untried exercises for logged-in users
+      query = `
+        SELECT ei.*, t.topic as topic_name
+        FROM exercises_info ei
+        JOIN languages l ON ei.language_id = l.id
+        JOIN difficulties d ON ei.difficulty_id = d.id
+        JOIN topics t ON ei.topic_id = t.id
+        LEFT JOIN user_exercise_attempts uea ON ei.id = uea.exercise_id AND uea.user_id = ?
+        WHERE l.language = ?
+          AND d.difficulty_level = ?
+          AND ei.exercise_type IN ('pairs', 'conversation', 'translation', 'fill_in_blank')
+        ORDER BY 
+          CASE WHEN uea.exercise_id IS NULL THEN 0 ELSE 1 END,
+          RANDOM()
+      `;
+      params = [userId, language, difficulty];
+    } else {
+      query = `
+        SELECT ei.*, t.topic as topic_name
+        FROM exercises_info ei
+        JOIN languages l ON ei.language_id = l.id
+        JOIN difficulties d ON ei.difficulty_id = d.id
+        JOIN topics t ON ei.topic_id = t.id
+        WHERE l.language = ?
+          AND d.difficulty_level = ?
+          AND ei.exercise_type IN ('pairs', 'conversation', 'translation', 'fill_in_blank')
+        ORDER BY RANDOM()
+      `;
+      params = [language, difficulty];
     }
 
-    return shuffleExercises;
+    const result = await db.executeSql(query, params);
+    
+    if (!result || !result[0] || result[0].rows.length === 0) {
+      return [];
+    }
+
+    // Collect all available exercises
+    const allExercises: ShuffleExercise[] = [];
+    for (let i = 0; i < result[0].rows.length; i++) {
+      const exerciseRow = result[0].rows.item(i);
+      allExercises.push({
+        exerciseInfo: {
+          id: exerciseRow.id,
+          exercise_name: exerciseRow.exercise_name,
+          topic_id: exerciseRow.topic_id,
+          difficulty_id: exerciseRow.difficulty_id,
+          language_id: exerciseRow.language_id,
+          exercise_type: exerciseRow.exercise_type,
+          lesson_id: exerciseRow.lesson_id
+        },
+        exerciseType: exerciseRow.exercise_type as 'pairs' | 'conversation' | 'translation' | 'fill_in_blank',
+        topicName: exerciseRow.topic_name
+      });
+    }
+
+    // Use smart randomization with enhanced diversity logic
+    const smartRandomizer = new SmartRandomizer({
+      ...DEFAULT_RANDOMIZATION_CONFIG,
+      // More aggressive anti-repetition for shuffle mode
+      immediateExclusionCount: 5,
+      reducedProbabilityCount: 10,
+      reducedProbabilityMultiplier: 0.1,
+    });
+    
+    smartRandomizer.loadRecentExercises(recentExercises);
+    
+    // Select 5 exercises with enhanced diversity
+    const selectedExercises = smartRandomizer.selectExercises(allExercises, 5);
+
+    return selectedExercises;
   });
 };
 

@@ -40,19 +40,11 @@ def clean_text(text: str) -> str:
 
 
 def safe_json_loads(text: str) -> Any:
-    """Safely load JSON data with fallback approaches."""
+    """Safely load JSON data - simplified since outlines guarantees valid JSON."""
     try:
-        # First try: direct parse
         return json.loads(text)
-    except json.JSONDecodeError:
-        try:
-            # Second try: find and extract JSON array
-            json_match = re.search(r"\[[\s\S]*\]", text, re.DOTALL)
-            if json_match:
-                return json.loads(json_match.group())
-            raise ValueError("No JSON array found in response")
-        except Exception as e:
-            raise ValueError(f"Failed to parse JSON: {str(e)}")
+    except json.JSONDecodeError as e:
+        raise ValueError(f"Failed to parse JSON: {str(e)}") from e
 
 
 def process_response(
@@ -69,36 +61,8 @@ def process_response(
         # Parse the JSON response
         cleaned_response = safe_json_loads(response)
 
-        # Import and apply validation from outlines_generator
-        from .outlines_generator import (
-            validate_conversations,
-            validate_pairs,
-            validate_translations,
-            validate_fill_in_blank,
-            ValidationError,
-        )
-
-        # Validate the response data before processing
-        try:
-            if lesson_kind == "conversations":
-                validated_response = validate_conversations(cleaned_response, language)
-            elif lesson_kind == "pairs":
-                validated_response = validate_pairs(cleaned_response, language)
-            elif lesson_kind == "translations":
-                validated_response = validate_translations(cleaned_response, language)
-            elif lesson_kind == "fill_in_blank":
-                validated_response = validate_fill_in_blank(cleaned_response, language)
-            else:
-                raise ValueError(f"Unknown lesson kind: {lesson_kind}")
-        except ValidationError as ve:
-            print(
-                f"Validation failed for {lesson_kind} {language}-{topic}-{level} (ID: {lesson_id}): {ve}"
-            )
-            print("Skipping database insertion for this lesson.")
-            return  # Don't insert invalid data
-
-        # Use validated response instead of cleaned_response
-        cleaned_response = validated_response
+        # Data is already validated by Pydantic models during generation
+        # No need for additional validation here
 
         lesson_name = f"{topic} {lesson_kind.title()} Lesson - ID: {lesson_id}"
 
@@ -274,13 +238,15 @@ def process_response(
                         lesson_id=lesson_id,
                     )
             except Exception as e:
-                print(
+                import logging
+                logging.error(
                     f"Error processing exercise {idx + 1} for {language}_{topic}_{level}_{lesson_id} in {lesson_kind}: {str(e)}"
                 )
                 continue
 
     except Exception as e:
-        print(
+        import logging
+        logging.error(
             f"Error processing response for {language}_{topic}_{level}_{lesson_id} in {lesson_kind}: {str(e)}"
         )
 
@@ -351,9 +317,9 @@ def populate_database(db_loc: str = None):
                             lesson_id=lesson_id,
                         )
                 except Exception as e:
-                    print(f"Error processing {language}_{level}_{topic}: {str(e)}")
+                    import logging
+                    logging.error(f"Error processing {language}_{level}_{topic}: {str(e)}")
                     import traceback
-
                     traceback.print_exc()
                 finally:
                     pbar.update(1)

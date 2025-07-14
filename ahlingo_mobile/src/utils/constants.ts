@@ -218,4 +218,85 @@ export const SQL_QUERIES = {
     ORDER BY last_updated DESC
     LIMIT 1
   `,
+
+  // Smart randomization queries
+  GET_EXERCISES_EXCLUDING_RECENT: (exerciseType: string) => {
+    const exerciseTableJoins = {
+      'pairs': 'JOIN pair_exercises pe ON ei.id = pe.exercise_id',
+      'conversation': 'JOIN conversation_exercises ce ON ei.id = ce.exercise_id',
+      'translation': 'JOIN translation_exercises te ON ei.id = te.exercise_id',
+      'fill_in_blank': 'JOIN fill_in_blank_exercises fibe ON ei.id = fibe.exercise_id'
+    };
+    const dataJoin = exerciseTableJoins[exerciseType as keyof typeof exerciseTableJoins] || 'JOIN pair_exercises pe ON ei.id = pe.exercise_id';
+    
+    return `
+      SELECT DISTINCT ei.*, t.topic as topic_name
+      FROM exercises_info ei
+      JOIN languages l ON ei.language_id = l.id
+      JOIN difficulties d ON ei.difficulty_id = d.id
+      JOIN topics t ON ei.topic_id = t.id
+      ${dataJoin}
+      WHERE ei.topic_id = ?
+        AND l.language = ?
+        AND d.difficulty_level = ?
+        AND ei.exercise_type = ?
+        AND ei.id NOT IN (${Array(10).fill('?').join(',')})
+      ORDER BY RANDOM()
+      LIMIT 1
+    `;
+  },
+
+  GET_ALL_EXERCISES_FOR_SMART_SELECTION: (exerciseType: string) => {
+    const exerciseTableJoins = {
+      'pairs': 'JOIN pair_exercises pe ON ei.id = pe.exercise_id',
+      'conversation': 'JOIN conversation_exercises ce ON ei.id = ce.exercise_id',
+      'translation': 'JOIN translation_exercises te ON ei.id = te.exercise_id',
+      'fill_in_blank': 'JOIN fill_in_blank_exercises fibe ON ei.id = fibe.exercise_id'
+    };
+    const dataJoin = exerciseTableJoins[exerciseType as keyof typeof exerciseTableJoins] || 'JOIN pair_exercises pe ON ei.id = pe.exercise_id';
+    
+    return `
+      SELECT DISTINCT ei.*, t.topic as topic_name
+      FROM exercises_info ei
+      JOIN languages l ON ei.language_id = l.id
+      JOIN difficulties d ON ei.difficulty_id = d.id
+      JOIN topics t ON ei.topic_id = t.id
+      ${dataJoin}
+      WHERE ei.topic_id = ?
+        AND l.language = ?
+        AND d.difficulty_level = ?
+        AND ei.exercise_type = ?
+      ORDER BY ei.id
+    `;
+  },
+
+  GET_MIXED_EXERCISES_WITH_PRIORITY: (userId: number | null) => {
+    if (userId) {
+      return `
+        SELECT ei.*, t.topic as topic_name,
+               CASE WHEN uea.exercise_id IS NULL THEN 0 ELSE 1 END as attempted_priority
+        FROM exercises_info ei
+        JOIN languages l ON ei.language_id = l.id
+        JOIN difficulties d ON ei.difficulty_id = d.id
+        JOIN topics t ON ei.topic_id = t.id
+        LEFT JOIN user_exercise_attempts uea ON ei.id = uea.exercise_id AND uea.user_id = ?
+        WHERE l.language = ?
+          AND d.difficulty_level = ?
+          AND ei.exercise_type IN ('pairs', 'conversation', 'translation', 'fill_in_blank')
+        ORDER BY attempted_priority, RANDOM()
+      `;
+    } else {
+      return `
+        SELECT ei.*, t.topic as topic_name, 0 as attempted_priority
+        FROM exercises_info ei
+        JOIN languages l ON ei.language_id = l.id
+        JOIN difficulties d ON ei.difficulty_id = d.id
+        JOIN topics t ON ei.topic_id = t.id
+        WHERE l.language = ?
+          AND d.difficulty_level = ?
+          AND ei.exercise_type IN ('pairs', 'conversation', 'translation', 'fill_in_blank')
+        ORDER BY RANDOM()
+      `;
+    }
+  },
 } as const;

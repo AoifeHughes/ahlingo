@@ -14,6 +14,24 @@ export interface UserSettings {
 }
 
 /**
+ * Check if any users exist in the database
+ */
+export const checkUsersExist = async (): Promise<boolean> => {
+  try {
+    const results = await executeSqlSingle(
+      SQL_QUERIES.GET_RECENT_USER,
+      [],
+      TIMEOUTS.QUERY_MEDIUM
+    );
+
+    return results && results.rows.length > 0;
+  } catch (error) {
+    console.error('Failed to check if users exist:', error);
+    return false;
+  }
+};
+
+/**
  * Get the most recent user (by last login)
  */
 export const getMostRecentUser = async (): Promise<string> => {
@@ -367,6 +385,39 @@ export const resetUserData = async (username: string): Promise<void> => {
     console.log('✅ User data reset successfully for:', username);
   } catch (error) {
     console.error('Failed to reset user data:', error);
+    throw error;
+  }
+};
+
+/**
+ * Complete app reset - delete all users and data (returns to welcome screen)
+ */
+export const resetAppCompletely = async (): Promise<void> => {
+  try {
+    // Delete all user exercise attempts
+    await executeSqlSingle(
+      'DELETE FROM user_exercise_attempts',
+      [],
+      TIMEOUTS.QUERY_MEDIUM
+    );
+
+    // Delete all user settings
+    await executeSqlSingle(
+      'DELETE FROM user_settings',
+      [],
+      TIMEOUTS.QUERY_MEDIUM
+    );
+
+    // Delete all users
+    await executeSqlSingle(
+      'DELETE FROM users',
+      [],
+      TIMEOUTS.QUERY_MEDIUM
+    );
+
+    console.log('✅ App reset completely - all user data deleted');
+  } catch (error) {
+    console.error('Failed to reset app completely:', error);
     throw error;
   }
 };

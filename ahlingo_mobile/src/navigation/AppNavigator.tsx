@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types';
 import { useTheme } from '../contexts/ThemeContext';
+import { checkUsersExist } from '../services/RefactoredDatabaseService';
+import { ActivityIndicator, View } from 'react-native';
 
 // Import screens (placeholder imports for now)
+import WelcomeScreen from '../screens/WelcomeScreen';
 import MainMenuScreen from '../screens/MainMenuScreen';
 import TopicSelectionScreen from '../screens/TopicSelectionScreen';
 import PairsGameScreen from '../screens/PairsGameScreen';
@@ -26,11 +29,37 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const AppNavigator: React.FC = () => {
   const { theme } = useTheme();
+  const [isLoading, setIsLoading] = useState(true);
+  const [showWelcome, setShowWelcome] = useState(false);
+
+  useEffect(() => {
+    const checkInitialRoute = async () => {
+      try {
+        const usersExist = await checkUsersExist();
+        setShowWelcome(!usersExist);
+      } catch (error) {
+        console.error('Failed to check users exist:', error);
+        setShowWelcome(true); // Default to showing welcome on error
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    checkInitialRoute();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: theme.colors.background }}>
+        <ActivityIndicator size="large" color={theme.colors.primary} />
+      </View>
+    );
+  }
 
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="MainMenu"
+        initialRouteName={showWelcome ? "Welcome" : "MainMenu"}
         screenOptions={{
           headerStyle: {
             backgroundColor: theme.colors.primary,
@@ -43,6 +72,11 @@ const AppNavigator: React.FC = () => {
           headerBackTitle: 'Main Menu',
         }}
       >
+        <Stack.Screen
+          name="Welcome"
+          component={WelcomeScreen}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen
           name="MainMenu"
           component={MainMenuScreen}

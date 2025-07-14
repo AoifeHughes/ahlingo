@@ -109,12 +109,21 @@ export interface ChatHistory {
 }
 
 // UI state types
+export interface RecentExercise {
+  exerciseId: number;
+  topicId: number;
+  exerciseType: string;
+  lessonId?: string;
+  timestamp: number;
+}
+
 export interface GameState {
   selectedPairs: { column1: number | null; column2: number | null };
   correctPairs: number[];
   score: { correct: number; incorrect: number };
   isLoading: boolean;
   currentPairs: PairExercise[];
+  recentExercises: RecentExercise[];
 }
 
 export interface AppSettings {
@@ -183,6 +192,7 @@ export interface ExerciseShuffleContext {
 }
 
 export type RootStackParamList = {
+  Welcome: undefined;
   MainMenu: undefined;
   TopicSelection: { exerciseType?: 'pairs' | 'conversation' | 'translation' | 'fill_in_blank' };
   PairsGame: { 

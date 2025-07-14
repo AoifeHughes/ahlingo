@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Alert } from 'react-native';
 import { useDispatch } from 'react-redux';
+import { NavigationProp } from '@react-navigation/native';
 import { 
   setSettings, 
   setLoading, 
@@ -14,8 +15,9 @@ import {
   setUserSetting,
   updateUserLogin,
   resetUserData,
+  resetAppCompletely,
 } from '../services/RefactoredDatabaseService';
-import { Language, Difficulty } from '../types';
+import { Language, Difficulty, RootStackParamList } from '../types';
 import { DropdownItem } from '../components/Dropdown';
 import { getAvailableThemes, ThemeVariant } from '../utils/theme';
 import { useTheme } from '../contexts/ThemeContext';
@@ -45,7 +47,7 @@ interface UseSettingsFormReturn {
   loadInitialData: () => Promise<void>;
 }
 
-export const useSettingsForm = (): UseSettingsFormReturn => {
+export const useSettingsForm = (navigation?: NavigationProp<RootStackParamList>): UseSettingsFormReturn => {
   const dispatch = useDispatch();
   const { themeVariant, setTheme } = useTheme();
 
@@ -216,12 +218,28 @@ export const useSettingsForm = (): UseSettingsFormReturn => {
   const handleReset = async () => {
     setIsResetting(true);
     try {
-      const username = formData.username || 'default_user';
-      await resetUserData(username);
-      Alert.alert('Success', 'User data has been reset successfully! Your progress and chat history have been cleared, but lessons remain intact.');
+      // Complete app reset - delete all users and data
+      await resetAppCompletely();
+      
+      // Clear Redux store
+      dispatch(setSettings({
+        language: '',
+        difficulty: '',
+        userId: 1,
+        enableLocalModels: false,
+        preferLocalModels: false,
+      }));
+
+      // Navigate to Welcome screen for fresh setup
+      if (navigation) {
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Welcome' }],
+        });
+      }
     } catch (error) {
-      console.error('Failed to reset user data:', error);
-      Alert.alert('Error', 'Failed to reset user data. Please try again.');
+      console.error('Failed to reset app completely:', error);
+      Alert.alert('Error', 'Failed to reset app data. Please try again.');
     } finally {
       setIsResetting(false);
     }

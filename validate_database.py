@@ -30,6 +30,10 @@ if __name__ == "__main__":
                        help="Actually remove exercises (not just show what would be removed)")
     parser.add_argument("--report", type=str,
                        help="Path to save validation report JSON file")
+    parser.add_argument("--exercise-type", type=str,
+                       help="Only validate specific exercise type (conversation, pair, translation, fill_in_blank)")
+    parser.add_argument("--test-ambiguity", action="store_true",
+                       help="Run ambiguity test for fill-in-blank exercises")
     
     args = parser.parse_args()
     
@@ -41,6 +45,17 @@ if __name__ == "__main__":
     
     print(f"Validating database at: {db_path}")
     print(f"Running from: {os.getcwd()}")
+    
+    # Run ambiguity test if requested
+    if args.test_ambiguity:
+        print("Running ambiguity validation test...")
+        import subprocess
+        result = subprocess.run([sys.executable, "test_ambiguity_validation.py"], 
+                               capture_output=True, text=True)
+        print(result.stdout)
+        if result.stderr:
+            print("Errors:", result.stderr)
+        return
     
     # Run validation
     run_validation(

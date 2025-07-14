@@ -15,6 +15,8 @@ export {
   getUserId,
   getUserContext,
   resetUserData,
+  checkUsersExist,
+  resetAppCompletely,
   type UserSettings,
 } from './UserService';
 
