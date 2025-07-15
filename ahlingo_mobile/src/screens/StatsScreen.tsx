@@ -52,6 +52,8 @@ const StatsScreen: React.FC<Props> = ({ navigation }) => {
   const [topicStats, setTopicStats] = useState<TopicStats[]>([]);
   const [progressSummary, setProgressSummary] =
     useState<ProgressSummary | null>(null);
+  const [userLanguage, setUserLanguage] = useState<string>('');
+  const [userDifficulty, setUserDifficulty] = useState<string>('');
   const abortControllerRef = useRef<AbortController | null>(null);
   const isLoadingRef = useRef(false);
 
@@ -120,9 +122,17 @@ const StatsScreen: React.FC<Props> = ({ navigation }) => {
         return;
       }
 
+      // Get user's language and difficulty from settings
+      const language = userSettings.language || 'French';
+      const difficulty = userSettings.difficulty || 'Beginner';
+
+      // Store for display in UI
+      setUserLanguage(language);
+      setUserDifficulty(difficulty);
+
       // Load topic stats and progress summary with timeout using batched function
       const { stats: topicData, summary: summaryData } = await Promise.race([
-        getUserStatsAndSummary(userId),
+        getUserStatsAndSummary(userId, language, difficulty),
         timeoutPromise,
       ]);
 
@@ -216,6 +226,11 @@ const StatsScreen: React.FC<Props> = ({ navigation }) => {
         {progressSummary && (
           <View style={styles.summaryCard}>
             <Text style={styles.summaryTitle}>Overall Progress</Text>
+            {userLanguage && userDifficulty && (
+              <Text style={styles.summarySubtitle}>
+                {userLanguage} • {userDifficulty} Level
+              </Text>
+            )}
             <View style={styles.summaryStats}>
               <View style={styles.statItem}>
                 <Text style={styles.statNumber}>
@@ -257,6 +272,11 @@ const StatsScreen: React.FC<Props> = ({ navigation }) => {
         {/* Topic Breakdown */}
         <View style={styles.topicsSection}>
           <Text style={styles.sectionTitle}>Progress by Topic</Text>
+          {userLanguage && userDifficulty && (
+            <Text style={styles.sectionSubtitle}>
+              Showing {userLanguage} • {userDifficulty} Level
+            </Text>
+          )}
           {topicStats.length > 0 ? (
             topicStats.map((topic, index) => (
               <View key={topic.topic_id} style={styles.topicCard}>
@@ -316,8 +336,15 @@ const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) => Sty
     fontSize: currentTheme.typography.fontSizes.xl,
     fontWeight: currentTheme.typography.fontWeights.bold,
     color: currentTheme.colors.text,
+    marginBottom: currentTheme.spacing.base,
+    textAlign: 'center',
+  },
+  summarySubtitle: {
+    fontSize: currentTheme.typography.fontSizes.base,
+    color: currentTheme.colors.textSecondary,
     marginBottom: currentTheme.spacing.lg,
     textAlign: 'center',
+    fontStyle: 'italic',
   },
   summaryStats: {
     flexDirection: 'row',
@@ -375,7 +402,13 @@ const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) => Sty
     fontSize: currentTheme.typography.fontSizes.xl,
     fontWeight: currentTheme.typography.fontWeights.bold,
     color: currentTheme.colors.text,
+    marginBottom: currentTheme.spacing.xs,
+  },
+  sectionSubtitle: {
+    fontSize: currentTheme.typography.fontSizes.base,
+    color: currentTheme.colors.textSecondary,
     marginBottom: currentTheme.spacing.md,
+    fontStyle: 'italic',
   },
   topicCard: {
     backgroundColor: currentTheme.colors.surface,

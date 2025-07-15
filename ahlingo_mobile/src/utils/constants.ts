@@ -122,37 +122,56 @@ export const SQL_QUERIES = {
         COALESCE((
           SELECT COUNT(DISTINCT ei2.id) 
           FROM exercises_info ei2 
+          JOIN languages l2 ON ei2.language_id = l2.id
+          JOIN difficulties d2 ON ei2.difficulty_id = d2.id
           WHERE ei2.topic_id = t.id 
             AND ei2.exercise_type != 'pairs'
+            AND l2.language = ?
+            AND d2.difficulty_level = ?
         ), 0) +
         -- Count pairs exercises only if they have data
         COALESCE((
           SELECT COUNT(DISTINCT pe.exercise_id) 
           FROM exercises_info ei3
+          JOIN languages l3 ON ei3.language_id = l3.id
+          JOIN difficulties d3 ON ei3.difficulty_id = d3.id
           INNER JOIN pair_exercises pe ON ei3.id = pe.exercise_id
           WHERE ei3.topic_id = t.id 
             AND ei3.exercise_type = 'pairs'
+            AND l3.language = ?
+            AND d3.difficulty_level = ?
         ), 0)
       ) as total_exercises
     FROM topics t
     LEFT JOIN exercises_info ei ON t.id = ei.topic_id
+    LEFT JOIN languages l ON ei.language_id = l.id
+    LEFT JOIN difficulties d ON ei.difficulty_id = d.id
     LEFT JOIN user_exercise_attempts uea ON ei.id = uea.exercise_id AND uea.user_id = ?
+    WHERE l.language = ? AND d.difficulty_level = ?
     GROUP BY t.id, t.topic
     HAVING (
       -- Count non-pairs exercises normally
       COALESCE((
         SELECT COUNT(DISTINCT ei2.id) 
         FROM exercises_info ei2 
+        JOIN languages l2 ON ei2.language_id = l2.id
+        JOIN difficulties d2 ON ei2.difficulty_id = d2.id
         WHERE ei2.topic_id = t.id 
           AND ei2.exercise_type != 'pairs'
+          AND l2.language = ?
+          AND d2.difficulty_level = ?
       ), 0) +
       -- Count pairs exercises only if they have data
       COALESCE((
         SELECT COUNT(DISTINCT pe.exercise_id) 
         FROM exercises_info ei3
+        JOIN languages l3 ON ei3.language_id = l3.id
+        JOIN difficulties d3 ON ei3.difficulty_id = d3.id
         INNER JOIN pair_exercises pe ON ei3.id = pe.exercise_id
         WHERE ei3.topic_id = t.id 
           AND ei3.exercise_type = 'pairs'
+          AND l3.language = ?
+          AND d3.difficulty_level = ?
       ), 0)
     ) > 0
     ORDER BY t.topic
@@ -167,18 +186,29 @@ export const SQL_QUERIES = {
         COALESCE((
           SELECT COUNT(DISTINCT ei2.id) 
           FROM exercises_info ei2 
+          JOIN languages l2 ON ei2.language_id = l2.id
+          JOIN difficulties d2 ON ei2.difficulty_id = d2.id
           WHERE ei2.exercise_type != 'pairs'
+            AND l2.language = ?
+            AND d2.difficulty_level = ?
         ), 0) +
         -- Count pairs exercises only if they have data
         COALESCE((
           SELECT COUNT(DISTINCT pe.exercise_id) 
           FROM exercises_info ei3
+          JOIN languages l3 ON ei3.language_id = l3.id
+          JOIN difficulties d3 ON ei3.difficulty_id = d3.id
           INNER JOIN pair_exercises pe ON ei3.id = pe.exercise_id
           WHERE ei3.exercise_type = 'pairs'
+            AND l3.language = ?
+            AND d3.difficulty_level = ?
         ), 0)
       ) as total_available
     FROM exercises_info ei
+    JOIN languages l ON ei.language_id = l.id
+    JOIN difficulties d ON ei.difficulty_id = d.id
     LEFT JOIN user_exercise_attempts uea ON ei.id = uea.exercise_id AND uea.user_id = ?
+    WHERE l.language = ? AND d.difficulty_level = ?
   `,
 
   GET_FAILED_EXERCISES: `

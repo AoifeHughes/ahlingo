@@ -37,7 +37,9 @@ export interface FailedExercise {
  * Get user stats by topic
  */
 export const getUserStatsByTopic = async (
-  userId: number
+  userId: number,
+  language: string,
+  difficulty: string
 ): Promise<TopicStats[]> => {
   try {
     // Validate input
@@ -48,7 +50,7 @@ export const getUserStatsByTopic = async (
 
     const results = await executeSqlSingle(
       SQL_QUERIES.GET_USER_STATS_BY_TOPIC,
-      [userId],
+      [language, difficulty, language, difficulty, userId, language, difficulty, language, difficulty, language, difficulty],
       TIMEOUTS.QUERY_LONG
     );
 
@@ -73,7 +75,9 @@ export const getUserStatsByTopic = async (
  * Get user progress summary
  */
 export const getUserProgressSummary = async (
-  userId: number
+  userId: number,
+  language: string,
+  difficulty: string
 ): Promise<ProgressSummary> => {
   try {
     // Validate input
@@ -87,7 +91,7 @@ export const getUserProgressSummary = async (
 
     const results = await executeSqlSingle(
       SQL_QUERIES.GET_USER_PROGRESS_SUMMARY,
-      [userId],
+      [language, difficulty, language, difficulty, userId, language, difficulty],
       TIMEOUTS.QUERY_LONG
     );
 
@@ -117,7 +121,9 @@ export const getUserProgressSummary = async (
  * Get both user stats and summary in one efficient operation
  */
 export const getUserStatsAndSummary = async (
-  userId: number
+  userId: number,
+  language: string,
+  difficulty: string
 ): Promise<{
   stats: TopicStats[];
   summary: ProgressSummary;
@@ -139,19 +145,24 @@ export const getUserStatsAndSummary = async (
     const [statsResults, summaryResults] = await Promise.all([
       executeSqlSingle(
         SQL_QUERIES.GET_USER_STATS_BY_TOPIC,
-        [userId],
+        [language, difficulty, language, difficulty, userId, language, difficulty, language, difficulty, language, difficulty],
         TIMEOUTS.QUERY_LONG
       ),
       executeSqlSingle(
         SQL_QUERIES.GET_USER_PROGRESS_SUMMARY,
-        [userId],
+        [language, difficulty, language, difficulty, userId, language, difficulty],
         TIMEOUTS.QUERY_LONG
       ),
     ]);
 
     // Process stats results
     const stats = statsResults
-      ? rowsToArray<TopicStats>(statsResults.rows)
+      ? rowsToArray<any>(statsResults.rows).map(stat => ({
+          ...stat,
+          completion_percentage: stat.total_exercises > 0 
+            ? Math.round((stat.correct_exercises * 100) / stat.total_exercises) 
+            : 0
+        }))
       : [];
 
     // Process summary results
@@ -161,7 +172,18 @@ export const getUserStatsAndSummary = async (
       summaryResults.rows &&
       summaryResults.rows.length > 0
     ) {
-      summary = summaryResults.rows.item(0);
+      const row = summaryResults.rows.item(0);
+      summary = {
+        total_attempted: row.total_attempted,
+        total_correct: row.total_correct,
+        total_available: row.total_available,
+        overall_completion_percentage: row.total_available > 0 
+          ? Math.round((row.total_correct * 100) / row.total_available) 
+          : 0,
+        success_rate: row.total_attempted > 0 
+          ? Math.round((row.total_correct * 100) / row.total_attempted) 
+          : 0
+      };
     } else {
       summary = getDefaultProgressSummary();
     }

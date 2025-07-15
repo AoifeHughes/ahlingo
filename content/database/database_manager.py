@@ -160,7 +160,7 @@ class LanguageDB:
                ORDER BY last_login DESC LIMIT 1"""
         )
         result = self.cursor.fetchone()
-        return result["name"] if result else "default_user"
+        return result["name"] if result else None
 
     def update_user_login(self, username: str):
         """Update the last login time for a user."""

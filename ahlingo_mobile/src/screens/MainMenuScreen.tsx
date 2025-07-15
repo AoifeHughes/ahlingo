@@ -129,18 +129,26 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
             'AI Server Setup Required',
             'Chat Practice requires an AI server or local models to be configured.\n\nWould you like to set this up now?',
             [
-              { text: 'Setup Now', onPress: () => navigation.navigate('Settings') },
+              { 
+                text: 'Setup Now', 
+                onPress: () => {
+                  // Navigation will happen after alert is dismissed
+                  navigation.navigate('Settings');
+                }
+              },
               { text: 'Maybe Later', style: 'cancel' }
             ]
           );
-          return;
+          return; // Prevent navigation to chatbot
         }
+        
+        // Only navigate to chatbot if configuration is valid
+        navigation.navigate(item.screen as any);
       } catch (error) {
         console.error('Failed to check AI configuration:', error);
         // Continue to chat screen for detailed error handling
+        navigation.navigate(item.screen as any);
       }
-      
-      navigation.navigate(item.screen as any);
     } else {
       navigation.navigate(item.screen as any);
     }

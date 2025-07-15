@@ -55,7 +55,7 @@ if __name__ == "__main__":
         print(result.stdout)
         if result.stderr:
             print("Errors:", result.stderr)
-        return
+        sys.exit(0)
     
     # Run validation
     run_validation(

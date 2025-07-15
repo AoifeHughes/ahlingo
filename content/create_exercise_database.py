@@ -17,17 +17,19 @@ def initialize_default_settings(db_loc=None):
         db_loc = str(script_dir / "database" / "languageLearningDatabase.db")
     
     with LanguageDB(db_loc) as db:
-        # Get or create default user
-        default_user = db.get_most_recent_user() or "default_user"
-
-        # Set default OpenAI server and API key settings if they don't exist
-        settings = db.get_user_settings(default_user)
-        if "openai_server" not in settings:
-            db.set_user_setting(
-                default_user, "openai_server", "http://localhost:8080/v1"
-            )
-        if "api_key" not in settings:
-            db.set_user_setting(default_user, "api_key", "sk-no-key-required")
+        # Skip creating default user - only set settings if a user already exists
+        most_recent_user = db.get_most_recent_user()
+        if most_recent_user:
+            # Set default OpenAI server and API key settings if they don't exist
+            settings = db.get_user_settings(most_recent_user)
+            if "openai_server" not in settings:
+                db.set_user_setting(
+                    most_recent_user, "openai_server", "http://localhost:8080/v1"
+                )
+            if "api_key" not in settings:
+                db.set_user_setting(most_recent_user, "api_key", "sk-no-key-required")
+        else:
+            print("No users found in database - skipping default settings initialization")
 
 
 if __name__ == "__main__":
