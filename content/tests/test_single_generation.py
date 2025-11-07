@@ -16,7 +16,7 @@ from content.generation.core.outlines_generator import (
     setup_outlines_model,
 )
 from content.generation.core.generate_lessons import process_response
-from database.database_manager import LanguageDB
+from content.database.database_manager import LanguageDB
 
 
 def test_single_combination():

@@ -9,10 +9,10 @@
 /* Begin PBXBuildFile section */
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		31F070B7A76AA688C3401979 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */; };
-		474086C14955674D3AE53E30 /* libPods-AhLingo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2BBD1EB6178080FDFF19E560 /* libPods-AhLingo.a */; };
 		5D21304C6F054539B8BC6C59 /* languageLearningDatabase.db in Resources */ = {isa = PBXBuildFile; fileRef = 188AC33B49A44C11B5DF7856 /* languageLearningDatabase.db */; };
 		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		930A5CD61201EAF5AD67FD4E /* libPods-AhLingo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F04C87996562CDACA9E3D1D4 /* libPods-AhLingo.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -20,13 +20,13 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = AhLingo/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = AhLingo/Info.plist; sourceTree = "<group>"; };
 		13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = PrivacyInfo.xcprivacy; path = AhLingo/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-		181C6451C3DF446531B7F176 /* Pods-AhLingo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AhLingo.release.xcconfig"; path = "Target Support Files/Pods-AhLingo/Pods-AhLingo.release.xcconfig"; sourceTree = "<group>"; };
 		188AC33B49A44C11B5DF7856 /* languageLearningDatabase.db */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = languageLearningDatabase.db; path = ../assets/databases/languageLearningDatabase.db; sourceTree = "<group>"; };
-		2BBD1EB6178080FDFF19E560 /* libPods-AhLingo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-AhLingo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		49B55FDCB24F9E2A83F94878 /* Pods-AhLingo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AhLingo.debug.xcconfig"; path = "Target Support Files/Pods-AhLingo/Pods-AhLingo.debug.xcconfig"; sourceTree = "<group>"; };
 		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = AhLingo/AppDelegate.swift; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = AhLingo/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		A06F5A6EE619AB77E2D5C252 /* Pods-AhLingo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AhLingo.debug.xcconfig"; path = "Target Support Files/Pods-AhLingo/Pods-AhLingo.debug.xcconfig"; sourceTree = "<group>"; };
+		BF2D2F610CBC6F22FC63943F /* Pods-AhLingo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AhLingo.release.xcconfig"; path = "Target Support Files/Pods-AhLingo/Pods-AhLingo.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		F04C87996562CDACA9E3D1D4 /* libPods-AhLingo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-AhLingo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -34,7 +34,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				474086C14955674D3AE53E30 /* libPods-AhLingo.a in Frameworks */,
+				930A5CD61201EAF5AD67FD4E /* libPods-AhLingo.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -57,7 +57,7 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				2BBD1EB6178080FDFF19E560 /* libPods-AhLingo.a */,
+				F04C87996562CDACA9E3D1D4 /* libPods-AhLingo.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -103,8 +103,8 @@
 		BBD78D7AC51CEA395F1C20DB /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				A06F5A6EE619AB77E2D5C252 /* Pods-AhLingo.debug.xcconfig */,
-				181C6451C3DF446531B7F176 /* Pods-AhLingo.release.xcconfig */,
+				49B55FDCB24F9E2A83F94878 /* Pods-AhLingo.debug.xcconfig */,
+				BF2D2F610CBC6F22FC63943F /* Pods-AhLingo.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -116,13 +116,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "AhLingo" */;
 			buildPhases = (
-				5D2BFDEA52123D9689B1D6B8 /* [CP] Check Pods Manifest.lock */,
+				B90C5B4FFDF2F97E70509707 /* [CP] Check Pods Manifest.lock */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				F38A33184CF3017A0C3F8AC0 /* [CP] Embed Pods Frameworks */,
-				27140751F755E6D6FAAA525B /* [CP] Copy Pods Resources */,
+				93EB7012111D15B7768A9B52 /* [CP] Embed Pods Frameworks */,
+				8EA362A12C5AF6CEA0D6AF92 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -195,7 +195,7 @@
 			shellPath = /bin/sh;
 			shellScript = "set -e\n\nWITH_ENVIRONMENT=\"$REACT_NATIVE_PATH/scripts/xcode/with-environment.sh\"\nREACT_NATIVE_XCODE=\"$REACT_NATIVE_PATH/scripts/react-native-xcode.sh\"\n\n/bin/sh -c \"$WITH_ENVIRONMENT $REACT_NATIVE_XCODE\"\n";
 		};
-		27140751F755E6D6FAAA525B /* [CP] Copy Pods Resources */ = {
+		8EA362A12C5AF6CEA0D6AF92 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -212,7 +212,24 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AhLingo/Pods-AhLingo-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		5D2BFDEA52123D9689B1D6B8 /* [CP] Check Pods Manifest.lock */ = {
+		93EB7012111D15B7768A9B52 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-AhLingo/Pods-AhLingo-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-AhLingo/Pods-AhLingo-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AhLingo/Pods-AhLingo-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B90C5B4FFDF2F97E70509707 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -234,23 +251,6 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		F38A33184CF3017A0C3F8AC0 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-AhLingo/Pods-AhLingo-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-AhLingo/Pods-AhLingo-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AhLingo/Pods-AhLingo-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -267,11 +267,11 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A06F5A6EE619AB77E2D5C252 /* Pods-AhLingo.debug.xcconfig */;
+			baseConfigurationReference = 49B55FDCB24F9E2A83F94878 /* Pods-AhLingo.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CURRENT_PROJECT_VERSION = 140;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = VYTM4WL9P5;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = AhLingo/Info.plist;
@@ -282,7 +282,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.4.0;
+				MARKETING_VERSION = 1.3.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -301,11 +301,11 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 181C6451C3DF446531B7F176 /* Pods-AhLingo.release.xcconfig */;
+			baseConfigurationReference = BF2D2F610CBC6F22FC63943F /* Pods-AhLingo.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CURRENT_PROJECT_VERSION = 140;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = VYTM4WL9P5;
 				INFOPLIST_FILE = AhLingo/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = AhLingo;
@@ -315,7 +315,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.4.0;
+				MARKETING_VERSION = 1.3.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
