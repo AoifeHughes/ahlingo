@@ -51,7 +51,7 @@ graph TD
 
 ### 1. Configuration System
 
-The generation system is configured through three key files in `content/generation_data/`:
+The generation system is configured through three key files in `content/generation/config/`:
 
 - **`languages.txt`**: Target languages (French, German, Spanish, Ukrainian)
 - **`levels.txt`**: Difficulty levels (Beginner, Intermediate, Advanced)

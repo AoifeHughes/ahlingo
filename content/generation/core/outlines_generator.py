@@ -14,9 +14,9 @@ from typing import Any, Dict, List
 import uuid
 
 try:
-    from .models import ConversationExercise, create_pair_schema
+    from content.generation.models.models import ConversationExercise, create_pair_schema
 except ImportError:
-    from models import ConversationExercise, create_pair_schema
+    from content.generation.models.models import ConversationExercise, create_pair_schema
 
 
 # Centralized model configuration
@@ -348,11 +348,11 @@ def format_examples_for_prompt(examples: List[Dict], max_examples: int = 2) -> s
 def generate_conversations(model, language: str, level: str, topic: str):
     """Generate conversation exercises with guaranteed structure."""
     try:
-        from .assistants import default_conversation_assistants
-        from .models import ConversationExercise
+        from content.generation.utils.assistants import default_conversation_assistants
+        from content.generation.models.models import ConversationExercise
     except ImportError:
-        from assistants import default_conversation_assistants
-        from models import ConversationExercise
+        from content.generation.utils.assistants import default_conversation_assistants
+        from content.generation.models.models import ConversationExercise
     from typing import List
 
     # Create system message with clear instructions
@@ -425,11 +425,11 @@ Avoid repetitive patterns. Focus on practical situations related to {topic}."""
 def generate_pairs(model, language: str, level: str, topic: str):
     """Generate word pairs with guaranteed structure - creates exactly 5 pairs per exercise."""
     try:
-        from .assistants import default_pairs_assistants
-        from .models import create_dynamic_word_pair_model
+        from content.generation.utils.assistants import default_pairs_assistants
+        from content.generation.models.models import create_dynamic_word_pair_model
     except ImportError:
-        from assistants import default_pairs_assistants
-        from models import create_dynamic_word_pair_model
+        from content.generation.utils.assistants import default_pairs_assistants
+        from content.generation.models.models import create_dynamic_word_pair_model
     from typing import List
 
     # Create system message with clear instructions
@@ -502,11 +502,11 @@ Create EXACTLY 5 word pairs at {level} level:
 def generate_translations(model, language: str, level: str, topic: str):
     """Generate sentence translations with guaranteed structure."""
     try:
-        from .assistants import default_translation_assistants
-        from .models import create_dynamic_translation_pair_model
+        from content.generation.utils.assistants import default_translation_assistants
+        from content.generation.models.models import create_dynamic_translation_pair_model
     except ImportError:
-        from assistants import default_translation_assistants
-        from models import create_dynamic_translation_pair_model
+        from content.generation.utils.assistants import default_translation_assistants
+        from content.generation.models.models import create_dynamic_translation_pair_model
     from typing import List
 
     # Create system message with enhanced instructions
@@ -788,9 +788,9 @@ Generate 2 alternatives (1-3 words each) that are obviously wrong in this contex
 def generate_fill_in_blank_structured(model, language: str, level: str, topic: str):
     """Generate fill-in-blank exercises using single-step structured generation."""
     try:
-        from .models import FillInBlankExercise
+        from content.generation.models.models import FillInBlankExercise
     except ImportError:
-        from models import FillInBlankExercise
+        from content.generation.models.models import FillInBlankExercise
     from typing import List
 
     # Create comprehensive system message for structured generation
@@ -831,7 +831,7 @@ CRITICAL: Each exercise's correct_answer, incorrect_1, and incorrect_2 must be t
     # Create enhanced prompt with examples context
     examples_context = ""
     try:
-        from .assistants import default_fill_in_blank_assistants
+        from content.generation.utils.assistants import default_fill_in_blank_assistants
 
         if language in default_fill_in_blank_assistants:
             examples_content = default_fill_in_blank_assistants[language]["content"]

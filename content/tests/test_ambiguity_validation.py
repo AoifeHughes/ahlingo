@@ -12,9 +12,9 @@ import json
 content_dir = Path(__file__).parent / "content"
 sys.path.insert(0, str(content_dir))
 
-from content_creation.database_validator import DatabaseValidator
-from content_creation.exercise_converters import FillInBlankConverter
-from content_creation.validation_models import parse_validation_result
+from content.generation.utils.database_validator import DatabaseValidator
+from content.generation.utils.exercise_converters import FillInBlankConverter
+from content.generation.utils.validation_models import parse_validation_result
 
 
 def test_ambiguous_exercise():

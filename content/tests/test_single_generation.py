@@ -11,11 +11,11 @@ import json
 # Add the content_creation directory to the path
 sys.path.append(str(Path(__file__).parent))
 
-from content_creation.outlines_generator import (
+from content.generation.core.outlines_generator import (
     generate_lessons_data_structured,
     setup_outlines_model,
 )
-from content_creation.generate_lessons import process_response
+from content.generation.core.generate_lessons import process_response
 from database.database_manager import LanguageDB
 
 
