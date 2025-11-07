@@ -10,7 +10,7 @@ jobs:
   unit-tests:
     name: Unit Tests
     runs-on: ubuntu-latest
-    
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -44,7 +44,7 @@ jobs:
   ios-e2e:
     name: iOS E2E Tests
     runs-on: macos-latest
-    
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -96,7 +96,7 @@ jobs:
   android-e2e:
     name: Android E2E Tests
     runs-on: ubuntu-latest
-    
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -159,7 +159,7 @@ jobs:
   lint-and-format:
     name: Code Quality
     runs-on: ubuntu-latest
-    
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4

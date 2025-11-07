@@ -195,17 +195,17 @@ export type RootStackParamList = {
   Welcome: undefined;
   MainMenu: undefined;
   TopicSelection: { exerciseType?: 'pairs' | 'conversation' | 'translation' | 'fill_in_blank' };
-  PairsGame: { 
+  PairsGame: {
     topicId?: number;
     shuffleContext?: ExerciseShuffleContext;
     exerciseInfo?: ExerciseInfo;
   };
-  ConversationExercises: { 
+  ConversationExercises: {
     topicId?: number;
     shuffleContext?: ExerciseShuffleContext;
     exerciseInfo?: ExerciseInfo;
   };
-  TranslationExercises: { 
+  TranslationExercises: {
     topicId?: number;
     shuffleContext?: ExerciseShuffleContext;
     exerciseInfo?: ExerciseInfo;
@@ -217,19 +217,19 @@ export type RootStackParamList = {
   About: undefined;
   // New feature screens
   StudyTopic: undefined;
-  StudyTopicShuffle: { 
+  StudyTopicShuffle: {
     topicId: number;
     topicName: string;
     exercises: ShuffleExercise[];
   };
-  FillInTheBlank: { 
+  FillInTheBlank: {
     topicId?: number;
     shuffleContext?: ExerciseShuffleContext;
     exerciseInfo?: ExerciseInfo;
   };
   // Exercise Shuffle specific screens
   ExerciseShuffleStart: { exercises: ShuffleExercise[] };
-  ExerciseShuffleTransition: { 
+  ExerciseShuffleTransition: {
     currentChallenge: number;
     totalChallenges: number;
     success: boolean;
@@ -237,7 +237,7 @@ export type RootStackParamList = {
     results: boolean[];
     exercises: ShuffleExercise[];
   };
-  ExerciseShuffleSummary: { 
+  ExerciseShuffleSummary: {
     results: boolean[];
     exercises: ShuffleExercise[];
   };

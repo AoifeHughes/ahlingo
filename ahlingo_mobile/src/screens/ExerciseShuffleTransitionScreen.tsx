@@ -40,8 +40,8 @@ const ExerciseShuffleTransitionScreen: React.FC<Props> = ({ navigation, route })
       'Your progress will be lost if you exit now.',
       [
         { text: 'Cancel', style: 'cancel' },
-        { 
-          text: 'Exit', 
+        {
+          text: 'Exit',
           style: 'destructive',
           onPress: () => navigation.navigate('MainMenu')
         },
@@ -65,19 +65,19 @@ const ExerciseShuffleTransitionScreen: React.FC<Props> = ({ navigation, route })
       'Your progress will be lost if you exit now.',
       [
         { text: 'Cancel', style: 'cancel' },
-        { 
-          text: 'Exit', 
+        {
+          text: 'Exit',
           style: 'destructive',
           onPress: () => navigation.navigate('MainMenu')
         },
       ]
     );
   });
-  
-  const message = success 
-    ? "Well done! Ready for the next?" 
+
+  const message = success
+    ? "Well done! Ready for the next?"
     : "Keep trying, you've got this";
-    
+
   const buttonText = isLastExercise ? "See Results" : "Next Challenge";
 
   const handleContinue = () => {
@@ -91,14 +91,14 @@ const ExerciseShuffleTransitionScreen: React.FC<Props> = ({ navigation, route })
       // Navigate to next exercise
       const nextChallengeIndex = currentChallenge; // currentChallenge is 1-based, array is 0-based
       const nextExerciseData = exercises[nextChallengeIndex];
-      
+
       const shuffleContext: ExerciseShuffleContext = {
         isShuffleMode: true,
         currentChallenge: currentChallenge + 1,
         totalChallenges,
         onComplete: (nextSuccess: boolean) => {
           const updatedResults = [...results, nextSuccess];
-          
+
           if (currentChallenge + 1 >= totalChallenges) {
             // Last exercise completed, go to summary
             navigation.navigate('ExerciseShuffleSummary', {
@@ -158,15 +158,15 @@ const ExerciseShuffleTransitionScreen: React.FC<Props> = ({ navigation, route })
     <View style={styles.container}>
       <View style={styles.content}>
         <Text style={styles.icon}>{success ? '🎉' : '💪'}</Text>
-        
+
         <Text style={styles.message}>{message}</Text>
-        
+
         <View style={styles.progressIndicator}>
           <Text style={styles.progressText}>
             Challenge {currentChallenge}/{totalChallenges}
           </Text>
         </View>
-        
+
         {!isLastExercise && nextExercise && (
           <View style={styles.nextExercisePreview}>
             <Text style={styles.previewTitle}>Next up:</Text>
@@ -175,7 +175,7 @@ const ExerciseShuffleTransitionScreen: React.FC<Props> = ({ navigation, route })
             </Text>
           </View>
         )}
-        
+
         <TouchableOpacity
           style={[styles.continueButton, { backgroundColor: success ? theme.colors.success : theme.colors.primary }]}
           onPress={handleContinue}

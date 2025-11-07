@@ -53,7 +53,7 @@ export const safeCloseDatabase = async (
       isDatabaseOpen = true;
     } catch (testError) {
       const testErrorMsg = testError instanceof Error ? testError.message : String(testError);
-      
+
       if (
         testErrorMsg.includes('database is not open') ||
         testErrorMsg.includes('database is closed') ||
@@ -77,7 +77,7 @@ export const safeCloseDatabase = async (
     try {
       const result = await withTimeout(db.executeSql('PRAGMA journal_mode'), TIMEOUTS.QUERY_SHORT);
       // If we can execute this, the database is responsive
-      
+
       // Try to detect if we're in a transaction by attempting a savepoint
       try {
         await withTimeout(db.executeSql('SAVEPOINT test_transaction_state'), TIMEOUTS.QUERY_SHORT);
@@ -94,7 +94,7 @@ export const safeCloseDatabase = async (
     // If we detected an active transaction, try to clean it up
     if (inTransaction) {
       console.log('🔄 Active transaction detected, attempting cleanup...');
-      
+
       // Try multiple rollback attempts with increasing delays
       const maxAttempts = 3;
       for (let attempt = 1; attempt <= maxAttempts; attempt++) {
@@ -104,13 +104,13 @@ export const safeCloseDatabase = async (
           break;
         } catch (rollbackError) {
           const errorMsg = rollbackError instanceof Error ? rollbackError.message : String(rollbackError);
-          
+
           if (errorMsg.includes('no transaction is active')) {
             // Transaction was already completed
             console.log('✅ No active transaction found');
             break;
           }
-          
+
           if (attempt === maxAttempts) {
             console.log(`⚠️ Could not rollback transaction after ${maxAttempts} attempts:`, errorMsg);
           } else {
@@ -128,10 +128,10 @@ export const safeCloseDatabase = async (
     // Now try to close the database with timeout
     await withTimeout(db.close(), TIMEOUTS.CONNECTION);
     console.log('✅ Database closed safely');
-    
+
   } catch (closeError) {
     const errorMsg = closeError instanceof Error ? closeError.message : String(closeError);
-    
+
     // Filter out expected/harmless errors and categorize them properly
     if (
       errorMsg.includes('database is closed') ||
@@ -176,35 +176,35 @@ export const ensureDatabaseCopied = async (): Promise<void> => {
         console.log('Android: Attempting to copy database...');
         console.log('Looking for:', `databases/${DATABASE_CONFIG.NAME}`);
         console.log('Target path:', databasePath);
-        
+
         try {
           // Try to list all assets to see what's available
           console.log('Attempting to read Android assets directory...');
           // Note: RNFS doesn't support listing Android assets directly
           // We'll try different paths to help debug
-          
+
           // Try the expected path first
           await RNFS.copyFileAssets(`databases/${DATABASE_CONFIG.NAME}`, databasePath);
         } catch (androidError) {
           console.error('Android copy failed with databases/ path:', androidError);
-          
+
           // Try alternative paths
           console.log('Trying alternative paths...');
-          
+
           try {
             // Try without subdirectory
             console.log('Trying root assets path:', DATABASE_CONFIG.NAME);
             await RNFS.copyFileAssets(DATABASE_CONFIG.NAME, databasePath);
           } catch (rootError) {
             console.error('Root path also failed:', rootError);
-            
+
             try {
               // Try with database (singular)
               console.log('Trying database/ (singular) path:', `database/${DATABASE_CONFIG.NAME}`);
               await RNFS.copyFileAssets(`database/${DATABASE_CONFIG.NAME}`, databasePath);
             } catch (singularError) {
               console.error('Singular database/ path failed:', singularError);
-              
+
               // Try custom directory
               try {
                 console.log('Trying custom/ path:', `custom/${DATABASE_CONFIG.NAME}`);
@@ -258,11 +258,11 @@ export const initializeDatabase = async (): Promise<void> => {
         Platform.OS === 'ios'
           ? RNFS.DocumentDirectoryPath
           : RNFS.ExternalDirectoryPath || RNFS.DocumentDirectoryPath;
-      
+
       const databasePath = `${documentsPath}/${DATABASE_CONFIG.NAME}`;
 
       // Open the database using absolute path for Android, location for iOS
-      const databaseConfig = Platform.OS === 'ios' 
+      const databaseConfig = Platform.OS === 'ios'
         ? {
             name: DATABASE_CONFIG.NAME,
             location: 'Documents',

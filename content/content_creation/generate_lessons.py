@@ -26,37 +26,58 @@ def initialize_failure_log(log_path: str = None) -> str:
     if log_path is None:
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         log_path = f"generation_failures_{timestamp}.csv"
-    
+
     # Create or overwrite the CSV file with headers
-    with open(log_path, 'w', newline='', encoding='utf-8') as csvfile:
+    with open(log_path, "w", newline="", encoding="utf-8") as csvfile:
         writer = csv.writer(csvfile)
-        writer.writerow(['timestamp', 'language', 'level', 'topic', 'lesson_kind', 
-                        'lesson_id', 'exercise_index', 'error_type', 'error_message', 
-                        'exercise_data'])
-    
+        writer.writerow(
+            [
+                "timestamp",
+                "language",
+                "level",
+                "topic",
+                "lesson_kind",
+                "lesson_id",
+                "exercise_index",
+                "error_type",
+                "error_message",
+                "exercise_data",
+            ]
+        )
+
     return log_path
 
 
-def log_failure(log_path: str, language: str, level: str, topic: str, 
-                lesson_kind: str, lesson_id: str, exercise_index: int = None,
-                error_type: str = None, error_message: str = None, 
-                exercise_data: str = None):
+def log_failure(
+    log_path: str,
+    language: str,
+    level: str,
+    topic: str,
+    lesson_kind: str,
+    lesson_id: str,
+    exercise_index: int = None,
+    error_type: str = None,
+    error_message: str = None,
+    exercise_data: str = None,
+):
     """Log a failure to the CSV file (thread-safe)."""
     with _log_lock:
-        with open(log_path, 'a', newline='', encoding='utf-8') as csvfile:
+        with open(log_path, "a", newline="", encoding="utf-8") as csvfile:
             writer = csv.writer(csvfile)
-            writer.writerow([
-                datetime.now().isoformat(),
-                language,
-                level,
-                topic,
-                lesson_kind,
-                lesson_id,
-                exercise_index if exercise_index is not None else 'N/A',
-                error_type if error_type else 'Unknown',
-                error_message if error_message else 'No message',
-                exercise_data if exercise_data else 'No data'
-            ])
+            writer.writerow(
+                [
+                    datetime.now().isoformat(),
+                    language,
+                    level,
+                    topic,
+                    lesson_kind,
+                    lesson_id,
+                    exercise_index if exercise_index is not None else "N/A",
+                    error_type if error_type else "Unknown",
+                    error_message if error_message else "No message",
+                    exercise_data if exercise_data else "No data",
+                ]
+            )
 
 
 def clean_text(text: str) -> str:
@@ -129,9 +150,18 @@ def process_response(
                             error_msg = f"Skipping conversation turn with empty speaker or message in exercise {idx + 1}"
                             print(error_msg)
                             if log_path:
-                                log_failure(log_path, language, level, topic, lesson_kind, 
-                                          lesson_id, idx, "ValidationError", error_msg,
-                                          json.dumps(conv))
+                                log_failure(
+                                    log_path,
+                                    language,
+                                    level,
+                                    topic,
+                                    lesson_kind,
+                                    lesson_id,
+                                    idx,
+                                    "ValidationError",
+                                    error_msg,
+                                    json.dumps(conv),
+                                )
                             continue
 
                         cleaned_conversations.append(
@@ -146,9 +176,18 @@ def process_response(
                         error_msg = f"No valid conversation turns found for exercise {idx + 1}, skipping"
                         print(error_msg)
                         if log_path:
-                            log_failure(log_path, language, level, topic, lesson_kind, 
-                                      lesson_id, idx, "ValidationError", error_msg,
-                                      json.dumps(exercise))
+                            log_failure(
+                                log_path,
+                                language,
+                                level,
+                                topic,
+                                lesson_kind,
+                                lesson_id,
+                                idx,
+                                "ValidationError",
+                                error_msg,
+                                json.dumps(exercise),
+                            )
                         continue
 
                     summary = clean_text(exercise["conversation_summary"])
@@ -156,9 +195,18 @@ def process_response(
                         error_msg = f"Empty summary for conversation exercise {idx + 1}, skipping"
                         print(error_msg)
                         if log_path:
-                            log_failure(log_path, language, level, topic, lesson_kind, 
-                                      lesson_id, idx, "ValidationError", error_msg,
-                                      json.dumps(exercise))
+                            log_failure(
+                                log_path,
+                                language,
+                                level,
+                                topic,
+                                lesson_kind,
+                                lesson_id,
+                                idx,
+                                "ValidationError",
+                                error_msg,
+                                json.dumps(exercise),
+                            )
                         continue
 
                     db.add_conversation_exercise(
@@ -185,9 +233,18 @@ def process_response(
                                 error_msg = f"Skipping pair with empty English or {language} word"
                                 print(error_msg)
                                 if log_path:
-                                    log_failure(log_path, language, level, topic, lesson_kind, 
-                                              lesson_id, 0, "ValidationError", error_msg,
-                                              json.dumps(pair_exercise))
+                                    log_failure(
+                                        log_path,
+                                        language,
+                                        level,
+                                        topic,
+                                        lesson_kind,
+                                        lesson_id,
+                                        0,
+                                        "ValidationError",
+                                        error_msg,
+                                        json.dumps(pair_exercise),
+                                    )
                                 continue
 
                             cleaned_pairs.append(
@@ -196,12 +253,23 @@ def process_response(
 
                         # Only insert if we have valid pairs
                         if not cleaned_pairs:
-                            error_msg = f"No valid word pairs found, skipping batch insertion"
+                            error_msg = (
+                                f"No valid word pairs found, skipping batch insertion"
+                            )
                             print(error_msg)
                             if log_path:
-                                log_failure(log_path, language, level, topic, lesson_kind, 
-                                          lesson_id, 0, "ValidationError", error_msg,
-                                          json.dumps(cleaned_response))
+                                log_failure(
+                                    log_path,
+                                    language,
+                                    level,
+                                    topic,
+                                    lesson_kind,
+                                    lesson_id,
+                                    0,
+                                    "ValidationError",
+                                    error_msg,
+                                    json.dumps(cleaned_response),
+                                )
                             break
 
                         if (
@@ -210,9 +278,18 @@ def process_response(
                             error_msg = f"Too few valid pairs ({len(cleaned_pairs)}), skipping batch insertion"
                             print(error_msg)
                             if log_path:
-                                log_failure(log_path, language, level, topic, lesson_kind, 
-                                          lesson_id, 0, "ValidationError", error_msg,
-                                          json.dumps(cleaned_pairs))
+                                log_failure(
+                                    log_path,
+                                    language,
+                                    level,
+                                    topic,
+                                    lesson_kind,
+                                    lesson_id,
+                                    0,
+                                    "ValidationError",
+                                    error_msg,
+                                    json.dumps(cleaned_pairs),
+                                )
                             break
 
                         # Add all pairs as a single exercise
@@ -237,9 +314,18 @@ def process_response(
                         error_msg = f"Skipping translation exercise {idx + 1} with empty English or {language} sentence"
                         print(error_msg)
                         if log_path:
-                            log_failure(log_path, language, level, topic, lesson_kind, 
-                                      lesson_id, idx, "ValidationError", error_msg,
-                                      json.dumps(exercise))
+                            log_failure(
+                                log_path,
+                                language,
+                                level,
+                                topic,
+                                lesson_kind,
+                                lesson_id,
+                                idx,
+                                "ValidationError",
+                                error_msg,
+                                json.dumps(exercise),
+                            )
                         continue
 
                     # Check for reasonable sentence length (not just single words)
@@ -250,9 +336,18 @@ def process_response(
                         error_msg = f"Skipping translation exercise {idx + 1} with sentences that are too short"
                         print(error_msg)
                         if log_path:
-                            log_failure(log_path, language, level, topic, lesson_kind, 
-                                      lesson_id, idx, "ValidationError", error_msg,
-                                      json.dumps(exercise))
+                            log_failure(
+                                log_path,
+                                language,
+                                level,
+                                topic,
+                                lesson_kind,
+                                lesson_id,
+                                idx,
+                                "ValidationError",
+                                error_msg,
+                                json.dumps(exercise),
+                            )
                         continue
 
                     db.add_translation_exercise(
@@ -275,13 +370,28 @@ def process_response(
                     translation = clean_text(exercise["translation"])
 
                     # Additional validation for database insertion
-                    if not sentence or not correct_answer or not incorrect_1 or not incorrect_2 or not translation:
+                    if (
+                        not sentence
+                        or not correct_answer
+                        or not incorrect_1
+                        or not incorrect_2
+                        or not translation
+                    ):
                         error_msg = f"Skipping fill-in-blank exercise {idx + 1} with empty sentence, answer options, or translation"
                         print(error_msg)
                         if log_path:
-                            log_failure(log_path, language, level, topic, lesson_kind, 
-                                      lesson_id, idx, "ValidationError", error_msg,
-                                      json.dumps(exercise))
+                            log_failure(
+                                log_path,
+                                language,
+                                level,
+                                topic,
+                                lesson_kind,
+                                lesson_id,
+                                idx,
+                                "ValidationError",
+                                error_msg,
+                                json.dumps(exercise),
+                            )
                         continue
 
                     # Validate blank position is an integer
@@ -289,9 +399,18 @@ def process_response(
                         error_msg = f"Skipping fill-in-blank exercise {idx + 1} with invalid blank_position"
                         print(error_msg)
                         if log_path:
-                            log_failure(log_path, language, level, topic, lesson_kind, 
-                                      lesson_id, idx, "ValidationError", error_msg,
-                                      json.dumps(exercise))
+                            log_failure(
+                                log_path,
+                                language,
+                                level,
+                                topic,
+                                lesson_kind,
+                                lesson_id,
+                                idx,
+                                "ValidationError",
+                                error_msg,
+                                json.dumps(exercise),
+                            )
                         continue
 
                     # Validate sentence contains exactly one blank
@@ -299,9 +418,18 @@ def process_response(
                         error_msg = f"Skipping fill-in-blank exercise {idx + 1} with incorrect number of blanks"
                         print(error_msg)
                         if log_path:
-                            log_failure(log_path, language, level, topic, lesson_kind, 
-                                      lesson_id, idx, "ValidationError", error_msg,
-                                      json.dumps(exercise))
+                            log_failure(
+                                log_path,
+                                language,
+                                level,
+                                topic,
+                                lesson_kind,
+                                lesson_id,
+                                idx,
+                                "ValidationError",
+                                error_msg,
+                                json.dumps(exercise),
+                            )
                         continue
 
                     db.add_fill_in_blank_exercise(
@@ -319,34 +447,54 @@ def process_response(
                     )
             except Exception as e:
                 import logging
+
                 error_msg = f"Error processing exercise {idx + 1} for {language}_{topic}_{level}_{lesson_id} in {lesson_kind}: {str(e)}"
                 logging.error(error_msg)
                 if log_path:
-                    log_failure(log_path, language, level, topic, lesson_kind, 
-                              lesson_id, idx, "ProcessingError", str(e),
-                              json.dumps(exercise) if 'exercise' in locals() else "No data")
+                    log_failure(
+                        log_path,
+                        language,
+                        level,
+                        topic,
+                        lesson_kind,
+                        lesson_id,
+                        idx,
+                        "ProcessingError",
+                        str(e),
+                        json.dumps(exercise) if "exercise" in locals() else "No data",
+                    )
                 continue
 
     except Exception as e:
         import logging
+
         error_msg = f"Error processing response for {language}_{topic}_{level}_{lesson_id} in {lesson_kind}: {str(e)}"
         logging.error(error_msg)
         if log_path:
-            log_failure(log_path, language, level, topic, lesson_kind, 
-                      lesson_id, None, "ResponseProcessingError", str(e),
-                      response[:500] if response else "No response")
+            log_failure(
+                log_path,
+                language,
+                level,
+                topic,
+                lesson_kind,
+                lesson_id,
+                None,
+                "ResponseProcessingError",
+                str(e),
+                response[:500] if response else "No response",
+            )
 
 
 def process_language_level_topic(args):
     """Worker function to process a single language-level-topic combination."""
     language, level, topic, model, db_loc, log_path = args
-    
+
     try:
         from .outlines_generator import generate_lessons_data_structured
-        
+
         # Create a separate database connection for this thread
         db = LanguageDB(db_loc)
-        
+
         try:
             # Use Outlines generation with shared model
             for (
@@ -369,16 +517,28 @@ def process_language_level_topic(args):
                 )
         finally:
             db.close()
-            
+
         return f"Completed: {language}-{level}-{topic}"
-        
+
     except Exception as e:
         import logging
+
         error_msg = f"Error processing {language}_{level}_{topic}: {str(e)}"
         logging.error(error_msg)
-        log_failure(log_path, language, level, topic, "ALL", 
-                  "N/A", None, "GenerationError", str(e), "N/A")
+        log_failure(
+            log_path,
+            language,
+            level,
+            topic,
+            "ALL",
+            "N/A",
+            None,
+            "GenerationError",
+            str(e),
+            "N/A",
+        )
         import traceback
+
         traceback.print_exc()
         return f"Failed: {language}-{level}-{topic}: {str(e)}"
 
@@ -394,15 +554,15 @@ def populate_database(db_loc: str = None, max_workers: int = 5):
 
     # Get the repository root directory (go up from content/content_creation/)
     script_dir = Path(__file__).parent.parent.parent  # repo root directory
-    
+
     # Set default database location relative to repo root
     if db_loc is None:
         db_loc = str(script_dir / "database" / "languageLearningDatabase.db")
-    
+
     # Initialize failure log
     log_path = initialize_failure_log()
     print(f"Failure log initialized at: {log_path}")
-    
+
     # Read configuration files relative to content directory
     config_dir = script_dir / "content" / "generation_data"
     with open(config_dir / "topics.txt", "r") as file:
@@ -431,8 +591,10 @@ def populate_database(db_loc: str = None, max_workers: int = 5):
     print(f"Processing {total} combinations with {max_workers} parallel workers...")
 
     # Prepare arguments for worker function
-    worker_args = [(lang, level, topic, model, db_loc, log_path) 
-                   for lang, level, topic in combinations]
+    worker_args = [
+        (lang, level, topic, model, db_loc, log_path)
+        for lang, level, topic in combinations
+    ]
 
     # Use ThreadPoolExecutor for parallel processing
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
@@ -442,7 +604,7 @@ def populate_database(db_loc: str = None, max_workers: int = 5):
                 executor.submit(process_language_level_topic, args): args[:3]
                 for args in worker_args
             }
-            
+
             # Process completed tasks
             for future in as_completed(future_to_combination):
                 combination = future_to_combination[future]
@@ -458,10 +620,10 @@ def populate_database(db_loc: str = None, max_workers: int = 5):
                     pbar.update(1)
         print("Database generation complete!")
         print(f"\nFailure log saved to: {log_path}")
-        
+
         # Print a summary of failures
         try:
-            with open(log_path, 'r', newline='', encoding='utf-8') as csvfile:
+            with open(log_path, "r", newline="", encoding="utf-8") as csvfile:
                 reader = csv.reader(csvfile)
                 next(reader)  # Skip header
                 failures = list(reader)

@@ -276,15 +276,15 @@ export const getUserContext = async (): Promise<{
             [],
             TIMEOUTS.QUERY_MEDIUM
           );
-          language = languageResult && languageResult.rows && languageResult.rows.length > 0 
-            ? languageResult.rows.item(0).language 
+          language = languageResult && languageResult.rows && languageResult.rows.length > 0
+            ? languageResult.rows.item(0).language
             : 'English';
         } catch (error) {
           console.error('Failed to get default language:', error);
           language = 'English';
         }
       }
-      
+
       if (!difficulty) {
         try {
           const difficultyResult = await executeSqlSingle(
@@ -316,7 +316,7 @@ export const getUserContext = async (): Promise<{
     try {
       let language = 'English';
       let difficulty = 'Beginner';
-      
+
       try {
         const languageResult = await executeSqlSingle(SQL_QUERIES.GET_LANGUAGES, [], TIMEOUTS.QUERY_MEDIUM);
         if (languageResult && languageResult.rows && languageResult.rows.length > 0) {
@@ -325,7 +325,7 @@ export const getUserContext = async (): Promise<{
       } catch (langError) {
         console.error('Failed to get fallback language:', langError);
       }
-      
+
       try {
         const difficultyResult = await executeSqlSingle(SQL_QUERIES.GET_DIFFICULTIES, [], TIMEOUTS.QUERY_MEDIUM);
         if (difficultyResult && difficultyResult.rows && difficultyResult.rows.length > 0) {
@@ -334,7 +334,7 @@ export const getUserContext = async (): Promise<{
       } catch (diffError) {
         console.error('Failed to get fallback difficulty:', diffError);
       }
-      
+
       return {
         username: 'default_user',
         userId: null,
@@ -375,7 +375,7 @@ export const resetUserData = async (username: string): Promise<void> => {
       TIMEOUTS.QUERY_MEDIUM
     );
 
-    // Delete user settings 
+    // Delete user settings
     await executeSqlSingle(
       'DELETE FROM user_settings WHERE user_id = ?',
       [userId],

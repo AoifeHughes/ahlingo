@@ -7,18 +7,18 @@ interface ProgressRingSimpleProps {
   size?: number;
 }
 
-const ProgressRingSimple: React.FC<ProgressRingSimpleProps> = ({ 
-  percentage, 
-  size = 60 
+const ProgressRingSimple: React.FC<ProgressRingSimpleProps> = ({
+  percentage,
+  size = 60
 }) => {
   const { theme } = useTheme();
-  
+
   return (
-    <View 
+    <View
       style={[
-        styles.container, 
-        { 
-          width: size, 
+        styles.container,
+        {
+          width: size,
           height: size,
           borderRadius: size / 2,
           backgroundColor: theme.colors.surface,

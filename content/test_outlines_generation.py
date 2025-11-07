@@ -8,7 +8,9 @@ import os
 import logging
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -30,7 +32,11 @@ def test_generation():
         # Test generation for each exercise type
         lesson_kinds = ["conversations"]  # Start with just conversations for testing
 
-        for lesson_kind, lesson_id, structured_response in generate_lessons_data_structured(
+        for (
+            lesson_kind,
+            lesson_id,
+            structured_response,
+        ) in generate_lessons_data_structured(
             language=language,
             level=level,
             topic=topic,

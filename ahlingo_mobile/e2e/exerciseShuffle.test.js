@@ -64,10 +64,10 @@ describe('Exercise Shuffle Flow', () => {
     // This test would need to complete all 5 exercises
     // For now, we'll test navigation back from shuffle
     await element(by.id('exercise-exercise-shuffle')).tap();
-    
+
     // Go back
     await device.pressBack();
-    
+
     // Should be back on main menu
     await expect(element(by.id('app-title'))).toBeVisible();
   });

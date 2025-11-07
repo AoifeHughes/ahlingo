@@ -10,7 +10,7 @@ interface UseLocalModelsReturn {
   downloadProgress: Record<string, LocalModelDownloadProgress>;
   isLoadingLocalModels: boolean;
   storageUsage: { totalSize: number; modelCount: number };
-  
+
   // Functions
   loadLocalModels: () => Promise<void>;
   downloadModel: (modelId: string) => Promise<void>;
@@ -23,9 +23,9 @@ export const useLocalModels = (enableLocalModels: boolean): UseLocalModelsReturn
   const [downloadedModels, setDownloadedModels] = useState<LocalModel[]>([]);
   const [downloadProgress, setDownloadProgress] = useState<Record<string, LocalModelDownloadProgress>>({});
   const [isLoadingLocalModels, setIsLoadingLocalModels] = useState(false);
-  const [storageUsage, setStorageUsage] = useState<{ totalSize: number; modelCount: number }>({ 
-    totalSize: 0, 
-    modelCount: 0 
+  const [storageUsage, setStorageUsage] = useState<{ totalSize: number; modelCount: number }>({
+    totalSize: 0,
+    modelCount: 0
   });
 
   // Use refs to ensure we always have the latest progress
@@ -49,7 +49,7 @@ export const useLocalModels = (enableLocalModels: boolean): UseLocalModelsReturn
       const available = LocalLlamaService.getAvailableModels();
       const downloaded = await LocalLlamaService.getDownloadedModels();
       const usage = await LocalLlamaService.getStorageUsage();
-      
+
       setAvailableLocalModels(available);
       setDownloadedModels(downloaded);
       setStorageUsage(usage);
@@ -63,7 +63,7 @@ export const useLocalModels = (enableLocalModels: boolean): UseLocalModelsReturn
   const downloadModel = useCallback(async (modelId: string) => {
     try {
       console.log('🚀 Starting download for model:', modelId);
-      
+
       // Initialize progress state
       const initialProgress = { modelId, progress: 0, bytesWritten: 0, contentLength: 0 };
       setDownloadProgress(prev => ({
@@ -77,26 +77,26 @@ export const useLocalModels = (enableLocalModels: boolean): UseLocalModelsReturn
 
       await LocalLlamaService.downloadModel(modelId, (progressData) => {
         const now = Date.now();
-        
+
         console.log('🔄 Settings received progress:', {
           modelId: progressData.modelId,
           percentage: Math.round(progressData.progress * 100),
           bytes: `${progressData.bytesWritten}/${progressData.contentLength}`,
           timestamp: now
         });
-        
+
         // Always update the ref immediately
         downloadProgressRef.current[modelId] = progressData;
-        
+
         // But throttle state updates to prevent excessive renders
         if (now - lastUpdateTime >= updateThrottle || progressData.progress === 1) {
           lastUpdateTime = now;
-          
+
           console.log('📊 Updating UI with progress:', {
             modelId: progressData.modelId,
             percentage: Math.round(progressData.progress * 100),
           });
-          
+
           setDownloadProgress(prev => ({
             ...prev,
             [modelId]: progressData
@@ -105,10 +105,10 @@ export const useLocalModels = (enableLocalModels: boolean): UseLocalModelsReturn
       });
 
       console.log('✅ Download completed for model:', modelId);
-      
+
       // Refresh models list
       await loadLocalModels();
-      
+
       // Clear progress
       setDownloadProgress(prev => {
         const newProgress = { ...prev };
@@ -120,7 +120,7 @@ export const useLocalModels = (enableLocalModels: boolean): UseLocalModelsReturn
     } catch (error) {
       console.error('❌ Failed to download model:', error);
       Alert.alert('Error', `Failed to download model: ${error instanceof Error ? error.message : 'Unknown error'}`);
-      
+
       // Clear progress on error
       setDownloadProgress(prev => {
         const newProgress = { ...prev };
@@ -165,7 +165,7 @@ export const useLocalModels = (enableLocalModels: boolean): UseLocalModelsReturn
     downloadProgress,
     isLoadingLocalModels,
     storageUsage,
-    
+
     // Functions
     loadLocalModels,
     downloadModel,

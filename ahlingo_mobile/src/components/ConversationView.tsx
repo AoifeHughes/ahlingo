@@ -15,7 +15,7 @@ interface ConversationViewProps {
 
 const ConversationView: React.FC<ConversationViewProps> = ({ messages }) => {
   const { theme } = useTheme();
-  
+
   // Create a mapping of speakers to determine left/right alignment
   const speakers = [...new Set(messages.map(msg => msg.speaker))];
   const speakerAlignments = new Map<string, boolean>();

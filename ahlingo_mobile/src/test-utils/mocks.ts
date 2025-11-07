@@ -200,7 +200,7 @@ export const resetAllMocks = () => {
       mock.mockClear();
     }
   });
-  
+
   Object.values(mockNavigation).forEach(mock => {
     if (jest.isMockFunction(mock)) {
       mock.mockClear();

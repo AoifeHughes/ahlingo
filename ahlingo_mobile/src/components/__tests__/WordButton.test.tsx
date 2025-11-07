@@ -94,7 +94,7 @@ describe('WordButton', () => {
       <WordButton {...defaultProps} word="bonjour" index={5} />
     );
     expect(getByText('bonjour')).toBeTruthy();
-    
+
     const button = getByText('bonjour');
     fireEvent.press(button);
     expect(mockOnPress).toHaveBeenCalledWith('bonjour', 5);

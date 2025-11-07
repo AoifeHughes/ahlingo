@@ -9,6 +9,7 @@ from typing import List, Dict, Any
 import uuid
 import json
 import logging
+
 try:
     from .models import ConversationExercise, create_pair_schema
 except ImportError:
@@ -41,22 +42,26 @@ def prepare_prompt(prompt: str) -> str:
 def clean_model_response(response: str) -> str:
     """Clean model response by removing <think> blocks and other artifacts."""
     import re
-    
+
     # Remove <think>...</think> blocks (including multiline)
-    response = re.sub(r'<think>.*?</think>', '', response, flags=re.DOTALL | re.IGNORECASE)
-    
+    response = re.sub(
+        r"<think>.*?</think>", "", response, flags=re.DOTALL | re.IGNORECASE
+    )
+
     # Remove any leading/trailing whitespace
     response = response.strip()
-    
+
     return response
 
 
-def debug_show_error(prompt: str, response: str, error: str, context: str = "Generation"):
+def debug_show_error(
+    prompt: str, response: str, error: str, context: str = "Generation"
+):
     """Show debug information for errors and pause for user input if debug mode is enabled."""
     if MODEL_CONFIG.get("debug", False):
-        print("\n" + "="*80)
+        print("\n" + "=" * 80)
         print(f"🚨 DEBUG ERROR: {context}")
-        print("="*80)
+        print("=" * 80)
         print(f"\n❌ ERROR: {error}")
         print("\n📝 PROMPT SENT TO MODEL:")
         print("-" * 40)
@@ -74,7 +79,7 @@ def debug_show_error(prompt: str, response: str, error: str, context: str = "Gen
             print(f"  Last 100 chars: {response[-100:]!r}")
         else:
             print("  ⚠️  RESPONSE IS EMPTY OR WHITESPACE ONLY!")
-        print("\n" + "="*80)
+        print("\n" + "=" * 80)
         input("🔍 Press ENTER to continue after error...")
         print()
 
@@ -95,7 +100,7 @@ def setup_outlines_model():
             base_url=MODEL_CONFIG["base_url"],
             api_key=MODEL_CONFIG["api_key"],
         )
-        
+
         # Get the first available model from the server
         try:
             models = client.models.list()
@@ -116,7 +121,7 @@ def setup_outlines_model():
                     continue
             else:
                 raise RuntimeError("No accessible models found")
-        
+
         # Create Outlines model with specific model name
         model = outlines.models.OpenAI(client, model_name=model_name)
         return model
@@ -138,10 +143,10 @@ def format_examples_for_prompt(examples: List[Dict], max_examples: int = 2) -> s
     """Format examples for inclusion in the prompt as a JSON array."""
     if not examples:
         return ""
-    
+
     # Take only the first few examples to avoid overwhelming the prompt
     limited_examples = examples[:max_examples]
-    
+
     # Format as a proper JSON array to match expected output format
     return json.dumps(limited_examples, ensure_ascii=False, indent=2)
 
@@ -178,33 +183,43 @@ Avoid repetitive patterns. Focus on practical situations related to {topic}."""
             formatted_examples = format_examples_for_prompt(examples)
             examples_context = f"\n\nReference examples (for structure only):\n{formatted_examples}\n\nNow generate NEW conversations for the topic: {topic}"
 
-    full_prompt = system_content + examples_context + "\n\nReturn a JSON array of conversation objects."
-    
+    full_prompt = (
+        system_content
+        + examples_context
+        + "\n\nReturn a JSON array of conversation objects."
+    )
+
     # Use text generator for JSON output
     generator = outlines.Generator(model)
     prepared_prompt = prepare_prompt(full_prompt)
     result = generator(prepared_prompt)
-    
+
     # Parse JSON response and convert to Pydantic models
     if isinstance(result, str):
         # Clean the response by removing <think> blocks
         cleaned_result = clean_model_response(result)
-        
+
         try:
             import re
+
             # Look for JSON array in the cleaned response
-            json_match = re.search(r'\[.*\]', cleaned_result, re.DOTALL)
+            json_match = re.search(r"\[.*\]", cleaned_result, re.DOTALL)
             if json_match:
                 result_data = json.loads(json_match.group())
             else:
                 result_data = json.loads(cleaned_result)
         except json.JSONDecodeError as e:
             logging.warning(f"Failed to parse JSON response: {e}")
-            debug_show_error(prepared_prompt, str(result), f"JSON Parse Error: {e}\nOriginal: {result!r}\nCleaned: {cleaned_result!r}", f"Conversation Generation ({language}-{level}-{topic})")
+            debug_show_error(
+                prepared_prompt,
+                str(result),
+                f"JSON Parse Error: {e}\nOriginal: {result!r}\nCleaned: {cleaned_result!r}",
+                f"Conversation Generation ({language}-{level}-{topic})",
+            )
             return []
     else:
         result_data = result
-    
+
     return [ConversationExercise(**item) for item in result_data]
 
 
@@ -238,33 +253,43 @@ Create EXACTLY 5 word pairs at {level} level:
             formatted_examples = format_examples_for_prompt(examples)
             examples_context = f"\n\nReference examples (for format only):\n{formatted_examples}\n\nNow generate 5 NEW word pairs for the topic: {topic}"
 
-    full_prompt = system_content + examples_context + "\n\nReturn a JSON array of word pair objects."
-    
+    full_prompt = (
+        system_content
+        + examples_context
+        + "\n\nReturn a JSON array of word pair objects."
+    )
+
     # Use text generator for JSON output
     generator = outlines.Generator(model)
     prepared_prompt = prepare_prompt(full_prompt)
     result = generator(prepared_prompt)
-    
+
     # Parse JSON response and convert to Pydantic models
     if isinstance(result, str):
         # Clean the response by removing <think> blocks
         cleaned_result = clean_model_response(result)
-        
+
         try:
             import re
+
             # Look for JSON array in the cleaned response
-            json_match = re.search(r'\[.*\]', cleaned_result, re.DOTALL)
+            json_match = re.search(r"\[.*\]", cleaned_result, re.DOTALL)
             if json_match:
                 result_data = json.loads(json_match.group())
             else:
                 result_data = json.loads(cleaned_result)
         except json.JSONDecodeError as e:
             logging.warning(f"Failed to parse JSON response: {e}")
-            debug_show_error(prepared_prompt, str(result), f"JSON Parse Error: {e}\nOriginal: {result!r}\nCleaned: {cleaned_result!r}", f"Pairs Generation ({language}-{level}-{topic})")
+            debug_show_error(
+                prepared_prompt,
+                str(result),
+                f"JSON Parse Error: {e}\nOriginal: {result!r}\nCleaned: {cleaned_result!r}",
+                f"Pairs Generation ({language}-{level}-{topic})",
+            )
             return []
     else:
         result_data = result
-    
+
     # Create dynamic model and validate
     WordPairModel = create_dynamic_word_pair_model(language)
     return [WordPairModel(**item) for item in result_data]
@@ -301,41 +326,53 @@ Create 5-8 sentence pairs at {level} level:
             formatted_examples = format_examples_for_prompt(examples)
             examples_context = f"\n\nReference examples (for format only):\n{formatted_examples}\n\nNow generate 5-8 NEW sentence translations for the topic: {topic}"
 
-    full_prompt = system_content + examples_context + "\n\nReturn a JSON array of translation pair objects."
-    
+    full_prompt = (
+        system_content
+        + examples_context
+        + "\n\nReturn a JSON array of translation pair objects."
+    )
+
     # Use text generator for JSON output
     generator = outlines.Generator(model)
     prepared_prompt = prepare_prompt(full_prompt)
     result = generator(prepared_prompt)
-    
+
     # Parse JSON response and convert to Pydantic models
     if isinstance(result, str):
         # Clean the response by removing <think> blocks
         cleaned_result = clean_model_response(result)
-        
+
         try:
             import re
+
             # Look for JSON array in the cleaned response
-            json_match = re.search(r'\[.*\]', cleaned_result, re.DOTALL)
+            json_match = re.search(r"\[.*\]", cleaned_result, re.DOTALL)
             if json_match:
                 result_data = json.loads(json_match.group())
             else:
                 result_data = json.loads(cleaned_result)
         except json.JSONDecodeError as e:
             logging.warning(f"Failed to parse JSON response: {e}")
-            debug_show_error(prepared_prompt, str(result), f"JSON Parse Error: {e}\nOriginal: {result!r}\nCleaned: {cleaned_result!r}", f"Translation Generation ({language}-{level}-{topic})")
+            debug_show_error(
+                prepared_prompt,
+                str(result),
+                f"JSON Parse Error: {e}\nOriginal: {result!r}\nCleaned: {cleaned_result!r}",
+                f"Translation Generation ({language}-{level}-{topic})",
+            )
             return []
     else:
         result_data = result
-    
+
     # Create dynamic model and validate
     TranslationPairModel = create_dynamic_translation_pair_model(language)
     return [TranslationPairModel(**item) for item in result_data]
 
 
-def generate_complete_sentences_bulk(model, language: str, level: str, topic: str, count: int = 5):
+def generate_complete_sentences_bulk(
+    model, language: str, level: str, topic: str, count: int = 5
+):
     """Generate multiple complete sentences at once for efficiency."""
-    
+
     system_content = f"""You are a {language} language learning tool. Generate {count} different, complete, grammatically correct {language} sentences about "{topic}" at {level} level.
 
 REQUIREMENTS:
@@ -358,74 +395,87 @@ Examples of good sentences:
 Generate {count} different sentences that follow these guidelines, each with its English translation."""
 
     # Use text generator for JSON output
-    full_prompt = system_content + f"\n\nReturn a JSON array of exactly {count} sentence objects, each with 'sentence' and 'translation' fields."
-    
+    full_prompt = (
+        system_content
+        + f"\n\nReturn a JSON array of exactly {count} sentence objects, each with 'sentence' and 'translation' fields."
+    )
+
     generator = outlines.Generator(model)
     prepared_prompt = prepare_prompt(full_prompt)
     result = generator(prepared_prompt)
-    
+
     # Parse JSON response
     if isinstance(result, str):
         # Clean the response by removing <think> blocks
         cleaned_result = clean_model_response(result)
-        
+
         try:
             import re
+
             # Look for JSON array in the cleaned response
-            json_match = re.search(r'\[.*\]', cleaned_result, re.DOTALL)
+            json_match = re.search(r"\[.*\]", cleaned_result, re.DOTALL)
             if json_match:
                 result_data = json.loads(json_match.group())
             else:
                 result_data = json.loads(cleaned_result)
         except json.JSONDecodeError as e:
             logging.warning(f"Failed to parse JSON response: {e}")
-            debug_show_error(prepared_prompt, str(result), f"JSON Parse Error: {e}\nOriginal: {result!r}\nCleaned: {cleaned_result!r}", f"Bulk Sentence Generation ({language}-{level}-{topic}, count={count})")
+            debug_show_error(
+                prepared_prompt,
+                str(result),
+                f"JSON Parse Error: {e}\nOriginal: {result!r}\nCleaned: {cleaned_result!r}",
+                f"Bulk Sentence Generation ({language}-{level}-{topic}, count={count})",
+            )
             return []
     else:
         result_data = result
-    
+
     return result_data
 
 
 def generate_complete_sentence(model, language: str, level: str, topic: str):
     """Generate a single complete sentence (wrapper for bulk generation)."""
-    bulk_result = generate_complete_sentences_bulk(model, language, level, topic, count=1)
+    bulk_result = generate_complete_sentences_bulk(
+        model, language, level, topic, count=1
+    )
     return bulk_result[0] if bulk_result else {"sentence": "", "translation": ""}
 
 
 def select_word_to_remove(sentence: str, language: str = "French"):
     """Select a suitable word to remove from the sentence using heuristics instead of hardcoded lists."""
     words = sentence.split()
-    
+
     # Find suitable words using language-agnostic heuristics
     suitable_words = []
     for i, word in enumerate(words):
         # Clean word of punctuation for checking
-        clean_word = word.lower().rstrip('.,!?;:')
-        
+        clean_word = word.lower().rstrip(".,!?;:")
+
         # Skip very short words (likely articles/prepositions)
         if len(clean_word) <= 2:
             continue
-            
+
         # Skip words that are all punctuation
         if not any(c.isalpha() for c in clean_word):
             continue
-            
+
         # Prefer longer, content-bearing words
         suitable_words.append((i, word, len(clean_word)))
-    
+
     # If no suitable words found, use the longest word
     if not suitable_words:
-        longest_word = max(words, key=lambda w: len(w.rstrip('.,!?;:')))
+        longest_word = max(words, key=lambda w: len(w.rstrip(".,!?;:")))
         return words.index(longest_word), longest_word
-    
+
     # Sort by: middle position preference, then word length (longer better)
-    suitable_words.sort(key=lambda x: (abs(x[0] - len(words)//2), -x[2]))
-    
+    suitable_words.sort(key=lambda x: (abs(x[0] - len(words) // 2), -x[2]))
+
     return suitable_words[0][0], suitable_words[0][1]
 
 
-def generate_incorrect_options(model, sentence: str, correct_answer: str, language: str, level: str):
+def generate_incorrect_options(
+    model, sentence: str, correct_answer: str, language: str, level: str
+):
     """Generate 2 incorrect options for the fill-in-blank exercise."""
     system_content = f"""You are a {language} language learning tool. Given a sentence and the correct answer, generate 2 clearly incorrect alternatives.
 
@@ -451,33 +501,44 @@ Bad alternatives: "voiture" (same as correct answer!), "auto" (too similar to co
 Generate 2 alternatives (1-3 words each) that are obviously wrong in this context and different from "{correct_answer}"."""
 
     # Use text generator for JSON output
-    full_prompt = system_content + "\n\nReturn a JSON object with 'incorrect_1' and 'incorrect_2' fields containing the two incorrect alternatives."
-    
+    full_prompt = (
+        system_content
+        + "\n\nReturn a JSON object with 'incorrect_1' and 'incorrect_2' fields containing the two incorrect alternatives."
+    )
+
     generator = outlines.Generator(model)
     prepared_prompt = prepare_prompt(full_prompt)
     result = generator(prepared_prompt)
-    
+
     # Parse JSON response
     if isinstance(result, str):
         # Clean the response by removing <think> blocks
         cleaned_result = clean_model_response(result)
-        
+
         try:
             import re
+
             # Look for JSON object in the cleaned response
-            json_match = re.search(r'\{.*\}', cleaned_result, re.DOTALL)
+            json_match = re.search(r"\{.*\}", cleaned_result, re.DOTALL)
             if json_match:
                 result_data = json.loads(json_match.group())
             else:
                 result_data = json.loads(cleaned_result)
         except json.JSONDecodeError as e:
             logging.warning(f"Failed to parse JSON response: {e}")
-            debug_show_error(prepared_prompt, str(result), f"JSON Parse Error: {e}\nOriginal: {result!r}\nCleaned: {cleaned_result!r}", f"Incorrect Options Generation ({language}-{level}, correct='{correct_answer}')")
+            debug_show_error(
+                prepared_prompt,
+                str(result),
+                f"JSON Parse Error: {e}\nOriginal: {result!r}\nCleaned: {cleaned_result!r}",
+                f"Incorrect Options Generation ({language}-{level}, correct='{correct_answer}')",
+            )
             return "error1", "error2"
     else:
         result_data = result
-    
-    return result_data.get("incorrect_1", "error1"), result_data.get("incorrect_2", "error2")
+
+    return result_data.get("incorrect_1", "error1"), result_data.get(
+        "incorrect_2", "error2"
+    )
 
 
 def generate_fill_in_blank_structured(model, language: str, level: str, topic: str):
@@ -527,43 +588,56 @@ CRITICAL: Each exercise's correct_answer, incorrect_1, and incorrect_2 must be t
     examples_context = ""
     try:
         from .assistants import default_fill_in_blank_assistants
+
         if language in default_fill_in_blank_assistants:
             examples_content = default_fill_in_blank_assistants[language]["content"]
             examples = parse_assistant_examples(examples_content)
             if examples:
-                formatted_examples = format_examples_for_prompt(examples, max_examples=2)
+                formatted_examples = format_examples_for_prompt(
+                    examples, max_examples=2
+                )
                 examples_context = f"\n\nReference examples (structure only):\n{formatted_examples}\n\nNow generate 5 NEW fill-in-blank exercises for: {topic}"
     except (ImportError, KeyError):
         # No examples available for this language, continue without them
         pass
 
-    full_prompt = system_content + examples_context + "\n\nReturn a JSON array of exactly 5 fill-in-blank exercise objects."
-    
+    full_prompt = (
+        system_content
+        + examples_context
+        + "\n\nReturn a JSON array of exactly 5 fill-in-blank exercise objects."
+    )
+
     # Use Outlines structured generation
     generator = outlines.Generator(model)
     prepared_prompt = prepare_prompt(full_prompt)
     result = generator(prepared_prompt)
-    
+
     # Parse JSON response and convert to Pydantic models
     if isinstance(result, str):
         # Clean the response by removing <think> blocks
         cleaned_result = clean_model_response(result)
-        
+
         try:
             import re
+
             # Look for JSON array in the cleaned response
-            json_match = re.search(r'\[.*\]', cleaned_result, re.DOTALL)
+            json_match = re.search(r"\[.*\]", cleaned_result, re.DOTALL)
             if json_match:
                 result_data = json.loads(json_match.group())
             else:
                 result_data = json.loads(cleaned_result)
         except json.JSONDecodeError as e:
             logging.warning(f"Failed to parse JSON response: {e}")
-            debug_show_error(prepared_prompt, str(result), f"JSON Parse Error: {e}\nOriginal: {result!r}\nCleaned: {cleaned_result!r}", f"Fill-in-Blank Structured Generation ({language}-{level}-{topic})")
+            debug_show_error(
+                prepared_prompt,
+                str(result),
+                f"JSON Parse Error: {e}\nOriginal: {result!r}\nCleaned: {cleaned_result!r}",
+                f"Fill-in-Blank Structured Generation ({language}-{level}-{topic})",
+            )
             return []
     else:
         result_data = result
-    
+
     # Validate and convert to Pydantic models
     exercises = []
     for i, exercise_data in enumerate(result_data):
@@ -572,17 +646,21 @@ CRITICAL: Each exercise's correct_answer, incorrect_1, and incorrect_2 must be t
             correct = exercise_data.get("correct_answer", "")
             incorrect1 = exercise_data.get("incorrect_1", "")
             incorrect2 = exercise_data.get("incorrect_2", "")
-            
+
             if len(set([correct, incorrect1, incorrect2])) != 3:
-                logging.warning(f"Skipping exercise {i+1} due to duplicate answers: correct='{correct}', incorrect1='{incorrect1}', incorrect2='{incorrect2}'")
+                logging.warning(
+                    f"Skipping exercise {i+1} due to duplicate answers: correct='{correct}', incorrect1='{incorrect1}', incorrect2='{incorrect2}'"
+                )
                 continue
-                
+
             exercise = FillInBlankExercise(**exercise_data)
             exercises.append(exercise)
         except Exception as e:
-            logging.warning(f"Error creating exercise {i+1}: {e}\nData: {exercise_data}")
+            logging.warning(
+                f"Error creating exercise {i+1}: {e}\nData: {exercise_data}"
+            )
             continue
-    
+
     return exercises
 
 
@@ -597,7 +675,12 @@ def generate_lessons_data_structured(
     level: str,
     topic: str,
     N_runs: int = 10,
-    lesson_kinds: List[str] = ["conversations", "pairs", "translations", "fill_in_blank"],
+    lesson_kinds: List[str] = [
+        "conversations",
+        "pairs",
+        "translations",
+        "fill_in_blank",
+    ],
     model=None,  # Allow passing model to reuse it
     max_retries: int = 5,
     log_path: str = None,
@@ -627,7 +710,7 @@ def generate_lessons_data_structured(
                     data = generators[lesson_kind](model, language, level, topic)
 
                     # Convert Pydantic models to dict for JSON serialization
-                    if hasattr(data, '__iter__') and not isinstance(data, (str, bytes)):
+                    if hasattr(data, "__iter__") and not isinstance(data, (str, bytes)):
                         # It's a list of models
                         data_dicts = [item.dict() for item in data]
                     else:
@@ -636,29 +719,43 @@ def generate_lessons_data_structured(
 
                     # Convert to JSON string to match your existing interface
                     json_response = json.dumps(data_dicts, ensure_ascii=False)
-                    
+
                     # Log success
-                    logging.info(f"Successfully generated {lesson_kind} for {language}-{level}-{topic} (attempt {attempt + 1})")
-                    
+                    logging.info(
+                        f"Successfully generated {lesson_kind} for {language}-{level}-{topic} (attempt {attempt + 1})"
+                    )
+
                     yield lesson_kind, lesson_id, json_response
                     break  # Success, exit retry loop
 
                 except Exception as e:
                     error_msg = f"Error generating {lesson_kind} for {language}-{level}-{topic} (attempt {attempt + 1}/{max_retries}): {e}"
                     logging.warning(error_msg)
-                    
+
                     if attempt == max_retries - 1:
-                        logging.error(f"Max retries reached for {lesson_kind} {language}-{level}-{topic}")
+                        logging.error(
+                            f"Max retries reached for {lesson_kind} {language}-{level}-{topic}"
+                        )
                         # Log to CSV if log_path is provided
                         if log_path:
                             try:
                                 from .generate_lessons import log_failure
                             except ImportError:
                                 from generate_lessons import log_failure
-                            log_failure(log_path, language, level, topic, lesson_kind,
-                                      lesson_id, None, "GenerationError", str(e), 
-                                      f"Failed after {max_retries} attempts")
+                            log_failure(
+                                log_path,
+                                language,
+                                level,
+                                topic,
+                                lesson_kind,
+                                lesson_id,
+                                None,
+                                "GenerationError",
+                                str(e),
+                                f"Failed after {max_retries} attempts",
+                            )
                         import traceback
+
                         traceback.print_exc()
                     continue
 
@@ -666,31 +763,49 @@ def generate_lessons_data_structured(
 def test_outlines_generation():
     """Test that Outlines is working with your setup."""
     import logging
-    
+
     # Configure logging for the test
-    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-    
+    logging.basicConfig(
+        level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+    )
+
     model = setup_outlines_model()
 
     # Test conversation generation
     print("Testing conversation generation...")
     conversations = generate_conversations(model, "French", "beginner", "food")
-    print("Conversations:", json.dumps([conv.dict() for conv in conversations], indent=2, ensure_ascii=False))
+    print(
+        "Conversations:",
+        json.dumps(
+            [conv.dict() for conv in conversations], indent=2, ensure_ascii=False
+        ),
+    )
 
     # Test pairs generation
     print("\nTesting pairs generation...")
     pairs = generate_pairs(model, "French", "beginner", "food")
-    print("Word Pairs:", json.dumps([pair.dict() for pair in pairs], indent=2, ensure_ascii=False))
+    print(
+        "Word Pairs:",
+        json.dumps([pair.dict() for pair in pairs], indent=2, ensure_ascii=False),
+    )
 
     # Test translations
     print("\nTesting translations generation...")
     translations = generate_translations(model, "French", "beginner", "food")
-    print("Translations:", json.dumps([trans.dict() for trans in translations], indent=2, ensure_ascii=False))
-    
+    print(
+        "Translations:",
+        json.dumps(
+            [trans.dict() for trans in translations], indent=2, ensure_ascii=False
+        ),
+    )
+
     # Test fill-in-blank generation
     print("\nTesting fill-in-blank generation...")
     fill_in_blank = generate_fill_in_blank(model, "French", "beginner", "food")
-    print("Fill-in-blank:", json.dumps([fib.dict() for fib in fill_in_blank], indent=2, ensure_ascii=False))
+    print(
+        "Fill-in-blank:",
+        json.dumps([fib.dict() for fib in fill_in_blank], indent=2, ensure_ascii=False),
+    )
 
 
 if __name__ == "__main__":

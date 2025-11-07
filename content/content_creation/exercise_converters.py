@@ -9,15 +9,15 @@ import json
 
 class ExerciseConverter:
     """Base class for converting exercises to validation text."""
-    
+
     def __init__(self, language: str, level: str):
         self.language = language
         self.level = level
-    
+
     def convert_to_text(self, exercise_data: Dict[str, Any]) -> str:
         """Convert exercise data to readable text for validation."""
         raise NotImplementedError
-    
+
     def get_validation_prompt(self, exercise_text: str) -> str:
         """Generate validation prompt for the LLM."""
         raise NotImplementedError
@@ -25,35 +25,35 @@ class ExerciseConverter:
 
 class ConversationConverter(ExerciseConverter):
     """Converter for conversation exercises."""
-    
+
     def convert_to_text(self, exercise_data: Dict[str, Any]) -> str:
         """Convert conversation exercise to readable dialogue format."""
-        conversations = exercise_data.get('conversations', [])
-        summary = exercise_data.get('summary', '')
-        
+        conversations = exercise_data.get("conversations", [])
+        summary = exercise_data.get("summary", "")
+
         # Parse conversations if they're stored as JSON string
         if isinstance(conversations, str):
             try:
                 conversations = json.loads(conversations)
             except json.JSONDecodeError:
                 conversations = []
-        
+
         text_parts = []
-        
+
         # Add dialogue
         if conversations:
             text_parts.append("=== CONVERSATION ===")
             for turn in conversations:
-                speaker = turn.get('speaker', 'Unknown')
-                message = turn.get('message', '')
+                speaker = turn.get("speaker", "Unknown")
+                message = turn.get("message", "")
                 text_parts.append(f"{speaker}: {message}")
-        
+
         # Add summary
         if summary:
             text_parts.append(f"\n=== SUMMARY ===\n{summary}")
-        
+
         return "\n".join(text_parts)
-    
+
     def get_validation_prompt(self, exercise_text: str) -> str:
         """Generate validation prompt for conversation exercises."""
         return f"""You are a language learning expert. Please validate this {self.language} conversation exercise for {self.level} level learners.
@@ -80,30 +80,30 @@ CRITICAL: Use only true/false (not True/False or null). Return only the JSON obj
 
 class PairConverter(ExerciseConverter):
     """Converter for word pair exercises."""
-    
+
     def convert_to_text(self, exercise_data: Dict[str, Any]) -> str:
         """Convert word pair exercise to readable format."""
-        pairs = exercise_data.get('pairs', [])
-        
+        pairs = exercise_data.get("pairs", [])
+
         # Parse pairs if they're stored as JSON string
         if isinstance(pairs, str):
             try:
                 pairs = json.loads(pairs)
             except json.JSONDecodeError:
                 pairs = []
-        
+
         text_parts = ["=== WORD PAIRS ==="]
-        
+
         for i, pair in enumerate(pairs, 1):
             if isinstance(pair, dict):
-                english = pair.get('English', '')
-                target = pair.get(self.language, '')
+                english = pair.get("English", "")
+                target = pair.get(self.language, "")
                 text_parts.append(f"{i}. {english} → {target}")
             else:
                 text_parts.append(f"{i}. {pair}")
-        
+
         return "\n".join(text_parts)
-    
+
     def get_validation_prompt(self, exercise_text: str) -> str:
         """Generate validation prompt for word pair exercises."""
         return f"""You are a language learning expert. Please validate these {self.language} word pairs for {self.level} level learners.
@@ -130,20 +130,20 @@ CRITICAL: Use only true/false (not True/False or null). Return only the JSON obj
 
 class TranslationConverter(ExerciseConverter):
     """Converter for translation exercises."""
-    
+
     def convert_to_text(self, exercise_data: Dict[str, Any]) -> str:
         """Convert translation exercise to readable format."""
-        language_1_content = exercise_data.get('language_1_content', '')
-        language_2_content = exercise_data.get('language_2_content', '')
-        language_1 = exercise_data.get('language_1', 'English')
-        language_2 = exercise_data.get('language_2', self.language)
-        
+        language_1_content = exercise_data.get("language_1_content", "")
+        language_2_content = exercise_data.get("language_2_content", "")
+        language_1 = exercise_data.get("language_1", "English")
+        language_2 = exercise_data.get("language_2", self.language)
+
         text_parts = ["=== TRANSLATION EXERCISE ==="]
         text_parts.append(f"{language_1}: {language_1_content}")
         text_parts.append(f"{language_2}: {language_2_content}")
-        
+
         return "\n".join(text_parts)
-    
+
     def get_validation_prompt(self, exercise_text: str) -> str:
         """Generate validation prompt for translation exercises."""
         return f"""You are a language learning expert. Please validate this translation exercise for {self.level} level learners.
@@ -170,16 +170,16 @@ CRITICAL: Use only true/false (not True/False or null). Return only the JSON obj
 
 class FillInBlankConverter(ExerciseConverter):
     """Converter for fill-in-blank exercises."""
-    
+
     def convert_to_text(self, exercise_data: Dict[str, Any]) -> str:
         """Convert fill-in-blank exercise to readable format."""
-        sentence = exercise_data.get('sentence', '')
-        correct_answer = exercise_data.get('correct_answer', '')
-        incorrect_1 = exercise_data.get('incorrect_1', '')
-        incorrect_2 = exercise_data.get('incorrect_2', '')
-        translation = exercise_data.get('translation', '')
-        blank_position = exercise_data.get('blank_position', 0)
-        
+        sentence = exercise_data.get("sentence", "")
+        correct_answer = exercise_data.get("correct_answer", "")
+        incorrect_1 = exercise_data.get("incorrect_1", "")
+        incorrect_2 = exercise_data.get("incorrect_2", "")
+        translation = exercise_data.get("translation", "")
+        blank_position = exercise_data.get("blank_position", 0)
+
         text_parts = ["=== FILL-IN-BLANK EXERCISE ==="]
         text_parts.append(f"Sentence: {sentence}")
         text_parts.append(f"Correct Answer: {correct_answer}")
@@ -187,9 +187,9 @@ class FillInBlankConverter(ExerciseConverter):
         text_parts.append(f"Incorrect Option 2: {incorrect_2}")
         text_parts.append(f"Blank Position: {blank_position}")
         text_parts.append(f"English Translation: {translation}")
-        
+
         return "\n".join(text_parts)
-    
+
     def get_validation_prompt(self, exercise_text: str) -> str:
         """Generate validation prompt for fill-in-blank exercises."""
         return f"""You are a language learning expert. Please validate this {self.language} fill-in-blank exercise for {self.level} level learners.
@@ -220,40 +220,49 @@ CRITICAL: Use only true/false (not True/False or null). Return only the JSON obj
 def get_converter(exercise_type: str, language: str, level: str) -> ExerciseConverter:
     """Factory function to get appropriate converter for exercise type."""
     converters = {
-        'conversation': ConversationConverter,
-        'pair': PairConverter,
-        'translation': TranslationConverter,
-        'fill_in_blank': FillInBlankConverter,
+        "conversation": ConversationConverter,
+        "pair": PairConverter,
+        "translation": TranslationConverter,
+        "fill_in_blank": FillInBlankConverter,
     }
-    
+
     converter_class = converters.get(exercise_type.lower())
     if not converter_class:
         raise ValueError(f"Unknown exercise type: {exercise_type}")
-    
+
     return converter_class(language, level)
 
 
 def identify_exercise_type(exercise_data: Dict[str, Any]) -> str:
     """Identify exercise type from database row data."""
     # Check for conversation-specific fields
-    if 'conversations' in exercise_data or 'summary' in exercise_data:
-        return 'conversation'
-    
+    if "conversations" in exercise_data or "summary" in exercise_data:
+        return "conversation"
+
     # Check for pair-specific fields
-    if 'pairs' in exercise_data:
-        return 'pair'
-    
+    if "pairs" in exercise_data:
+        return "pair"
+
     # Check for translation-specific fields
-    if 'language_1_content' in exercise_data and 'language_2_content' in exercise_data:
-        return 'translation'
-    
+    if "language_1_content" in exercise_data and "language_2_content" in exercise_data:
+        return "translation"
+
     # Check for fill-in-blank specific fields
-    if any(key in exercise_data for key in ['sentence', 'correct_answer', 'incorrect_1', 'incorrect_2', 'blank_position']):
-        return 'fill_in_blank'
-    
+    if any(
+        key in exercise_data
+        for key in [
+            "sentence",
+            "correct_answer",
+            "incorrect_1",
+            "incorrect_2",
+            "blank_position",
+        ]
+    ):
+        return "fill_in_blank"
+
     # Fallback: try to infer from other clues
-    if any(key in exercise_data for key in ['speaker', 'message']):
-        return 'conversation'
-    
+    if any(key in exercise_data for key in ["speaker", "message"]):
+        return "conversation"
+
     # Default to translation if unclear
-    return 'translation'
+    return "translation"

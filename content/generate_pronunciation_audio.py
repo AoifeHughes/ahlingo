@@ -170,15 +170,14 @@ class PronunciationAudioGenerator:
     def _check_ffmpeg_availability(self):
         """Check if ffmpeg is available for audio compression."""
         import subprocess
+
         try:
-            subprocess.run(
-                ["ffmpeg", "-version"], 
-                capture_output=True, 
-                check=True
-            )
+            subprocess.run(["ffmpeg", "-version"], capture_output=True, check=True)
             print("ffmpeg found - audio will be compressed to AAC at 64kbps")
         except (subprocess.CalledProcessError, FileNotFoundError):
-            print("Warning: ffmpeg not found. Audio will be stored as uncompressed WAV.")
+            print(
+                "Warning: ffmpeg not found. Audio will be stored as uncompressed WAV."
+            )
             print("To enable AAC compression, install ffmpeg:")
             print("  macOS: brew install ffmpeg")
             print("  Ubuntu/Debian: sudo apt install ffmpeg")
@@ -191,48 +190,50 @@ class PronunciationAudioGenerator:
     def _compress_audio_to_aac(self, wav_path: str) -> bytes:
         """
         Convert WAV audio to AAC at 64kbps using ffmpeg.
-        
+
         Args:
             wav_path: Path to the input WAV file
-            
+
         Returns:
             bytes: Compressed AAC audio data
         """
         import subprocess
         import tempfile
-        
+
         try:
             # Create temporary file for AAC output
             with tempfile.NamedTemporaryFile(suffix=".aac", delete=False) as temp_aac:
                 temp_aac_path = temp_aac.name
-            
+
             # Use ffmpeg to convert WAV to AAC at 64kbps
             ffmpeg_cmd = [
-                "ffmpeg", "-y",  # -y to overwrite output file
-                "-i", wav_path,  # input file
-                "-c:a", "aac",   # audio codec: AAC
-                "-b:a", "64k",   # audio bitrate: 64kbps
-                "-movflags", "+faststart",  # optimize for streaming
-                temp_aac_path
+                "ffmpeg",
+                "-y",  # -y to overwrite output file
+                "-i",
+                wav_path,  # input file
+                "-c:a",
+                "aac",  # audio codec: AAC
+                "-b:a",
+                "64k",  # audio bitrate: 64kbps
+                "-movflags",
+                "+faststart",  # optimize for streaming
+                temp_aac_path,
             ]
-            
+
             # Run ffmpeg command
             result = subprocess.run(
-                ffmpeg_cmd,
-                capture_output=True,
-                text=True,
-                check=True
+                ffmpeg_cmd, capture_output=True, text=True, check=True
             )
-            
+
             # Read compressed audio data
             with open(temp_aac_path, "rb") as f:
                 compressed_data = f.read()
-            
+
             # Clean up temporary AAC file
             os.unlink(temp_aac_path)
-            
+
             return compressed_data
-            
+
         except subprocess.CalledProcessError as e:
             print(f"Error compressing audio with ffmpeg: {e}")
             print(f"ffmpeg stderr: {e.stderr}")
@@ -347,7 +348,12 @@ class PronunciationAudioGenerator:
             # Store compressed audio in database if exercise_type is provided
             if exercise_type:
                 self.db.store_pronunciation_audio(
-                    text, language, compressed_audio_data, exercise_type, topic, difficulty
+                    text,
+                    language,
+                    compressed_audio_data,
+                    exercise_type,
+                    topic,
+                    difficulty,
                 )
 
             # Copy to output_path if provided (for backward compatibility)

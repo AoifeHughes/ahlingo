@@ -19,15 +19,15 @@ if __name__ == "__main__":
     # Set up database path relative to repo root directory
     repo_root = Path(__file__).parent
     db_path = str(repo_root / "database" / "languageLearningDatabase.db")
-    
+
     # Create database directory if it doesn't exist
     db_dir = repo_root / "database"
     db_dir.mkdir(exist_ok=True)
-    
+
     print(f"Creating database at: {db_path}")
     print(f"Running from: {os.getcwd()}")
-    
+
     populate_database(db_path)
     initialize_default_settings(db_path)
-    
+
     print("Database creation complete!")

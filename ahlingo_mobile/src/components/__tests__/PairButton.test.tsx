@@ -65,7 +65,7 @@ describe('PairButton', () => {
 
   it('handles long text correctly', () => {
     const longText = 'This is a very long text that should be handled properly by the button component';
-    
+
     const { getByText } = renderWithProviders(
       <PairButton {...defaultProps} text={longText} />
     );

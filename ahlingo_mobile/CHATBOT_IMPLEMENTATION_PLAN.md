@@ -4,13 +4,13 @@
 Implement a full-featured OpenAI-compatible chatbot with conversation management, leveraging existing database schema and UI components. Keep it simple with direct fetch API calls.
 
 ## 📊 **Database Integration**
-- **Existing Schema**: 
+- **Existing Schema**:
   - `ChatDetail`: chat metadata (user_id, language, difficulty, model, timestamps)
   - `ChatHistory`: individual messages (chat_id, role, content, timestamp)
 - **New SQL Queries**: Add chat-specific queries to `constants.ts`
 - **New Service**: Create `ChatService.ts` for all chat operations
 
-## 🎨 **UI Components** 
+## 🎨 **UI Components**
 - **Reuse Existing**: `ConversationView` and `MessageBubble` components
 - **New Components**:
   - `ChatInput`: Text input area with send button

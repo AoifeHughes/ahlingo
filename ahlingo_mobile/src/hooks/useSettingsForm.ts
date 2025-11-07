@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react';
 import { Alert } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { NavigationProp } from '@react-navigation/native';
-import { 
-  setSettings, 
-  setLoading, 
-  setError 
+import {
+  setSettings,
+  setLoading,
+  setError
 } from '../store/slices/settingsSlice';
 import {
   getLanguages,
@@ -40,7 +40,7 @@ interface UseSettingsFormReturn {
   difficulties: DropdownItem[];
   themes: DropdownItem[];
   isResetting: boolean;
-  
+
   // Functions
   updateFormData: (field: keyof FormData, value: string | boolean) => void;
   handleReset: () => Promise<void>;
@@ -85,7 +85,7 @@ export const useSettingsForm = (navigation?: NavigationProp<RootStackParamList>)
         const formKey = key as keyof FormData;
         return formData[formKey] !== initialFormData[formKey];
       });
-      
+
       if (hasChanges) {
         // Auto-save the changes
         handleAutoSave();
@@ -220,7 +220,7 @@ export const useSettingsForm = (navigation?: NavigationProp<RootStackParamList>)
     try {
       // Complete app reset - delete all users and data
       await resetAppCompletely();
-      
+
       // Clear Redux store
       dispatch(setSettings({
         language: '',
@@ -256,7 +256,7 @@ export const useSettingsForm = (navigation?: NavigationProp<RootStackParamList>)
     difficulties,
     themes,
     isResetting,
-    
+
     // Functions
     updateFormData,
     handleReset,

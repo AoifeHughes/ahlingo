@@ -105,8 +105,8 @@ const TranslationExercisesScreen: React.FC<Props> = ({ route, navigation }) => {
         'Your progress will be lost if you exit now.',
         [
           { text: 'Cancel', style: 'cancel' },
-          { 
-            text: 'Exit', 
+          {
+            text: 'Exit',
             style: 'destructive',
             onPress: () => navigation.navigate('MainMenu')
           },
@@ -134,8 +134,8 @@ const TranslationExercisesScreen: React.FC<Props> = ({ route, navigation }) => {
       'Your progress will be lost if you exit now.',
       [
         { text: 'Cancel', style: 'cancel' },
-        { 
-          text: 'Exit', 
+        {
+          text: 'Exit',
           style: 'destructive',
           onPress: () => navigation.navigate('MainMenu')
         },
@@ -149,7 +149,7 @@ const TranslationExercisesScreen: React.FC<Props> = ({ route, navigation }) => {
 
       // Get complete user context in single call
       const userContext = await getUserContext();
-      
+
       if (!userContext) {
         Alert.alert('Error', 'Failed to initialize user. Please try again.');
         return;
@@ -396,7 +396,7 @@ const TranslationExercisesScreen: React.FC<Props> = ({ route, navigation }) => {
               onPress={handleNextExercise}
             >
               <Text style={styles.nextButtonText}>
-                {shuffleContext 
+                {shuffleContext
                   ? (gameState.isCorrect ? '✅ Perfect! Next Exercise' : '➡️ Next Exercise')
                   : 'Next Exercise'
                 }

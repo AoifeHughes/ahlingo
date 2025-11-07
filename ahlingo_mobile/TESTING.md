@@ -177,7 +177,7 @@ it('calls onPress when button is pressed', () => {
   const { getByText } = renderWithProviders(
     <PairButton text="Hello" onPress={mockOnPress} />
   );
-  
+
   fireEvent.press(getByText('Hello'));
   expect(mockOnPress).toHaveBeenCalledTimes(1);
 });

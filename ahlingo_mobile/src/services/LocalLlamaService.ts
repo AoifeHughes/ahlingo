@@ -37,8 +37,8 @@ const AVAILABLE_LOCAL_MODELS: LocalModel[] = [
 ];
 
 const STOP_WORDS = [
-  '</s>', '<|end|>', '<|eot_id|>', '<|end_of_text|>', 
-  '<|im_end|>', '<|EOT|>', '<|END_OF_TURN_TOKEN|>', 
+  '</s>', '<|end|>', '<|eot_id|>', '<|end_of_text|>',
+  '<|im_end|>', '<|EOT|>', '<|END_OF_TURN_TOKEN|>',
   '<|end_of_turn|>', '<|endoftext|>'
 ];
 
@@ -67,11 +67,11 @@ class LocalLlamaService {
   // Get list of downloaded models
   async getDownloadedModels(): Promise<LocalModel[]> {
     const models: LocalModel[] = [];
-    
+
     for (const model of AVAILABLE_LOCAL_MODELS) {
       const filePath = this.getModelPath(model.filename);
       const exists = await RNFS.exists(filePath);
-      
+
       if (exists) {
         const stat = await RNFS.stat(filePath);
         models.push({
@@ -82,7 +82,7 @@ class LocalLlamaService {
         });
       }
     }
-    
+
     return models;
   }
 
@@ -93,29 +93,29 @@ class LocalLlamaService {
       console.log(`❌ Model not found in AVAILABLE_LOCAL_MODELS: ${modelId}`);
       return false;
     }
-    
+
     const filePath = this.getModelPath(model.filename);
     const exists = await RNFS.exists(filePath);
-    
+
     console.log(`🔍 Checking model download status:`, {
       modelId,
       filename: model.filename,
       filePath,
       exists
     });
-    
+
     if (exists) {
       try {
         const stats = await RNFS.stat(filePath);
         const actualSize = stats.size;
-        
+
         console.log(`📊 Model file info:`, {
           modelId,
           filename: model.filename,
           actualSizeGB: actualSize / (1024 * 1024 * 1024),
           actualSizeMB: actualSize / (1024 * 1024)
         });
-        
+
         // File exists and has content, consider it valid
         // No size validation - just check that it's not empty
         if (actualSize > 0) {
@@ -130,7 +130,7 @@ class LocalLlamaService {
         return false;
       }
     }
-    
+
     console.log(`❌ Model ${modelId} file does not exist`);
     return false;
   }
@@ -146,7 +146,7 @@ class LocalLlamaService {
     }
 
     const filePath = this.getModelPath(model.filename);
-    
+
     // Check if already exists and is complete
     const exists = await RNFS.exists(filePath);
     if (exists) {
@@ -163,7 +163,7 @@ class LocalLlamaService {
     try {
       console.log(`🚀 Starting download for ${model.name} from ${model.downloadUrl}`);
       console.log(`📁 Downloading to: ${filePath}`);
-      
+
       const { promise } = RNFS.downloadFile({
         fromUrl: model.downloadUrl,
         toFile: filePath,
@@ -178,7 +178,7 @@ class LocalLlamaService {
             contentLength: res.contentLength,
             headers: res.headers
           });
-          
+
           // Initialize progress tracking with content length
           if (onProgress && res.contentLength > 0) {
             onProgress({
@@ -192,7 +192,7 @@ class LocalLlamaService {
         progress: (res) => {
           const progressPercent = res.contentLength > 0 ? (res.bytesWritten / res.contentLength) : 0;
           console.log(`📊 Download progress: ${Math.round(progressPercent * 100)}% (${res.bytesWritten}/${res.contentLength})`);
-          
+
           if (onProgress) {
             onProgress({
               modelId,
@@ -208,14 +208,14 @@ class LocalLlamaService {
       console.log(`Successfully downloaded ${model.name}`);
     } catch (error) {
       console.error(`Error downloading model ${modelId}:`, error);
-      
+
       // Clean up partial download
       try {
         await RNFS.unlink(filePath);
       } catch (cleanupError) {
         console.error('Error cleaning up partial download:', cleanupError);
       }
-      
+
       throw new Error(`Failed to download ${model.name}: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
@@ -228,13 +228,13 @@ class LocalLlamaService {
     }
 
     const filePath = this.getModelPath(model.filename);
-    
+
     try {
       const exists = await RNFS.exists(filePath);
       if (exists) {
         await RNFS.unlink(filePath);
         console.log(`Deleted model ${model.name}`);
-        
+
         // If this was the current model, release the context
         if (this.currentModelId === modelId) {
           await this.cleanup();
@@ -270,7 +270,7 @@ class LocalLlamaService {
 
       const filePath = this.getModelPath(model.filename);
       const exists = await RNFS.exists(filePath);
-      
+
       if (!exists) {
         throw new Error(`Model ${model.name} is not downloaded. Please download it first.`);
       }
@@ -294,7 +294,7 @@ class LocalLlamaService {
         console.log(`Successfully initialized ${model.name}`);
       } catch (initError) {
         console.error(`Failed to initialize with GPU, trying CPU-only mode...`);
-        
+
         // Retry with CPU-only parameters
         const cpuParams = {
           model: absoluteModelPath,
@@ -302,7 +302,7 @@ class LocalLlamaService {
           n_ctx: 1024,
           n_gpu_layers: 0,
         };
-        
+
         this.context = await initLlama(cpuParams);
         console.log(`Successfully initialized ${model.name} in CPU mode`);
       }
@@ -346,7 +346,7 @@ class LocalLlamaService {
       );
 
       callbacks.onComplete(fullContent);
-      
+
       return {
         text: result?.text.trim() ?? fullContent.trim(),
         timings: result?.timings,
@@ -387,7 +387,7 @@ class LocalLlamaService {
   async getStorageUsage(): Promise<{ totalSize: number; modelCount: number }> {
     const downloadedModels = await this.getDownloadedModels();
     const totalSize = downloadedModels.reduce((sum, model) => sum + (model.fileSize || 0), 0);
-    
+
     return {
       totalSize,
       modelCount: downloadedModels.length,

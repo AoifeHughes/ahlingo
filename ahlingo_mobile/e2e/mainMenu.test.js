@@ -52,7 +52,7 @@ describe('Main Menu Screen', () => {
     await device.pressBack();
     await element(by.id('exercise-translate')).tap();
     await device.pressBack();
-    
+
     // Should still be on main menu
     await expect(element(by.id('app-title'))).toBeVisible();
   });

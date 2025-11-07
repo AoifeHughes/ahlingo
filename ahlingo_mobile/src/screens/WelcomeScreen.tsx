@@ -208,7 +208,7 @@ const WelcomeScreen: React.FC<Props> = ({ navigation }) => {
         <Text style={styles.footerText}>
           Don't worry, you can change these settings anytime in the menu
         </Text>
-        
+
         <TouchableOpacity
           style={[styles.getStartedButton, saving && styles.disabledButton]}
           onPress={handleGetStarted}

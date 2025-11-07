@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { 
-  View, 
-  StyleSheet, 
-  Text, 
-  Alert, 
+import {
+  View,
+  StyleSheet,
+  Text,
+  Alert,
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
@@ -20,8 +20,8 @@ import { useUserData } from '../hooks/useUserData';
 import ChatInput from '../components/ChatInput';
 import ChatMessage from '../components/ChatMessage';
 import ConversationsList from '../components/ConversationsList';
-import { 
-  ChatDetail, 
+import {
+  ChatDetail,
   ChatMessage as ChatMessageType,
   createChat,
   getUserChats,
@@ -33,8 +33,8 @@ import {
   updateChatModel,
   updateChatName
 } from '../services/ChatService';
-import { 
-  OpenAIService, 
+import {
+  OpenAIService,
   APISettings,
   StreamingCallbacks
 } from '../services/OpenAIService';
@@ -56,7 +56,7 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
   const settings = useSelector((state: RootState) => state.settings.settings);
   const { language, difficulty, userId } = useUserData();
   const { theme } = useTheme();
-  
+
   const [messages, setMessages] = useState<ChatMessageType[]>([]);
   const [currentChat, setCurrentChat] = useState<ChatDetail | null>(null);
   const [conversations, setConversations] = useState<ChatDetail[]>([]);
@@ -118,24 +118,24 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
     try {
       const userSettings = await getUserSettings(settings.username || 'default_user');
       const includeLocal = userSettings.enable_local_models === 'true' || false;
-      
+
       console.log('🔍 Loading available models...', {
         serverUrl: userSettings.server_url,
         includeLocal,
       });
 
       const models = await ModelService.fetchAllModels(
-        userSettings.server_url, 
+        userSettings.server_url,
         userSettings.api_key,
         includeLocal
       );
       setAvailableModels(models);
-      
+
       // Check if we have valid configuration
       const hasServerUrl = userSettings.server_url && userSettings.server_url.trim() !== '';
       const hasLocalModels = includeLocal && models.some(m => m.isLocal && m.isDownloaded);
       const hasRemoteModels = hasServerUrl && models.some(m => !m.isLocal);
-      
+
       // Show warning if no valid configuration or models
       if (!hasServerUrl && !includeLocal) {
         Alert.alert(
@@ -148,12 +148,12 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
         );
         return;
       }
-      
+
       if (models.length === 0) {
-        const message = hasServerUrl 
+        const message = hasServerUrl
           ? `No AI models available. Please check your server configuration in Settings or try enabling local models.\n\nServer: ${userSettings.server_url}`
           : 'No AI models available. Please configure a server in Settings or enable local models.';
-          
+
         Alert.alert(
           'No AI Models Available',
           message,
@@ -164,7 +164,7 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
         );
         return;
       }
-      
+
       if (!hasLocalModels && !hasRemoteModels) {
         Alert.alert(
           'No Working AI Models',
@@ -178,14 +178,14 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
         );
         return;
       }
-      
+
       // Set the first available model as default if none selected
       if (models.length > 0 && !selectedModel) {
         // Prefer local models if available and preference is set
         const preferLocal = userSettings.prefer_local_models === 'true' || false;
         const localModels = models.filter(m => m.isLocal && m.isDownloaded);
         const remoteModels = models.filter(m => !m.isLocal);
-        
+
         let defaultModel: ModelInfo | undefined;
         if (preferLocal && localModels.length > 0) {
           defaultModel = localModels[0];
@@ -196,12 +196,12 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
         } else {
           defaultModel = models[0];
         }
-        
+
         if (defaultModel) {
           setSelectedModel(defaultModel.id);
         }
       }
-      
+
       console.log('✅ Loaded models:', models);
     } catch (error) {
       console.error('Failed to load models:', error);
@@ -234,16 +234,16 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
       }
 
       const model = selectedModel;
-      
+
       console.log('📝 Creating chat with:', { userId, language, difficulty, model });
 
       const chatId = await createChat(userId, language, difficulty, model);
       console.log('🆔 Created chat with ID:', chatId);
-      
+
       if (chatId) {
         const newChat = await getChatById(chatId);
         console.log('💬 Retrieved new chat:', newChat);
-        
+
         if (newChat) {
           setCurrentChat(newChat);
           setMessages([]);
@@ -260,7 +260,7 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
   const sendMessage = async (content: string) => {
     console.log('📤 ChatbotScreen sendMessage called with:', content);
     console.log('📋 Current chat state:', currentChat ? `Chat ID: ${currentChat.id}` : 'No current chat');
-    
+
     if (!currentChat) {
       console.log('🔄 No current chat, creating new chat...');
       await createNewChat();
@@ -282,7 +282,7 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
       const userSettings = await getUserSettings(settings.username || 'default_user');
       const modelId = currentChat.model;
       const isLocalModel = ModelService.isLocalModel(modelId);
-      
+
       console.log('📋 Model routing info:', {
         modelId,
         isLocalModel,
@@ -308,10 +308,10 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
             setIsStreaming(false);
             setStreamingContent('');
             setStreamController(null);
-            
+
             // Save the complete assistant message to database
             await addChatMessage(currentChat.id, 'assistant', fullContent);
-            
+
             // Reload messages from database
             const finalMessages = await getChatMessages(currentChat.id);
             setMessages(finalMessages);
@@ -334,10 +334,10 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
       if (isLocalModel) {
         // Route to local model
         console.log('🏠 Using local model:', modelId);
-        
+
         try {
           const localModelId = ModelService.extractLocalModelId(modelId);
-          
+
           // Initialize the model if needed
           if (!LocalLlamaService.isReady() || LocalLlamaService.getCurrentModel() !== localModelId) {
             console.log('🔧 Initializing local model...');
@@ -372,7 +372,7 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
       } else {
         // Route to remote model
         console.log('🌐 Using remote model:', modelId);
-        
+
         const apiSettings: APISettings = {
           apiKey: userSettings.api_key || '',
           apiUrl: userSettings.server_url,
@@ -420,13 +420,13 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
 
   const stopGeneration = () => {
     console.log('🛑 Stopping generation...');
-    
+
     // Stop remote model generation
     if (streamController) {
       streamController.abort();
       setStreamController(null);
     }
-    
+
     // For local models, we don't have direct cancellation support in this implementation
     // But we can stop the streaming state
     setIsStreaming(false);
@@ -437,7 +437,7 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
   const handleModelChange = async (newModel: string) => {
     try {
       console.log('🔄 Changing model to:', newModel);
-      
+
       // Check if it's a local model and if it's downloaded
       if (ModelService.isLocalModel(newModel)) {
         const localModelId = ModelService.extractLocalModelId(newModel);
@@ -445,13 +445,13 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
           originalModelId: newModel,
           extractedLocalModelId: localModelId
         });
-        
+
         const isDownloaded = await LocalLlamaService.isModelDownloaded(localModelId);
         console.log('📋 Download status check result:', {
           localModelId,
           isDownloaded
         });
-        
+
         if (!isDownloaded) {
           console.log('❌ Model not downloaded, showing alert');
           Alert.alert(
@@ -459,8 +459,8 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
             'This local model is not downloaded yet. Please download it from Settings first.',
             [
               { text: 'Cancel', style: 'cancel' },
-              { 
-                text: 'Go to Settings', 
+              {
+                text: 'Go to Settings',
                 onPress: () => navigation.navigate('Settings' as any)
               }
             ]
@@ -470,13 +470,13 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
           console.log('✅ Model is downloaded, proceeding with selection');
         }
       }
-      
+
       setSelectedModel(newModel);
-      
+
       if (currentChat) {
         await updateChatModel(currentChat.id, newModel);
         console.log('✅ Updated chat model to:', newModel);
-        
+
         // Update the current chat object
         setCurrentChat(prev => prev ? { ...prev, model: newModel } : null);
       }
@@ -497,7 +497,7 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
       if (userId) {
         await deleteChat(conversationId, userId);
         await loadUserChats();
-        
+
         if (currentChat?.id === conversationId) {
           setCurrentChat(null);
           setMessages([]);
@@ -524,7 +524,7 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView 
+      <KeyboardAvoidingView
         style={styles.keyboardAvoidingView}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 20}
@@ -611,7 +611,7 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
           </View>
         )}
 
-        <ScrollView 
+        <ScrollView
           style={styles.messagesContainer}
           contentContainerStyle={styles.messagesContent}
           showsVerticalScrollIndicator={false}

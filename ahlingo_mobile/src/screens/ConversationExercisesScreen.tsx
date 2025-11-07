@@ -106,8 +106,8 @@ const ConversationExercisesScreen: React.FC<Props> = ({
         'Your progress will be lost if you exit now.',
         [
           { text: 'Cancel', style: 'cancel' },
-          { 
-            text: 'Exit', 
+          {
+            text: 'Exit',
             style: 'destructive',
             onPress: () => navigation.navigate('MainMenu')
           },
@@ -135,8 +135,8 @@ const ConversationExercisesScreen: React.FC<Props> = ({
       'Your progress will be lost if you exit now.',
       [
         { text: 'Cancel', style: 'cancel' },
-        { 
-          text: 'Exit', 
+        {
+          text: 'Exit',
           style: 'destructive',
           onPress: () => navigation.navigate('MainMenu')
         },
@@ -163,7 +163,7 @@ const ConversationExercisesScreen: React.FC<Props> = ({
 
       // Get complete user context in single call
       const userContext = await getUserContext();
-      
+
       if (!userContext) {
         Alert.alert('Error', 'Failed to initialize user. Please try again.');
         return;
@@ -389,7 +389,7 @@ const ConversationExercisesScreen: React.FC<Props> = ({
               onPress={handleNextExercise}
             >
               <Text style={styles.nextButtonText}>
-                {shuffleContext 
+                {shuffleContext
                   ? (quizState.isCorrect ? '✅ Perfect! Next Exercise' : '➡️ Next Exercise')
                   : 'Next Exercise'
                 }

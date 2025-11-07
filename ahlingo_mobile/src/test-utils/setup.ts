@@ -1,9 +1,9 @@
 // Note: Jest matchers are now built into @testing-library/react-native v12.4+
 
-// Mock react-native modules  
+// Mock react-native modules
 jest.mock('react-native-sqlite-storage', () => {
   const mockDB = {
-    executeSql: jest.fn((query, params) => 
+    executeSql: jest.fn((query, params) =>
       Promise.resolve([{ rows: { length: 0, item: () => ({}) } }])
     ),
     close: jest.fn(() => Promise.resolve()),

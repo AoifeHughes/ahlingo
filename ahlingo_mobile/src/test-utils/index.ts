@@ -40,8 +40,8 @@ interface AllTheProvidersProps {
   store?: any;
 }
 
-const AllTheProviders: React.FC<AllTheProvidersProps> = ({ 
-  children, 
+const AllTheProviders: React.FC<AllTheProvidersProps> = ({
+  children,
   initialState = defaultMockState,
   store = createMockStore(initialState)
 }) => {
@@ -81,7 +81,7 @@ export const renderWithProviders = (
 };
 
 // Async testing helpers
-export const waitForAsync = (ms = 0) => 
+export const waitForAsync = (ms = 0) =>
   new Promise(resolve => setTimeout(resolve, ms));
 
 export const flushPromises = () => new Promise(setImmediate);

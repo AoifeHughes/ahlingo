@@ -159,8 +159,8 @@ class LanguageDB:
             # Check if has_been_validated column exists
             self.cursor.execute("PRAGMA table_info(exercises_info)")
             columns = [column[1] for column in self.cursor.fetchall()]
-            
-            if 'has_been_validated' not in columns:
+
+            if "has_been_validated" not in columns:
                 print("Adding has_been_validated column to exercises_info table...")
                 self.cursor.execute(
                     "ALTER TABLE exercises_info ADD COLUMN has_been_validated BOOLEAN DEFAULT 0"
@@ -1274,7 +1274,7 @@ class LanguageDB:
     def get_all_conversation_exercises(self) -> List[Dict]:
         """Get all conversation exercises from the database."""
         query = """
-        SELECT DISTINCT e.id, e.exercise_name, l.language, t.topic, 
+        SELECT DISTINCT e.id, e.exercise_name, l.language, t.topic,
                d.difficulty_level, e.lesson_id
         FROM exercises_info e
         JOIN conversation_exercises c ON e.id = c.exercise_id
@@ -1285,36 +1285,36 @@ class LanguageDB:
         """
         self.cursor.execute(query)
         exercises = []
-        
+
         for row in self.cursor.fetchall():
             exercise_data = dict(row)
-            
+
             # Get conversation messages
             self.cursor.execute(
                 """SELECT speaker, message FROM conversation_exercises
                    WHERE exercise_id = ? ORDER BY conversation_order""",
-                (exercise_data['id'],)
+                (exercise_data["id"],),
             )
             conversations = [dict(conv_row) for conv_row in self.cursor.fetchall()]
-            
+
             # Get summary
             self.cursor.execute(
                 """SELECT summary FROM conversation_summaries WHERE exercise_id = ?""",
-                (exercise_data['id'],)
+                (exercise_data["id"],),
             )
             summary_row = self.cursor.fetchone()
-            summary = summary_row['summary'] if summary_row else ''
-            
-            exercise_data['conversations'] = conversations
-            exercise_data['summary'] = summary
+            summary = summary_row["summary"] if summary_row else ""
+
+            exercise_data["conversations"] = conversations
+            exercise_data["summary"] = summary
             exercises.append(exercise_data)
-            
+
         return exercises
 
     def get_all_pair_exercises(self) -> List[Dict]:
         """Get all pair exercises from the database."""
         query = """
-        SELECT DISTINCT e.id, e.exercise_name, l.language, t.topic, 
+        SELECT DISTINCT e.id, e.exercise_name, l.language, t.topic,
                d.difficulty_level, e.lesson_id
         FROM exercises_info e
         JOIN pair_exercises p ON e.id = p.exercise_id
@@ -1325,34 +1325,36 @@ class LanguageDB:
         """
         self.cursor.execute(query)
         exercises = []
-        
+
         for row in self.cursor.fetchall():
             exercise_data = dict(row)
-            
+
             # Get pairs
             self.cursor.execute(
-                """SELECT language_1_content, language_2_content 
+                """SELECT language_1_content, language_2_content
                    FROM pair_exercises WHERE exercise_id = ?""",
-                (exercise_data['id'],)
+                (exercise_data["id"],),
             )
             pairs = []
             for pair_row in self.cursor.fetchall():
-                pairs.append({
-                    'English': pair_row['language_1_content'],
-                    exercise_data['language']: pair_row['language_2_content']
-                })
-            
-            exercise_data['pairs'] = pairs
+                pairs.append(
+                    {
+                        "English": pair_row["language_1_content"],
+                        exercise_data["language"]: pair_row["language_2_content"],
+                    }
+                )
+
+            exercise_data["pairs"] = pairs
             exercises.append(exercise_data)
-            
+
         return exercises
 
     def get_all_translation_exercises(self) -> List[Dict]:
         """Get all translation exercises from the database."""
         query = """
-        SELECT e.id, e.exercise_name, l.language, t.topic, 
+        SELECT e.id, e.exercise_name, l.language, t.topic,
                d.difficulty_level, e.lesson_id,
-               tr.language_1, tr.language_2, 
+               tr.language_1, tr.language_2,
                tr.language_1_content, tr.language_2_content
         FROM exercises_info e
         JOIN translation_exercises tr ON e.id = tr.exercise_id
@@ -1367,9 +1369,9 @@ class LanguageDB:
     def get_all_fill_in_blank_exercises(self) -> List[Dict]:
         """Get all fill-in-blank exercises from the database."""
         query = """
-        SELECT e.id, e.exercise_name, l.language, t.topic, 
+        SELECT e.id, e.exercise_name, l.language, t.topic,
                d.difficulty_level, e.lesson_id,
-               fib.sentence, fib.correct_answer, fib.incorrect_1, 
+               fib.sentence, fib.correct_answer, fib.incorrect_1,
                fib.incorrect_2, fib.blank_position
         FROM exercises_info e
         JOIN fill_in_blank_exercises fib ON e.id = fib.exercise_id
@@ -1385,27 +1387,26 @@ class LanguageDB:
         """Remove conversation exercises by IDs."""
         if not exercise_ids:
             return 0
-            
-        placeholders = ','.join(['?'] * len(exercise_ids))
-        
+
+        placeholders = ",".join(["?"] * len(exercise_ids))
+
         # Remove from conversation_exercises table
         self.cursor.execute(
             f"DELETE FROM conversation_exercises WHERE exercise_id IN ({placeholders})",
-            exercise_ids
+            exercise_ids,
         )
-        
+
         # Remove from conversation_summaries table
         self.cursor.execute(
             f"DELETE FROM conversation_summaries WHERE exercise_id IN ({placeholders})",
-            exercise_ids
+            exercise_ids,
         )
-        
+
         # Remove from exercises_info table
         self.cursor.execute(
-            f"DELETE FROM exercises_info WHERE id IN ({placeholders})",
-            exercise_ids
+            f"DELETE FROM exercises_info WHERE id IN ({placeholders})", exercise_ids
         )
-        
+
         self.conn.commit()
         return len(exercise_ids)
 
@@ -1413,21 +1414,20 @@ class LanguageDB:
         """Remove pair exercises by IDs."""
         if not exercise_ids:
             return 0
-            
-        placeholders = ','.join(['?'] * len(exercise_ids))
-        
+
+        placeholders = ",".join(["?"] * len(exercise_ids))
+
         # Remove from pair_exercises table
         self.cursor.execute(
             f"DELETE FROM pair_exercises WHERE exercise_id IN ({placeholders})",
-            exercise_ids
+            exercise_ids,
         )
-        
+
         # Remove from exercises_info table
         self.cursor.execute(
-            f"DELETE FROM exercises_info WHERE id IN ({placeholders})",
-            exercise_ids
+            f"DELETE FROM exercises_info WHERE id IN ({placeholders})", exercise_ids
         )
-        
+
         self.conn.commit()
         return len(exercise_ids)
 
@@ -1435,21 +1435,20 @@ class LanguageDB:
         """Remove translation exercises by IDs."""
         if not exercise_ids:
             return 0
-            
-        placeholders = ','.join(['?'] * len(exercise_ids))
-        
+
+        placeholders = ",".join(["?"] * len(exercise_ids))
+
         # Remove from translation_exercises table
         self.cursor.execute(
             f"DELETE FROM translation_exercises WHERE exercise_id IN ({placeholders})",
-            exercise_ids
+            exercise_ids,
         )
-        
+
         # Remove from exercises_info table
         self.cursor.execute(
-            f"DELETE FROM exercises_info WHERE id IN ({placeholders})",
-            exercise_ids
+            f"DELETE FROM exercises_info WHERE id IN ({placeholders})", exercise_ids
         )
-        
+
         self.conn.commit()
         return len(exercise_ids)
 
@@ -1457,21 +1456,20 @@ class LanguageDB:
         """Remove fill-in-blank exercises by IDs."""
         if not exercise_ids:
             return 0
-            
-        placeholders = ','.join(['?'] * len(exercise_ids))
-        
+
+        placeholders = ",".join(["?"] * len(exercise_ids))
+
         # Remove from fill_in_blank_exercises table
         self.cursor.execute(
             f"DELETE FROM fill_in_blank_exercises WHERE exercise_id IN ({placeholders})",
-            exercise_ids
+            exercise_ids,
         )
-        
+
         # Remove from exercises_info table
         self.cursor.execute(
-            f"DELETE FROM exercises_info WHERE id IN ({placeholders})",
-            exercise_ids
+            f"DELETE FROM exercises_info WHERE id IN ({placeholders})", exercise_ids
         )
-        
+
         self.conn.commit()
         return len(exercise_ids)
 
@@ -1479,60 +1477,69 @@ class LanguageDB:
         """Mark exercises as validated in the database."""
         if not exercise_ids:
             return 0
-        
-        placeholders = ','.join(['?'] * len(exercise_ids))
+
+        placeholders = ",".join(["?"] * len(exercise_ids))
         self.cursor.execute(
             f"UPDATE exercises_info SET has_been_validated = 1 WHERE id IN ({placeholders})",
-            exercise_ids
+            exercise_ids,
         )
         self.conn.commit()
         return len(exercise_ids)
 
-    def get_exercise_counts(self, exercise_type_filter: Optional[str] = None) -> Dict[str, int]:
+    def get_exercise_counts(
+        self, exercise_type_filter: Optional[str] = None
+    ) -> Dict[str, int]:
         """Get total and unvalidated exercise counts."""
         where_clause = ""
         params = []
-        
+
         if exercise_type_filter:
             where_clause = "WHERE e.exercise_type = ?"
             params.append(exercise_type_filter)
-        
+
         # Get total count
         self.cursor.execute(
-            f"SELECT COUNT(*) FROM exercises_info e {where_clause}",
-            params
+            f"SELECT COUNT(*) FROM exercises_info e {where_clause}", params
         )
         total_count = self.cursor.fetchone()[0]
-        
+
         # Get unvalidated count
-        validated_where = "WHERE (e.has_been_validated IS NULL OR e.has_been_validated = 0)"
+        validated_where = (
+            "WHERE (e.has_been_validated IS NULL OR e.has_been_validated = 0)"
+        )
         if exercise_type_filter:
             validated_where += " AND e.exercise_type = ?"
-        
+
         self.cursor.execute(
-            f"SELECT COUNT(*) FROM exercises_info e {validated_where}",
-            params
+            f"SELECT COUNT(*) FROM exercises_info e {validated_where}", params
         )
         unvalidated_count = self.cursor.fetchone()[0]
-        
+
         return {
-            'total': total_count,
-            'unvalidated': unvalidated_count,
-            'validated': total_count - unvalidated_count
+            "total": total_count,
+            "unvalidated": unvalidated_count,
+            "validated": total_count - unvalidated_count,
         }
 
-    def get_exercises_batch(self, exercise_type: str, batch_size: int = 50, 
-                           offset: int = 0, only_unvalidated: bool = True) -> List[Dict]:
+    def get_exercises_batch(
+        self,
+        exercise_type: str,
+        batch_size: int = 50,
+        offset: int = 0,
+        only_unvalidated: bool = True,
+    ) -> List[Dict]:
         """Get a batch of exercises for validation."""
-        
+
         # Base validation filter
         validation_filter = ""
         if only_unvalidated:
-            validation_filter = "AND (e.has_been_validated IS NULL OR e.has_been_validated = 0)"
-        
-        if exercise_type == 'conversation':
+            validation_filter = (
+                "AND (e.has_been_validated IS NULL OR e.has_been_validated = 0)"
+            )
+
+        if exercise_type == "conversation":
             query = f"""
-            SELECT DISTINCT e.id, e.exercise_name, l.language, t.topic, 
+            SELECT DISTINCT e.id, e.exercise_name, l.language, t.topic,
                    d.difficulty_level, e.lesson_id, e.has_been_validated
             FROM exercises_info e
             JOIN conversation_exercises ce ON e.id = ce.exercise_id
@@ -1543,9 +1550,9 @@ class LanguageDB:
             ORDER BY e.id
             LIMIT ? OFFSET ?
             """
-        elif exercise_type == 'pair':
+        elif exercise_type == "pair":
             query = f"""
-            SELECT DISTINCT e.id, e.exercise_name, l.language, t.topic, 
+            SELECT DISTINCT e.id, e.exercise_name, l.language, t.topic,
                    d.difficulty_level, e.lesson_id, e.has_been_validated
             FROM exercises_info e
             JOIN pair_exercises pe ON e.id = pe.exercise_id
@@ -1556,11 +1563,11 @@ class LanguageDB:
             ORDER BY e.id
             LIMIT ? OFFSET ?
             """
-        elif exercise_type == 'translation':
+        elif exercise_type == "translation":
             query = f"""
-            SELECT e.id, e.exercise_name, l.language, t.topic, 
+            SELECT e.id, e.exercise_name, l.language, t.topic,
                    d.difficulty_level, e.lesson_id, e.has_been_validated,
-                   tr.language_1, tr.language_2, 
+                   tr.language_1, tr.language_2,
                    tr.language_1_content, tr.language_2_content
             FROM exercises_info e
             JOIN translation_exercises tr ON e.id = tr.exercise_id
@@ -1571,11 +1578,11 @@ class LanguageDB:
             ORDER BY e.id
             LIMIT ? OFFSET ?
             """
-        elif exercise_type == 'fill_in_blank':
+        elif exercise_type == "fill_in_blank":
             query = f"""
-            SELECT e.id, e.exercise_name, l.language, t.topic, 
+            SELECT e.id, e.exercise_name, l.language, t.topic,
                    d.difficulty_level, e.lesson_id, e.has_been_validated,
-                   fib.sentence, fib.correct_answer, fib.incorrect_1, 
+                   fib.sentence, fib.correct_answer, fib.incorrect_1,
                    fib.incorrect_2, fib.blank_position, fib.translation
             FROM exercises_info e
             JOIN fill_in_blank_exercises fib ON e.id = fib.exercise_id
@@ -1588,54 +1595,56 @@ class LanguageDB:
             """
         else:
             return []
-        
+
         self.cursor.execute(query, (batch_size, offset))
         exercises = [dict(row) for row in self.cursor.fetchall()]
-        
+
         # For conversation exercises, we need to fetch the conversation details and summary
-        if exercise_type == 'conversation':
+        if exercise_type == "conversation":
             for exercise in exercises:
-                exercise_id = exercise['id']
-                
+                exercise_id = exercise["id"]
+
                 # Get conversation turns
                 self.cursor.execute(
-                    """SELECT speaker, message FROM conversation_exercises 
+                    """SELECT speaker, message FROM conversation_exercises
                        WHERE exercise_id = ? ORDER BY conversation_order""",
-                    (exercise_id,)
+                    (exercise_id,),
                 )
-                exercise['conversation'] = [dict(row) for row in self.cursor.fetchall()]
-                
+                exercise["conversation"] = [dict(row) for row in self.cursor.fetchall()]
+
                 # Get summary
                 self.cursor.execute(
                     "SELECT summary FROM conversation_summaries WHERE exercise_id = ?",
-                    (exercise_id,)
+                    (exercise_id,),
                 )
                 summary_result = self.cursor.fetchone()
-                exercise['conversation_summary'] = summary_result['summary'] if summary_result else ""
-                exercise['exercise_type'] = 'conversation'
-        
+                exercise["conversation_summary"] = (
+                    summary_result["summary"] if summary_result else ""
+                )
+                exercise["exercise_type"] = "conversation"
+
         # For pair exercises, we need to fetch the pairs
-        elif exercise_type == 'pair':
+        elif exercise_type == "pair":
             for exercise in exercises:
-                exercise_id = exercise['id']
-                
+                exercise_id = exercise["id"]
+
                 # Get pairs
                 self.cursor.execute(
-                    """SELECT language_1, language_2, language_1_content, language_2_content 
+                    """SELECT language_1, language_2, language_1_content, language_2_content
                        FROM pair_exercises WHERE exercise_id = ?""",
-                    (exercise_id,)
+                    (exercise_id,),
                 )
-                exercise['pairs'] = [dict(row) for row in self.cursor.fetchall()]
-                exercise['exercise_type'] = 'pair'
-        
+                exercise["pairs"] = [dict(row) for row in self.cursor.fetchall()]
+                exercise["exercise_type"] = "pair"
+
         # Add exercise_type for other types
-        elif exercise_type == 'translation':
+        elif exercise_type == "translation":
             for exercise in exercises:
-                exercise['exercise_type'] = 'translation'
-        elif exercise_type == 'fill_in_blank':
+                exercise["exercise_type"] = "translation"
+        elif exercise_type == "fill_in_blank":
             for exercise in exercises:
-                exercise['exercise_type'] = 'fill_in_blank'
-        
+                exercise["exercise_type"] = "fill_in_blank"
+
         return exercises
 
     def close(self):

@@ -61,7 +61,7 @@ const TopicSelectionScreen: React.FC<Props> = ({ navigation, route }) => {
 
       // Get complete user context in single call
       const userContext = await getUserContext();
-      
+
       if (!userContext) {
         Alert.alert('Error', 'Failed to initialize user. Please try again.');
         return;
@@ -72,23 +72,23 @@ const TopicSelectionScreen: React.FC<Props> = ({ navigation, route }) => {
 
       setUserLanguage(language);
       setUserDifficulty(difficulty);
-      
+
       // Load topics with progress in a single optimized query
       let topicsWithProgress: TopicWithProgress[] = [];
-      if (exerciseType === 'pairs' || exerciseType === 'conversation' || 
+      if (exerciseType === 'pairs' || exerciseType === 'conversation' ||
           exerciseType === 'translation' || exerciseType === 'fill_in_blank') {
         topicsWithProgress = await getTopicsWithProgressForExerciseType(
-          userContext.userId, 
-          exerciseType, 
-          language, 
+          userContext.userId,
+          exerciseType,
+          language,
           difficulty
         );
       } else {
         // Fallback to pairs for unknown exercise types
         topicsWithProgress = await getTopicsWithProgressForExerciseType(
-          userContext.userId, 
-          'pairs', 
-          language, 
+          userContext.userId,
+          'pairs',
+          language,
           difficulty
         );
       }

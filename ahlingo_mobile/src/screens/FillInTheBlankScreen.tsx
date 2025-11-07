@@ -91,8 +91,8 @@ const FillInTheBlankScreen: React.FC<Props> = ({ route, navigation }) => {
         'Your progress will be lost if you exit now.',
         [
           { text: 'Cancel', style: 'cancel' },
-          { 
-            text: 'Exit', 
+          {
+            text: 'Exit',
             style: 'destructive',
             onPress: () => navigation.navigate('MainMenu')
           },
@@ -120,8 +120,8 @@ const FillInTheBlankScreen: React.FC<Props> = ({ route, navigation }) => {
       'Your progress will be lost if you exit now.',
       [
         { text: 'Cancel', style: 'cancel' },
-        { 
-          text: 'Exit', 
+        {
+          text: 'Exit',
           style: 'destructive',
           onPress: () => navigation.navigate('MainMenu')
         },
@@ -135,7 +135,7 @@ const FillInTheBlankScreen: React.FC<Props> = ({ route, navigation }) => {
 
       // Get complete user context in single call
       const userContext = await getUserContext();
-      
+
       if (!userContext) {
         Alert.alert('Error', 'Failed to initialize user. Please try again.');
         return;
@@ -219,7 +219,7 @@ const FillInTheBlankScreen: React.FC<Props> = ({ route, navigation }) => {
 
   const handleWordPress = (word: string) => {
     if (gameState.hasSubmitted) return;
-    
+
     setGameState(prev => ({
       ...prev,
       selectedWord: word,
@@ -229,7 +229,7 @@ const FillInTheBlankScreen: React.FC<Props> = ({ route, navigation }) => {
   const handleSubmit = async () => {
     if (!gameState.selectedWord) return;
 
-    const isCorrect = gameState.selectedWord.toLowerCase().trim() === 
+    const isCorrect = gameState.selectedWord.toLowerCase().trim() ===
                      gameState.correctAnswer.toLowerCase().trim();
 
     // Record the exercise attempt
@@ -283,7 +283,7 @@ const FillInTheBlankScreen: React.FC<Props> = ({ route, navigation }) => {
     if (!gameState.selectedWord) {
       return gameState.sentence;
     }
-    
+
     return gameState.sentence.replace('_', gameState.selectedWord);
   };
 
@@ -334,7 +334,7 @@ const FillInTheBlankScreen: React.FC<Props> = ({ route, navigation }) => {
           >
             {gameState.isCorrect ? '✅ Correct!' : '❌ Incorrect. Try again!'}
           </Text>
-          
+
           {/* Show the complete correct sentence */}
           <View style={styles.correctSentenceContainer}>
             <Text style={styles.correctSentenceLabel}>Complete sentence:</Text>
@@ -358,13 +358,13 @@ const FillInTheBlankScreen: React.FC<Props> = ({ route, navigation }) => {
               Correct answer: {gameState.correctAnswer}
             </Text>
           )}
-          
+
           <TouchableOpacity
             style={styles.nextButton}
             onPress={handleNextExercise}
           >
             <Text style={styles.nextButtonText}>
-              {shuffleContext 
+              {shuffleContext
                 ? (gameState.isCorrect ? '✅ Perfect! Next Exercise' : '➡️ Next Exercise')
                 : 'Next Exercise'
               }

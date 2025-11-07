@@ -1,4 +1,4 @@
-cd ios 
+cd ios
 pod deintegrate
 rm -rf AhLingo.xcworkspace
 pod deintegrate

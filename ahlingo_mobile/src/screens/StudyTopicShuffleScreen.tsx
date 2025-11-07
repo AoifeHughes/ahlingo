@@ -38,8 +38,8 @@ const StudyTopicShuffleScreen: React.FC<Props> = ({ navigation, route }) => {
       'Your progress will be lost if you exit now.',
       [
         { text: 'Cancel', style: 'cancel' },
-        { 
-          text: 'Exit', 
+        {
+          text: 'Exit',
           style: 'destructive',
           onPress: () => navigation.navigate('MainMenu')
         },
@@ -58,7 +58,7 @@ const StudyTopicShuffleScreen: React.FC<Props> = ({ navigation, route }) => {
 
   const startStudySession = () => {
     const firstExercise = exercises[0];
-    
+
     const shuffleContext: ExerciseShuffleContext = {
       isShuffleMode: true,
       currentChallenge: 1,
@@ -122,21 +122,21 @@ const StudyTopicShuffleScreen: React.FC<Props> = ({ navigation, route }) => {
         <Text style={styles.title}>Study Topic</Text>
         <Text style={styles.topicName}>{topicName}</Text>
         <Text style={styles.subtitle}>Ready to dive deep?</Text>
-        
+
         <View style={styles.challengeIndicator}>
           <Text style={styles.challengeText}>Challenge 1/{exercises.length}</Text>
         </View>
-        
+
         <View style={styles.exercisePreview}>
           <Text style={styles.previewTitle}>Your study session includes:</Text>
           {exercises.map((exercise, index) => (
             <Text key={index} style={styles.exerciseItem}>
-              {index + 1}. {exercise.exerciseType === 'fill_in_blank' ? 'Fill-in-the-blank' : 
+              {index + 1}. {exercise.exerciseType === 'fill_in_blank' ? 'Fill-in-the-blank' :
                   exercise.exerciseType.charAt(0).toUpperCase() + exercise.exerciseType.slice(1)}
             </Text>
           ))}
         </View>
-        
+
         <TouchableOpacity
           style={styles.startButton}
           onPress={startStudySession}
@@ -144,7 +144,7 @@ const StudyTopicShuffleScreen: React.FC<Props> = ({ navigation, route }) => {
         >
           <Text style={styles.startButtonText}>Start Study Session</Text>
         </TouchableOpacity>
-        
+
         <TouchableOpacity
           style={styles.backButton}
           onPress={() => navigation.goBack()}

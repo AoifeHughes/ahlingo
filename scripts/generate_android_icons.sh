@@ -46,7 +46,7 @@ echo -e "${BLUE}📱 Generating Android app icons...${NC}"
 # Define icon configurations: "directory:size"
 ICON_CONFIGS=(
     "mipmap-mdpi:48"
-    "mipmap-hdpi:72" 
+    "mipmap-hdpi:72"
     "mipmap-xhdpi:96"
     "mipmap-xxhdpi:144"
     "mipmap-xxxhdpi:192"
@@ -58,22 +58,22 @@ for config in "${ICON_CONFIGS[@]}"; do
     target_dir="$RES_DIR/$dir"
     target_file="$target_dir/ic_launcher.png"
     target_round_file="$target_dir/ic_launcher_round.png"
-    
+
     echo -e "${YELLOW}⚙️  Generating ${size}x${size} icons for $dir...${NC}"
-    
+
     # Create directory if it doesn't exist
     mkdir -p "$target_dir"
-    
+
     # Generate the regular square icon
     $CONVERT_CMD "$LOGO_PATH" -resize "${size}x${size}" -background transparent "$target_file"
-    
+
     if [ -f "$target_file" ]; then
         echo -e "${GREEN}   ✅ Created square icon: $target_file${NC}"
     else
         echo -e "${RED}   ❌ Failed to create square icon: $target_file${NC}"
         exit 1
     fi
-    
+
     # Generate the circular icon
     # Create a simple circular crop of the logo
     radius=$((size/2 - 4))

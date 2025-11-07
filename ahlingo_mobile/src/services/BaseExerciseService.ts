@@ -79,7 +79,7 @@ export const getSmartRandomExerciseForTopic = async (
       'fill_in_blank': 'JOIN fill_in_blank_exercises fibe ON ei.id = fibe.exercise_id'
     };
     const dataJoin = exerciseTableJoins[exerciseType as keyof typeof exerciseTableJoins] || 'JOIN pair_exercises pe ON ei.id = pe.exercise_id';
-    
+
     const query = `
       SELECT DISTINCT ei.* FROM exercises_info ei
       JOIN languages l ON ei.language_id = l.id
@@ -121,9 +121,9 @@ export const getSmartRandomExerciseForTopic = async (
     // Use smart randomization
     const smartRandomizer = new SmartRandomizer(DEFAULT_RANDOMIZATION_CONFIG);
     smartRandomizer.loadRecentExercises(recentExercises);
-    
+
     const selectedExercise = smartRandomizer.selectSingleExercise(availableExercises);
-    
+
     return selectedExercise ? selectedExercise.exerciseInfo : null;
   } catch (error) {
     console.error(

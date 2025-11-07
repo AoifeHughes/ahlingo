@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { 
-  View, 
-  Text, 
-  FlatList, 
-  TouchableOpacity, 
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
   StyleSheet,
   Modal,
   Alert,
@@ -119,11 +119,11 @@ const ConversationsList: React.FC<ConversationsListProps> = ({
     return (
       <TouchableOpacity
         style={[
-          styles.conversationItem, 
+          styles.conversationItem,
           { backgroundColor: theme.colors.surface },
-          isSelected && [styles.selectedItem, { 
+          isSelected && [styles.selectedItem, {
             backgroundColor: theme.colors.secondary,
-            borderColor: theme.colors.primary 
+            borderColor: theme.colors.primary
           }]
         ]}
         onPress={() => {
@@ -138,9 +138,9 @@ const ConversationsList: React.FC<ConversationsListProps> = ({
           {isEditing ? (
             <View style={styles.editingContainer}>
               <TextInput
-                style={[styles.editInput, { 
+                style={[styles.editInput, {
                   color: theme.colors.text,
-                  borderBottomColor: theme.colors.primary 
+                  borderBottomColor: theme.colors.primary
                 }]}
                 value={editingChatName}
                 onChangeText={setEditingChatName}
@@ -185,9 +185,9 @@ const ConversationsList: React.FC<ConversationsListProps> = ({
       onRequestClose={onClose}
     >
       <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-        <View style={[styles.header, { 
+        <View style={[styles.header, {
           backgroundColor: theme.colors.surface,
-          borderBottomColor: theme.colors.border 
+          borderBottomColor: theme.colors.border
         }]}>
           <Text style={[styles.title, { color: theme.colors.text }]}>Conversations</Text>
           <View style={styles.headerButtons}>

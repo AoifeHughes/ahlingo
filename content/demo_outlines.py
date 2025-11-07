@@ -18,7 +18,9 @@ import json
 import logging
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 
 # Add the content_creation directory to the path
 sys.path.append(str(Path(__file__).parent))
@@ -50,7 +52,9 @@ def demo_single_lesson():
         print(f"Generated {len(data)} exercises:")
 
         for i, exercise in enumerate(data[:3]):  # Show first 3
-            print(f"  Exercise {i+1}: {json.dumps(exercise, ensure_ascii=False, indent=4)}")
+            print(
+                f"  Exercise {i+1}: {json.dumps(exercise, ensure_ascii=False, indent=4)}"
+            )
 
         if len(data) > 3:
             print(f"  ... and {len(data) - 3} more exercises")

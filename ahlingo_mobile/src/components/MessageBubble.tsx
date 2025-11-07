@@ -20,8 +20,8 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
     >
       <View
         style={[
-          styles.bubble, 
-          { 
+          styles.bubble,
+          {
             backgroundColor: isLeft ? theme.colors.assistantMessage : theme.colors.userMessage,
             shadowColor: theme.colors.text,
           },

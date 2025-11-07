@@ -12,18 +12,18 @@ interface ProgressRingProps {
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
-const ProgressRing: React.FC<ProgressRingProps> = ({ 
-  percentage, 
-  size = 60, 
+const ProgressRing: React.FC<ProgressRingProps> = ({
+  percentage,
+  size = 60,
   strokeWidth = 4,
   testID
 }) => {
   const { theme } = useTheme();
   const animatedValue = useRef(new Animated.Value(0)).current;
-  
+
   const radius = (size - strokeWidth) / 2;
   const circumference = radius * 2 * Math.PI;
-  
+
   useEffect(() => {
     Animated.timing(animatedValue, {
       toValue: percentage,

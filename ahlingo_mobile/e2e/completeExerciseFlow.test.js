@@ -34,7 +34,7 @@ describe('Complete Exercise Flow', () => {
     // Try to tap the first topic (topic ID 1)
     try {
       await element(by.id('topic-card-1')).tap();
-      
+
       // Should navigate to the actual exercise
       await waitFor(element(by.text('Check')))
         .toBeVisible()
@@ -42,7 +42,7 @@ describe('Complete Exercise Flow', () => {
 
       // Exercise should be functional
       await expect(element(by.text('Check'))).toBeVisible();
-      
+
     } catch (error) {
       // If no topics available, should show empty state
       await expect(element(by.text('No Topics Available'))).toBeVisible();
@@ -95,7 +95,7 @@ describe('Complete Exercise Flow', () => {
       await waitFor(element(by.id('topics-list')))
         .toBeVisible()
         .withTimeout(5000);
-      
+
       // Topics are available, test passed
     } catch (error) {
       // No topics available, should show empty state
@@ -118,7 +118,7 @@ describe('Complete Exercise Flow', () => {
 
     // Pull to refresh
     await element(by.id('topics-list')).scrollTo('top');
-    
+
     // Swipe down to trigger refresh (pull-to-refresh)
     await element(by.id('topics-list')).swipe('down', 'fast', 0.8);
 
@@ -132,7 +132,7 @@ describe('Complete Exercise Flow', () => {
 
   it('should navigate correctly between exercise types', async () => {
     // Test rapid navigation between different exercise types
-    
+
     // Match Words
     await element(by.id('exercise-match-words')).tap();
     await waitFor(element(by.id('topic-selection-screen')))
@@ -170,14 +170,14 @@ describe('Complete Exercise Flow', () => {
 
     // Rotate device
     await device.setOrientation('landscape');
-    
+
     // Should still show topic selection
     await expect(element(by.id('topic-selection-screen'))).toBeVisible();
     await expect(element(by.text('Match Words'))).toBeVisible();
 
     // Rotate back
     await device.setOrientation('portrait');
-    
+
     // Should still be functional
     await expect(element(by.id('topic-selection-screen'))).toBeVisible();
 

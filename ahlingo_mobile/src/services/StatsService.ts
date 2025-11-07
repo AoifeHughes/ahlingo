@@ -61,8 +61,8 @@ export const getUserStatsByTopic = async (
     const stats = rowsToArray<any>(results.rows);
     return stats.map(stat => ({
       ...stat,
-      completion_percentage: stat.total_exercises > 0 
-        ? Math.round((stat.correct_exercises * 100) / stat.total_exercises) 
+      completion_percentage: stat.total_exercises > 0
+        ? Math.round((stat.correct_exercises * 100) / stat.total_exercises)
         : 0
     }));
   } catch (error) {
@@ -101,11 +101,11 @@ export const getUserProgressSummary = async (
         total_attempted: row.total_attempted,
         total_correct: row.total_correct,
         total_available: row.total_available,
-        overall_completion_percentage: row.total_available > 0 
-          ? Math.round((row.total_correct * 100) / row.total_available) 
+        overall_completion_percentage: row.total_available > 0
+          ? Math.round((row.total_correct * 100) / row.total_available)
           : 0,
-        success_rate: row.total_attempted > 0 
-          ? Math.round((row.total_correct * 100) / row.total_attempted) 
+        success_rate: row.total_attempted > 0
+          ? Math.round((row.total_correct * 100) / row.total_attempted)
           : 0
       };
     }
@@ -159,8 +159,8 @@ export const getUserStatsAndSummary = async (
     const stats = statsResults
       ? rowsToArray<any>(statsResults.rows).map(stat => ({
           ...stat,
-          completion_percentage: stat.total_exercises > 0 
-            ? Math.round((stat.correct_exercises * 100) / stat.total_exercises) 
+          completion_percentage: stat.total_exercises > 0
+            ? Math.round((stat.correct_exercises * 100) / stat.total_exercises)
             : 0
         }))
       : [];
@@ -177,11 +177,11 @@ export const getUserStatsAndSummary = async (
         total_attempted: row.total_attempted,
         total_correct: row.total_correct,
         total_available: row.total_available,
-        overall_completion_percentage: row.total_available > 0 
-          ? Math.round((row.total_correct * 100) / row.total_available) 
+        overall_completion_percentage: row.total_available > 0
+          ? Math.round((row.total_correct * 100) / row.total_available)
           : 0,
-        success_rate: row.total_attempted > 0 
-          ? Math.round((row.total_correct * 100) / row.total_attempted) 
+        success_rate: row.total_attempted > 0
+          ? Math.round((row.total_correct * 100) / row.total_attempted)
           : 0
       };
     } else {

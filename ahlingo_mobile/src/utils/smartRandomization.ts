@@ -1,6 +1,6 @@
 /**
  * Smart Randomization Utility
- * 
+ *
  * Implements priority-based randomization with anti-repetition logic
  * to prevent consecutive lessons and ensure balanced exercise distribution.
  */
@@ -80,10 +80,10 @@ export class SmartRandomizer {
     count: number
   ): T[] {
     if (availableExercises.length === 0) return [];
-    
+
     // Clean up old exercises first
     this.cleanupOldExercises();
-    
+
     // If we need more exercises than available, return all
     if (count >= availableExercises.length) {
       return this.shuffleArray([...availableExercises]);
@@ -91,16 +91,16 @@ export class SmartRandomizer {
 
     // Create weighted selection pool
     const weightedPool = this.createWeightedPool(availableExercises);
-    
+
     // Select exercises with anti-repetition logic
     const selectedExercises: T[] = [];
     const remainingPool = [...weightedPool];
-    
+
     for (let i = 0; i < count && remainingPool.length > 0; i++) {
       const selected = this.selectFromWeightedPool(remainingPool);
       if (selected) {
         selectedExercises.push(selected.exercise);
-        
+
         // Remove selected and similar exercises from remaining pool
         this.removeFromPool(remainingPool, selected.exercise);
       }
@@ -124,19 +124,19 @@ export class SmartRandomizer {
    */
   private shouldExcludeExercise(exercise: ExerciseInfo): boolean {
     const recentCount = Math.min(this.config.immediateExclusionCount, this.recentExercises.length);
-    
+
     for (let i = 0; i < recentCount; i++) {
       const recent = this.recentExercises[i];
-      
+
       // Exclude if same exercise
       if (recent.exerciseId === exercise.id) return true;
-      
+
       // Exclude if same topic and lesson (if lesson exists)
-      if (recent.topicId === exercise.topic_id && 
-          recent.lessonId === exercise.lesson_id && 
+      if (recent.topicId === exercise.topic_id &&
+          recent.lessonId === exercise.lesson_id &&
           exercise.lesson_id !== null) return true;
     }
-    
+
     return false;
   }
 
@@ -146,11 +146,11 @@ export class SmartRandomizer {
   private calculateExerciseWeight(exercise: ExerciseInfo): number {
     // Base weight
     let weight = 1.0;
-    
+
     // Check if exercise is in reduced probability range
     const reducedProbabilityEnd = this.config.immediateExclusionCount + this.config.reducedProbabilityCount;
     const relevantRecent = this.recentExercises.slice(this.config.immediateExclusionCount, reducedProbabilityEnd);
-    
+
     for (const recent of relevantRecent) {
       if (recent.exerciseId === exercise.id ||
           (recent.topicId === exercise.topic_id && recent.lessonId === exercise.lesson_id)) {
@@ -158,7 +158,7 @@ export class SmartRandomizer {
         break;
       }
     }
-    
+
     return weight;
   }
 
@@ -183,19 +183,19 @@ export class SmartRandomizer {
     pool: Array<{ exercise: T; weight: number }>
   ): { exercise: T; weight: number } | null {
     if (pool.length === 0) return null;
-    
+
     const totalWeight = pool.reduce((sum, item) => sum + item.weight, 0);
     if (totalWeight === 0) return null;
-    
+
     let random = Math.random() * totalWeight;
-    
+
     for (const item of pool) {
       random -= item.weight;
       if (random <= 0) {
         return item;
       }
     }
-    
+
     // Fallback to last item
     return pool[pool.length - 1];
   }
@@ -208,13 +208,13 @@ export class SmartRandomizer {
     selectedExercise: T
   ): void {
     const selectedInfo = selectedExercise.exerciseInfo;
-    
+
     // Remove all exercises from same topic/lesson to avoid immediate repetition
     for (let i = pool.length - 1; i >= 0; i--) {
       const poolExercise = pool[i].exercise.exerciseInfo;
-      
+
       if (poolExercise.id === selectedInfo.id ||
-          (poolExercise.topic_id === selectedInfo.topic_id && 
+          (poolExercise.topic_id === selectedInfo.topic_id &&
            poolExercise.lesson_id === selectedInfo.lesson_id &&
            selectedInfo.lesson_id !== null)) {
         pool.splice(i, 1);
