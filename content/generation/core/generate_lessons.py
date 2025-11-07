@@ -4,7 +4,7 @@ import json
 import re
 from tqdm import tqdm
 from typing import Dict, List, Any, Tuple, Generator
-from database.database_manager import LanguageDB
+from content.database.database_manager import LanguageDB
 from content.generation.utils.assistants import (
     default_conversation_assistants,
     default_pairs_assistants,

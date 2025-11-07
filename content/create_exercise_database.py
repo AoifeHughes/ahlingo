@@ -3,8 +3,8 @@ import os
 
 os.environ["KIVY_NO_CONSOLELOG"] = "1"
 
-from content_creation.generate_lessons import populate_database
-from database.database_manager import LanguageDB
+from content.generation.core.generate_lessons import populate_database
+from content.database.database_manager import LanguageDB
 
 
 def initialize_default_settings(db_loc=None):
@@ -70,7 +70,7 @@ if __name__ == "__main__":
 
     # Set flags in outlines_generator if requested
     if args.nothink or args.debug:
-        from content_creation.outlines_generator import MODEL_CONFIG
+        from content.generation.core.outlines_generator import MODEL_CONFIG
 
         if args.nothink:
             MODEL_CONFIG["no_think"] = True
