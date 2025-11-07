@@ -6,11 +6,12 @@ Includes special support for Ukrainian using the ukrainian-tts library.
 
 This script reads from the language learning database and generates audio files
 for each exercise in both languages (typically English and the target language).
-The audio files are stored in a structured way for easy access.
+The audio files are compressed to AAC at 64kbps and stored in the database.
 
 Requirements:
 - TTS (with XTTS-v2 support)
 - ukrainian-tts (for Ukrainian language support)
+- ffmpeg (for audio compression to AAC)
 - sqlite3
 - pathlib
 - tqdm (for progress bars)
@@ -86,6 +87,9 @@ class PronunciationAudioGenerator:
 
         # Initialize database connection
         self.db = LanguageDB(str(self.db_path))
+
+        # Check for ffmpeg availability
+        self._check_ffmpeg_availability()
 
         # Print audio count in database
         print(f"Number of audio recordings in database: {self.db.get_audio_count()}")
@@ -163,9 +167,83 @@ class PronunciationAudioGenerator:
         with open(self.metadata_path, "w", encoding="utf-8") as f:
             json.dump(self.metadata, f, ensure_ascii=False, indent=2)
 
+    def _check_ffmpeg_availability(self):
+        """Check if ffmpeg is available for audio compression."""
+        import subprocess
+        try:
+            subprocess.run(
+                ["ffmpeg", "-version"], 
+                capture_output=True, 
+                check=True
+            )
+            print("ffmpeg found - audio will be compressed to AAC at 64kbps")
+        except (subprocess.CalledProcessError, FileNotFoundError):
+            print("Warning: ffmpeg not found. Audio will be stored as uncompressed WAV.")
+            print("To enable AAC compression, install ffmpeg:")
+            print("  macOS: brew install ffmpeg")
+            print("  Ubuntu/Debian: sudo apt install ffmpeg")
+            print("  Windows: Download from https://ffmpeg.org/download.html")
+
     def _get_text_hash(self, text: str) -> str:
         """Generate a hash for text to use in filenames."""
         return hashlib.md5(text.encode("utf-8")).hexdigest()[:10]
+
+    def _compress_audio_to_aac(self, wav_path: str) -> bytes:
+        """
+        Convert WAV audio to AAC at 64kbps using ffmpeg.
+        
+        Args:
+            wav_path: Path to the input WAV file
+            
+        Returns:
+            bytes: Compressed AAC audio data
+        """
+        import subprocess
+        import tempfile
+        
+        try:
+            # Create temporary file for AAC output
+            with tempfile.NamedTemporaryFile(suffix=".aac", delete=False) as temp_aac:
+                temp_aac_path = temp_aac.name
+            
+            # Use ffmpeg to convert WAV to AAC at 64kbps
+            ffmpeg_cmd = [
+                "ffmpeg", "-y",  # -y to overwrite output file
+                "-i", wav_path,  # input file
+                "-c:a", "aac",   # audio codec: AAC
+                "-b:a", "64k",   # audio bitrate: 64kbps
+                "-movflags", "+faststart",  # optimize for streaming
+                temp_aac_path
+            ]
+            
+            # Run ffmpeg command
+            result = subprocess.run(
+                ffmpeg_cmd,
+                capture_output=True,
+                text=True,
+                check=True
+            )
+            
+            # Read compressed audio data
+            with open(temp_aac_path, "rb") as f:
+                compressed_data = f.read()
+            
+            # Clean up temporary AAC file
+            os.unlink(temp_aac_path)
+            
+            return compressed_data
+            
+        except subprocess.CalledProcessError as e:
+            print(f"Error compressing audio with ffmpeg: {e}")
+            print(f"ffmpeg stderr: {e.stderr}")
+            # Fall back to original WAV data if compression fails
+            with open(wav_path, "rb") as f:
+                return f.read()
+        except Exception as e:
+            print(f"Unexpected error during audio compression: {e}")
+            # Fall back to original WAV data
+            with open(wav_path, "rb") as f:
+                return f.read()
 
     def _get_language_code(self, language: str) -> str:
         """Map language names to language codes for XTTS."""
@@ -263,14 +341,13 @@ class PronunciationAudioGenerator:
                         speaker=self.speaker,
                     )
 
-            # Read the audio data from the temporary file
-            with open(temp_path, "rb") as f:
-                audio_data = f.read()
+            # Convert WAV to AAC at 64kbps before storing
+            compressed_audio_data = self._compress_audio_to_aac(temp_path)
 
-            # Store in database if exercise_type is provided
+            # Store compressed audio in database if exercise_type is provided
             if exercise_type:
                 self.db.store_pronunciation_audio(
-                    text, language, audio_data, exercise_type, topic, difficulty
+                    text, language, compressed_audio_data, exercise_type, topic, difficulty
                 )
 
             # Copy to output_path if provided (for backward compatibility)

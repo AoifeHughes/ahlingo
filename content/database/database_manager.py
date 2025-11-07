@@ -16,6 +16,7 @@ class LanguageDB:
         self.conn.row_factory = sqlite3.Row
         self.cursor = self.conn.cursor()
         self._initialize()
+        self._update_schema()
 
         # print the number of rows in the database
         self.cursor.execute("SELECT COUNT(*) FROM topics")
@@ -151,6 +152,23 @@ class LanguageDB:
         for query in table_creation_queries:
             self.cursor.execute(query)
         self.conn.commit()
+
+    def _update_schema(self):
+        """Update database schema for validation tracking."""
+        try:
+            # Check if has_been_validated column exists
+            self.cursor.execute("PRAGMA table_info(exercises_info)")
+            columns = [column[1] for column in self.cursor.fetchall()]
+            
+            if 'has_been_validated' not in columns:
+                print("Adding has_been_validated column to exercises_info table...")
+                self.cursor.execute(
+                    "ALTER TABLE exercises_info ADD COLUMN has_been_validated BOOLEAN DEFAULT 0"
+                )
+                self.conn.commit()
+                print("Validation tracking column added successfully.")
+        except Exception as e:
+            print(f"Error updating schema: {e}")
 
     def get_most_recent_user(self) -> Optional[str]:
         """Get the username of the most recently logged in user."""
@@ -1456,6 +1474,169 @@ class LanguageDB:
         
         self.conn.commit()
         return len(exercise_ids)
+
+    def mark_exercises_as_validated(self, exercise_ids: List[int]) -> int:
+        """Mark exercises as validated in the database."""
+        if not exercise_ids:
+            return 0
+        
+        placeholders = ','.join(['?'] * len(exercise_ids))
+        self.cursor.execute(
+            f"UPDATE exercises_info SET has_been_validated = 1 WHERE id IN ({placeholders})",
+            exercise_ids
+        )
+        self.conn.commit()
+        return len(exercise_ids)
+
+    def get_exercise_counts(self, exercise_type_filter: Optional[str] = None) -> Dict[str, int]:
+        """Get total and unvalidated exercise counts."""
+        where_clause = ""
+        params = []
+        
+        if exercise_type_filter:
+            where_clause = "WHERE e.exercise_type = ?"
+            params.append(exercise_type_filter)
+        
+        # Get total count
+        self.cursor.execute(
+            f"SELECT COUNT(*) FROM exercises_info e {where_clause}",
+            params
+        )
+        total_count = self.cursor.fetchone()[0]
+        
+        # Get unvalidated count
+        validated_where = "WHERE (e.has_been_validated IS NULL OR e.has_been_validated = 0)"
+        if exercise_type_filter:
+            validated_where += " AND e.exercise_type = ?"
+        
+        self.cursor.execute(
+            f"SELECT COUNT(*) FROM exercises_info e {validated_where}",
+            params
+        )
+        unvalidated_count = self.cursor.fetchone()[0]
+        
+        return {
+            'total': total_count,
+            'unvalidated': unvalidated_count,
+            'validated': total_count - unvalidated_count
+        }
+
+    def get_exercises_batch(self, exercise_type: str, batch_size: int = 50, 
+                           offset: int = 0, only_unvalidated: bool = True) -> List[Dict]:
+        """Get a batch of exercises for validation."""
+        
+        # Base validation filter
+        validation_filter = ""
+        if only_unvalidated:
+            validation_filter = "AND (e.has_been_validated IS NULL OR e.has_been_validated = 0)"
+        
+        if exercise_type == 'conversation':
+            query = f"""
+            SELECT DISTINCT e.id, e.exercise_name, l.language, t.topic, 
+                   d.difficulty_level, e.lesson_id, e.has_been_validated
+            FROM exercises_info e
+            JOIN conversation_exercises ce ON e.id = ce.exercise_id
+            JOIN languages l ON e.language_id = l.id
+            JOIN topics t ON e.topic_id = t.id
+            JOIN difficulties d ON e.difficulty_id = d.id
+            WHERE e.exercise_type = 'conversations' {validation_filter}
+            ORDER BY e.id
+            LIMIT ? OFFSET ?
+            """
+        elif exercise_type == 'pair':
+            query = f"""
+            SELECT DISTINCT e.id, e.exercise_name, l.language, t.topic, 
+                   d.difficulty_level, e.lesson_id, e.has_been_validated
+            FROM exercises_info e
+            JOIN pair_exercises pe ON e.id = pe.exercise_id
+            JOIN languages l ON e.language_id = l.id
+            JOIN topics t ON e.topic_id = t.id
+            JOIN difficulties d ON e.difficulty_id = d.id
+            WHERE e.exercise_type = 'pairs' {validation_filter}
+            ORDER BY e.id
+            LIMIT ? OFFSET ?
+            """
+        elif exercise_type == 'translation':
+            query = f"""
+            SELECT e.id, e.exercise_name, l.language, t.topic, 
+                   d.difficulty_level, e.lesson_id, e.has_been_validated,
+                   tr.language_1, tr.language_2, 
+                   tr.language_1_content, tr.language_2_content
+            FROM exercises_info e
+            JOIN translation_exercises tr ON e.id = tr.exercise_id
+            JOIN languages l ON e.language_id = l.id
+            JOIN topics t ON e.topic_id = t.id
+            JOIN difficulties d ON e.difficulty_id = d.id
+            WHERE e.exercise_type = 'translations' {validation_filter}
+            ORDER BY e.id
+            LIMIT ? OFFSET ?
+            """
+        elif exercise_type == 'fill_in_blank':
+            query = f"""
+            SELECT e.id, e.exercise_name, l.language, t.topic, 
+                   d.difficulty_level, e.lesson_id, e.has_been_validated,
+                   fib.sentence, fib.correct_answer, fib.incorrect_1, 
+                   fib.incorrect_2, fib.blank_position, fib.translation
+            FROM exercises_info e
+            JOIN fill_in_blank_exercises fib ON e.id = fib.exercise_id
+            JOIN languages l ON e.language_id = l.id
+            JOIN topics t ON e.topic_id = t.id
+            JOIN difficulties d ON e.difficulty_id = d.id
+            WHERE e.exercise_type = 'fill_in_blank' {validation_filter}
+            ORDER BY e.id
+            LIMIT ? OFFSET ?
+            """
+        else:
+            return []
+        
+        self.cursor.execute(query, (batch_size, offset))
+        exercises = [dict(row) for row in self.cursor.fetchall()]
+        
+        # For conversation exercises, we need to fetch the conversation details and summary
+        if exercise_type == 'conversation':
+            for exercise in exercises:
+                exercise_id = exercise['id']
+                
+                # Get conversation turns
+                self.cursor.execute(
+                    """SELECT speaker, message FROM conversation_exercises 
+                       WHERE exercise_id = ? ORDER BY conversation_order""",
+                    (exercise_id,)
+                )
+                exercise['conversation'] = [dict(row) for row in self.cursor.fetchall()]
+                
+                # Get summary
+                self.cursor.execute(
+                    "SELECT summary FROM conversation_summaries WHERE exercise_id = ?",
+                    (exercise_id,)
+                )
+                summary_result = self.cursor.fetchone()
+                exercise['conversation_summary'] = summary_result['summary'] if summary_result else ""
+                exercise['exercise_type'] = 'conversation'
+        
+        # For pair exercises, we need to fetch the pairs
+        elif exercise_type == 'pair':
+            for exercise in exercises:
+                exercise_id = exercise['id']
+                
+                # Get pairs
+                self.cursor.execute(
+                    """SELECT language_1, language_2, language_1_content, language_2_content 
+                       FROM pair_exercises WHERE exercise_id = ?""",
+                    (exercise_id,)
+                )
+                exercise['pairs'] = [dict(row) for row in self.cursor.fetchall()]
+                exercise['exercise_type'] = 'pair'
+        
+        # Add exercise_type for other types
+        elif exercise_type == 'translation':
+            for exercise in exercises:
+                exercise['exercise_type'] = 'translation'
+        elif exercise_type == 'fill_in_blank':
+            for exercise in exercises:
+                exercise['exercise_type'] = 'fill_in_blank'
+        
+        return exercises
 
     def close(self):
         """Close the database connection."""

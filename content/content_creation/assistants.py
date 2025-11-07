@@ -16,6 +16,10 @@ default_conversation_assistants = {
         "role": "assistant",
         "content": '[{"conversation": [{"speaker": "Оксана", "message": "Яка твоя улюблена тварина?"}, {"speaker": "Іван", "message": "Моя улюблена тварина - кіт. А твоя?"}, {"speaker": "Оксана", "message": "Мені подобаються собаки. Вони дуже вірні."}], "conversation_summary": "A conversation discussing each person\'s favorite animal."}, {"conversation": [{"speaker": "Анна", "message": "Тобі подобається природа?"}, {"speaker": "Петро", "message": "Так, я обожнюю гуляти в лісі."}, {"speaker": "Анна", "message": "Я теж. Дуже заспокійливо слухати птахів."}], "conversation_summary": "A conversation about enjoying nature, especially walking in the forest and listening to birds."}]',
     },
+    "Italian": {
+        "role": "assistant",
+        "content": '[{"conversation": [{"speaker": "Maria", "message": "Qual è il tuo animale preferito?"}, {"speaker": "Luca", "message": "Il mio animale preferito è il gatto. E il tuo?"}, {"speaker": "Maria", "message": "Mi piacciono i cani. Sono molto fedeli."}], "conversation_summary": "A conversation discussing each person\'s favorite animal."}, {"conversation": [{"speaker": "Sofia", "message": "Ti piace la natura?"}, {"speaker": "Marco", "message": "Sì, adoro passeggiare nel bosco."}, {"speaker": "Sofia", "message": "Anch\'io. È molto rilassante ascoltare gli uccelli."}], "conversation_summary": "A conversation about enjoying nature, especially walking in the forest and listening to birds."}]',
+    },
 }
 
 default_pairs_assistants = {
@@ -34,6 +38,10 @@ default_pairs_assistants = {
     "Ukrainian": {
         "role": "assistant",
         "content": '[{"English": "apple", "Ukrainian": "яблуко"}, {"English": "book", "Ukrainian": "книга"}, {"English": "car", "Ukrainian": "автомобіль"}, {"English": "dog", "Ukrainian": "собака"}, {"English": "house", "Ukrainian": "будинок"}, {"English": "love", "Ukrainian": "любов"}, {"English": "moon", "Ukrainian": "місяць"}, {"English": "sun", "Ukrainian": "сонце"}, {"English": "tree", "Ukrainian": "дерево"}, {"English": "water", "Ukrainian": "вода"}]',
+    },
+    "Italian": {
+        "role": "assistant",
+        "content": '[{"English": "apple", "Italian": "mela"}, {"English": "book", "Italian": "libro"}, {"English": "car", "Italian": "macchina"}, {"English": "dog", "Italian": "cane"}, {"English": "house", "Italian": "casa"}, {"English": "love", "Italian": "amore"}, {"English": "moon", "Italian": "luna"}, {"English": "sun", "Italian": "sole"}, {"English": "tree", "Italian": "albero"}, {"English": "water", "Italian": "acqua"}]',
     },
 }
 
@@ -54,6 +62,10 @@ default_translation_assistants = {
         "role": "assistant",
         "content": '[{"English": "How are you today?", "Ukrainian": "Як ти сьогодні?"}, {"English": "I am learning to speak Ukrainian.", "Ukrainian": "Я вчуся розмовляти українською."}, {"English": "The weather is nice this afternoon.", "Ukrainian": "Сьогодні вдень гарна погода."}, {"English": "Can you help me with my homework?", "Ukrainian": "Можеш допомогти мені з домашнім завданням?"}, {"English": "My family is going on vacation next week.", "Ukrainian": "Моя сім\'я їде у відпустку наступного тижня."}, {"English": "This restaurant has delicious food.", "Ukrainian": "У цьому ресторані смачна їжа."}]',
     },
+    "Italian": {
+        "role": "assistant",
+        "content": '[{"English": "How are you today?", "Italian": "Come stai oggi?"}, {"English": "I am learning to speak Italian.", "Italian": "Sto imparando a parlare italiano."}, {"English": "The weather is nice this afternoon.", "Italian": "Il tempo è bello questo pomeriggio."}, {"English": "Can you help me with my homework?", "Italian": "Puoi aiutarmi con i compiti?"}, {"English": "My family is going on vacation next week.", "Italian": "La mia famiglia va in vacanza la prossima settimana."}, {"English": "This restaurant has delicious food.", "Italian": "Questo ristorante ha del cibo delizioso."}]',
+    },
 }
 
 blank_conversation_assistants = {
@@ -61,6 +73,7 @@ blank_conversation_assistants = {
     "German": {"role": "assistant", "content": ""},
     "Spanish": {"role": "assistant", "content": ""},
     "Ukrainian": {"role": "assistant", "content": ""},
+    "Italian": {"role": "assistant", "content": ""},
 }
 
 blank_pairs_assistants = {
@@ -68,6 +81,7 @@ blank_pairs_assistants = {
     "German": {"role": "assistant", "content": ""},
     "Spanish": {"role": "assistant", "content": ""},
     "Ukrainian": {"role": "assistant", "content": ""},
+    "Italian": {"role": "assistant", "content": ""},
 }
 
 blank_translation_assistants = {
@@ -75,6 +89,7 @@ blank_translation_assistants = {
     "German": {"role": "assistant", "content": ""},
     "Spanish": {"role": "assistant", "content": ""},
     "Ukrainian": {"role": "assistant", "content": ""},
+    "Italian": {"role": "assistant", "content": ""},
 }
 
 default_fill_in_blank_assistants = {
@@ -94,6 +109,10 @@ default_fill_in_blank_assistants = {
         "role": "assistant",
         "content": '[{"sentence": "Я їм червоне _", "correct_answer": "яблуко", "incorrect_1": "апельсин", "incorrect_2": "персик", "blank_position": 2, "translation": "I eat a red apple"}, {"sentence": "Він _ до школи щодня", "correct_answer": "йде", "incorrect_1": "біжить", "incorrect_2": "їздить", "blank_position": 1, "translation": "He goes to school every day"}, {"sentence": "_ сьогодні дуже гарна", "correct_answer": "Погода", "incorrect_1": "Музика", "incorrect_2": "Їжа", "blank_position": 0, "translation": "The weather is very beautiful today"}, {"sentence": "Вона _ цікаву книгу", "correct_answer": "читає", "incorrect_1": "пише", "incorrect_2": "купує", "blank_position": 1, "translation": "She reads an interesting book"}, {"sentence": "Мій улюблений _ синій", "correct_answer": "колір", "incorrect_1": "спорт", "incorrect_2": "фільм", "blank_position": 2, "translation": "My favorite color is blue"}]',
     },
+    "Italian": {
+        "role": "assistant",
+        "content": '[{"sentence": "Io mangio una _ rossa", "correct_answer": "mela", "incorrect_1": "arancia", "incorrect_2": "ciliegia", "blank_position": 3, "translation": "I eat a red apple"}, {"sentence": "Lui _ a scuola ogni giorno", "correct_answer": "va", "incorrect_1": "corre", "incorrect_2": "cammina", "blank_position": 1, "translation": "He goes to school every day"}, {"sentence": "Il _ è molto bello oggi", "correct_answer": "tempo", "incorrect_1": "cibo", "incorrect_2": "concerto", "blank_position": 1, "translation": "The weather is very beautiful today"}, {"sentence": "Lei _ un libro interessante", "correct_answer": "legge", "incorrect_1": "scrive", "incorrect_2": "compra", "blank_position": 1, "translation": "She reads an interesting book"}, {"sentence": "Il mio _ preferito è il blu", "correct_answer": "colore", "incorrect_1": "animale", "incorrect_2": "sport", "blank_position": 2, "translation": "My favorite color is blue"}]',
+    },
 }
 
 blank_fill_in_blank_assistants = {
@@ -101,4 +120,5 @@ blank_fill_in_blank_assistants = {
     "German": {"role": "assistant", "content": ""},
     "Spanish": {"role": "assistant", "content": ""},
     "Ukrainian": {"role": "assistant", "content": ""},
+    "Italian": {"role": "assistant", "content": ""},
 }

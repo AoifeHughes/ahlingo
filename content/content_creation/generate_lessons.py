@@ -14,6 +14,11 @@ import uuid
 import csv
 from datetime import datetime
 import os
+import threading
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
+# Thread lock for CSV logging
+_log_lock = threading.Lock()
 
 
 def initialize_failure_log(log_path: str = None) -> str:
@@ -36,21 +41,22 @@ def log_failure(log_path: str, language: str, level: str, topic: str,
                 lesson_kind: str, lesson_id: str, exercise_index: int = None,
                 error_type: str = None, error_message: str = None, 
                 exercise_data: str = None):
-    """Log a failure to the CSV file."""
-    with open(log_path, 'a', newline='', encoding='utf-8') as csvfile:
-        writer = csv.writer(csvfile)
-        writer.writerow([
-            datetime.now().isoformat(),
-            language,
-            level,
-            topic,
-            lesson_kind,
-            lesson_id,
-            exercise_index if exercise_index is not None else 'N/A',
-            error_type if error_type else 'Unknown',
-            error_message if error_message else 'No message',
-            exercise_data if exercise_data else 'No data'
-        ])
+    """Log a failure to the CSV file (thread-safe)."""
+    with _log_lock:
+        with open(log_path, 'a', newline='', encoding='utf-8') as csvfile:
+            writer = csv.writer(csvfile)
+            writer.writerow([
+                datetime.now().isoformat(),
+                language,
+                level,
+                topic,
+                lesson_kind,
+                lesson_id,
+                exercise_index if exercise_index is not None else 'N/A',
+                error_type if error_type else 'Unknown',
+                error_message if error_message else 'No message',
+                exercise_data if exercise_data else 'No data'
+            ])
 
 
 def clean_text(text: str) -> str:
@@ -331,7 +337,53 @@ def process_response(
                       response[:500] if response else "No response")
 
 
-def populate_database(db_loc: str = None):
+def process_language_level_topic(args):
+    """Worker function to process a single language-level-topic combination."""
+    language, level, topic, model, db_loc, log_path = args
+    
+    try:
+        from .outlines_generator import generate_lessons_data_structured
+        
+        # Create a separate database connection for this thread
+        db = LanguageDB(db_loc)
+        
+        try:
+            # Use Outlines generation with shared model
+            for (
+                lesson_kind,
+                lesson_id,
+                json_response,
+            ) in generate_lessons_data_structured(
+                language, level, topic, model=model, log_path=log_path
+            ):
+                # Use existing process_response function
+                process_response(
+                    db=db,
+                    response=json_response,
+                    language=language,
+                    topic=topic,
+                    level=level,
+                    lesson_kind=lesson_kind,
+                    lesson_id=lesson_id,
+                    log_path=log_path,
+                )
+        finally:
+            db.close()
+            
+        return f"Completed: {language}-{level}-{topic}"
+        
+    except Exception as e:
+        import logging
+        error_msg = f"Error processing {language}_{level}_{topic}: {str(e)}"
+        logging.error(error_msg)
+        log_failure(log_path, language, level, topic, "ALL", 
+                  "N/A", None, "GenerationError", str(e), "N/A")
+        import traceback
+        traceback.print_exc()
+        return f"Failed: {language}-{level}-{topic}: {str(e)}"
+
+
+def populate_database(db_loc: str = None, max_workers: int = 5):
     """Main function to generate lessons and populate the database using Outlines."""
     from .outlines_generator import (
         generate_lessons_data_structured,
@@ -368,52 +420,42 @@ def populate_database(db_loc: str = None):
     # Setup model once for reuse
     model = setup_outlines_model()
 
-    db = LanguageDB(db_loc)
+    combinations = [
+        (language, level, topic)
+        for language in languages
+        for level in levels
+        for topic in topics
+    ]
+    total = len(combinations)
 
-    try:
-        combinations = [
-            (language, level, topic)
-            for language in languages
-            for level in levels
-            for topic in topics
-        ]
-        total = len(combinations)
+    print(f"Processing {total} combinations with {max_workers} parallel workers...")
 
-        with tqdm(total=total, desc="Outlines Generation Progress") as pbar:
-            for language, level, topic in combinations:
+    # Prepare arguments for worker function
+    worker_args = [(lang, level, topic, model, db_loc, log_path) 
+                   for lang, level, topic in combinations]
+
+    # Use ThreadPoolExecutor for parallel processing
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        with tqdm(total=total, desc="Parallel Generation Progress") as pbar:
+            # Submit all tasks
+            future_to_combination = {
+                executor.submit(process_language_level_topic, args): args[:3]
+                for args in worker_args
+            }
+            
+            # Process completed tasks
+            for future in as_completed(future_to_combination):
+                combination = future_to_combination[future]
                 try:
-                    # Use Outlines generation with shared model
-                    for (
-                        lesson_kind,
-                        lesson_id,
-                        json_response,
-                    ) in generate_lessons_data_structured(
-                        language, level, topic, model=model, log_path=log_path
-                    ):
-                        # Use existing process_response function
-                        process_response(
-                            db=db,
-                            response=json_response,
-                            language=language,
-                            topic=topic,
-                            level=level,
-                            lesson_kind=lesson_kind,
-                            lesson_id=lesson_id,
-                            log_path=log_path,
-                        )
+                    result = future.result()
+                    # Result contains success/failure message
+                    if "Failed:" in result:
+                        print(f"Warning: {result}")
                 except Exception as e:
-                    import logging
-                    error_msg = f"Error processing {language}_{level}_{topic}: {str(e)}"
-                    logging.error(error_msg)
-                    log_failure(log_path, language, level, topic, "ALL", 
-                              "N/A", None, "GenerationError", str(e), "N/A")
-                    import traceback
-                    traceback.print_exc()
+                    lang, level, topic = combination
+                    print(f"Unexpected error for {lang}-{level}-{topic}: {e}")
                 finally:
                     pbar.update(1)
-
-    finally:
-        db.close()
         print("Database generation complete!")
         print(f"\nFailure log saved to: {log_path}")
         

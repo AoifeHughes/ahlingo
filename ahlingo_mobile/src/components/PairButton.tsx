@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet, View } from 'react-native';
 import { useTheme } from '../contexts/ThemeContext';
 
 export interface PairButtonProps {
@@ -9,6 +9,7 @@ export interface PairButtonProps {
   selected: boolean;
   matched: boolean;
   onPress: (pairId: number, column: number) => void;
+  onSpeak?: (text: string, column: number) => void;
 }
 
 const PairButton: React.FC<PairButtonProps> = ({
@@ -18,6 +19,7 @@ const PairButton: React.FC<PairButtonProps> = ({
   selected,
   matched,
   onPress,
+  onSpeak,
 }) => {
   const { theme } = useTheme();
   const styles = createStyles(theme);
@@ -42,34 +44,67 @@ const PairButton: React.FC<PairButtonProps> = ({
   };
 
   return (
-    <TouchableOpacity
-      style={getButtonStyle()}
-      onPress={() => onPress(pairId, column)}
-      disabled={matched}
-      activeOpacity={0.8}
-      testID="pair-button"
-      accessibilityRole="button"
-      accessibilityLabel={`Pair button: ${text}`}
-      accessibilityState={{
-        selected: selected,
-        disabled: matched,
-      }}
-    >
-      <Text style={getTextStyle()}>{text}</Text>
-    </TouchableOpacity>
+    <View style={styles.buttonContainer}>
+      <TouchableOpacity
+        style={getButtonStyle()}
+        onPress={() => onPress(pairId, column)}
+        disabled={matched}
+        activeOpacity={0.8}
+        testID="pair-button"
+        accessibilityRole="button"
+        accessibilityLabel={`Pair button: ${text}`}
+        accessibilityState={{
+          selected: selected,
+          disabled: matched,
+        }}
+      >
+        <Text style={getTextStyle()}>{text}</Text>
+      </TouchableOpacity>
+      {onSpeak && (
+        <TouchableOpacity
+          style={styles.speakButton}
+          onPress={() => onSpeak(text, column)}
+          disabled={matched}
+          activeOpacity={0.8}
+          testID="speak-button"
+          accessibilityRole="button"
+          accessibilityLabel={`Speak text: ${text}`}
+        >
+          <Text style={styles.speakButtonText}>🔊</Text>
+        </TouchableOpacity>
+      )}
+    </View>
   );
 };
 
 const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) => StyleSheet.create({
+  buttonContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: currentTheme.spacing.xs,
+  },
   button: {
+    flex: 1,
     minHeight: 60,
     borderRadius: currentTheme.borderRadius.base,
-    marginVertical: currentTheme.spacing.xs,
     paddingHorizontal: currentTheme.spacing.lg,
     paddingVertical: currentTheme.spacing.md,
     justifyContent: 'center',
     alignItems: 'center',
     ...currentTheme.shadows.base,
+  },
+  speakButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    marginLeft: currentTheme.spacing.sm,
+    backgroundColor: currentTheme.colors.secondary,
+    justifyContent: 'center',
+    alignItems: 'center',
+    ...currentTheme.shadows.base,
+  },
+  speakButtonText: {
+    fontSize: 16,
   },
   normal: {
     backgroundColor: currentTheme.colors.primary,

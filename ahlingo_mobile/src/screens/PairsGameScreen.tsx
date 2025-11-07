@@ -22,6 +22,7 @@ import {
   recordExerciseAttemptForCurrentUser,
 } from '../services/RefactoredDatabaseService';
 import { useTheme } from '../contexts/ThemeContext';
+import TTSService from '../services/TTSService';
 
 type PairsGameScreenRouteProp = RouteProp<RootStackParamList, 'PairsGame'>;
 type PairsGameScreenNavigationProp = NativeStackNavigationProp<
@@ -341,6 +342,22 @@ const PairsGameScreen: React.FC<Props> = ({ route, navigation }) => {
     }
   };
 
+  const handleSpeak = async (text: string, column: number) => {
+    try {
+      // Determine if this is column 0 (left - typically native language) or column 1 (right - typically target language)
+      if (column === 0) {
+        // Left column - usually English, use English TTS
+        await TTSService.speakEnglish(text, { rate: 0.5 });
+      } else {
+        // Right column - target language (e.g., French), use target language TTS
+        await TTSService.speakWithLanguageDetection(text, userLanguage, { rate: 0.5 });
+      }
+    } catch (error) {
+      console.error('Failed to speak text:', error);
+      // Don't show user error for TTS failures, just log it
+    }
+  };
+
   const styles = createStyles(theme);
 
   if (loading) {
@@ -390,6 +407,7 @@ const PairsGameScreen: React.FC<Props> = ({ route, navigation }) => {
                 selected={gameState.selectedLeft === item.pairId}
                 matched={gameState.matchedPairs.includes(item.pairId)}
                 onPress={handleButtonPress}
+                onSpeak={handleSpeak}
               />
             ))}
           </ScrollView>
@@ -411,6 +429,7 @@ const PairsGameScreen: React.FC<Props> = ({ route, navigation }) => {
                 selected={gameState.selectedRight === item.pairId}
                 matched={gameState.matchedPairs.includes(item.pairId)}
                 onPress={handleButtonPress}
+                onSpeak={handleSpeak}
               />
             ))}
           </ScrollView>

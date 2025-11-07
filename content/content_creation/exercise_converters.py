@@ -61,19 +61,21 @@ class ConversationConverter(ExerciseConverter):
 EXERCISE TO VALIDATE:
 {exercise_text}
 
-Please evaluate the following aspects and respond with a JSON object:
+Please evaluate the following aspects and respond with ONLY a JSON object using exactly these field names with true/false values:
 
-1. is_correct_language: Is all the {self.language} text actually in {self.language}?
-2. has_correct_grammar: Is the {self.language} grammar correct?
-3. is_translation_accurate: N/A for conversations (set to true)
-4. is_culturally_appropriate: Is the content culturally appropriate?
-5. has_natural_dialogue: Does the conversation flow naturally between speakers?
-6. appropriate_for_level: Is the difficulty appropriate for {self.level} learners?
-7. is_educational_quality: Is this good quality for language learning?
-8. overall_quality_score: Rate from 1-10 (10 = excellent)
-9. issues_found: List any specific problems found
+{{
+  "is_correct_language": true or false (Is all the {self.language} text actually in {self.language}?),
+  "has_correct_grammar": true or false (Is the {self.language} grammar correct?),
+  "is_translation_accurate": true (N/A for conversations - always set to true),
+  "is_culturally_appropriate": true or false (Is the content culturally appropriate?),
+  "has_natural_dialogue": true or false (Does the conversation flow naturally between speakers?),
+  "appropriate_for_level": true or false (Is the difficulty appropriate for {self.level} learners?),
+  "is_educational_quality": true or false (Is this good quality for language learning?),
+  "overall_quality_score": integer from 1 to 10 (10 = excellent),
+  "issues_found": ["list", "of", "specific", "problems", "found"] or [] if none
+}}
 
-Respond only with valid JSON matching the expected schema."""
+CRITICAL: Use only true/false (not True/False or null). Return only the JSON object, no other text."""
 
 
 class PairConverter(ExerciseConverter):
@@ -109,19 +111,21 @@ class PairConverter(ExerciseConverter):
 EXERCISE TO VALIDATE:
 {exercise_text}
 
-Please evaluate the following aspects and respond with a JSON object:
+Please evaluate the following aspects and respond with ONLY a JSON object using exactly these field names with true/false values:
 
-1. is_correct_language: Is all the {self.language} text actually in {self.language}?
-2. has_correct_grammar: Are the {self.language} words/phrases grammatically correct?
-3. translation_pairs_correct: Are all English-{self.language} pairs accurate translations?
-4. is_culturally_appropriate: Is the vocabulary culturally appropriate?
-5. appropriate_vocabulary_level: Is the vocabulary appropriate for {self.level} learners?
-6. is_educational_quality: Are these useful for language learning?
-7. overall_quality_score: Rate from 1-10 (10 = excellent)
-8. issues_found: List any specific problems found
-9. is_translation_accurate: Same as translation_pairs_correct
+{{
+  "is_correct_language": true or false (Is all the {self.language} text actually in {self.language}?),
+  "has_correct_grammar": true or false (Are the {self.language} words/phrases grammatically correct?),
+  "translation_pairs_correct": true or false (Are all English-{self.language} pairs accurate translations?),
+  "is_culturally_appropriate": true or false (Is the vocabulary culturally appropriate?),
+  "appropriate_vocabulary_level": true or false (Is the vocabulary appropriate for {self.level} learners?),
+  "is_educational_quality": true or false (Are these useful for language learning?),
+  "is_translation_accurate": true or false (Same as translation_pairs_correct),
+  "overall_quality_score": integer from 1 to 10 (10 = excellent),
+  "issues_found": ["list", "of", "specific", "problems", "found"] or [] if none
+}}
 
-Respond only with valid JSON matching the expected schema."""
+CRITICAL: Use only true/false (not True/False or null). Return only the JSON object, no other text."""
 
 
 class TranslationConverter(ExerciseConverter):
@@ -147,20 +151,21 @@ class TranslationConverter(ExerciseConverter):
 EXERCISE TO VALIDATE:
 {exercise_text}
 
-Please evaluate the following aspects and respond with a JSON object:
+Please evaluate the following aspects and respond with ONLY a JSON object using exactly these field names with true/false values:
 
-1. is_correct_language: Is the {self.language} text actually in {self.language}?
-2. has_correct_grammar: Is the {self.language} grammar correct?
-3. is_translation_accurate: Is the translation between English and {self.language} accurate?
-4. preserves_meaning: Does the translation preserve the original meaning?
-5. uses_natural_language: Does the {self.language} translation sound natural and idiomatic?
-6. is_culturally_appropriate: Is the content culturally appropriate?
-7. appropriate_for_level: Is the difficulty appropriate for {self.level} learners?
-8. is_educational_quality: Is this useful for language learning?
-9. overall_quality_score: Rate from 1-10 (10 = excellent)
-10. issues_found: List any specific problems found
+{{
+  "is_correct_language": true or false (Is the {self.language} text actually in {self.language}?),
+  "has_correct_grammar": true or false (Is the {self.language} grammar correct?),
+  "is_translation_accurate": true or false (Is the translation between English and {self.language} accurate?),
+  "preserves_meaning": true or false (Does the translation preserve the original meaning?),
+  "uses_natural_language": true or false (Does the {self.language} translation sound natural and idiomatic?),
+  "is_culturally_appropriate": true or false (Is the content culturally appropriate?),
+  "is_educational_quality": true or false (Is this useful for language learning?),
+  "overall_quality_score": integer from 1 to 10 (10 = excellent),
+  "issues_found": ["list", "of", "specific", "problems", "found"] or [] if none
+}}
 
-Respond only with valid JSON matching the expected schema."""
+CRITICAL: Use only true/false (not True/False or null). Return only the JSON object, no other text."""
 
 
 class FillInBlankConverter(ExerciseConverter):
@@ -192,22 +197,24 @@ class FillInBlankConverter(ExerciseConverter):
 EXERCISE TO VALIDATE:
 {exercise_text}
 
-Please evaluate the following aspects and respond with a JSON object:
+Please evaluate the following aspects and respond with ONLY a JSON object using exactly these field names with true/false values:
 
-1. is_correct_language: Is the {self.language} text actually in {self.language}?
-2. has_correct_grammar: Is the {self.language} grammar correct?
-3. is_translation_accurate: Does the English translation accurately convey the meaning?
-4. translation_matches_original: Does the English translation match the meaning of the complete {self.language} sentence?
-5. answer_options_appropriate: Are the answer options appropriate and at the right difficulty level?
-6. is_unambiguous: CRITICAL - Is there only ONE clearly correct answer? Check if multiple options could work (like "brother/sister/mother" for family, or similar words that could all fit). The exercise should have contextual clues that make only one option correct.
-7. is_culturally_appropriate: Is the content culturally appropriate?
-8. is_educational_quality: Is this useful for language learning?
-9. overall_quality_score: Rate from 1-10 (10 = excellent). DEDUCT points for ambiguous exercises.
-10. issues_found: List any specific problems found, especially ambiguity issues
+{{
+  "is_correct_language": true or false (Is the {self.language} text actually in {self.language}?),
+  "has_correct_grammar": true or false (Is the {self.language} grammar correct?),
+  "is_translation_accurate": true or false (Does the English translation accurately convey the meaning?),
+  "translation_matches_original": true or false (Does the English translation match the meaning of the complete {self.language} sentence?),
+  "answer_options_appropriate": true or false (Are the answer options appropriate and at the right difficulty level?),
+  "is_unambiguous": true or false (CRITICAL - Is there only ONE clearly correct answer? Check if multiple options could work),
+  "is_culturally_appropriate": true or false (Is the content culturally appropriate?),
+  "is_educational_quality": true or false (Is this useful for language learning?),
+  "overall_quality_score": integer from 1 to 10 (10 = excellent, deduct points for ambiguous exercises),
+  "issues_found": ["list", "of", "specific", "problems", "found"] or [] if none
+}}
 
 AMBIGUITY CHECK: If you can imagine a scenario where multiple answer options could reasonably fit in the sentence, mark is_unambiguous as false and explain why in issues_found.
 
-Respond only with valid JSON matching the expected schema."""
+CRITICAL: Use only true/false (not True/False or null). Return only the JSON object, no other text."""
 
 
 def get_converter(exercise_type: str, language: str, level: str) -> ExerciseConverter:

@@ -1,0 +1,1 @@
+llama-server   --model /Volumes/AHBackup/Models/lmstudio-community/Mistral-Small-3.2-24B-Instruct-2506-GGUF/Mistral-Small-3.2-24B-Instruct-2506-Q4_K_M.gguf   --parallel 4   --ctx-size 12000   --mlock   --no-webui   --port 11434

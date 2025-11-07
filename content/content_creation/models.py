@@ -3,16 +3,17 @@
 Pydantic models for structured lesson generation using Outlines.
 """
 
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, validator, ConfigDict
 from typing import List, Union, Type
 import re
 
 
 class ConversationTurn(BaseModel):
     """A single turn in a conversation exercise."""
+    model_config = ConfigDict(populate_by_name=True)
 
     speaker: str = Field(..., description="Name of the speaker")
-    message: str = Field(..., description="The spoken message")
+    message: str = Field(..., description="The spoken message", alias="dialogue")
 
     @validator('speaker')
     def speaker_not_empty(cls, v):
@@ -29,11 +30,12 @@ class ConversationTurn(BaseModel):
 
 class ConversationExercise(BaseModel):
     """A complete conversation exercise with summary."""
+    model_config = ConfigDict(populate_by_name=True)
 
     conversation: List[ConversationTurn] = Field(
         ..., description="List of conversation turns", min_items=2, max_items=8
     )
-    conversation_summary: str = Field(..., description="Summary of the conversation")
+    conversation_summary: str = Field(..., description="Summary of the conversation", alias="summary")
 
     @validator('conversation')
     def validate_conversation_quality(cls, v):
@@ -241,8 +243,10 @@ def create_dynamic_word_pair_model(language: str) -> Type[BaseModel]:
     # Create the dynamic model using the simpler approach
     exec(f'''
 class {language}WordPair(BaseModel):
-    English: str = Field(..., description="English word or phrase")
-    {language}: str = Field(..., description="{language} translation")
+    model_config = ConfigDict(populate_by_name=True)
+    
+    English: str = Field(..., description="English word or phrase", alias="english")
+    {language}: str = Field(..., description="{language} translation", alias="{language.lower()}")
     
     @validator('English')
     def english_not_empty(cls, v):
@@ -278,8 +282,10 @@ def create_dynamic_translation_pair_model(language: str) -> Type[BaseModel]:
     # Create the dynamic model using the simpler approach
     exec(f'''
 class {language}TranslationPair(BaseModel):
-    English: str = Field(..., description="English sentence")
-    {language}: str = Field(..., description="{language} translation")
+    model_config = ConfigDict(populate_by_name=True)
+    
+    English: str = Field(..., description="English sentence", alias="english")
+    {language}: str = Field(..., description="{language} translation", alias="{language.lower()}")
     
     @validator('English')
     def english_not_empty(cls, v):
