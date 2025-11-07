@@ -100,6 +100,7 @@ class TTSService {
   private hasLoggedVoices: boolean = false;
   private voiceCache: VoiceCache = {};
   private availableVoices: Voice[] = [];
+  private userPreferredVoices: { [languageCode: string]: string } = {};
 
   private constructor() {}
 
@@ -160,7 +161,17 @@ class TTSService {
   }
 
   /**
+   * Set user's preferred voices (from settings)
+   */
+  public setUserPreferredVoices(preferredVoices: { [languageCode: string]: string }): void {
+    this.userPreferredVoices = preferredVoices;
+    // Clear cache so new preferences take effect
+    this.voiceCache = {};
+  }
+
+  /**
    * Get the best available voice for a given language
+   * Checks user preferences first, then falls back to automatic selection
    * On iOS: Prefers premium > enhanced > compact voices
    * On Android: Prefers highest quality offline voices (quality >= 400)
    */
@@ -172,6 +183,22 @@ class TTSService {
 
     await this.initialize();
 
+    // Check if user has a preferred voice for this language
+    if (this.userPreferredVoices[languageCode]) {
+      const preferredVoiceId = this.userPreferredVoices[languageCode];
+
+      // Verify the preferred voice is still available and installed
+      const voice = this.availableVoices.find(v => v.id === preferredVoiceId);
+      if (voice && !voice.notInstalled && !voice.networkConnectionRequired) {
+        console.log(`Using user-preferred voice: ${voice.name} (${preferredVoiceId})`);
+        this.voiceCache[languageCode] = preferredVoiceId;
+        return preferredVoiceId;
+      } else {
+        console.warn(`User-preferred voice ${preferredVoiceId} is not available, falling back to auto-select`);
+      }
+    }
+
+    // Fall back to automatic selection
     if (Platform.OS === 'ios') {
       return this.getBestIOSVoice(languageCode);
     } else {

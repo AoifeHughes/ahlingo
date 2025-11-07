@@ -31,6 +31,7 @@ export interface FormData {
   theme: string;
   enableLocalModels: boolean;
   preferLocalModels: boolean;
+  preferredVoices: { [languageCode: string]: string };
 }
 
 interface UseSettingsFormReturn {
@@ -60,6 +61,7 @@ export const useSettingsForm = (navigation?: NavigationProp<RootStackParamList>)
     theme: themeVariant,
     enableLocalModels: false,
     preferLocalModels: false,
+    preferredVoices: {},
   });
 
   const [languages, setLanguages] = useState<DropdownItem[]>([]);
@@ -150,6 +152,16 @@ export const useSettingsForm = (navigation?: NavigationProp<RootStackParamList>)
       const username = await getMostRecentUser();
       const userSettings = await getUserSettings(username);
 
+      // Parse preferred voices from JSON string
+      let preferredVoices = {};
+      if (userSettings.preferred_voices) {
+        try {
+          preferredVoices = JSON.parse(userSettings.preferred_voices);
+        } catch (e) {
+          console.warn('Failed to parse preferred voices:', e);
+        }
+      }
+
       const loadedFormData = {
         language: userSettings.language || 'French',
         difficulty: userSettings.difficulty || 'Beginner',
@@ -159,6 +171,7 @@ export const useSettingsForm = (navigation?: NavigationProp<RootStackParamList>)
         theme: themeVariant,
         enableLocalModels: userSettings.enable_local_models === 'true' || false,
         preferLocalModels: userSettings.prefer_local_models === 'true' || false,
+        preferredVoices: preferredVoices,
       };
 
       setFormData(loadedFormData);
@@ -171,6 +184,7 @@ export const useSettingsForm = (navigation?: NavigationProp<RootStackParamList>)
           difficulty: userSettings.difficulty || 'Beginner',
           enableLocalModels: userSettings.enable_local_models === 'true' || false,
           preferLocalModels: userSettings.prefer_local_models === 'true' || false,
+          preferredVoices: preferredVoices,
         })
       );
     } catch (error) {
@@ -190,6 +204,7 @@ export const useSettingsForm = (navigation?: NavigationProp<RootStackParamList>)
       await setUserSetting(username, 'server_url', formData.serverUrl);
       await setUserSetting(username, 'enable_local_models', formData.enableLocalModels.toString());
       await setUserSetting(username, 'prefer_local_models', formData.preferLocalModels.toString());
+      await setUserSetting(username, 'preferred_voices', JSON.stringify(formData.preferredVoices));
 
       // Apply theme change immediately
       await setTheme(formData.theme as ThemeVariant);
@@ -204,6 +219,7 @@ export const useSettingsForm = (navigation?: NavigationProp<RootStackParamList>)
           difficulty: formData.difficulty,
           enableLocalModels: formData.enableLocalModels,
           preferLocalModels: formData.preferLocalModels,
+          preferredVoices: formData.preferredVoices,
         })
       );
 

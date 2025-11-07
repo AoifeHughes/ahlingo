@@ -136,6 +136,7 @@ export interface AppSettings {
   username?: string;
   enableLocalModels?: boolean;
   preferLocalModels?: boolean;
+  preferredVoices?: { [languageCode: string]: string }; // Map of language code to preferred voice ID
 }
 
 // Local LLM types
