@@ -9,12 +9,12 @@ import sys
 from pathlib import Path
 import argparse
 
-# Add content directory to Python path
-content_dir = Path(__file__).parent / "content"
-sys.path.insert(0, str(content_dir))
+# Add project root to Python path
+project_root = Path(__file__).parent
+sys.path.insert(0, str(project_root))
 
 # Now import and run the actual validation script
-from content_creation.database_validator import run_validation
+from content.generation.utils.database_validator import run_validation
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
@@ -58,9 +58,9 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    # Set up database path relative to content directory if not provided
+    # Set up database path relative to project root if not provided
     if args.db_path is None:
-        db_path = str(content_dir / "database" / "languageLearningDatabase.db")
+        db_path = str(project_root / "database" / "languageLearningDatabase.db")
     else:
         db_path = args.db_path
 
@@ -73,7 +73,7 @@ if __name__ == "__main__":
         import subprocess
 
         result = subprocess.run(
-            [sys.executable, "test_ambiguity_validation.py"],
+            [sys.executable, "content/tests/test_ambiguity_validation.py"],
             capture_output=True,
             text=True,
         )

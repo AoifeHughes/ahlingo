@@ -14,8 +14,8 @@ logging.basicConfig(
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from content_creation.outlines_generator import generate_lessons_data_structured
-from content_creation.generate_lessons import process_response
+from content.generation.core.outlines_generator import generate_lessons_data_structured
+from content.generation.core.generate_lessons import process_response
 from database.database_manager import LanguageDB
 
 
