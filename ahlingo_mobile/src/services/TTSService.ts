@@ -167,7 +167,7 @@ class TTSService {
 
   /**
    * Set user-preferred voices for languages (e.g., from settings)
-   * This allows users to override the automatic voice selection
+   * This allows users to override the automatic voice selection.
    */
   public setUserPreferredVoices(preferredVoices: { [languageCode: string]: string }): void {
     this.userPreferredVoices = preferredVoices;
@@ -177,7 +177,8 @@ class TTSService {
 
   /**
    * Get the best available voice for a given language
-   * Priority: User preference > Premium/Enhanced > Compact
+   * Priority: User preference > Premium/Enhanced > Compact (falls back to auto-selection)
+   * Checks user preferences first, then falls back to automatic selection
    * On iOS: Prefers premium > enhanced > compact voices
    * On Android: Prefers highest quality offline voices (quality >= 400)
    */
@@ -189,10 +190,10 @@ class TTSService {
 
     await this.initialize();
 
-    // Check if user has set a preferred voice for this language
+    // Check if user has a preferred voice for this language
     if (this.userPreferredVoices[languageCode]) {
       const preferredVoiceId = this.userPreferredVoices[languageCode];
-      const voice = this.availableVoices.find(v => v.id === preferredVoiceId);
+      const voice = this.availableVoices.find((v) => v.id === preferredVoiceId);
 
       // Only use the preferred voice if it's installed and available offline
       if (voice && !voice.notInstalled && !voice.networkConnectionRequired) {
@@ -200,7 +201,9 @@ class TTSService {
         this.voiceCache[languageCode] = preferredVoiceId;
         return preferredVoiceId;
       } else {
-        console.warn(`User-preferred voice for ${languageCode} is not available offline. Falling back to automatic selection.`);
+        console.warn(
+          `User-preferred voice for ${languageCode} is not available offline. Falling back to automatic selection.`
+        );
       }
     }
 
