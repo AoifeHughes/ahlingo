@@ -89,6 +89,11 @@ const IOS_PREMIUM_VOICES: { [key: string]: string[] } = {
     'com.apple.voice.enhanced.ru-RU.Milena',
     'com.apple.ttsbundle.Milena-compact',
   ],
+  'uk-UA': [
+    'com.apple.voice.enhanced.uk-UA.Lesya',
+    'com.apple.voice.premium.uk-UA.Lesya',
+    'com.apple.ttsbundle.Lesya-compact',
+  ],
 };
 
 // Minimum quality threshold for Android voices (400 = high quality, 500 = neural/premium)
@@ -377,6 +382,7 @@ class TTSService {
       'chinese': Platform.OS === 'ios' ? 'zh-CN' : 'zh',
       'korean': Platform.OS === 'ios' ? 'ko-KR' : 'ko',
       'russian': Platform.OS === 'ios' ? 'ru-RU' : 'ru',
+      'ukrainian': Platform.OS === 'ios' ? 'uk-UA' : 'uk',
     };
 
     return languageMap[languageName.toLowerCase()] || (Platform.OS === 'ios' ? 'en-US' : 'en');

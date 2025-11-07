@@ -22,6 +22,7 @@ import {
   recordExerciseAttemptForCurrentUser,
 } from '../services/RefactoredDatabaseService';
 import { useTheme } from '../contexts/ThemeContext';
+import TTSService from '../services/TTSService';
 
 type TranslationExercisesScreenRouteProp = RouteProp<
   RootStackParamList,
@@ -249,6 +250,9 @@ const TranslationExercisesScreen: React.FC<Props> = ({ route, navigation }) => {
   };
 
   const handleWordPress = (word: string, originalIndex: number) => {
+    // Speak the word in the target language when clicked
+    TTSService.speak(word, userLanguage);
+
     setGameState(prev => {
       const wordInSelected = prev.selectedWords.find(
         w => w.originalIndex === originalIndex

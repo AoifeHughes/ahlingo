@@ -25,6 +25,7 @@ import {
   recordExerciseAttemptForCurrentUser,
 } from '../services/RefactoredDatabaseService';
 import { useTheme } from '../contexts/ThemeContext';
+import TTSService from '../services/TTSService';
 
 type ConversationExercisesScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -258,6 +259,11 @@ const ConversationExercisesScreen: React.FC<Props> = ({
     loadConversationData();
   };
 
+  const handleSpeak = useCallback((message: string) => {
+    // Speak the message in the user's target language
+    TTSService.speak(message, userLanguage);
+  }, [userLanguage]);
+
   const handleOptionPress = async (optionIndex: number) => {
     if (quizState.hasAnswered) return;
 
@@ -319,7 +325,7 @@ const ConversationExercisesScreen: React.FC<Props> = ({
       {/* Conversation display */}
       <View style={styles.conversationContainer}>
         {conversationData.length > 0 ? (
-          <ConversationView messages={conversationData} />
+          <ConversationView messages={conversationData} onSpeak={handleSpeak} />
         ) : (
           <View style={styles.noDataContainer}>
             <Text style={styles.noDataText}>
