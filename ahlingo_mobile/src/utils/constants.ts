@@ -1,6 +1,9 @@
 // Database configuration constants
 export const DATABASE_CONFIG = {
   NAME: 'languageLearningDatabase.db',
+  // Increment this version number whenever you update the database schema or content
+  // The app will automatically replace the old database with the new one
+  VERSION: 1,
 } as const;
 
 // Timeout constants

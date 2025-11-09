@@ -592,6 +592,7 @@ def run_validation(
     batch_size: int = 50,
     no_think: bool = False,
     debug: bool = False,
+    exercise_type: Optional[str] = None,
 ) -> Dict[str, Any]:
     """
     Main function to run database validation.
@@ -607,6 +608,7 @@ def run_validation(
         batch_size: Number of exercises per batch (default: 50)
         no_think: If True, prepend /no_think to prompts
         debug: If True, enable debug mode with prompt/response inspection
+        exercise_type: Only validate specific exercise type (conversation, pair, translation, fill_in_blank)
 
     Returns:
         Validation results dictionary
@@ -621,6 +623,7 @@ def run_validation(
     print(f"Database: {db_path}")
     print(f"Quality threshold: {quality_threshold}/10")
     print(f"Max exercises: {max_exercises or 'All'}")
+    print(f"Exercise type filter: {exercise_type or 'All'}")
     print(f"Parallel workers: {max_workers}")
     print(f"Batch size: {batch_size}")
 
@@ -640,7 +643,7 @@ def run_validation(
 
     # Run validation
     results = validator.validate_all_exercises(
-        max_exercises, None, max_workers, batch_size
+        max_exercises, exercise_type, max_workers, batch_size
     )
 
     # Print summary

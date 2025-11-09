@@ -84,7 +84,7 @@ const AboutScreen: React.FC<Props> = ({ navigation }) => {
 
           <View style={styles.appInfo}>
             <Text style={styles.appName}>AHLingo</Text>
-            <Text style={styles.version}>Version 1.2.0</Text>
+            <Text style={styles.version}>Version 1.4.0</Text>
             <Text style={styles.description}>
               A comprehensive language learning application designed to help you master new languages through interactive exercises, conversations, and personalized learning experiences.
             </Text>
