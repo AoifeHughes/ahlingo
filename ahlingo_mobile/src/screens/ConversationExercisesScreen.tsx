@@ -261,7 +261,7 @@ const ConversationExercisesScreen: React.FC<Props> = ({
 
   const handleSpeak = useCallback((message: string) => {
     // Speak the message in the user's target language
-    TTSService.speak(message, userLanguage);
+    TTSService.speakWithLanguageDetection(message, userLanguage);
   }, [userLanguage]);
 
   const handleOptionPress = async (optionIndex: number) => {

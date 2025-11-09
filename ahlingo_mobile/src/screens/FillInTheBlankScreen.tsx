@@ -222,7 +222,7 @@ const FillInTheBlankScreen: React.FC<Props> = ({ route, navigation }) => {
     if (gameState.hasSubmitted) return;
 
     // Speak the word in the target language when clicked
-    TTSService.speak(word, userLanguage);
+    TTSService.speakWithLanguageDetection(word, userLanguage);
 
     setGameState(prev => ({
       ...prev,
@@ -250,7 +250,7 @@ const FillInTheBlankScreen: React.FC<Props> = ({ route, navigation }) => {
 
     // Speak the full correct sentence after submission
     const completeSentence = gameState.sentence.replace('_', gameState.correctAnswer);
-    TTSService.speak(completeSentence, userLanguage);
+    TTSService.speakWithLanguageDetection(completeSentence, userLanguage);
 
     // Handle shuffle mode completion
     if (shuffleContext) {

@@ -251,7 +251,7 @@ const TranslationExercisesScreen: React.FC<Props> = ({ route, navigation }) => {
 
   const handleWordPress = (word: string, originalIndex: number) => {
     // Speak the word in the target language when clicked
-    TTSService.speak(word, userLanguage);
+    TTSService.speakWithLanguageDetection(word, userLanguage);
 
     setGameState(prev => {
       const wordInSelected = prev.selectedWords.find(
