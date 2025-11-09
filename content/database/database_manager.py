@@ -178,7 +178,7 @@ class LanguageDB:
         """Set the database version in the metadata table."""
         self.cursor.execute(
             "INSERT OR REPLACE INTO database_metadata (key, value) VALUES (?, ?)",
-            ("version", str(version))
+            ("version", str(version)),
         )
         self.conn.commit()
         print(f"Database version set to: {version}")
@@ -186,8 +186,7 @@ class LanguageDB:
     def get_database_version(self) -> int:
         """Get the current database version from the metadata table."""
         self.cursor.execute(
-            "SELECT value FROM database_metadata WHERE key = ?",
-            ("version",)
+            "SELECT value FROM database_metadata WHERE key = ?", ("version",)
         )
         result = self.cursor.fetchone()
         return int(result[0]) if result else 0

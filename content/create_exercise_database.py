@@ -104,12 +104,12 @@ if __name__ == "__main__":
     # Parse language and level filters
     languages_filter = None
     if args.languages:
-        languages_filter = [lang.strip() for lang in args.languages.split(',')]
+        languages_filter = [lang.strip() for lang in args.languages.split(",")]
         print(f"Filtering languages: {languages_filter}")
 
     levels_filter = None
     if args.levels:
-        levels_filter = [level.strip() for level in args.levels.split(',')]
+        levels_filter = [level.strip() for level in args.levels.split(",")]
         print(f"Filtering levels: {levels_filter}")
 
     # Determine exercise types to generate
@@ -123,6 +123,6 @@ if __name__ == "__main__":
         max_workers=args.max_workers,
         exercise_types=exercise_types,
         languages_filter=languages_filter,
-        levels_filter=levels_filter
+        levels_filter=levels_filter,
     )
     initialize_default_settings(db_path)

@@ -503,7 +503,12 @@ def process_language_level_topic(args):
                 lesson_id,
                 json_response,
             ) in generate_lessons_data_structured(
-                language, level, topic, model=model, log_path=log_path, lesson_kinds=exercise_types
+                language,
+                level,
+                topic,
+                model=model,
+                log_path=log_path,
+                lesson_kinds=exercise_types,
             ):
                 # Use existing process_response function
                 process_response(
@@ -549,7 +554,7 @@ def populate_database(
     max_workers: int = 5,
     exercise_types: List[str] = None,
     languages_filter: List[str] = None,
-    levels_filter: List[str] = None
+    levels_filter: List[str] = None,
 ):
     """Main function to generate lessons and populate the database using Outlines.
 
@@ -647,6 +652,7 @@ def populate_database(
         # IMPORTANT: Update this version number whenever you make schema or content changes
         DATABASE_VERSION = 1
         from database.database_manager import LanguageDB
+
         with LanguageDB(db_loc) as db:
             db.set_database_version(DATABASE_VERSION)
 
