@@ -651,6 +651,7 @@ def populate_database(
         # Set database version from centralized version file
         # Version is automatically synced with package.json version
         import sys
+
         sys.path.insert(0, str(script_dir))
         from version import DATABASE_VERSION, __version__
 
@@ -658,7 +659,9 @@ def populate_database(
 
         with LanguageDB(db_loc) as db:
             db.set_database_version(DATABASE_VERSION)
-            print(f"Database version set to {DATABASE_VERSION} (app version {__version__})")
+            print(
+                f"Database version set to {DATABASE_VERSION} (app version {__version__})"
+            )
 
         print(f"\nFailure log saved to: {log_path}")
 

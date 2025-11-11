@@ -21,11 +21,15 @@ def parse_version(version_str: str) -> Tuple[int, int, int]:
     """Parse version string into (major, minor, patch) tuple."""
     parts = version_str.split(".")
     if len(parts) != 3:
-        raise ValueError(f"Invalid version format: {version_str}. Expected format: X.Y.Z")
+        raise ValueError(
+            f"Invalid version format: {version_str}. Expected format: X.Y.Z"
+        )
     try:
         return tuple(int(p) for p in parts)
     except ValueError:
-        raise ValueError(f"Invalid version format: {version_str}. All parts must be integers")
+        raise ValueError(
+            f"Invalid version format: {version_str}. All parts must be integers"
+        )
 
 
 def bump_version(current: Tuple[int, int, int], bump_type: str) -> Tuple[int, int, int]:
@@ -39,7 +43,9 @@ def bump_version(current: Tuple[int, int, int], bump_type: str) -> Tuple[int, in
     elif bump_type == "patch":
         return (major, minor, patch + 1)
     else:
-        raise ValueError(f"Invalid bump type: {bump_type}. Must be 'major', 'minor', or 'patch'")
+        raise ValueError(
+            f"Invalid bump type: {bump_type}. Must be 'major', 'minor', or 'patch'"
+        )
 
 
 def update_package_json(file_path: Path, new_version: str) -> bool:
@@ -62,7 +68,9 @@ def update_package_json(file_path: Path, new_version: str) -> bool:
         return False
 
 
-def update_android_gradle(file_path: Path, new_version: str, new_version_code: int) -> bool:
+def update_android_gradle(
+    file_path: Path, new_version: str, new_version_code: int
+) -> bool:
     """Update versionName and versionCode in Android build.gradle."""
     try:
         with open(file_path, "r", encoding="utf-8") as f:
@@ -71,22 +79,20 @@ def update_android_gradle(file_path: Path, new_version: str, new_version_code: i
         # Update versionName
         old_content = content
         content = re.sub(
-            r'versionName\s+"[^"]+"',
-            f'versionName "{new_version}"',
-            content
+            r'versionName\s+"[^"]+"', f'versionName "{new_version}"', content
         )
 
         # Update versionCode
         content = re.sub(
-            r'versionCode\s+\d+',
-            f'versionCode {new_version_code}',
-            content
+            r"versionCode\s+\d+", f"versionCode {new_version_code}", content
         )
 
         if content != old_content:
             with open(file_path, "w", encoding="utf-8") as f:
                 f.write(content)
-            print(f"✓ Updated Android build.gradle: versionName={new_version}, versionCode={new_version_code}")
+            print(
+                f"✓ Updated Android build.gradle: versionName={new_version}, versionCode={new_version_code}"
+            )
             return True
         else:
             print(f"⚠ No changes made to Android build.gradle (pattern not found)")
@@ -96,7 +102,9 @@ def update_android_gradle(file_path: Path, new_version: str, new_version_code: i
         return False
 
 
-def update_ios_project(file_path: Path, new_version: str, new_build_number: int) -> bool:
+def update_ios_project(
+    file_path: Path, new_version: str, new_build_number: int
+) -> bool:
     """Update MARKETING_VERSION and CURRENT_PROJECT_VERSION in iOS project.pbxproj."""
     try:
         with open(file_path, "r", encoding="utf-8") as f:
@@ -106,22 +114,24 @@ def update_ios_project(file_path: Path, new_version: str, new_build_number: int)
 
         # Update MARKETING_VERSION
         content = re.sub(
-            r'MARKETING_VERSION\s*=\s*[^;]+;',
-            f'MARKETING_VERSION = {new_version};',
-            content
+            r"MARKETING_VERSION\s*=\s*[^;]+;",
+            f"MARKETING_VERSION = {new_version};",
+            content,
         )
 
         # Update CURRENT_PROJECT_VERSION
         content = re.sub(
-            r'CURRENT_PROJECT_VERSION\s*=\s*\d+;',
-            f'CURRENT_PROJECT_VERSION = {new_build_number};',
-            content
+            r"CURRENT_PROJECT_VERSION\s*=\s*\d+;",
+            f"CURRENT_PROJECT_VERSION = {new_build_number};",
+            content,
         )
 
         if content != old_content:
             with open(file_path, "w", encoding="utf-8") as f:
                 f.write(content)
-            print(f"✓ Updated iOS project.pbxproj: MARKETING_VERSION={new_version}, CURRENT_PROJECT_VERSION={new_build_number}")
+            print(
+                f"✓ Updated iOS project.pbxproj: MARKETING_VERSION={new_version}, CURRENT_PROJECT_VERSION={new_build_number}"
+            )
             return True
         else:
             print(f"⚠ No changes made to iOS project.pbxproj (pattern not found)")
@@ -147,7 +157,9 @@ def main():
     # File paths
     package_json = repo_root / "ahlingo_mobile" / "package.json"
     android_gradle = repo_root / "ahlingo_mobile" / "android" / "app" / "build.gradle"
-    ios_project = repo_root / "ahlingo_mobile" / "ios" / "AhLingo.xcodeproj" / "project.pbxproj"
+    ios_project = (
+        repo_root / "ahlingo_mobile" / "ios" / "AhLingo.xcodeproj" / "project.pbxproj"
+    )
 
     # Read current version from package.json
     try:

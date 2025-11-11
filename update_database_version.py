@@ -58,25 +58,28 @@ def update_database_with_versioning(db_path: str):
                 print("No version found in database")
 
             db.set_database_version(DATABASE_VERSION)
-            print(f"✓ Database version updated to {DATABASE_VERSION} (app version {__version__})")
+            print(
+                f"✓ Database version updated to {DATABASE_VERSION} (app version {__version__})"
+            )
 
             # Verify the update
             new_version = db.get_database_version()
             print(f"\nVerification: Database version is now {new_version}")
 
             if new_version == DATABASE_VERSION:
-                print("\n" + "="*60)
+                print("\n" + "=" * 60)
                 print("✓ Database successfully updated with versioning metadata")
-                print("="*60)
+                print("=" * 60)
             else:
-                print("\n" + "="*60)
+                print("\n" + "=" * 60)
                 print("⚠ Warning: Version verification failed")
-                print("="*60)
+                print("=" * 60)
                 sys.exit(1)
 
     except Exception as e:
         print(f"\n✗ Error updating database: {e}")
         import traceback
+
         traceback.print_exc()
         sys.exit(1)
 
