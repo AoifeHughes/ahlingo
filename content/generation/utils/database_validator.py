@@ -20,7 +20,10 @@ from content.generation.models.validation_models import (
     get_validation_schema,
     parse_validation_result,
 )
-from content.generation.utils.exercise_converters import get_converter, identify_exercise_type
+from content.generation.utils.exercise_converters import (
+    get_converter,
+    identify_exercise_type,
+)
 from content.database.database_manager import LanguageDB
 
 

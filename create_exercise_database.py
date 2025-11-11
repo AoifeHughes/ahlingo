@@ -12,7 +12,10 @@ project_root = Path(__file__).parent
 sys.path.insert(0, str(project_root))
 
 # Import from the new location
-from content.create_exercise_database import populate_database, initialize_default_settings
+from content.create_exercise_database import (
+    populate_database,
+    initialize_default_settings,
+)
 
 if __name__ == "__main__":
     # Set up database path relative to repo root directory
