@@ -648,13 +648,17 @@ def populate_database(
                     pbar.update(1)
         print("Database generation complete!")
 
-        # Set database version
-        # IMPORTANT: Update this version number whenever you make schema or content changes
-        DATABASE_VERSION = 1
+        # Set database version from centralized version file
+        # Version is automatically synced with package.json version
+        import sys
+        sys.path.insert(0, str(script_dir))
+        from version import DATABASE_VERSION, __version__
+
         from database.database_manager import LanguageDB
 
         with LanguageDB(db_loc) as db:
             db.set_database_version(DATABASE_VERSION)
+            print(f"Database version set to {DATABASE_VERSION} (app version {__version__})")
 
         print(f"\nFailure log saved to: {log_path}")
 
