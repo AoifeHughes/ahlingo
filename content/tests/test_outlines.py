@@ -11,7 +11,7 @@ from pathlib import Path
 # Add the content_creation directory to the path
 sys.path.append(str(Path(__file__).parent))
 
-from content_creation.outlines_generator import (
+from content.generation.core.outlines_generator import (
     test_outlines_generation,
     generate_lessons_data_structured,
 )

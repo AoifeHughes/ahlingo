@@ -4,8 +4,8 @@ import json
 import re
 from tqdm import tqdm
 from typing import Dict, List, Any, Tuple, Generator
-from database.database_manager import LanguageDB
-from .assistants import (
+from content.database.database_manager import LanguageDB
+from content.generation.utils.assistants import (
     default_conversation_assistants,
     default_pairs_assistants,
     default_translation_assistants,
@@ -24,8 +24,12 @@ _log_lock = threading.Lock()
 def initialize_failure_log(log_path: str = None) -> str:
     """Initialize the failure log CSV file with headers."""
     if log_path is None:
+        from pathlib import Path
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        log_path = f"generation_failures_{timestamp}.csv"
+        # Ensure logs directory exists
+        logs_dir = Path(__file__).parent.parent.parent.parent / "logs" / "generation"
+        logs_dir.mkdir(parents=True, exist_ok=True)
+        log_path = str(logs_dir / f"generation_failures_{timestamp}.csv")
 
     # Create or overwrite the CSV file with headers
     with open(log_path, "w", newline="", encoding="utf-8") as csvfile:
@@ -490,7 +494,7 @@ def process_language_level_topic(args):
     language, level, topic, model, db_loc, log_path, exercise_types = args
 
     try:
-        from .outlines_generator import generate_lessons_data_structured
+        from content.generation.core.outlines_generator import generate_lessons_data_structured
 
         # Create a separate database connection for this thread
         db = LanguageDB(db_loc)
@@ -565,15 +569,15 @@ def populate_database(
         languages_filter: List of languages to generate (filters languages.txt)
         levels_filter: List of difficulty levels to generate (filters levels.txt)
     """
-    from .outlines_generator import (
+    from content.generation.core.outlines_generator import (
         generate_lessons_data_structured,
         setup_outlines_model,
     )
     import os
     from pathlib import Path
 
-    # Get the repository root directory (go up from content/content_creation/)
-    script_dir = Path(__file__).parent.parent.parent  # repo root directory
+    # Get the repository root directory (go up from content/generation/core/)
+    script_dir = Path(__file__).parent.parent.parent.parent  # repo root directory
 
     # Set default database location relative to repo root
     if db_loc is None:
@@ -584,7 +588,7 @@ def populate_database(
     print(f"Failure log initialized at: {log_path}")
 
     # Read configuration files relative to content directory
-    config_dir = script_dir / "content" / "generation_data"
+    config_dir = script_dir / "content" / "generation" / "config"
     with open(config_dir / "topics.txt", "r") as file:
         topics = [line.strip() for line in file]
     with open(config_dir / "languages.txt", "r") as file:

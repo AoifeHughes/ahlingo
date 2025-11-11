@@ -25,8 +25,8 @@ logging.basicConfig(
 # Add the content_creation directory to the path
 sys.path.append(str(Path(__file__).parent))
 
-from content_creation.generate_lessons import populate_database
-from content_creation.outlines_generator import generate_lessons_data_structured
+from content.generation.core.generate_lessons import populate_database
+from content.generation.core.outlines_generator import generate_lessons_data_structured
 
 
 def demo_single_lesson():
@@ -94,7 +94,7 @@ if __name__ == "__main__":
         print("\n" + "=" * 60)
         print("SUCCESS: Outlines integration is working!")
         print("\nTo use this for full database population:")
-        print("from content_creation.generate_lessons import populate_database")
+        print("from content.generation.core.generate_lessons import populate_database")
         print(
             "populate_database()  # Uses Outlines structured generation with 10 exercises per topic!"
         )
