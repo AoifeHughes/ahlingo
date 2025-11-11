@@ -14,9 +14,15 @@ from typing import Any, Dict, List
 import uuid
 
 try:
-    from content.generation.models.models import ConversationExercise, create_pair_schema
+    from content.generation.models.models import (
+        ConversationExercise,
+        create_pair_schema,
+    )
 except ImportError:
-    from content.generation.models.models import ConversationExercise, create_pair_schema
+    from content.generation.models.models import (
+        ConversationExercise,
+        create_pair_schema,
+    )
 
 
 # Centralized model configuration
@@ -503,10 +509,14 @@ def generate_translations(model, language: str, level: str, topic: str):
     """Generate sentence translations with guaranteed structure."""
     try:
         from content.generation.utils.assistants import default_translation_assistants
-        from content.generation.models.models import create_dynamic_translation_pair_model
+        from content.generation.models.models import (
+            create_dynamic_translation_pair_model,
+        )
     except ImportError:
         from content.generation.utils.assistants import default_translation_assistants
-        from content.generation.models.models import create_dynamic_translation_pair_model
+        from content.generation.models.models import (
+            create_dynamic_translation_pair_model,
+        )
     from typing import List
 
     # Create system message with enhanced instructions

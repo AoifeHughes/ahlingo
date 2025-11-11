@@ -25,6 +25,7 @@ def initialize_failure_log(log_path: str = None) -> str:
     """Initialize the failure log CSV file with headers."""
     if log_path is None:
         from pathlib import Path
+
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         # Ensure logs directory exists
         logs_dir = Path(__file__).parent.parent.parent.parent / "logs" / "generation"
@@ -494,7 +495,9 @@ def process_language_level_topic(args):
     language, level, topic, model, db_loc, log_path, exercise_types = args
 
     try:
-        from content.generation.core.outlines_generator import generate_lessons_data_structured
+        from content.generation.core.outlines_generator import (
+            generate_lessons_data_structured,
+        )
 
         # Create a separate database connection for this thread
         db = LanguageDB(db_loc)

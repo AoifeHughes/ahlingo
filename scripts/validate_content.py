@@ -33,4 +33,5 @@ if __name__ == "__main__":
     # The validation script uses its own main logic
     # Run it directly
     from validate_database import main
+
     main()
