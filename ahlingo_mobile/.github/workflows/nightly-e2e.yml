@@ -1,0 +1,180 @@
+name: Nightly E2E Tests
+
+on:
+  schedule:
+    # Run every night at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  ios-comprehensive:
+    name: iOS Comprehensive E2E
+    runs-on: macos-latest
+
+    strategy:
+      matrix:
+        device: ['iPhone 15', 'iPhone 15 Pro', 'iPad Pro (12.9-inch) (6th generation)']
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Setup Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.0'
+        bundler-cache: true
+
+    - name: Install Cocoapods
+      run: |
+        cd ios
+        pod install
+        cd ..
+
+    - name: Update Detox config for device
+      run: |
+        sed -i '' 's/iPhone 15/${{ matrix.device }}/g' .detoxrc.js
+
+    - name: Build iOS app
+      run: npm run test:e2e:build:ios
+
+    - name: Run E2E tests
+      run: npm run test:e2e:test:ios
+
+    - name: Upload test artifacts
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: ios-e2e-${{ matrix.device }}-artifacts
+        path: |
+          artifacts/
+          e2e/screenshots/
+
+  android-comprehensive:
+    name: Android Comprehensive E2E
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        api-level: [28, 30, 33]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Setup Java
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '11'
+
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v2
+      with:
+        api-level: ${{ matrix.api-level }}
+        target: google_apis
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Make gradlew executable
+      run: chmod +x android/gradlew
+
+    - name: Build Android app
+      run: npm run test:e2e:build:android
+
+    - name: Create and start AVD
+      run: |
+        echo "no" | avdmanager create avd --force --name test-${{ matrix.api-level }} --abi google_apis/x86_64 --package 'system-images;android-${{ matrix.api-level }};google_apis;x86_64'
+        emulator -avd test-${{ matrix.api-level }} -no-snapshot -no-window -gpu swiftshader_indirect -no-audio -no-boot-anim &
+        adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed | tr -d '\r') ]]; do sleep 1; done'
+
+    - name: Run E2E tests
+      run: npm run test:e2e:test:android
+
+    - name: Upload test artifacts
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: android-e2e-api${{ matrix.api-level }}-artifacts
+        path: |
+          artifacts/
+          e2e/screenshots/
+
+  performance-tests:
+    name: Performance Tests
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run bundle analyzer
+      run: |
+        # Analyze bundle size (would need to add this script)
+        echo "Bundle analysis would run here"
+
+    - name: Check for memory leaks in tests
+      run: |
+        # Run tests with memory profiling
+        npm run test -- --detectOpenHandles --forceExit
+
+  report-results:
+    name: Report Test Results
+    runs-on: ubuntu-latest
+    needs: [ios-comprehensive, android-comprehensive, performance-tests]
+    if: always()
+
+    steps:
+    - name: Create test report
+      run: |
+        echo "## Nightly E2E Test Results" >> results.md
+        echo "Date: $(date)" >> results.md
+        echo "" >> results.md
+
+        if [ "${{ needs.ios-comprehensive.result }}" == "success" ]; then
+          echo "✅ iOS E2E Tests: PASSED" >> results.md
+        else
+          echo "❌ iOS E2E Tests: FAILED" >> results.md
+        fi
+
+        if [ "${{ needs.android-comprehensive.result }}" == "success" ]; then
+          echo "✅ Android E2E Tests: PASSED" >> results.md
+        else
+          echo "❌ Android E2E Tests: FAILED" >> results.md
+        fi
+
+        if [ "${{ needs.performance-tests.result }}" == "success" ]; then
+          echo "✅ Performance Tests: PASSED" >> results.md
+        else
+          echo "❌ Performance Tests: FAILED" >> results.md
+        fi
+
+    - name: Send notification
+      if: failure()
+      run: |
+        echo "Would send Slack/email notification about test failures"

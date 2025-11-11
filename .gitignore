@@ -30,3 +30,38 @@ yarn-error.log*
 *settings.json
 *broken*
 *.egg-info
+# Database files
+database/languageLearningDatabase.db
+**/languageLearningDatabase.db
+**/languagelearningdatabase.db
+*.db
+
+# React Native
+ahlingo_mobile/node_modules/
+ahlingo_mobile/ios/build/
+ahlingo_mobile/ios/Pods/
+ahlingo_mobile/ios/Podfile.lock
+ahlingo_mobile/ios/*.xcworkspace/xcuserdata/
+ahlingo_mobile/ios/*.xcodeproj/xcuserdata/
+ahlingo_mobile/android/build/
+ahlingo_mobile/android/app/build/
+ahlingo_mobile/android/.gradle/
+ahlingo_mobile/android/app/release/
+ahlingo_mobile/android/keystore.properties
+ahlingo_mobile/android/app/*
+ahlingo_mobile/.expo/
+ahlingo_mobile/dist/
+ahlingo_mobile/.bundle/
+ahlingo_mobile/.vscode/
+ahlingo_mobile/.idea/
+ahlingo_mobile/npm-debug.log*
+ahlingo_mobile/yarn-debug.log*
+ahlingo_mobile/yarn-error.log*
+
+# Ruby/Bundler
+ahlingo_mobile/vendor/
+ahlingo_mobile/Gemfile.lock
+ahlingo_mobile/.ruby-version
+.vscode/launch.json
+
+generation_failures*.csv

@@ -1,0 +1,183 @@
+name: Test Suite
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run type checking
+      run: npm run type-check
+
+    - name: Run linting
+      run: npm run lint
+
+    - name: Run unit tests
+      run: npm run test:ci
+
+    - name: Upload coverage reports
+      uses: codecov/codecov-action@v3
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        file: ./coverage/lcov.info
+        flags: unittests
+        name: codecov-umbrella
+
+  ios-e2e:
+    name: iOS E2E Tests
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Setup Ruby (for Cocoapods)
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.0'
+        bundler-cache: true
+
+    - name: Install Cocoapods
+      run: |
+        cd ios
+        pod install
+        cd ..
+
+    - name: Cache iOS build
+      uses: actions/cache@v3
+      with:
+        path: ios/build
+        key: ${{ runner.os }}-ios-build-${{ hashFiles('ios/**/*.pbxproj') }}
+        restore-keys: |
+          ${{ runner.os }}-ios-build-
+
+    - name: Build iOS app for testing
+      run: npm run test:e2e:build:ios
+
+    - name: Run iOS E2E tests
+      run: npm run test:e2e:test:ios
+
+    - name: Upload iOS test artifacts
+      uses: actions/upload-artifact@v3
+      if: failure()
+      with:
+        name: ios-e2e-artifacts
+        path: |
+          artifacts/
+          e2e/screenshots/
+
+  android-e2e:
+    name: Android E2E Tests
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Setup Java
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '11'
+
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v2
+      with:
+        api-level: 30
+        target: google_apis
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Cache Gradle dependencies
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+
+    - name: Make gradlew executable
+      run: chmod +x android/gradlew
+
+    - name: Build Android app for testing
+      run: npm run test:e2e:build:android
+
+    - name: Create and start AVD
+      run: |
+        echo "no" | avdmanager create avd --force --name test --abi google_apis/x86_64 --package 'system-images;android-30;google_apis;x86_64'
+        emulator -avd test -no-snapshot -no-window -gpu swiftshader_indirect -no-audio -no-boot-anim &
+        adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed | tr -d '\r') ]]; do sleep 1; done'
+
+    - name: Run Android E2E tests
+      run: npm run test:e2e:test:android
+
+    - name: Upload Android test artifacts
+      uses: actions/upload-artifact@v3
+      if: failure()
+      with:
+        name: android-e2e-artifacts
+        path: |
+          artifacts/
+          e2e/screenshots/
+
+  lint-and-format:
+    name: Code Quality
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Check formatting
+      run: npm run format:check
+
+    - name: Run ESLint
+      run: npm run lint
+
+    - name: Run TypeScript type checking
+      run: npm run type-check

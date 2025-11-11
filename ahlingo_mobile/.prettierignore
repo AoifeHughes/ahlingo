@@ -1,0 +1,39 @@
+# Dependencies
+node_modules/
+vendor/
+
+# Build outputs
+build/
+dist/
+coverage/
+
+# iOS
+ios/build/
+ios/Pods/
+*.xcworkspace/xcuserdata/
+*.xcodeproj/xcuserdata/
+
+# Android
+android/build/
+android/app/build/
+android/.gradle/
+
+# React Native
+.expo/
+.bundle/
+
+# Generated files
+*.lock
+*.log
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Assets
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg

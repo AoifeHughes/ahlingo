@@ -1,28 +1,34 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+"""
+Wrapper script to run content creation from the root directory.
+This script can be run from the project root and will properly handle paths.
+"""
 import os
+import sys
+from pathlib import Path
 
-os.environ["KIVY_NO_CONSOLELOG"] = "1"
+# Add content directory to Python path
+content_dir = Path(__file__).parent / "content"
+sys.path.insert(0, str(content_dir))
 
-from AHLingo import populate_database
-from AHLingo.database.database_manager import LanguageDB
-
-
-def initialize_default_settings():
-    """Initialize default settings in the database."""
-    with LanguageDB("./database/languageLearningDatabase.db") as db:
-        # Get or create default user
-        default_user = db.get_most_recent_user() or "default_user"
-
-        # Set default OpenAI server and API key settings if they don't exist
-        settings = db.get_user_settings(default_user)
-        if "openai_server" not in settings:
-            db.set_user_setting(
-                default_user, "openai_server", "http://localhost:8080/v1"
-            )
-        if "api_key" not in settings:
-            db.set_user_setting(default_user, "api_key", "sk-no-key-required")
+# Now import and run the actual script
+from create_exercise_database import populate_database, initialize_default_settings
 
 
 if __name__ == "__main__":
-    populate_database()
-    initialize_default_settings()
+    # Set up database path relative to repo root directory
+    repo_root = Path(__file__).parent
+    db_path = str(repo_root / "database" / "languageLearningDatabase.db")
+
+    # Create database directory if it doesn't exist
+    db_dir = repo_root / "database"
+    db_dir.mkdir(exist_ok=True)
+
+    print(f"Creating database at: {db_path}")
+    print(f"Running from: {os.getcwd()}")
+
+    populate_database(db_path)
+    initialize_default_settings(db_path)
+
+    print("Database creation complete!")

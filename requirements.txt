@@ -1,5 +1,5 @@
-kivymd
-llama-cpp-python
-lmql
+openai
+outlines
+pydantic
 tqdm
 TTS

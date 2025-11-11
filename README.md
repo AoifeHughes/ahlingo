@@ -1,4 +1,4 @@
-# AHLingo Translation Evaluator
+# AHLingo Language Learning Platform
 <p align="left">
   <a href="https://results.pre-commit.ci/latest/github/AoifeHughes/ahlingo/main">
     <img src="https://results.pre-commit.ci/badge/github/AoifeHughes/ahlingo/main.svg" alt="pre-commit.ci status">
@@ -10,7 +10,13 @@
 
 ![logo](./assets/logo.png)
 
-AHLingo Translation Evaluator is a comprehensive tool designed to assist language learners in improving their translation skills. By evaluating translations against source texts, users gain insight into their proficiency and areas of improvement.
+AHLingo is a comprehensive language learning platform that combines AI-powered content generation with a modern React Native mobile application. The platform helps users improve their language skills through interactive exercises and personalized learning experiences.
+
+## Project Structure
+
+- **`/content`** - AI-powered content generation system for creating language exercises
+- **`/ahlingo_mobile`** - React Native mobile application
+- **`/database`** - SQLite database with pre-generated exercises
 
 ## Features
 
@@ -18,47 +24,45 @@ AHLingo Translation Evaluator is a comprehensive tool designed to assist languag
 - **Conversation Practice**: Engage in language learning through interactive conversations
 - **Pair Matching**: Test your vocabulary with pair matching exercises
 - **Progress Tracking**: Track your learning progress and review past mistakes
-- **Local Database**: All progress and exercises are stored locally
+- **AI Content Generation**: Generate new exercises using local language models
+- **Offline Support**: All exercises work without internet connection
 
-## Installation
+## Content Generation System
 
-You can install AHLingo directly:
+AHLingo includes a sophisticated AI-powered content generation system that creates language learning exercises using local language models. The system generates three types of exercises:
 
-```bash
-git clone https://github.com/ahughes/ahlingo.git
-cd ahlingo
-pip install -e .
-```
+- **Conversation Exercises**: Interactive dialogues with culturally appropriate speaker names
+- **Word Pair Exercises**: Vocabulary matching between English and target languages  
+- **Translation Exercises**: Sentence translation practice with varied structures
 
-## Usage
+### Setting up the Database
 
-After installation, you can run AHLingo from the command line:
-
-```bash
-ahlingo
-```
-
-This will launch the main application interface where you can:
-1. Select different exercise types (Translation, Conversations, Pairs)
-2. Track your progress
-3. Review past mistakes
-4. Customize your learning experience
-
-## Setting up the Database
 You can setup the database by running the following command:
 
 ```bash
-python create_exercise_db.py
+python content/create_exercise_database.py
 ```
 
-For this to work you currently need an openai compatable server running on your
-local machine.
+**Requirements:**
+- An OpenAI-compatible server running locally (default: `http://localhost:11434/v1`)
+- Ollama or similar local LLM server with a model named "llama"
 
-See `generation_data` folder for more information on how to set this up.
+### Content Generation Configuration
 
-## Development Setup
+The generation system is configured through files in the `content/generation_data/` directory:
+- `languages.txt` - Target languages to generate content for
+- `levels.txt` - Difficulty levels (Beginner, Intermediate, Advanced)
+- `topics.txt` - Learning topics and themes
 
-For development:
+For detailed information about the content generation architecture, see [Content Generation Documentation](content/content_creation/CONTENT_GENERATION.md).
+
+## Mobile App Development
+
+The React Native application is located in `/ahlingo_mobile`. See the [Mobile App README](ahlingo_mobile/README.md) for setup instructions.
+
+## Content Generation Development
+
+To work on the content generation system:
 
 1. Clone the repository:
 ```bash
@@ -66,14 +70,15 @@ git clone https://github.com/ahughes/ahlingo.git
 cd ahlingo
 ```
 
-2. Install in development mode:
+2. Install dependencies:
 ```bash
-pip install -e .
+pip install -r requirements.txt
 ```
 
-3. Run tests:
+3. Run content generation:
 ```bash
-pytest
+cd content
+python create_exercise_database.py
 ```
 
 ## Contributing
