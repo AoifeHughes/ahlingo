@@ -487,7 +487,7 @@ def process_response(
 
 def process_language_level_topic(args):
     """Worker function to process a single language-level-topic combination."""
-    language, level, topic, model, db_loc, log_path = args
+    language, level, topic, model, db_loc, log_path, exercise_types = args
 
     try:
         from .outlines_generator import generate_lessons_data_structured
@@ -497,12 +497,18 @@ def process_language_level_topic(args):
 
         try:
             # Use Outlines generation with shared model
+            # Pass exercise_types as lesson_kinds parameter
             for (
                 lesson_kind,
                 lesson_id,
                 json_response,
             ) in generate_lessons_data_structured(
-                language, level, topic, model=model, log_path=log_path
+                language,
+                level,
+                topic,
+                model=model,
+                log_path=log_path,
+                lesson_kinds=exercise_types,
             ):
                 # Use existing process_response function
                 process_response(
@@ -543,8 +549,22 @@ def process_language_level_topic(args):
         return f"Failed: {language}-{level}-{topic}: {str(e)}"
 
 
-def populate_database(db_loc: str = None, max_workers: int = 5):
-    """Main function to generate lessons and populate the database using Outlines."""
+def populate_database(
+    db_loc: str = None,
+    max_workers: int = 5,
+    exercise_types: List[str] = None,
+    languages_filter: List[str] = None,
+    levels_filter: List[str] = None,
+):
+    """Main function to generate lessons and populate the database using Outlines.
+
+    Args:
+        db_loc: Path to database file
+        max_workers: Number of parallel workers
+        exercise_types: List of exercise types to generate (conversations, pairs, translations, fill_in_blank)
+        languages_filter: List of languages to generate (filters languages.txt)
+        levels_filter: List of difficulty levels to generate (filters levels.txt)
+    """
     from .outlines_generator import (
         generate_lessons_data_structured,
         setup_outlines_model,
@@ -568,14 +588,22 @@ def populate_database(db_loc: str = None, max_workers: int = 5):
     with open(config_dir / "topics.txt", "r") as file:
         topics = [line.strip() for line in file]
     with open(config_dir / "languages.txt", "r") as file:
-        languages = [line.strip() for line in file]
+        all_languages = [line.strip() for line in file]
     with open(config_dir / "levels.txt", "r") as file:
-        levels = [line.strip() for line in file]
+        all_levels = [line.strip() for line in file]
+
+    # Apply filters if provided
+    languages = languages_filter if languages_filter else all_languages
+    levels = levels_filter if levels_filter else all_levels
 
     print("Running with Outlines structured generation:")
     print("Languages:", ", ".join(languages))
     print("Levels:", ", ".join(levels))
     print("Topics:", ", ".join(topics))
+    if exercise_types:
+        print("Exercise types:", ", ".join(exercise_types))
+    else:
+        print("Exercise types: All")
 
     # Setup model once for reuse
     model = setup_outlines_model()
@@ -592,7 +620,7 @@ def populate_database(db_loc: str = None, max_workers: int = 5):
 
     # Prepare arguments for worker function
     worker_args = [
-        (lang, level, topic, model, db_loc, log_path)
+        (lang, level, topic, model, db_loc, log_path, exercise_types)
         for lang, level, topic in combinations
     ]
 
@@ -619,6 +647,22 @@ def populate_database(db_loc: str = None, max_workers: int = 5):
                 finally:
                     pbar.update(1)
         print("Database generation complete!")
+
+        # Set database version from centralized version file
+        # Version is automatically synced with package.json version
+        import sys
+
+        sys.path.insert(0, str(script_dir))
+        from version import DATABASE_VERSION, __version__
+
+        from database.database_manager import LanguageDB
+
+        with LanguageDB(db_loc) as db:
+            db.set_database_version(DATABASE_VERSION)
+            print(
+                f"Database version set to {DATABASE_VERSION} (app version {__version__})"
+            )
+
         print(f"\nFailure log saved to: {log_path}")
 
         # Print a summary of failures

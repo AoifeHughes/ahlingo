@@ -54,6 +54,28 @@ if __name__ == "__main__":
         type=str,
         help="Path to database file (defaults to repo root/database/languageLearningDatabase.db)",
     )
+    parser.add_argument(
+        "--exercise-type",
+        type=str,
+        choices=["conversations", "pairs", "translations", "fill_in_blank"],
+        help="Only generate specific exercise type (conversations, pairs, translations, fill_in_blank)",
+    )
+    parser.add_argument(
+        "--languages",
+        type=str,
+        help="Comma-separated list of languages to generate (e.g., 'French,Spanish')",
+    )
+    parser.add_argument(
+        "--levels",
+        type=str,
+        help="Comma-separated list of difficulty levels to generate (e.g., 'Beginner,Intermediate')",
+    )
+    parser.add_argument(
+        "--max-workers",
+        type=int,
+        default=5,
+        help="Number of parallel workers (default: 5)",
+    )
 
     args = parser.parse_args()
 
@@ -79,5 +101,28 @@ if __name__ == "__main__":
             MODEL_CONFIG["debug"] = True
             print("Enabled debug mode - will pause at each generation step")
 
-    populate_database(db_path)
+    # Parse language and level filters
+    languages_filter = None
+    if args.languages:
+        languages_filter = [lang.strip() for lang in args.languages.split(",")]
+        print(f"Filtering languages: {languages_filter}")
+
+    levels_filter = None
+    if args.levels:
+        levels_filter = [level.strip() for level in args.levels.split(",")]
+        print(f"Filtering levels: {levels_filter}")
+
+    # Determine exercise types to generate
+    exercise_types = None
+    if args.exercise_type:
+        exercise_types = [args.exercise_type]
+        print(f"Filtering exercise types: {exercise_types}")
+
+    populate_database(
+        db_path,
+        max_workers=args.max_workers,
+        exercise_types=exercise_types,
+        languages_filter=languages_filter,
+        levels_filter=levels_filter,
+    )
     initialize_default_settings(db_path)

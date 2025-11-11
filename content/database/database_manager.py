@@ -29,6 +29,10 @@ class LanguageDB:
     def _initialize(self):
         """Create all necessary tables if they don't exist."""
         table_creation_queries = [
+            """CREATE TABLE IF NOT EXISTS database_metadata (
+                key TEXT PRIMARY KEY,
+                value TEXT NOT NULL
+            )""",
             """CREATE TABLE IF NOT EXISTS pronunciation_audio (
                 id INTEGER PRIMARY KEY,
                 text TEXT NOT NULL,
@@ -169,6 +173,23 @@ class LanguageDB:
                 print("Validation tracking column added successfully.")
         except Exception as e:
             print(f"Error updating schema: {e}")
+
+    def set_database_version(self, version: int):
+        """Set the database version in the metadata table."""
+        self.cursor.execute(
+            "INSERT OR REPLACE INTO database_metadata (key, value) VALUES (?, ?)",
+            ("version", str(version)),
+        )
+        self.conn.commit()
+        print(f"Database version set to: {version}")
+
+    def get_database_version(self) -> int:
+        """Get the current database version from the metadata table."""
+        self.cursor.execute(
+            "SELECT value FROM database_metadata WHERE key = ?", ("version",)
+        )
+        result = self.cursor.fetchone()
+        return int(result[0]) if result else 0
 
     def get_most_recent_user(self) -> Optional[str]:
         """Get the username of the most recently logged in user."""
@@ -627,15 +648,6 @@ class LanguageDB:
         lesson_id: str = None,
     ) -> int:
         """Add a pair exercise to the database."""
-        # Check if pair exercise already exists
-        self.cursor.execute(
-            """SELECT COUNT(*) FROM pair_exercises
-               WHERE language_1_content = ? AND language_2_content = ?""",
-            (language_1_content, language_2_content),
-        )
-        if self.cursor.fetchone()[0] > 0:
-            return -1  # Exercise already exists
-
         language_id = self._get_or_create_language(language)
         topic_id = self._get_or_create_topic(topic)
         difficulty_id = self._get_or_create_difficulty(difficulty_level)
@@ -693,24 +705,23 @@ class LanguageDB:
         )
         exercise_id = self.cursor.lastrowid
 
+        # Track pairs within THIS batch to avoid duplicates within the same exercise
+        seen_in_batch = set()
+
         # Insert all pairs under the same exercise_id
         for pair in pairs:
-            # Check for duplicates within this batch (skip if duplicate)
             language_1_content = pair.get(language_1, "")
             language_2_content = pair.get(language_2, "")
 
             if not language_1_content or not language_2_content:
                 continue  # Skip invalid pairs
 
-            # Check if this specific pair already exists in the database
-            self.cursor.execute(
-                """SELECT COUNT(*) FROM pair_exercises
-                   WHERE language_1_content = ? AND language_2_content = ?""",
-                (language_1_content, language_2_content),
-            )
-            existing_count = self.cursor.fetchone()[0]
-            if existing_count > 0:
-                continue  # Skip duplicate pairs
+            # Only check for duplicates within THIS batch
+            pair_key = (language_1_content.lower(), language_2_content.lower())
+            if pair_key in seen_in_batch:
+                continue  # Skip duplicate within this exercise
+
+            seen_in_batch.add(pair_key)
 
             self.cursor.execute(
                 """INSERT INTO pair_exercises

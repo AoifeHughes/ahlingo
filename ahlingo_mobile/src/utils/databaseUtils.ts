@@ -4,6 +4,7 @@ import SQLite, {
 } from 'react-native-sqlite-storage';
 import RNFS from 'react-native-fs';
 import { Platform } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DATABASE_CONFIG, TIMEOUTS } from './constants';
 
 // Enable debug mode and promises
@@ -149,6 +150,7 @@ export const safeCloseDatabase = async (
 
 /**
  * Ensures the database is copied from bundle to Documents directory
+ * Checks version and replaces database if a newer version is bundled
  */
 export const ensureDatabaseCopied = async (): Promise<void> => {
   try {
@@ -166,8 +168,26 @@ export const ensureDatabaseCopied = async (): Promise<void> => {
 
     const exists = await RNFS.exists(databasePath);
 
-    if (!exists) {
-      console.log('Database not found in documents, copying from bundle...');
+    // Check the installed database version
+    const DB_VERSION_KEY = '@database_version';
+    const installedVersionStr = await AsyncStorage.getItem(DB_VERSION_KEY);
+    const installedVersion = installedVersionStr ? parseInt(installedVersionStr, 10) : 0;
+    const bundledVersion = DATABASE_CONFIG.VERSION;
+
+    console.log(`Database version check - Installed: ${installedVersion}, Bundled: ${bundledVersion}`);
+
+    // Determine if we need to copy/update the database
+    const needsUpdate = !exists || installedVersion < bundledVersion;
+
+    if (needsUpdate) {
+      if (exists && installedVersion < bundledVersion) {
+        console.log(`🔄 Database update detected (v${installedVersion} → v${bundledVersion}). Replacing database...`);
+        // Delete the old database before copying the new one
+        await RNFS.unlink(databasePath);
+        console.log('✅ Old database deleted');
+      } else if (!exists) {
+        console.log('Database not found in documents, copying from bundle...');
+      }
 
       if (Platform.OS === 'ios') {
         await RNFS.copyFile(bundlePath, databasePath);
@@ -220,8 +240,12 @@ export const ensureDatabaseCopied = async (): Promise<void> => {
       }
 
       console.log('Database copied successfully to:', databasePath);
+
+      // Update the stored version number after successful copy
+      await AsyncStorage.setItem(DB_VERSION_KEY, bundledVersion.toString());
+      console.log(`✅ Database version updated to v${bundledVersion}`);
     } else {
-      console.log('Database already exists at:', databasePath);
+      console.log(`✅ Database is up to date (v${installedVersion})`);
     }
 
     // Verify the file

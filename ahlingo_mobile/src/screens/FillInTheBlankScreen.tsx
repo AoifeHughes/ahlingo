@@ -22,6 +22,7 @@ import {
   recordExerciseAttemptForCurrentUser,
 } from '../services/RefactoredDatabaseService';
 import { useTheme } from '../contexts/ThemeContext';
+import TTSService from '../services/TTSService';
 
 type FillInTheBlankScreenRouteProp = RouteProp<
   RootStackParamList,
@@ -220,6 +221,9 @@ const FillInTheBlankScreen: React.FC<Props> = ({ route, navigation }) => {
   const handleWordPress = (word: string) => {
     if (gameState.hasSubmitted) return;
 
+    // Speak the word in the target language when clicked
+    TTSService.speakWithLanguageDetection(word, userLanguage);
+
     setGameState(prev => ({
       ...prev,
       selectedWord: word,
@@ -243,6 +247,10 @@ const FillInTheBlankScreen: React.FC<Props> = ({ route, navigation }) => {
       isCorrect,
       score: isCorrect ? prev.score + 1 : prev.score,
     }));
+
+    // Speak the full correct sentence after submission
+    const completeSentence = gameState.sentence.replace('_', gameState.correctAnswer);
+    TTSService.speakWithLanguageDetection(completeSentence, userLanguage);
 
     // Handle shuffle mode completion
     if (shuffleContext) {

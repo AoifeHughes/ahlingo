@@ -90,4 +90,5 @@ if __name__ == "__main__":
         remove_failed=args.remove_failed,
         dry_run=not args.no_dry_run,
         report_path=args.report,
+        exercise_type=args.exercise_type,
     )

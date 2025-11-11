@@ -11,9 +11,10 @@ interface ConversationMessage {
 
 interface ConversationViewProps {
   messages: ConversationMessage[];
+  onSpeak?: (message: string) => void;
 }
 
-const ConversationView: React.FC<ConversationViewProps> = ({ messages }) => {
+const ConversationView: React.FC<ConversationViewProps> = ({ messages, onSpeak }) => {
   const { theme } = useTheme();
 
   // Create a mapping of speakers to determine left/right alignment
@@ -43,6 +44,7 @@ const ConversationView: React.FC<ConversationViewProps> = ({ messages }) => {
             speaker={message.speaker}
             message={message.message}
             isLeft={speakerAlignments.get(message.speaker) || false}
+            onSpeak={onSpeak}
           />
         ))}
       </ScrollView>

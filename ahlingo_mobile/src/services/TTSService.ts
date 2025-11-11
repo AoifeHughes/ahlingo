@@ -89,6 +89,11 @@ const IOS_PREMIUM_VOICES: { [key: string]: string[] } = {
     'com.apple.voice.enhanced.ru-RU.Milena',
     'com.apple.ttsbundle.Milena-compact',
   ],
+  'uk-UA': [
+    'com.apple.voice.enhanced.uk-UA.Lesya',
+    'com.apple.voice.premium.uk-UA.Lesya',
+    'com.apple.ttsbundle.Lesya-compact',
+  ],
 };
 
 // Minimum quality threshold for Android voices (400 = high quality, 500 = neural/premium)
@@ -100,6 +105,7 @@ class TTSService {
   private hasLoggedVoices: boolean = false;
   private voiceCache: VoiceCache = {};
   private availableVoices: Voice[] = [];
+  private userPreferredVoices: { [languageCode: string]: string } = {};
 
   private constructor() {}
 
@@ -160,7 +166,18 @@ class TTSService {
   }
 
   /**
+   * Set user-preferred voices for languages (e.g., from settings)
+   * This allows users to override the automatic voice selection
+   */
+  public setUserPreferredVoices(preferredVoices: { [languageCode: string]: string }): void {
+    this.userPreferredVoices = preferredVoices;
+    // Clear cache so new preferences take effect
+    this.voiceCache = {};
+  }
+
+  /**
    * Get the best available voice for a given language
+   * Priority: User preference > Premium/Enhanced > Compact
    * On iOS: Prefers premium > enhanced > compact voices
    * On Android: Prefers highest quality offline voices (quality >= 400)
    */
@@ -172,6 +189,22 @@ class TTSService {
 
     await this.initialize();
 
+    // Check if user has set a preferred voice for this language
+    if (this.userPreferredVoices[languageCode]) {
+      const preferredVoiceId = this.userPreferredVoices[languageCode];
+      const voice = this.availableVoices.find(v => v.id === preferredVoiceId);
+
+      // Only use the preferred voice if it's installed and available offline
+      if (voice && !voice.notInstalled && !voice.networkConnectionRequired) {
+        console.log(`Using user-preferred voice for ${languageCode}: ${voice.name}`);
+        this.voiceCache[languageCode] = preferredVoiceId;
+        return preferredVoiceId;
+      } else {
+        console.warn(`User-preferred voice for ${languageCode} is not available offline. Falling back to automatic selection.`);
+      }
+    }
+
+    // Fall back to automatic selection
     if (Platform.OS === 'ios') {
       return this.getBestIOSVoice(languageCode);
     } else {
@@ -377,6 +410,7 @@ class TTSService {
       'chinese': Platform.OS === 'ios' ? 'zh-CN' : 'zh',
       'korean': Platform.OS === 'ios' ? 'ko-KR' : 'ko',
       'russian': Platform.OS === 'ios' ? 'ru-RU' : 'ru',
+      'ukrainian': Platform.OS === 'ios' ? 'uk-UA' : 'uk',
     };
 
     return languageMap[languageName.toLowerCase()] || (Platform.OS === 'ios' ? 'en-US' : 'en');
@@ -446,6 +480,29 @@ class TTSService {
       voiceName: voice.name,
       quality: voice.quality,
     };
+  }
+
+  /**
+   * Get all available voices for a specific language
+   * Useful for building voice selection UI in settings
+   */
+  public async getAvailableVoicesForLanguage(languageCode: string): Promise<Voice[]> {
+    await this.initialize();
+    const baseLanguage = languageCode.split('-')[0].toLowerCase();
+
+    return this.availableVoices.filter(v => {
+      const voiceLang = v.language.split('-')[0].toLowerCase();
+      return voiceLang === baseLanguage;
+    });
+  }
+
+  /**
+   * Get all available voices (all languages)
+   * Useful for building comprehensive voice settings UI
+   */
+  public async getAllAvailableVoices(): Promise<Voice[]> {
+    await this.initialize();
+    return this.availableVoices;
   }
 }
 
