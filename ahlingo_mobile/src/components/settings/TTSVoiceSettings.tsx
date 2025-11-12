@@ -140,18 +140,22 @@ const TTSVoiceSettings: React.FC<TTSVoiceSettingsProps> = ({
       return { text: 'Requires Network', color: theme.colors.warning || '#FFA500' };
     }
 
+    // Both iOS and Android use the quality field consistently
+    // iOS: 300 = compact/default, 500 = enhanced/premium
+    // Android: 300+ = normal, 400+ = high quality, 500+ = neural
+    const quality = voice.quality ?? 0;
+
     if (Platform.OS === 'ios') {
-      if (voice.id.includes('premium')) {
+      if (quality >= 500) {
+        // Enhanced or Premium voices
         return { text: 'Premium', color: theme.colors.success };
-      } else if (voice.id.includes('enhanced')) {
-        return { text: 'Enhanced', color: theme.colors.secondary };
-      } else if (voice.id.includes('compact')) {
+      } else if (quality >= 300) {
+        // Compact/default voices
         return { text: 'Compact', color: theme.colors.textSecondary || theme.colors.text };
       }
       return { text: 'Standard', color: theme.colors.textSecondary || theme.colors.text };
     } else {
       // Android quality levels
-      const quality = voice.quality ?? 0;
       if (quality >= 500) {
         return { text: 'Neural', color: theme.colors.success };
       } else if (quality >= 400) {
@@ -195,7 +199,7 @@ const TTSVoiceSettings: React.FC<TTSVoiceSettingsProps> = ({
       <View style={styles.header}>
         <Text style={styles.title}>Text-to-Speech Voices</Text>
         <Text style={styles.subtitle}>
-          Choose your preferred voice for each language. High-quality voices provide better pronunciation.
+          Choose your preferred voice for each language. Premium/Enhanced voices (quality: 500) provide better pronunciation than Compact voices (quality: 300). Only voices already downloaded on your device are shown.
         </Text>
       </View>
 

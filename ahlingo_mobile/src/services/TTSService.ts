@@ -33,7 +33,14 @@ interface VoiceCache {
   [language: string]: string | null;
 }
 
-// iOS premium voice IDs for various languages
+// iOS voice IDs for various languages
+// Note: iOS provides no API to trigger voice downloads. AVSpeechSynthesisVoice.speechVoices()
+// returns only voices already present on the device. Users must manually download voices via:
+// Settings → Accessibility → Live Speech (iOS 17-18) or Spoken Content (iOS 16) → Voices
+//
+// Voice quality levels (from react-native-tts):
+// - quality: 500 = Enhanced/Premium voices (100-200MB each, best quality)
+// - quality: 300 = Compact/Default voices (smaller size, pre-installed)
 const IOS_PREMIUM_VOICES: { [key: string]: string[] } = {
   'en-US': [
     'com.apple.voice.premium.en-US.Samantha',
