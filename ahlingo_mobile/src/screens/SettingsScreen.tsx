@@ -40,6 +40,9 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
     difficulties,
     themes,
     isResetting,
+    serverStatus,
+    serverModelOptions,
+    refreshServerModels,
     updateFormData,
     handleReset,
   } = useSettingsForm(navigation);
@@ -104,14 +107,18 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
         testID="settings-scroll"
       >
         <View style={styles.content}>
-          <BasicSettingsForm
-            formData={formData}
-            languages={languages}
-            difficulties={difficulties}
-            themes={themes}
-            onUpdateFormData={updateFormData}
-            theme={theme}
-          />
+        <BasicSettingsForm
+          formData={formData}
+          languages={languages}
+          difficulties={difficulties}
+          themes={themes}
+          onUpdateFormData={updateFormData}
+          theme={theme}
+          serverStatus={serverStatus}
+          serverModelOptions={serverModelOptions}
+          onServerModelChange={value => updateFormData('serverModel', value)}
+          refreshServerModels={refreshServerModels}
+        />
 
           <LocalModelsSection
             enableLocalModels={formData.enableLocalModels}

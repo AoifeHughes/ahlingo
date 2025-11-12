@@ -60,10 +60,21 @@ const TTSVoiceSettings: React.FC<TTSVoiceSettingsProps> = ({
         const baseLanguage = languageCode.split('-')[0].toLowerCase();
 
         // Find voices for this language
-        const languageVoices = allVoices.filter(v => {
+        let languageVoices = allVoices.filter(v => {
           const voiceLang = v.language.split('-')[0].toLowerCase();
           return voiceLang === baseLanguage;
         });
+
+        const dedupedVoices: Voice[] = [];
+        const seenVoiceIds = new Set<string>();
+        languageVoices.forEach(voice => {
+          if (!seenVoiceIds.has(voice.id)) {
+            seenVoiceIds.add(voice.id);
+            dedupedVoices.push(voice);
+          }
+        });
+
+        languageVoices = dedupedVoices;
 
         // Sort voices: premium/high quality first, installed before not installed
         languageVoices.sort((a, b) => {

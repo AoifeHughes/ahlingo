@@ -61,15 +61,15 @@ const DownloadProgressBar: React.FC<DownloadProgressBarProps> = React.memo(({
     },
   });
 
+  const detailText =
+    bytesWritten > 0 && contentLength > 0
+      ? ` (${formatFileSize(bytesWritten)} / ${formatFileSize(contentLength)})`
+      : '';
+
   return (
     <View style={styles.progressContainer}>
       <Text style={styles.progressText}>
-        Downloading: {Math.round(progress * 100)}%
-        {bytesWritten > 0 && contentLength > 0 && (
-          <Text style={styles.progressDetails}>
-            {' '}({formatFileSize(bytesWritten)} / {formatFileSize(contentLength)})
-          </Text>
-        )}
+        Downloading: {Math.round(progress * 100)}%{detailText}
       </Text>
       <View style={styles.progressBar}>
         <Animated.View
