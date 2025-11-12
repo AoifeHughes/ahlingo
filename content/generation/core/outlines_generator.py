@@ -27,9 +27,7 @@ except ImportError:
 
 # Centralized model configuration
 MODEL_CONFIG = {
-    "base_url": os.environ.get(
-        "AHLINGO_OUTLINES_URL", "http://192.168.68.51:11434/v1"
-    ),
+    "base_url": os.environ.get("AHLINGO_OUTLINES_URL", "http://192.168.68.51:11434/v1"),
     "api_key": os.environ.get("AHLINGO_OUTLINES_API_KEY", "sk-no-key-required"),
     "temperature": float(os.environ.get("AHLINGO_OUTLINES_TEMPERATURE", "0.75")),
     "exercise_temperatures": {
@@ -57,9 +55,7 @@ class OutlinesModelManager:
             return self._thread_local.model
 
         with self._lock:
-            model = outlines.models.OpenAI(
-                self._client, model_name=self._model_name
-            )
+            model = outlines.models.OpenAI(self._client, model_name=self._model_name)
         self._thread_local.model = model
         return model
 
@@ -220,14 +216,18 @@ def run_outlines_generation(
             try:
                 return generator(prompt, **fallback_kwargs)
             except TypeError:
-                logging.debug("Outlines generator still rejected kwargs after dropping schema")
+                logging.debug(
+                    "Outlines generator still rejected kwargs after dropping schema"
+                )
 
         if "temperature" in fallback_kwargs:
             fallback_kwargs.pop("temperature")
             try:
                 return generator(prompt, **fallback_kwargs)
             except TypeError:
-                logging.debug("Outlines generator still rejected kwargs after dropping temperature")
+                logging.debug(
+                    "Outlines generator still rejected kwargs after dropping temperature"
+                )
 
         return generator(prompt)
 
