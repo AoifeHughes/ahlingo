@@ -63,10 +63,10 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
       exerciseType: 'translation',
     },
     {
-      title: 'Chat Practice',
-      screen: 'Chatbot' as keyof RootStackParamList,
-      icon: '🤖',
-      exerciseType: null,
+      title: 'Fill in the Blank',
+      screen: 'TopicSelection' as keyof RootStackParamList,
+      icon: '✏️',
+      exerciseType: 'fill_in_blank',
     },
     {
       title: 'Study Topic',
@@ -75,10 +75,10 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
       exerciseType: null,
     },
     {
-      title: 'Fill in the Blank',
-      screen: 'TopicSelection' as keyof RootStackParamList,
-      icon: '✏️',
-      exerciseType: 'fill_in_blank',
+      title: 'Chat Practice',
+      screen: 'Chatbot' as keyof RootStackParamList,
+      icon: '🤖',
+      exerciseType: null,
     },
     {
       title: 'Your Stats',

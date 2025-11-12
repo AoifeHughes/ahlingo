@@ -33,7 +33,14 @@ interface VoiceCache {
   [language: string]: string | null;
 }
 
-// iOS premium voice IDs for various languages
+// iOS voice IDs for various languages
+// Note: iOS provides no API to trigger voice downloads. AVSpeechSynthesisVoice.speechVoices()
+// returns only voices already present on the device. Users must manually download voices via:
+// Settings → Accessibility → Live Speech (iOS 17-18) or Spoken Content (iOS 16) → Voices
+//
+// Voice quality levels (from react-native-tts):
+// - quality: 500 = Enhanced/Premium voices (100-200MB each, best quality)
+// - quality: 300 = Compact/Default voices (smaller size, pre-installed)
 const IOS_PREMIUM_VOICES: { [key: string]: string[] } = {
   'en-US': [
     'com.apple.voice.premium.en-US.Samantha',
@@ -167,7 +174,7 @@ class TTSService {
 
   /**
    * Set user-preferred voices for languages (e.g., from settings)
-   * This allows users to override the automatic voice selection
+   * This allows users to override the automatic voice selection.
    */
   public setUserPreferredVoices(preferredVoices: { [languageCode: string]: string }): void {
     this.userPreferredVoices = preferredVoices;
@@ -177,7 +184,8 @@ class TTSService {
 
   /**
    * Get the best available voice for a given language
-   * Priority: User preference > Premium/Enhanced > Compact
+   * Priority: User preference > Premium/Enhanced > Compact (falls back to auto-selection)
+   * Checks user preferences first, then falls back to automatic selection
    * On iOS: Prefers premium > enhanced > compact voices
    * On Android: Prefers highest quality offline voices (quality >= 400)
    */
@@ -189,10 +197,10 @@ class TTSService {
 
     await this.initialize();
 
-    // Check if user has set a preferred voice for this language
+    // Check if user has a preferred voice for this language
     if (this.userPreferredVoices[languageCode]) {
       const preferredVoiceId = this.userPreferredVoices[languageCode];
-      const voice = this.availableVoices.find(v => v.id === preferredVoiceId);
+      const voice = this.availableVoices.find((v) => v.id === preferredVoiceId);
 
       // Only use the preferred voice if it's installed and available offline
       if (voice && !voice.notInstalled && !voice.networkConnectionRequired) {
@@ -200,7 +208,9 @@ class TTSService {
         this.voiceCache[languageCode] = preferredVoiceId;
         return preferredVoiceId;
       } else {
-        console.warn(`User-preferred voice for ${languageCode} is not available offline. Falling back to automatic selection.`);
+        console.warn(
+          `User-preferred voice for ${languageCode} is not available offline. Falling back to automatic selection.`
+        );
       }
     }
 

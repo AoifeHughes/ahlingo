@@ -6,6 +6,7 @@ import RNFS from 'react-native-fs';
 import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DATABASE_CONFIG, TIMEOUTS } from './constants';
+import { performDatabaseMigration } from '../services/DatabaseMigrationService';
 
 // Enable debug mode and promises
 SQLite.DEBUG(true);
@@ -149,8 +150,64 @@ export const safeCloseDatabase = async (
 };
 
 /**
+ * Helper function to copy database from bundle to destination
+ */
+const copyDatabaseFromBundle = async (bundlePath: string, databasePath: string): Promise<void> => {
+  if (Platform.OS === 'ios') {
+    await RNFS.copyFile(bundlePath, databasePath);
+    console.log('✅ Database copied (iOS)');
+  } else {
+    // Enhanced Android debugging
+    console.log('Android: Attempting to copy database...');
+    console.log('Looking for:', `databases/${DATABASE_CONFIG.NAME}`);
+    console.log('Target path:', databasePath);
+
+    try {
+      // Try the expected path first
+      await RNFS.copyFileAssets(`databases/${DATABASE_CONFIG.NAME}`, databasePath);
+      console.log('✅ Database copied from databases/ (Android)');
+    } catch (androidError) {
+      console.error('Android copy failed with databases/ path:', androidError);
+
+      // Try alternative paths
+      console.log('Trying alternative paths...');
+
+      try {
+        // Try without subdirectory
+        console.log('Trying root assets path:', DATABASE_CONFIG.NAME);
+        await RNFS.copyFileAssets(DATABASE_CONFIG.NAME, databasePath);
+        console.log('✅ Database copied from root (Android)');
+      } catch (rootError) {
+        console.error('Root path also failed:', rootError);
+
+        try {
+          // Try with database (singular)
+          console.log('Trying database/ (singular) path:', `database/${DATABASE_CONFIG.NAME}`);
+          await RNFS.copyFileAssets(`database/${DATABASE_CONFIG.NAME}`, databasePath);
+          console.log('✅ Database copied from database/ (Android)');
+        } catch (singularError) {
+          console.error('Singular database/ path failed:', singularError);
+
+          // Try custom directory
+          try {
+            console.log('Trying custom/ path:', `custom/${DATABASE_CONFIG.NAME}`);
+            await RNFS.copyFileAssets(`custom/${DATABASE_CONFIG.NAME}`, databasePath);
+            console.log('✅ Database copied from custom/ (Android)');
+          } catch (customError) {
+            console.error('Custom path failed:', customError);
+            console.error('All paths attempted have failed. Database file not found in Android assets.');
+            throw androidError; // Throw the original error
+          }
+        }
+      }
+    }
+  }
+};
+
+/**
  * Ensures the database is copied from bundle to Documents directory
  * Checks version and replaces database if a newer version is bundled
+ * Performs migration to preserve user data when updating
  */
 export const ensureDatabaseCopied = async (): Promise<void> => {
   try {
@@ -178,70 +235,33 @@ export const ensureDatabaseCopied = async (): Promise<void> => {
 
     // Determine if we need to copy/update the database
     const needsUpdate = !exists || installedVersion < bundledVersion;
+    const needsMigration = exists && installedVersion > 0 && installedVersion < bundledVersion;
 
     if (needsUpdate) {
-      if (exists && installedVersion < bundledVersion) {
-        console.log(`🔄 Database update detected (v${installedVersion} → v${bundledVersion}). Replacing database...`);
-        // Delete the old database before copying the new one
-        await RNFS.unlink(databasePath);
-        console.log('✅ Old database deleted');
-      } else if (!exists) {
-        console.log('Database not found in documents, copying from bundle...');
-      }
+      // If database exists and needs update, perform migration to preserve user data
+      if (needsMigration) {
+        console.log(`🔄 Database migration needed (v${installedVersion} → v${bundledVersion})`);
 
-      if (Platform.OS === 'ios') {
-        await RNFS.copyFile(bundlePath, databasePath);
-      } else {
-        // Enhanced Android debugging
-        console.log('Android: Attempting to copy database...');
-        console.log('Looking for:', `databases/${DATABASE_CONFIG.NAME}`);
-        console.log('Target path:', databasePath);
+        // Use migration service to backup, replace, and restore
+        await performDatabaseMigration(
+          installedVersion,
+          bundledVersion,
+          async () => {
+            // This function handles the actual database replacement
+            await RNFS.unlink(databasePath);
+            console.log('✅ Old database deleted');
 
-        try {
-          // Try to list all assets to see what's available
-          console.log('Attempting to read Android assets directory...');
-          // Note: RNFS doesn't support listing Android assets directly
-          // We'll try different paths to help debug
-
-          // Try the expected path first
-          await RNFS.copyFileAssets(`databases/${DATABASE_CONFIG.NAME}`, databasePath);
-        } catch (androidError) {
-          console.error('Android copy failed with databases/ path:', androidError);
-
-          // Try alternative paths
-          console.log('Trying alternative paths...');
-
-          try {
-            // Try without subdirectory
-            console.log('Trying root assets path:', DATABASE_CONFIG.NAME);
-            await RNFS.copyFileAssets(DATABASE_CONFIG.NAME, databasePath);
-          } catch (rootError) {
-            console.error('Root path also failed:', rootError);
-
-            try {
-              // Try with database (singular)
-              console.log('Trying database/ (singular) path:', `database/${DATABASE_CONFIG.NAME}`);
-              await RNFS.copyFileAssets(`database/${DATABASE_CONFIG.NAME}`, databasePath);
-            } catch (singularError) {
-              console.error('Singular database/ path failed:', singularError);
-
-              // Try custom directory
-              try {
-                console.log('Trying custom/ path:', `custom/${DATABASE_CONFIG.NAME}`);
-                await RNFS.copyFileAssets(`custom/${DATABASE_CONFIG.NAME}`, databasePath);
-              } catch (customError) {
-                console.error('Custom path failed:', customError);
-                console.error('All paths attempted have failed. Database file not found in Android assets.');
-                throw androidError; // Throw the original error
-              }
-            }
+            // Copy new database from bundle
+            await copyDatabaseFromBundle(bundlePath, databasePath);
           }
-        }
+        );
+      } else if (!exists) {
+        // First time setup - no migration needed
+        console.log('Database not found in documents, copying from bundle...');
+        await copyDatabaseFromBundle(bundlePath, databasePath);
       }
 
-      console.log('Database copied successfully to:', databasePath);
-
-      // Update the stored version number after successful copy
+      // Update the stored version number after successful copy/migration
       await AsyncStorage.setItem(DB_VERSION_KEY, bundledVersion.toString());
       console.log(`✅ Database version updated to v${bundledVersion}`);
     } else {

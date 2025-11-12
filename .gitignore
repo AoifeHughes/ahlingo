@@ -64,4 +64,6 @@ ahlingo_mobile/Gemfile.lock
 ahlingo_mobile/.ruby-version
 .vscode/launch.json
 
+# Generation logs
 generation_failures*.csv
+logs/

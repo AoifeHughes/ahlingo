@@ -1,15 +1,25 @@
 import React from 'react';
-import { View, TextInput, Text, StyleSheet } from 'react-native';
-import { Button } from 'react-native-elements';
+import {
+  View,
+  TextInput,
+  Text,
+  StyleSheet,
+  ActivityIndicator,
+  TouchableOpacity,
+} from 'react-native';
 import SettingsItem from '../SettingsItem';
 import Dropdown, { DropdownItem } from '../Dropdown';
-import { FormData } from '../../hooks/useSettingsForm';
+import { FormData, ServerStatusState } from '../../hooks/useSettingsForm';
 
 interface BasicSettingsFormProps {
   formData: FormData;
   languages: DropdownItem[];
   difficulties: DropdownItem[];
   themes: DropdownItem[];
+  serverStatus: ServerStatusState;
+  serverModelOptions: DropdownItem[];
+  onServerModelChange: (modelId: string) => void;
+  refreshServerModels: () => void;
   onUpdateFormData: (field: keyof FormData, value: string | boolean) => void;
   theme: any;
 }
@@ -19,6 +29,10 @@ const BasicSettingsForm: React.FC<BasicSettingsFormProps> = ({
   languages,
   difficulties,
   themes,
+  serverStatus,
+  serverModelOptions,
+  onServerModelChange,
+  refreshServerModels,
   onUpdateFormData,
   theme,
 }) => {
@@ -75,7 +89,58 @@ const BasicSettingsForm: React.FC<BasicSettingsFormProps> = ({
         <Text style={styles.helpText}>
           Enter the full URL including port number for your AI server (Ollama, etc.)
         </Text>
+        <View style={styles.serverStatusRow}>
+          <View style={styles.serverStatusIndicator}>
+            {serverStatus.status === 'checking' ? (
+              <ActivityIndicator size="small" color={theme.colors.primary} />
+            ) : (
+              <Text
+                style={[
+                  styles.serverStatusText,
+                  serverStatus.status === 'success' && styles.serverStatusSuccess,
+                  serverStatus.status === 'error' && styles.serverStatusError,
+                ]}
+              >
+                {serverStatus.status === 'success'
+                  ? '✅ Server reachable'
+                  : serverStatus.status === 'error'
+                    ? '⚠️ Server error'
+                    : 'Server status unknown'}
+              </Text>
+            )}
+          </View>
+          <TouchableOpacity
+            onPress={refreshServerModels}
+            style={styles.refreshButton}
+          >
+            <Text style={styles.refreshButtonText}>Refresh models</Text>
+          </TouchableOpacity>
+        </View>
+        {serverStatus.message ? (
+          <Text
+            style={[
+              styles.serverStatusMessage,
+              serverStatus.status === 'error' && styles.serverStatusError,
+            ]}
+          >
+            {serverStatus.message}
+          </Text>
+        ) : null}
       </SettingsItem>
+
+      {serverModelOptions.length > 0 && (
+        <SettingsItem title="Server Model">
+          <Dropdown
+            items={serverModelOptions}
+            selectedValue={formData.serverModel}
+            onValueChange={value => onServerModelChange(value)}
+            placeholder="Select a server model"
+          />
+          <Text style={styles.helpText}>
+            Choose the model the app will use when generating chat responses.
+          </Text>
+        </SettingsItem>
+      )}
 
       <SettingsItem title="Username">
         <TextInput
@@ -107,6 +172,46 @@ const createStyles = (currentTheme: any) => StyleSheet.create({
     color: currentTheme.colors.textSecondary,
     marginTop: currentTheme.spacing.xs,
     fontStyle: 'italic',
+  },
+  serverStatusRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: currentTheme.spacing.md,
+  },
+  serverStatusIndicator: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  serverStatusText: {
+    fontSize: currentTheme.typography.fontSizes.sm,
+    color: currentTheme.colors.textSecondary,
+  },
+  serverStatusSuccess: {
+    color: currentTheme.colors.success,
+  },
+  serverStatusError: {
+    color: currentTheme.colors.error,
+  },
+  serverStatusMessage: {
+    marginTop: currentTheme.spacing.xs,
+    fontSize: currentTheme.typography.fontSizes.xs,
+    color: currentTheme.colors.textSecondary,
+  },
+  refreshButton: {
+    paddingHorizontal: currentTheme.spacing.md,
+    paddingVertical: currentTheme.spacing.xs,
+    borderRadius: currentTheme.borderRadius.sm,
+    borderWidth: 1,
+    borderColor: currentTheme.colors.border,
+    marginLeft: currentTheme.spacing.md,
+    backgroundColor: currentTheme.colors.surface,
+  },
+  refreshButtonText: {
+    fontSize: currentTheme.typography.fontSizes.sm,
+    color: currentTheme.colors.primary,
+    fontWeight: currentTheme.typography.fontWeights.semibold,
   },
 });
 

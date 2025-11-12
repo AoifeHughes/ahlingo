@@ -46,10 +46,12 @@ export class TTSVoiceHelper {
         steps: [
           '1. Open Settings app',
           '2. Go to Accessibility',
-          '3. Tap "Spoken Content"',
+          '3. Tap "Live Speech" (iOS 17-18) or "Spoken Content" (iOS 16)',
           '4. Tap "Voices"',
           '5. Select your language',
-          '6. Download "Premium" or "Enhanced" voices',
+          '6. Download "Enhanced" or "Premium" quality voices (100-200MB each)',
+          '',
+          'Note: Apps cannot trigger voice downloads - you must download them manually in Settings.',
         ],
       };
     } else {
@@ -91,7 +93,11 @@ export class TTSVoiceHelper {
   }
 
   /**
-   * Attempt to open TTS settings (iOS only, requires native module)
+   * Attempt to open TTS settings
+   *
+   * Note: iOS provides no API to trigger voice downloads from within apps.
+   * Apple's AVSpeechSynthesis framework offers no methods to request voice installations.
+   * Users must manually download voices through Settings.
    */
   static async openTTSSettings(): Promise<void> {
     if (Platform.OS === 'ios') {
@@ -103,7 +109,7 @@ export class TTSVoiceHelper {
         console.warn('Could not open settings:', error);
         Alert.alert(
           'Manual Steps Required',
-          'Please open Settings > Accessibility > Spoken Content > Voices to download premium voices.'
+          'Please open Settings > Accessibility > Live Speech > Voices (iOS 17-18) or Spoken Content > Voices (iOS 16) to download premium voices.'
         );
       }
     } else {

@@ -2,8 +2,12 @@
 export const DATABASE_CONFIG = {
   NAME: 'languageLearningDatabase.db',
   // Increment this version number whenever you update the database schema or content
-  // The app will automatically replace the old database with the new one
-  VERSION: 1,
+  // The app will automatically perform a migration to preserve user data:
+  //   - User accounts, settings, and chat histories are preserved
+  //   - Aggregate progress stats (total attempts, correct count) are stored
+  //   - Individual exercise attempt history is reset (due to exercise ID changes)
+  // This should match the 'version' value in the database_metadata table
+  VERSION: 140,
 } as const;
 
 // Timeout constants

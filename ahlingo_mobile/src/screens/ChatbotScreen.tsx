@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   View,
   StyleSheet,
@@ -64,11 +64,15 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
   const [showConversations, setShowConversations] = useState(false);
   const [isInitializing, setIsInitializing] = useState(true);
   const [availableModels, setAvailableModels] = useState<ModelInfo[]>([]);
-  const [selectedModel, setSelectedModel] = useState('qwen/qwen3-4b');
+  const [selectedModel, setSelectedModel] = useState('');
   const [showModelDropdown, setShowModelDropdown] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
   const [streamingContent, setStreamingContent] = useState('');
   const [streamController, setStreamController] = useState<AbortController | null>(null);
+  const messagesScrollViewRef = useRef<ScrollView>(null);
+  const scrollToBottom = useCallback(() => {
+    messagesScrollViewRef.current?.scrollToEnd({ animated: true });
+  }, []);
 
   const loadUserChats = useCallback(async () => {
     try {
@@ -131,10 +135,14 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
       );
       setAvailableModels(models);
 
+      const preferredServerModel = (userSettings.server_model || '').trim();
+      const localModels = models.filter(m => m.isLocal && m.isDownloaded);
+      const remoteModels = models.filter(m => !m.isLocal);
+
       // Check if we have valid configuration
       const hasServerUrl = userSettings.server_url && userSettings.server_url.trim() !== '';
-      const hasLocalModels = includeLocal && models.some(m => m.isLocal && m.isDownloaded);
-      const hasRemoteModels = hasServerUrl && models.some(m => !m.isLocal);
+      const hasLocalModels = includeLocal && localModels.length > 0;
+      const hasRemoteModels = hasServerUrl && remoteModels.length > 0;
 
       // Show warning if no valid configuration or models
       if (!hasServerUrl && !includeLocal) {
@@ -179,14 +187,14 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
         return;
       }
 
-      // Set the first available model as default if none selected
-      if (models.length > 0 && !selectedModel) {
-        // Prefer local models if available and preference is set
-        const preferLocal = userSettings.prefer_local_models === 'true' || false;
-        const localModels = models.filter(m => m.isLocal && m.isDownloaded);
-        const remoteModels = models.filter(m => !m.isLocal);
+      const preferLocal = userSettings.prefer_local_models === 'true' || false;
+      let defaultModel: ModelInfo | undefined;
 
-        let defaultModel: ModelInfo | undefined;
+      if (preferredServerModel) {
+        defaultModel = models.find(m => m.id === preferredServerModel);
+      }
+
+      if (!defaultModel) {
         if (preferLocal && localModels.length > 0) {
           defaultModel = localModels[0];
         } else if (remoteModels.length > 0) {
@@ -196,10 +204,10 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
         } else {
           defaultModel = models[0];
         }
+      }
 
-        if (defaultModel) {
-          setSelectedModel(defaultModel.id);
-        }
+      if (defaultModel) {
+        setSelectedModel(prev => prev || defaultModel.id);
       }
 
       console.log('✅ Loaded models:', models);
@@ -225,11 +233,23 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
     initialize();
   }, [initializeChat, loadAvailableModels]);
 
+  useEffect(() => {
+    scrollToBottom();
+  }, [scrollToBottom, messages.length, streamingContent]);
+
   const createNewChat = async () => {
     console.log('🆕 Creating new chat...');
     try {
       if (!userId) {
         Alert.alert('Error', 'Failed to get user information');
+        return;
+      }
+
+      if (!selectedModel) {
+        Alert.alert(
+          'No Model Selected',
+          'Please wait while models load or select a model before starting a new chat.'
+        );
         return;
       }
 
@@ -612,6 +632,7 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
         )}
 
         <ScrollView
+          ref={messagesScrollViewRef}
           style={styles.messagesContainer}
           contentContainerStyle={styles.messagesContent}
           showsVerticalScrollIndicator={false}

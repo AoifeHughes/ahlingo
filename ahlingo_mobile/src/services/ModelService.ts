@@ -150,13 +150,19 @@ export class ModelService {
         isDownloaded: true, // Remote models are considered "available"
       }));
 
-      console.log('✅ Processed models:', models);
+      const uniqueModelsMap = new Map<string, ModelInfo>();
+      models.forEach(model => {
+        if (!uniqueModelsMap.has(model.id)) {
+          uniqueModelsMap.set(model.id, model);
+        }
+      });
+      const uniqueModels = Array.from(uniqueModelsMap.values());
 
-      return models;
+      console.log('✅ Processed models:', uniqueModels);
+
+      return uniqueModels;
     } catch (error) {
-      console.error('❌ Failed to fetch models:', error);
-
-      if (error instanceof Error) {
+    if (error instanceof Error) {
         if (error.name === 'AbortError' || error.message.includes('timeout')) {
           throw new Error('Request timed out. Please check your server URL and network connection.');
         }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   View,
   ScrollView,
@@ -17,6 +17,8 @@ import { useSettingsForm } from '../hooks/useSettingsForm';
 import { useLocalModels } from '../hooks/useLocalModels';
 import BasicSettingsForm from '../components/settings/BasicSettingsForm';
 import LocalModelsSection from '../components/settings/LocalModelsSection';
+import TTSVoiceSettings from '../components/settings/TTSVoiceSettings';
+import TTSService from '../services/TTSService';
 
 type SettingsScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -38,11 +40,34 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
     difficulties,
     themes,
     isResetting,
+    serverStatus,
+    serverModelOptions,
+    refreshServerModels,
     updateFormData,
     handleReset,
   } = useSettingsForm(navigation);
 
   const localModelsHook = useLocalModels(formData.enableLocalModels);
+
+  // Initialize TTSService with user's preferred voices
+  useEffect(() => {
+    if (formData.preferredVoices) {
+      TTSService.setUserPreferredVoices(formData.preferredVoices);
+    }
+  }, [formData.preferredVoices]);
+
+  const handleVoiceChange = (languageCode: string, voiceId: string) => {
+    const newPreferredVoices = { ...formData.preferredVoices };
+
+    if (voiceId === '') {
+      // Empty string means auto-select, remove the preference
+      delete newPreferredVoices[languageCode];
+    } else {
+      newPreferredVoices[languageCode] = voiceId;
+    }
+
+    updateFormData('preferredVoices', newPreferredVoices);
+  };
 
   const confirmReset = () => {
     Alert.alert(
@@ -82,14 +107,18 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
         testID="settings-scroll"
       >
         <View style={styles.content}>
-          <BasicSettingsForm
-            formData={formData}
-            languages={languages}
-            difficulties={difficulties}
-            themes={themes}
-            onUpdateFormData={updateFormData}
-            theme={theme}
-          />
+        <BasicSettingsForm
+          formData={formData}
+          languages={languages}
+          difficulties={difficulties}
+          themes={themes}
+          onUpdateFormData={updateFormData}
+          theme={theme}
+          serverStatus={serverStatus}
+          serverModelOptions={serverModelOptions}
+          onServerModelChange={value => updateFormData('serverModel', value)}
+          refreshServerModels={refreshServerModels}
+        />
 
           <LocalModelsSection
             enableLocalModels={formData.enableLocalModels}
@@ -97,6 +126,12 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
             onUpdateFormData={updateFormData}
             {...localModelsHook}
             theme={theme}
+          />
+
+          <TTSVoiceSettings
+            selectedLanguages={languages.map(l => l.value)}
+            preferredVoices={formData.preferredVoices}
+            onVoiceChange={handleVoiceChange}
           />
 
           <View style={styles.dangerZone} testID="danger-zone">
