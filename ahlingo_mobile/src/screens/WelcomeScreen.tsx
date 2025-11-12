@@ -7,6 +7,8 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Alert,
+  Platform,
+  Linking,
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types';
@@ -84,6 +86,12 @@ const WelcomeScreen: React.FC<Props> = ({ navigation }) => {
       Alert.alert('Error', 'Failed to load language options. Please try again.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleOpenVoiceSettings = () => {
+    if (Platform.OS === 'ios') {
+      Linking.openURL('App-prefs:General&path=ACCESSIBILITY/SPEECH');
     }
   };
 
@@ -203,6 +211,45 @@ const WelcomeScreen: React.FC<Props> = ({ navigation }) => {
           ))}
         </View>
       </View>
+
+      {Platform.OS === 'ios' && (
+        <View style={styles.section}>
+          <View style={styles.voiceSetupHeader}>
+            <Text style={styles.sectionTitle}>🎙️ Enhanced Voice Setup (Optional)</Text>
+          </View>
+          <View style={styles.infoBox}>
+            <Text style={styles.infoText}>
+              For the best text-to-speech experience, download premium and enhanced voices for your chosen language:
+            </Text>
+            <View style={styles.instructionsList}>
+              <Text style={styles.instructionStep}>1. Tap "Open Voice Settings" below</Text>
+              <Text style={styles.instructionStep}>2. Scroll down to find your language (e.g., French)</Text>
+              <Text style={styles.instructionStep}>3. Download "Premium" and "Enhanced" quality voices</Text>
+              <Text style={styles.instructionStep}>4. Return here and tap "Get Started"</Text>
+            </View>
+            <TouchableOpacity
+              style={styles.settingsButton}
+              onPress={handleOpenVoiceSettings}
+            >
+              <Text style={styles.settingsButtonText}>Open Voice Settings</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
+
+      {Platform.OS === 'android' && (
+        <View style={styles.section}>
+          <View style={styles.voiceSetupHeader}>
+            <Text style={styles.sectionTitle}>🎙️ Enhanced Voice Setup (Optional)</Text>
+          </View>
+          <View style={styles.infoBox}>
+            <Text style={styles.infoText}>
+              {/* TODO: Add Android-specific voice setup instructions */}
+              Android voice setup instructions coming soon!
+            </Text>
+          </View>
+        </View>
+      )}
 
       <View style={styles.footer}>
         <Text style={styles.footerText}>
@@ -359,6 +406,47 @@ const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) => Sty
     color: currentTheme.colors.surface,
     fontSize: currentTheme.typography.fontSizes.lg,
     fontWeight: currentTheme.typography.fontWeights.bold,
+  },
+  voiceSetupHeader: {
+    marginBottom: currentTheme.spacing.base,
+  },
+  infoBox: {
+    backgroundColor: currentTheme.colors.surface,
+    borderRadius: currentTheme.borderRadius.lg,
+    padding: currentTheme.spacing.lg,
+    borderWidth: 1,
+    borderColor: currentTheme.colors.border,
+    ...currentTheme.shadows.base,
+  },
+  infoText: {
+    fontSize: currentTheme.typography.fontSizes.base,
+    color: currentTheme.colors.text,
+    lineHeight: 22,
+    marginBottom: currentTheme.spacing.lg,
+  },
+  instructionsList: {
+    marginBottom: currentTheme.spacing.lg,
+    paddingLeft: currentTheme.spacing.base,
+  },
+  instructionStep: {
+    fontSize: currentTheme.typography.fontSizes.base,
+    color: currentTheme.colors.textSecondary,
+    lineHeight: 24,
+    marginBottom: currentTheme.spacing.xs,
+  },
+  settingsButton: {
+    backgroundColor: currentTheme.colors.primary + '20',
+    paddingVertical: currentTheme.spacing.base,
+    paddingHorizontal: currentTheme.spacing.lg,
+    borderRadius: currentTheme.borderRadius.base,
+    borderWidth: 1,
+    borderColor: currentTheme.colors.primary,
+    alignItems: 'center',
+  },
+  settingsButtonText: {
+    color: currentTheme.colors.primary,
+    fontSize: currentTheme.typography.fontSizes.base,
+    fontWeight: currentTheme.typography.fontWeights.semibold,
   },
 });
 

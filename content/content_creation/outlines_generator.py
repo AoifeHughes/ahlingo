@@ -3,12 +3,15 @@
 Outlines integration for structured lesson generation.
 """
 
-import openai
-import outlines
-from typing import List, Dict, Any
-import uuid
 import json
 import logging
+import os
+import threading
+
+import openai
+import outlines
+from typing import Any, Dict, List
+import uuid
 
 try:
     from .models import ConversationExercise, create_pair_schema
@@ -18,12 +21,209 @@ except ImportError:
 
 # Centralized model configuration
 MODEL_CONFIG = {
-    "base_url": "http://localhost:11434/v1",
-    "api_key": "sk-no-key-required",
-    "temperature": 0.7,
+    "base_url": os.environ.get(
+        "AHLINGO_OUTLINES_URL", "http://192.168.68.51:11434/v1"
+    ),
+    "api_key": os.environ.get("AHLINGO_OUTLINES_API_KEY", "sk-no-key-required"),
+    "temperature": float(os.environ.get("AHLINGO_OUTLINES_TEMPERATURE", "0.75")),
+    "exercise_temperatures": {
+        "conversations": 0.8,
+        "pairs": 0.68,
+        "translations": 0.72,
+        "fill_in_blank": 0.75,
+    },
     "no_think": False,  # Set to True to prepend /no_think to prompts
     "debug": False,  # Set to True to show debug info and pause for user input
 }
+
+
+class OutlinesModelManager:
+    """Wraps an OpenAI client/model pair and reuses it per thread."""
+
+    def __init__(self, client: openai.OpenAI, model_name: str):
+        self._client = client
+        self._model_name = model_name
+        self._thread_local = threading.local()
+        self._lock = threading.Lock()
+
+    def get_model(self):
+        if hasattr(self._thread_local, "model"):
+            return self._thread_local.model
+
+        with self._lock:
+            model = outlines.models.OpenAI(
+                self._client, model_name=self._model_name
+            )
+        self._thread_local.model = model
+        return model
+
+
+def resolve_outlines_model(model):
+    """Return the actual outlines model (handles manager wrappers)."""
+
+    if isinstance(model, OutlinesModelManager):
+        return model.get_model()
+    return model
+
+
+def _conversation_schema(_: str) -> Dict[str, Any]:
+    return {
+        "type": "array",
+        "minItems": 2,
+        "maxItems": 5,
+        "items": {
+            "type": "object",
+            "required": ["conversation", "conversation_summary"],
+            "properties": {
+                "conversation": {
+                    "type": "array",
+                    "minItems": 2,
+                    "maxItems": 8,
+                    "items": {
+                        "type": "object",
+                        "required": ["speaker", "message"],
+                        "properties": {
+                            "speaker": {"type": "string"},
+                            "message": {"type": "string"},
+                        },
+                        "additionalProperties": False,
+                    },
+                },
+                "conversation_summary": {"type": "string"},
+            },
+            "additionalProperties": False,
+        },
+    }
+
+
+def _pair_schema(language: str) -> Dict[str, Any]:
+    return {
+        "type": "array",
+        "minItems": 5,
+        "maxItems": 7,
+        "items": {
+            "type": "object",
+            "required": ["English", language],
+            "properties": {
+                "English": {"type": "string"},
+                language: {"type": "string"},
+            },
+            "additionalProperties": False,
+        },
+    }
+
+
+def _translation_schema(language: str) -> Dict[str, Any]:
+    return {
+        "type": "array",
+        "minItems": 5,
+        "maxItems": 8,
+        "items": {
+            "type": "object",
+            "required": ["English", language],
+            "properties": {
+                "English": {"type": "string"},
+                language: {"type": "string"},
+            },
+            "additionalProperties": False,
+        },
+    }
+
+
+def _fill_in_blank_schema(language: str) -> Dict[str, Any]:
+    return {
+        "type": "array",
+        "minItems": 5,
+        "maxItems": 8,
+        "items": {
+            "type": "object",
+            "required": [
+                "sentence",
+                "correct_answer",
+                "incorrect_1",
+                "incorrect_2",
+                "blank_position",
+                "translation",
+            ],
+            "properties": {
+                "sentence": {"type": "string"},
+                "correct_answer": {"type": "string"},
+                "incorrect_1": {"type": "string"},
+                "incorrect_2": {"type": "string"},
+                "blank_position": {"type": "integer"},
+                "translation": {"type": "string"},
+            },
+            "additionalProperties": False,
+        },
+    }
+
+
+SCHEMA_TEMPLATES = {
+    "conversations": _conversation_schema,
+    "pairs": _pair_schema,
+    "translations": _translation_schema,
+    "fill_in_blank": _fill_in_blank_schema,
+}
+
+
+def build_schema_for_lesson(lesson_kind: str, language: str) -> Dict[str, Any]:
+    """Generate lesson-specific JSON schema for prompt guidance."""
+
+    template = SCHEMA_TEMPLATES.get(lesson_kind)
+    if not template:
+        return {}
+
+    return template(language)
+
+
+def format_schema_block(schema: Dict[str, Any]) -> str:
+    if not schema:
+        return ""
+    return "\n\nFollow this JSON schema exactly (JSON Schema):\n" + json.dumps(
+        schema, ensure_ascii=False, indent=2
+    )
+
+
+def get_exercise_temperature(lesson_kind: str) -> float:
+    return MODEL_CONFIG["exercise_temperatures"].get(
+        lesson_kind, MODEL_CONFIG["temperature"]
+    )
+
+
+def run_outlines_generation(
+    prompt: str, model, schema: Dict[str, Any] = None, temperature: float = None
+):
+    resolved_model = resolve_outlines_model(model)
+    generator = outlines.Generator(resolved_model)
+    kwargs = {}
+    if schema:
+        kwargs["schema"] = schema
+    if temperature is not None:
+        kwargs["temperature"] = temperature
+
+    try:
+        return generator(prompt, **kwargs)
+    except TypeError as exc:
+        logging.debug(
+            "Outlines generator rejected kwargs %s: %s", list(kwargs.keys()), exc
+        )
+        fallback_kwargs = kwargs.copy()
+
+        if "schema" in fallback_kwargs:
+            fallback_kwargs.pop("schema")
+            try:
+                return generator(prompt, **fallback_kwargs)
+            except TypeError:
+                logging.debug("Outlines generator still rejected kwargs after dropping schema")
+
+        if "temperature" in fallback_kwargs:
+            fallback_kwargs.pop("temperature")
+            try:
+                return generator(prompt, **fallback_kwargs)
+            except TypeError:
+                logging.debug("Outlines generator still rejected kwargs after dropping temperature")
+
+        return generator(prompt)
 
 
 class ValidationError(Exception):
@@ -101,7 +301,7 @@ def setup_outlines_model():
             api_key=MODEL_CONFIG["api_key"],
         )
 
-        # Get the first available model from the server
+        # Determine model name from server or fallbacks
         try:
             models = client.models.list()
             if models.data:
@@ -110,21 +310,15 @@ def setup_outlines_model():
             else:
                 raise RuntimeError("No models available on server")
         except Exception as e:
-            logging.error(f"Failed to get models from server: {e}")
-            # Try common model names as fallbacks
-            for fallback in ["qwen3-4b", "mistral", "llama3", "default"]:
-                try:
-                    model_name = fallback
-                    logging.info(f"Falling back to model: {model_name}")
-                    break
-                except:
-                    continue
+            logging.warning(f"Failed to get models from server: {e}")
+            for fallback in ["qwen3-4b", "mistral", "llama3", "llama"]:
+                model_name = fallback
+                logging.info(f"Falling back to model: {model_name}")
+                break
             else:
                 raise RuntimeError("No accessible models found")
 
-        # Create Outlines model with specific model name
-        model = outlines.models.OpenAI(client, model_name=model_name)
-        return model
+        return OutlinesModelManager(client, model_name=model_name)
     except Exception as e:
         logging.error(f"Failed to setup outlines model: {e}")
         raise RuntimeError(f"Could not initialize outlines model: {e}") from e
@@ -183,16 +377,21 @@ Avoid repetitive patterns. Focus on practical situations related to {topic}."""
             formatted_examples = format_examples_for_prompt(examples)
             examples_context = f"\n\nReference examples (for structure only):\n{formatted_examples}\n\nNow generate NEW conversations for the topic: {topic}"
 
+    schema = build_schema_for_lesson("conversations", language)
+    schema_instruction = format_schema_block(schema)
+
     full_prompt = (
         system_content
         + examples_context
+        + schema_instruction
         + "\n\nReturn a JSON array of conversation objects."
     )
 
-    # Use text generator for JSON output
-    generator = outlines.Generator(model)
     prepared_prompt = prepare_prompt(full_prompt)
-    result = generator(prepared_prompt)
+    temperature = get_exercise_temperature("conversations")
+    result = run_outlines_generation(
+        prepared_prompt, model, schema=schema, temperature=temperature
+    )
 
     # Parse JSON response and convert to Pydantic models
     if isinstance(result, str):
@@ -253,16 +452,21 @@ Create EXACTLY 5 word pairs at {level} level:
             formatted_examples = format_examples_for_prompt(examples)
             examples_context = f"\n\nReference examples (for format only):\n{formatted_examples}\n\nNow generate 5 NEW word pairs for the topic: {topic}"
 
+    schema = build_schema_for_lesson("pairs", language)
+    schema_instruction = format_schema_block(schema)
+
     full_prompt = (
         system_content
         + examples_context
+        + schema_instruction
         + "\n\nReturn a JSON array of word pair objects."
     )
 
-    # Use text generator for JSON output
-    generator = outlines.Generator(model)
     prepared_prompt = prepare_prompt(full_prompt)
-    result = generator(prepared_prompt)
+    temperature = get_exercise_temperature("pairs")
+    result = run_outlines_generation(
+        prepared_prompt, model, schema=schema, temperature=temperature
+    )
 
     # Parse JSON response and convert to Pydantic models
     if isinstance(result, str):
@@ -326,16 +530,21 @@ Create 5-8 sentence pairs at {level} level:
             formatted_examples = format_examples_for_prompt(examples)
             examples_context = f"\n\nReference examples (for format only):\n{formatted_examples}\n\nNow generate 5-8 NEW sentence translations for the topic: {topic}"
 
+    schema = build_schema_for_lesson("translations", language)
+    schema_instruction = format_schema_block(schema)
+
     full_prompt = (
         system_content
         + examples_context
+        + schema_instruction
         + "\n\nReturn a JSON array of translation pair objects."
     )
 
-    # Use text generator for JSON output
-    generator = outlines.Generator(model)
     prepared_prompt = prepare_prompt(full_prompt)
-    result = generator(prepared_prompt)
+    temperature = get_exercise_temperature("translations")
+    result = run_outlines_generation(
+        prepared_prompt, model, schema=schema, temperature=temperature
+    )
 
     # Parse JSON response and convert to Pydantic models
     if isinstance(result, str):
@@ -395,14 +604,34 @@ Examples of good sentences:
 Generate {count} different sentences that follow these guidelines, each with its English translation."""
 
     # Use text generator for JSON output
+    schema = {
+        "type": "array",
+        "minItems": count,
+        "maxItems": count,
+        "items": {
+            "type": "object",
+            "required": ["sentence", "translation"],
+            "properties": {
+                "sentence": {"type": "string"},
+                "translation": {"type": "string"},
+            },
+            "additionalProperties": False,
+        },
+    }
+
+    schema_instruction = format_schema_block(schema)
+
     full_prompt = (
         system_content
+        + schema_instruction
         + f"\n\nReturn a JSON array of exactly {count} sentence objects, each with 'sentence' and 'translation' fields."
     )
 
-    generator = outlines.Generator(model)
     prepared_prompt = prepare_prompt(full_prompt)
-    result = generator(prepared_prompt)
+    temperature = MODEL_CONFIG["temperature"]
+    result = run_outlines_generation(
+        prepared_prompt, model, schema=schema, temperature=temperature
+    )
 
     # Parse JSON response
     if isinstance(result, str):
@@ -506,9 +735,24 @@ Generate 2 alternatives (1-3 words each) that are obviously wrong in this contex
         + "\n\nReturn a JSON object with 'incorrect_1' and 'incorrect_2' fields containing the two incorrect alternatives."
     )
 
-    generator = outlines.Generator(model)
+    schema = {
+        "type": "object",
+        "required": ["incorrect_1", "incorrect_2"],
+        "properties": {
+            "incorrect_1": {"type": "string"},
+            "incorrect_2": {"type": "string"},
+        },
+        "additionalProperties": False,
+    }
+
+    schema_instruction = format_schema_block(schema)
+
+    full_prompt = full_prompt + schema_instruction
     prepared_prompt = prepare_prompt(full_prompt)
-    result = generator(prepared_prompt)
+    temperature = MODEL_CONFIG["temperature"]
+    result = run_outlines_generation(
+        prepared_prompt, model, schema=schema, temperature=temperature
+    )
 
     # Parse JSON response
     if isinstance(result, str):
@@ -601,16 +845,21 @@ CRITICAL: Each exercise's correct_answer, incorrect_1, and incorrect_2 must be t
         # No examples available for this language, continue without them
         pass
 
+    schema = build_schema_for_lesson("fill_in_blank", language)
+    schema_instruction = format_schema_block(schema)
+
     full_prompt = (
         system_content
         + examples_context
+        + schema_instruction
         + "\n\nReturn a JSON array of exactly 5 fill-in-blank exercise objects."
     )
 
-    # Use Outlines structured generation
-    generator = outlines.Generator(model)
     prepared_prompt = prepare_prompt(full_prompt)
-    result = generator(prepared_prompt)
+    temperature = get_exercise_temperature("fill_in_blank")
+    result = run_outlines_generation(
+        prepared_prompt, model, schema=schema, temperature=temperature
+    )
 
     # Parse JSON response and convert to Pydantic models
     if isinstance(result, str):
@@ -687,9 +936,8 @@ def generate_lessons_data_structured(
 ):
     """Drop-in replacement for your generate_lessons_data using Outlines with validation and retry logic."""
 
-    # Setup model once if not provided
-    if model is None:
-        model = setup_outlines_model()
+    # Setup model manager once if not provided
+    model_source = model if model is not None else setup_outlines_model()
 
     # Generation function mapping
     generators = {
@@ -707,7 +955,10 @@ def generate_lessons_data_structured(
             for attempt in range(max_retries):
                 try:
                     # Generate data - now returns Pydantic model instances
-                    data = generators[lesson_kind](model, language, level, topic)
+                    resolved_model = resolve_outlines_model(model_source)
+                    data = generators[lesson_kind](
+                        resolved_model, language, level, topic
+                    )
 
                     # Convert Pydantic models to dict for JSON serialization
                     if hasattr(data, "__iter__") and not isinstance(data, (str, bytes)):
