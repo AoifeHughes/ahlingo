@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import WordButton from './WordButton';
 import { useTheme } from '../contexts/ThemeContext';
 
@@ -23,11 +23,7 @@ const AnswerBox: React.FC<AnswerBoxProps> = ({
             Tap words below to build your translation
           </Text>
         ) : (
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.wordsContainer}
-          >
+          <View style={styles.wordsContainer}>
             {selectedWords.map((wordObj, index) => (
               <WordButton
                 key={`${wordObj.originalIndex}-${index}`}
@@ -39,7 +35,7 @@ const AnswerBox: React.FC<AnswerBoxProps> = ({
                 }
               />
             ))}
-          </ScrollView>
+          </View>
         )}
       </View>
       {selectedWords.length > 0 && (

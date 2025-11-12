@@ -69,7 +69,6 @@ const AppNavigator: React.FC = () => {
             fontWeight: theme.typography.fontWeights.semibold,
             fontSize: theme.typography.fontSizes.lg,
           },
-          headerBackTitle: 'Main Menu',
         }}
       >
         <Stack.Screen
@@ -80,7 +79,7 @@ const AppNavigator: React.FC = () => {
         <Stack.Screen
           name="MainMenu"
           component={MainMenuScreen}
-          options={{ headerShown: false }}
+          options={{ headerShown: false, title: 'Main Menu' }}
         />
         <Stack.Screen
           name="TopicSelection"
@@ -114,22 +113,22 @@ const AppNavigator: React.FC = () => {
         <Stack.Screen
           name="Chatbot"
           component={ChatbotScreen}
-          options={{ title: 'Chatbot' }}
+          options={{ title: 'Chatbot', headerBackTitle: 'Main Menu' }}
         />
         <Stack.Screen
           name="Settings"
           component={SettingsScreen}
-          options={{ title: 'Settings' }}
+          options={{ title: 'Settings', headerBackTitle: 'Main Menu' }}
         />
         <Stack.Screen
           name="Stats"
           component={StatsScreen}
-          options={{ title: 'Your Progress' }}
+          options={{ title: 'Your Progress', headerBackTitle: 'Main Menu' }}
         />
         <Stack.Screen
           name="RetryMistakes"
           component={RetryMistakesScreen}
-          options={{ title: 'Retry Mistakes' }}
+          options={{ title: 'Retry Mistakes', headerBackTitle: 'Main Menu' }}
         />
         <Stack.Screen
           name="StudyTopic"

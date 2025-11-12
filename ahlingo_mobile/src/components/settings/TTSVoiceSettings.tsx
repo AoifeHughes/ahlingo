@@ -219,7 +219,7 @@ const TTSVoiceSettings: React.FC<TTSVoiceSettingsProps> = ({
       </TouchableOpacity>
 
       <ScrollView style={styles.languageList} showsVerticalScrollIndicator={false}>
-        {selectedLanguages.map(langName => {
+        {selectedLanguages.map((langName, index) => {
           const languageCode = getLanguageCode(langName);
           const voices = groupedVoices[languageCode] || [];
           const isExpanded = expandedLanguages.has(languageCode);
@@ -232,7 +232,7 @@ const TTSVoiceSettings: React.FC<TTSVoiceSettingsProps> = ({
             : 'Auto-select best';
 
           return (
-            <View key={languageCode} style={styles.languageSection}>
+            <View key={`${languageCode}-${index}`} style={styles.languageSection}>
               <TouchableOpacity
                 style={styles.languageHeader}
                 onPress={() => toggleLanguage(languageCode)}
