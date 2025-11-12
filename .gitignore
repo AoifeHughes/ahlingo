@@ -58,6 +58,10 @@ ahlingo_mobile/npm-debug.log*
 ahlingo_mobile/yarn-debug.log*
 ahlingo_mobile/yarn-error.log*
 
+# Electron
+ahlingo_mobile/electron-build/
+ahlingo_mobile/dist/
+
 # Ruby/Bundler
 ahlingo_mobile/vendor/
 ahlingo_mobile/Gemfile.lock
