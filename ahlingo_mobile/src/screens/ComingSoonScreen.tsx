@@ -28,11 +28,11 @@ interface Props {
   description?: string;
 }
 
-const ComingSoonScreen: React.FC<Props> = ({ 
-  navigation, 
-  featureName, 
-  featureIcon, 
-  description 
+const ComingSoonScreen: React.FC<Props> = ({
+  navigation,
+  featureName,
+  featureIcon,
+  description
 }) => {
   const { theme } = useTheme();
   const styles = createStyles(theme);
@@ -43,16 +43,16 @@ const ComingSoonScreen: React.FC<Props> = ({
         <Text style={styles.icon}>{featureIcon}</Text>
         <Text style={styles.title}>{featureName}</Text>
         <Text style={styles.comingSoon}>Coming Soon!</Text>
-        
+
         {description && (
           <Text style={styles.description}>{description}</Text>
         )}
-        
+
         <Text style={styles.message}>
-          We're working hard to bring you this exciting new feature. 
+          We're working hard to bring you this exciting new feature.
           Stay tuned for updates!
         </Text>
-        
+
         <TouchableOpacity
           style={styles.backButton}
           onPress={() => navigation.navigate('MainMenu')}

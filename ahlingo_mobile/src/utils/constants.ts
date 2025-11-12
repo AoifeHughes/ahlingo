@@ -1,6 +1,9 @@
 // Database configuration constants
 export const DATABASE_CONFIG = {
   NAME: 'languageLearningDatabase.db',
+  // Increment this version number whenever you update the database schema or content
+  // The app will automatically replace the old database with the new one
+  VERSION: 1,
 } as const;
 
 // Timeout constants
@@ -44,12 +47,12 @@ export const SQL_QUERIES = {
   GET_TOPICS_BY_TYPE: (exerciseType: string) => {
     const exerciseTableMap = {
       'pairs': 'pair_exercises pe',
-      'conversation': 'conversation_exercises ce', 
+      'conversation': 'conversation_exercises ce',
       'translation': 'translation_exercises te',
       'fill_in_blank': 'fill_in_blank_exercises fibe'
     };
     const joinTable = exerciseTableMap[exerciseType as keyof typeof exerciseTableMap] || 'pair_exercises pe';
-    
+
     return `
       SELECT DISTINCT t.id, t.topic
       FROM topics t
@@ -72,7 +75,7 @@ export const SQL_QUERIES = {
       'fill_in_blank': 'JOIN fill_in_blank_exercises fibe ON ei.id = fibe.exercise_id'
     };
     const dataJoin = exerciseTableJoins[exerciseType as keyof typeof exerciseTableJoins] || 'JOIN pair_exercises pe ON ei.id = pe.exercise_id';
-    
+
     return `
       SELECT DISTINCT ei.* FROM exercises_info ei
       JOIN languages l ON ei.language_id = l.id
@@ -120,23 +123,23 @@ export const SQL_QUERIES = {
       (
         -- Count non-pairs exercises normally
         COALESCE((
-          SELECT COUNT(DISTINCT ei2.id) 
-          FROM exercises_info ei2 
+          SELECT COUNT(DISTINCT ei2.id)
+          FROM exercises_info ei2
           JOIN languages l2 ON ei2.language_id = l2.id
           JOIN difficulties d2 ON ei2.difficulty_id = d2.id
-          WHERE ei2.topic_id = t.id 
+          WHERE ei2.topic_id = t.id
             AND ei2.exercise_type != 'pairs'
             AND l2.language = ?
             AND d2.difficulty_level = ?
         ), 0) +
         -- Count pairs exercises only if they have data
         COALESCE((
-          SELECT COUNT(DISTINCT pe.exercise_id) 
+          SELECT COUNT(DISTINCT pe.exercise_id)
           FROM exercises_info ei3
           JOIN languages l3 ON ei3.language_id = l3.id
           JOIN difficulties d3 ON ei3.difficulty_id = d3.id
           INNER JOIN pair_exercises pe ON ei3.id = pe.exercise_id
-          WHERE ei3.topic_id = t.id 
+          WHERE ei3.topic_id = t.id
             AND ei3.exercise_type = 'pairs'
             AND l3.language = ?
             AND d3.difficulty_level = ?
@@ -152,23 +155,23 @@ export const SQL_QUERIES = {
     HAVING (
       -- Count non-pairs exercises normally
       COALESCE((
-        SELECT COUNT(DISTINCT ei2.id) 
-        FROM exercises_info ei2 
+        SELECT COUNT(DISTINCT ei2.id)
+        FROM exercises_info ei2
         JOIN languages l2 ON ei2.language_id = l2.id
         JOIN difficulties d2 ON ei2.difficulty_id = d2.id
-        WHERE ei2.topic_id = t.id 
+        WHERE ei2.topic_id = t.id
           AND ei2.exercise_type != 'pairs'
           AND l2.language = ?
           AND d2.difficulty_level = ?
       ), 0) +
       -- Count pairs exercises only if they have data
       COALESCE((
-        SELECT COUNT(DISTINCT pe.exercise_id) 
+        SELECT COUNT(DISTINCT pe.exercise_id)
         FROM exercises_info ei3
         JOIN languages l3 ON ei3.language_id = l3.id
         JOIN difficulties d3 ON ei3.difficulty_id = d3.id
         INNER JOIN pair_exercises pe ON ei3.id = pe.exercise_id
-        WHERE ei3.topic_id = t.id 
+        WHERE ei3.topic_id = t.id
           AND ei3.exercise_type = 'pairs'
           AND l3.language = ?
           AND d3.difficulty_level = ?
@@ -184,8 +187,8 @@ export const SQL_QUERIES = {
       (
         -- Count non-pairs exercises normally
         COALESCE((
-          SELECT COUNT(DISTINCT ei2.id) 
-          FROM exercises_info ei2 
+          SELECT COUNT(DISTINCT ei2.id)
+          FROM exercises_info ei2
           JOIN languages l2 ON ei2.language_id = l2.id
           JOIN difficulties d2 ON ei2.difficulty_id = d2.id
           WHERE ei2.exercise_type != 'pairs'
@@ -194,7 +197,7 @@ export const SQL_QUERIES = {
         ), 0) +
         -- Count pairs exercises only if they have data
         COALESCE((
-          SELECT COUNT(DISTINCT pe.exercise_id) 
+          SELECT COUNT(DISTINCT pe.exercise_id)
           FROM exercises_info ei3
           JOIN languages l3 ON ei3.language_id = l3.id
           JOIN difficulties d3 ON ei3.difficulty_id = d3.id
@@ -240,7 +243,7 @@ export const SQL_QUERIES = {
   // Chat queries
   CREATE_CHAT:
     'INSERT INTO chat_details (user_id, language, difficulty, model, chat_name, created_at, last_updated) VALUES (?, ?, ?, ?, ?, datetime("now"), datetime("now"))',
-  
+
   GET_USER_CHATS: `
     SELECT id, user_id, language, difficulty, model, chat_name, created_at, last_updated
     FROM chat_details
@@ -293,7 +296,7 @@ export const SQL_QUERIES = {
       'fill_in_blank': 'JOIN fill_in_blank_exercises fibe ON ei.id = fibe.exercise_id'
     };
     const dataJoin = exerciseTableJoins[exerciseType as keyof typeof exerciseTableJoins] || 'JOIN pair_exercises pe ON ei.id = pe.exercise_id';
-    
+
     return `
       SELECT DISTINCT ei.*, t.topic as topic_name
       FROM exercises_info ei
@@ -319,7 +322,7 @@ export const SQL_QUERIES = {
       'fill_in_blank': 'JOIN fill_in_blank_exercises fibe ON ei.id = fibe.exercise_id'
     };
     const dataJoin = exerciseTableJoins[exerciseType as keyof typeof exerciseTableJoins] || 'JOIN pair_exercises pe ON ei.id = pe.exercise_id';
-    
+
     return `
       SELECT DISTINCT ei.*, t.topic as topic_name
       FROM exercises_info ei

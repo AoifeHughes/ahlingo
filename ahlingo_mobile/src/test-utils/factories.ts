@@ -85,9 +85,9 @@ export const createShuffleExercise = (overrides: Partial<ShuffleExercise> = {}):
 
 // Factory for creating multiple exercises
 export const createExercises = (count: number, type: ExerciseInfo['exercise_type'] = 'pairs'): ExerciseInfo[] => {
-  return Array.from({ length: count }, (_, index) => 
-    createExercise({ 
-      id: index + 1, 
+  return Array.from({ length: count }, (_, index) =>
+    createExercise({
+      id: index + 1,
       exercise_name: `Test Exercise ${index + 1}`,
       exercise_type: type,
     })
@@ -97,12 +97,12 @@ export const createExercises = (count: number, type: ExerciseInfo['exercise_type
 // Factory for creating multiple shuffle exercises
 export const createShuffleExercises = (count: number): ShuffleExercise[] => {
   const types: ExerciseInfo['exercise_type'][] = ['pairs', 'conversation', 'translation', 'fill_in_blank'];
-  
+
   return Array.from({ length: count }, (_, index) => {
     const type = types[index % types.length];
     return createShuffleExercise({
-      exerciseInfo: createExercise({ 
-        id: index + 1, 
+      exerciseInfo: createExercise({
+        id: index + 1,
         exercise_name: `Test Exercise ${index + 1}`,
         exercise_type: type,
       }),

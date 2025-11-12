@@ -27,7 +27,7 @@ const cardSize = (width - 60) / 2; // 2 cards per row with padding
 
 const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
   const { theme } = useTheme();
-  
+
   // Define the first 5 theme colors to cycle through
   const themeColors = [
     theme.colors.primary,
@@ -120,17 +120,17 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
       try {
         const { getUserSettings } = await import('../services/RefactoredDatabaseService');
         const userSettings = await getUserSettings('default_user'); // Use default for quick check
-        
+
         const hasServerUrl = userSettings.server_url && userSettings.server_url.trim() !== '';
         const hasLocalEnabled = userSettings.enable_local_models === 'true';
-        
+
         if (!hasServerUrl && !hasLocalEnabled) {
           Alert.alert(
             'AI Server Setup Required',
             'Chat Practice requires an AI server or local models to be configured.\n\nWould you like to set this up now?',
             [
-              { 
-                text: 'Setup Now', 
+              {
+                text: 'Setup Now',
                 onPress: () => {
                   // Navigation will happen after alert is dismissed
                   navigation.navigate('Settings');
@@ -141,7 +141,7 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
           );
           return; // Prevent navigation to chatbot
         }
-        
+
         // Only navigate to chatbot if configuration is valid
         navigation.navigate(item.screen as any);
       } catch (error) {
@@ -171,7 +171,7 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
           </TouchableOpacity>
         </View>
 
-        <ScrollView 
+        <ScrollView
           style={styles.scrollContainer}
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}

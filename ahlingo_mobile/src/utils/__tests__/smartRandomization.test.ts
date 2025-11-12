@@ -1,6 +1,6 @@
 /**
  * Smart Randomization Tests
- * 
+ *
  * Tests for the enhanced randomization system with anti-repetition logic
  */
 
@@ -119,7 +119,7 @@ describe('SmartRandomizer', () => {
       };
 
       randomizer.loadRecentExercises([oldExercise]);
-      
+
       // Should have been cleaned up
       expect(randomizer.getRecentExercises()).toHaveLength(0);
     });
@@ -190,7 +190,7 @@ describe('SmartRandomizer', () => {
       };
 
       const customRandomizer = new SmartRandomizer(customConfig);
-      
+
       const exercises = [
         createMockExercise(1, 1, 'lesson1'),
         createMockExercise(2, 1, 'lesson2'),
@@ -214,7 +214,7 @@ describe('SmartRandomizer', () => {
 describe('Integration scenarios', () => {
   it('should handle lesson progression scenario', () => {
     const randomizer = new SmartRandomizer(DEFAULT_RANDOMIZATION_CONFIG);
-    
+
     // Simulate a series of exercises from different lessons
     const exercises = [
       createMockExercise(1, 1, 'lesson1'),
@@ -241,7 +241,7 @@ describe('Integration scenarios', () => {
 
   it('should handle topic diversity scenario', () => {
     const randomizer = new SmartRandomizer(DEFAULT_RANDOMIZATION_CONFIG);
-    
+
     // Exercises from different topics
     const exercises = [
       createMockExercise(1, 1, 'lesson1'),

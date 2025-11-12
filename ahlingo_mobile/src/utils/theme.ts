@@ -3,11 +3,11 @@ const NORD_PALETTES = {
   // Frost Theme (Default)
   frost: {
     lightest: '#8fbcbb', // Nord 7 - Frost lightest
-    light: '#88c0d0',    // Nord 8 - Frost light  
+    light: '#88c0d0',    // Nord 8 - Frost light
     medium: '#81a1c1',   // Nord 9 - Frost medium
     dark: '#5e81ac',     // Nord 10 - Frost dark
   },
-  
+
   // Aurora Theme
   aurora: {
     lightest: '#bf616a', // Nord 11 - Aurora red
@@ -15,7 +15,7 @@ const NORD_PALETTES = {
     medium: '#ebcb8b',   // Nord 13 - Aurora yellow
     dark: '#a3be8c',     // Nord 14 - Aurora green
   },
-  
+
   // Polar Night Theme
   polar: {
     lightest: '#2e3440', // Nord 0 - Polar Night darkest
@@ -34,11 +34,11 @@ let currentTheme: ThemeVariant = 'frost';
 // Theme creation function
 const createTheme = (variant: ThemeVariant) => {
   const palette = NORD_PALETTES[variant];
-  
+
   return {
     // Selected palette colors
     primary: palette,
-  
+
     // Polar Night (for backgrounds and text)
     polar: {
       darkest: '#2e3440',  // Nord 0 - Polar Night darkest
@@ -46,14 +46,14 @@ const createTheme = (variant: ThemeVariant) => {
       medium: '#434c5e',   // Nord 2 - Polar Night medium
       light: '#4c566a',    // Nord 3 - Polar Night light
     },
-    
+
     // Snow Storm (for light backgrounds and text)
     snow: {
       dark: '#d8dee9',     // Nord 4 - Snow Storm dark
       medium: '#e5e9f0',   // Nord 5 - Snow Storm medium
       light: '#eceff4',    // Nord 6 - Snow Storm light
     },
-    
+
     // Aurora (for accents and highlights)
     aurora: {
       red: '#bf616a',      // Nord 11 - Aurora red
@@ -62,41 +62,41 @@ const createTheme = (variant: ThemeVariant) => {
       green: '#a3be8c',    // Nord 14 - Aurora green
       purple: '#b48ead',   // Nord 15 - Aurora purple
     },
-    
+
     // Semantic colors using selected palette as primary
     colors: {
       primary: palette.medium,        // Primary color from selected palette
       primaryLight: palette.light,    // Light variant
       primaryDark: palette.dark,      // Dark variant
       secondary: palette.lightest,    // Secondary color
-      
+
       background: '#eceff4',        // Snow Storm light
       surface: '#e5e9f0',          // Snow Storm medium
       surfaceDark: '#d8dee9',      // Snow Storm dark
-      
+
       text: '#2e3440',             // Polar Night darkest
       textSecondary: '#4c566a',    // Polar Night light
       textLight: '#434c5e',        // Polar Night medium
-      
+
       border: '#d8dee9',           // Snow Storm dark
       borderLight: '#e5e9f0',      // Snow Storm medium
-      
+
       success: '#a3be8c',          // Aurora green
       warning: '#ebcb8b',          // Aurora yellow
       error: '#bf616a',            // Aurora red
       info: palette.light,         // Use palette light for info
-      
+
       // Interactive states
       buttonPrimary: palette.medium,     // Use palette medium for primary button
       buttonSecondary: palette.lightest, // Use palette lightest for secondary
       buttonDisabled: '#d8dee9',    // Snow Storm dark
-      
+
       // Chat specific
       userMessage: palette.medium,       // Use palette medium for user messages
       assistantMessage: '#e5e9f0',  // Snow Storm medium
       systemMessage: palette.lightest,  // Use palette lightest for system
     },
-  
+
     // Typography
     typography: {
       fontSizes: {
@@ -121,7 +121,7 @@ const createTheme = (variant: ThemeVariant) => {
         relaxed: 1.6,
       },
     },
-    
+
     // Spacing
     spacing: {
       xs: 2,
@@ -135,7 +135,7 @@ const createTheme = (variant: ThemeVariant) => {
       '4xl': 40,
       '5xl': 48,
     },
-    
+
     // Border radius
     borderRadius: {
       none: 0,
@@ -146,7 +146,7 @@ const createTheme = (variant: ThemeVariant) => {
       xl: 16,
       full: 9999,
     },
-    
+
     // Shadows
     shadows: {
       sm: {

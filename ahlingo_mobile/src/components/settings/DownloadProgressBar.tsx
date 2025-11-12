@@ -17,14 +17,14 @@ const formatFileSize = (bytes: number): string => {
   return `${mb.toFixed(0)} MB`;
 };
 
-const DownloadProgressBar: React.FC<DownloadProgressBarProps> = React.memo(({ 
-  progress, 
-  bytesWritten, 
-  contentLength, 
-  theme 
+const DownloadProgressBar: React.FC<DownloadProgressBarProps> = React.memo(({
+  progress,
+  bytesWritten,
+  contentLength,
+  theme
 }) => {
   const animatedWidth = useRef(new Animated.Value(0)).current;
-  
+
   useEffect(() => {
     Animated.timing(animatedWidth, {
       toValue: progress * 100,
@@ -72,16 +72,16 @@ const DownloadProgressBar: React.FC<DownloadProgressBarProps> = React.memo(({
         )}
       </Text>
       <View style={styles.progressBar}>
-        <Animated.View 
+        <Animated.View
           style={[
-            styles.progressFill, 
-            { 
+            styles.progressFill,
+            {
               width: animatedWidth.interpolate({
                 inputRange: [0, 100],
                 outputRange: ['0%', '100%'],
               })
             }
-          ]} 
+          ]}
         />
       </View>
     </View>

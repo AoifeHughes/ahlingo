@@ -28,7 +28,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
       const username = await getMostRecentUser();
       const userSettings = await getUserSettings(username);
       const savedTheme = userSettings.theme as ThemeVariant;
-      
+
       if (savedTheme && ['frost', 'aurora', 'polar'].includes(savedTheme)) {
         setThemeVariant(savedTheme);
         setGlobalTheme(savedTheme);
@@ -43,11 +43,11 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     try {
       // Update global theme
       setGlobalTheme(variant);
-      
+
       // Update local state (triggers re-render)
       setThemeVariant(variant);
       setThemeState(getTheme());
-      
+
       // Save to database
       const username = await getMostRecentUser();
       await setUserSetting(username, 'theme', variant);

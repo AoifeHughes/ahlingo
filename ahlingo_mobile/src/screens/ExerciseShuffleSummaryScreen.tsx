@@ -79,12 +79,12 @@ const ExerciseShuffleSummaryScreen: React.FC<Props> = ({ navigation, route }) =>
           <Text style={styles.statNumber}>{successCount}</Text>
           <Text style={styles.statLabel}>Completed</Text>
         </View>
-        
+
         <View style={styles.statCard}>
           <Text style={styles.statNumber}>{totalCount}</Text>
           <Text style={styles.statLabel}>Total</Text>
         </View>
-        
+
         <View style={styles.statCard}>
           <Text style={styles.statNumber}>{successRate}%</Text>
           <Text style={styles.statLabel}>Success Rate</Text>
@@ -126,7 +126,7 @@ const ExerciseShuffleSummaryScreen: React.FC<Props> = ({ navigation, route }) =>
         >
           <Text style={styles.shuffleAgainButtonText}>Shuffle Again</Text>
         </TouchableOpacity>
-        
+
         <TouchableOpacity
           style={styles.mainMenuButton}
           onPress={() => navigation.navigate('MainMenu')}

@@ -36,7 +36,7 @@ function AppContent(): React.JSX.Element {
         try {
           const userContext = await getUserContext();
           console.log('👤 User context loaded:', userContext);
-          
+
           store.dispatch(setSettings({
             language: userContext.settings.language,
             difficulty: userContext.settings.difficulty,

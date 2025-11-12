@@ -85,8 +85,8 @@ const PairsGameScreen: React.FC<Props> = ({ route, navigation }) => {
         'Your progress will be lost if you exit now.',
         [
           { text: 'Cancel', style: 'cancel' },
-          { 
-            text: 'Exit', 
+          {
+            text: 'Exit',
             style: 'destructive',
             onPress: () => navigation.navigate('MainMenu')
           },
@@ -114,8 +114,8 @@ const PairsGameScreen: React.FC<Props> = ({ route, navigation }) => {
       'Your progress will be lost if you exit now.',
       [
         { text: 'Cancel', style: 'cancel' },
-        { 
-          text: 'Exit', 
+        {
+          text: 'Exit',
           style: 'destructive',
           onPress: () => navigation.navigate('MainMenu')
         },
@@ -129,7 +129,7 @@ const PairsGameScreen: React.FC<Props> = ({ route, navigation }) => {
 
       // Get complete user context in single call
       const userContext = await getUserContext();
-      
+
       if (!userContext) {
         Alert.alert('Error', 'Failed to initialize user. Please try again.');
         return;
@@ -444,12 +444,12 @@ const PairsGameScreen: React.FC<Props> = ({ route, navigation }) => {
               {gameState.incorrectCount === 0 ? '🎉 Perfect!' : '✅ Exercise Complete!'}
             </Text>
             <Text style={styles.completionText}>
-              {gameState.incorrectCount === 0 
+              {gameState.incorrectCount === 0
                 ? 'All pairs matched with no mistakes!'
                 : `All pairs matched! ${gameState.correctCount} correct, ${gameState.incorrectCount} incorrect.`
               }
             </Text>
-            <TouchableOpacity 
+            <TouchableOpacity
               style={[
                 styles.continueButton,
                 { backgroundColor: gameState.incorrectCount === 0 ? theme.colors.success : theme.colors.primary }
@@ -457,7 +457,7 @@ const PairsGameScreen: React.FC<Props> = ({ route, navigation }) => {
               onPress={handleContinue}
             >
               <Text style={styles.continueButtonText}>
-                {shuffleContext 
+                {shuffleContext
                   ? (gameState.incorrectCount === 0 ? '✅ Perfect! Next Exercise' : '➡️ Next Exercise')
                   : 'Next Exercise'
                 }

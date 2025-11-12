@@ -14,6 +14,7 @@ const initialState: SettingsState = {
     userId: 1, // Default user
     enableLocalModels: false,
     preferLocalModels: false,
+    preferredVoices: {}, // Voice preferences per language
   },
   isLoading: false,
   error: null,
@@ -41,6 +42,15 @@ const settingsSlice = createSlice({
     setPreferLocalModels: (state, action: PayloadAction<boolean>) => {
       state.settings.preferLocalModels = action.payload;
     },
+    setPreferredVoices: (state, action: PayloadAction<{ [languageCode: string]: string }>) => {
+      state.settings.preferredVoices = action.payload;
+    },
+    setPreferredVoice: (state, action: PayloadAction<{ languageCode: string; voiceId: string }>) => {
+      if (!state.settings.preferredVoices) {
+        state.settings.preferredVoices = {};
+      }
+      state.settings.preferredVoices[action.payload.languageCode] = action.payload.voiceId;
+    },
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload;
     },
@@ -57,6 +67,8 @@ export const {
   setUserId,
   setEnableLocalModels,
   setPreferLocalModels,
+  setPreferredVoices,
+  setPreferredVoice,
   setLoading,
   setError,
 } = settingsSlice.actions;

@@ -23,7 +23,7 @@ describe('User Journey E2E Tests', () => {
 
     // Go back to main menu
     await device.pressBack();
-    
+
     // Verify we're back on main menu
     await expect(element(by.id('app-title'))).toBeVisible();
   });
@@ -52,7 +52,7 @@ describe('User Journey E2E Tests', () => {
 
     // Go back to main menu
     await device.pressBack();
-    
+
     // Verify we're back on main menu
     await expect(element(by.id('app-title'))).toBeVisible();
   });
@@ -64,13 +64,13 @@ describe('User Journey E2E Tests', () => {
     // Rapidly navigate between different exercises
     await element(by.id('exercise-match-words')).tap();
     await device.pressBack();
-    
+
     await element(by.id('exercise-conversations')).tap();
     await device.pressBack();
-    
+
     await element(by.id('exercise-translate')).tap();
     await device.pressBack();
-    
+
     await element(by.id('exercise-chat-practice')).tap();
     await device.pressBack();
 
@@ -109,14 +109,14 @@ describe('User Journey E2E Tests', () => {
 
     // Rotate device to landscape
     await device.setOrientation('landscape');
-    
+
     // App should still be functional
     await expect(element(by.id('app-title'))).toBeVisible();
     await expect(element(by.id('exercise-match-words'))).toBeVisible();
 
     // Rotate back to portrait
     await device.setOrientation('portrait');
-    
+
     // App should still be functional
     await expect(element(by.id('app-title'))).toBeVisible();
     await expect(element(by.id('exercise-match-words'))).toBeVisible();
@@ -127,13 +127,13 @@ describe('User Journey E2E Tests', () => {
 
     // Send app to background
     await device.sendToHome();
-    
+
     // Wait a moment
     await new Promise(resolve => setTimeout(resolve, 1000));
-    
+
     // Bring app back to foreground
     await device.launchApp({ newInstance: false });
-    
+
     // App should still be functional
     await expect(element(by.id('app-title'))).toBeVisible();
     await expect(element(by.text('AHLingo'))).toBeVisible();

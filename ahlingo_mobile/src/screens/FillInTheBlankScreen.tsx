@@ -22,6 +22,7 @@ import {
   recordExerciseAttemptForCurrentUser,
 } from '../services/RefactoredDatabaseService';
 import { useTheme } from '../contexts/ThemeContext';
+import TTSService from '../services/TTSService';
 
 type FillInTheBlankScreenRouteProp = RouteProp<
   RootStackParamList,
@@ -91,8 +92,8 @@ const FillInTheBlankScreen: React.FC<Props> = ({ route, navigation }) => {
         'Your progress will be lost if you exit now.',
         [
           { text: 'Cancel', style: 'cancel' },
-          { 
-            text: 'Exit', 
+          {
+            text: 'Exit',
             style: 'destructive',
             onPress: () => navigation.navigate('MainMenu')
           },
@@ -120,8 +121,8 @@ const FillInTheBlankScreen: React.FC<Props> = ({ route, navigation }) => {
       'Your progress will be lost if you exit now.',
       [
         { text: 'Cancel', style: 'cancel' },
-        { 
-          text: 'Exit', 
+        {
+          text: 'Exit',
           style: 'destructive',
           onPress: () => navigation.navigate('MainMenu')
         },
@@ -135,7 +136,7 @@ const FillInTheBlankScreen: React.FC<Props> = ({ route, navigation }) => {
 
       // Get complete user context in single call
       const userContext = await getUserContext();
-      
+
       if (!userContext) {
         Alert.alert('Error', 'Failed to initialize user. Please try again.');
         return;
@@ -219,7 +220,10 @@ const FillInTheBlankScreen: React.FC<Props> = ({ route, navigation }) => {
 
   const handleWordPress = (word: string) => {
     if (gameState.hasSubmitted) return;
-    
+
+    // Speak the word in the target language when clicked
+    TTSService.speakWithLanguageDetection(word, userLanguage);
+
     setGameState(prev => ({
       ...prev,
       selectedWord: word,
@@ -229,7 +233,7 @@ const FillInTheBlankScreen: React.FC<Props> = ({ route, navigation }) => {
   const handleSubmit = async () => {
     if (!gameState.selectedWord) return;
 
-    const isCorrect = gameState.selectedWord.toLowerCase().trim() === 
+    const isCorrect = gameState.selectedWord.toLowerCase().trim() ===
                      gameState.correctAnswer.toLowerCase().trim();
 
     // Record the exercise attempt
@@ -243,6 +247,10 @@ const FillInTheBlankScreen: React.FC<Props> = ({ route, navigation }) => {
       isCorrect,
       score: isCorrect ? prev.score + 1 : prev.score,
     }));
+
+    // Speak the full correct sentence after submission
+    const completeSentence = gameState.sentence.replace('_', gameState.correctAnswer);
+    TTSService.speakWithLanguageDetection(completeSentence, userLanguage);
 
     // Handle shuffle mode completion
     if (shuffleContext) {
@@ -283,7 +291,7 @@ const FillInTheBlankScreen: React.FC<Props> = ({ route, navigation }) => {
     if (!gameState.selectedWord) {
       return gameState.sentence;
     }
-    
+
     return gameState.sentence.replace('_', gameState.selectedWord);
   };
 
@@ -334,7 +342,7 @@ const FillInTheBlankScreen: React.FC<Props> = ({ route, navigation }) => {
           >
             {gameState.isCorrect ? '✅ Correct!' : '❌ Incorrect. Try again!'}
           </Text>
-          
+
           {/* Show the complete correct sentence */}
           <View style={styles.correctSentenceContainer}>
             <Text style={styles.correctSentenceLabel}>Complete sentence:</Text>
@@ -358,13 +366,13 @@ const FillInTheBlankScreen: React.FC<Props> = ({ route, navigation }) => {
               Correct answer: {gameState.correctAnswer}
             </Text>
           )}
-          
+
           <TouchableOpacity
             style={styles.nextButton}
             onPress={handleNextExercise}
           >
             <Text style={styles.nextButtonText}>
-              {shuffleContext 
+              {shuffleContext
                 ? (gameState.isCorrect ? '✅ Perfect! Next Exercise' : '➡️ Next Exercise')
                 : 'Next Exercise'
               }

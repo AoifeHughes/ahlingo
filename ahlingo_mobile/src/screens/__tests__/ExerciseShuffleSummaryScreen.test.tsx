@@ -26,9 +26,9 @@ jest.mock('../../contexts/ThemeContext', () => ({
         '2xl': 48,
         '3xl': 64,
       },
-      borderRadius: { 
+      borderRadius: {
         base: 8,
-        lg: 12 
+        lg: 12
       },
       typography: {
         fontSizes: {
@@ -77,12 +77,12 @@ describe('ExerciseShuffleSummaryScreen', () => {
   it('renders with perfect score', () => {
     const route = createMockRoute([true, true, true, true, true]);
     const { getByText, getAllByText } = renderSimple(
-      <ExerciseShuffleSummaryScreen 
-        navigation={mockNavigation as any} 
-        route={route as any} 
+      <ExerciseShuffleSummaryScreen
+        navigation={mockNavigation as any}
+        route={route as any}
       />
     );
-    
+
     // Check that we have multiple '5's (completed and total both show 5)
     const fives = getAllByText('5');
     expect(fives.length).toBe(2); // Both completed and total should be 5
@@ -95,12 +95,12 @@ describe('ExerciseShuffleSummaryScreen', () => {
   it('renders with partial score', () => {
     const route = createMockRoute([true, false, true, false, true]);
     const { getByText } = renderSimple(
-      <ExerciseShuffleSummaryScreen 
-        navigation={mockNavigation as any} 
-        route={route as any} 
+      <ExerciseShuffleSummaryScreen
+        navigation={mockNavigation as any}
+        route={route as any}
       />
     );
-    
+
     expect(getByText('3')).toBeTruthy(); // Completed count
     expect(getByText('60%')).toBeTruthy();
     expect(getByText('Great progress! 👏')).toBeTruthy();
@@ -109,12 +109,12 @@ describe('ExerciseShuffleSummaryScreen', () => {
   it('renders with low score', () => {
     const route = createMockRoute([true, false, false, false, false]);
     const { getByText } = renderSimple(
-      <ExerciseShuffleSummaryScreen 
-        navigation={mockNavigation as any} 
-        route={route as any} 
+      <ExerciseShuffleSummaryScreen
+        navigation={mockNavigation as any}
+        route={route as any}
       />
     );
-    
+
     expect(getByText('1')).toBeTruthy(); // Completed count
     expect(getByText('20%')).toBeTruthy();
     expect(getByText('Keep practicing! 📚')).toBeTruthy();
@@ -123,12 +123,12 @@ describe('ExerciseShuffleSummaryScreen', () => {
   it('renders with zero score', () => {
     const route = createMockRoute([false, false, false, false, false]);
     const { getByText } = renderSimple(
-      <ExerciseShuffleSummaryScreen 
-        navigation={mockNavigation as any} 
-        route={route as any} 
+      <ExerciseShuffleSummaryScreen
+        navigation={mockNavigation as any}
+        route={route as any}
       />
     );
-    
+
     expect(getByText('0')).toBeTruthy(); // Completed count
     expect(getByText('0%')).toBeTruthy();
     expect(getByText('Keep practicing! 📚')).toBeTruthy();
@@ -137,12 +137,12 @@ describe('ExerciseShuffleSummaryScreen', () => {
   it('handles empty results array', () => {
     const route = createMockRoute([]);
     const { getByText, getAllByText } = renderSimple(
-      <ExerciseShuffleSummaryScreen 
-        navigation={mockNavigation as any} 
-        route={route as any} 
+      <ExerciseShuffleSummaryScreen
+        navigation={mockNavigation as any}
+        route={route as any}
       />
     );
-    
+
     // Both completed and total should be 0
     const zeros = getAllByText('0');
     expect(zeros.length).toBe(2);
@@ -153,19 +153,19 @@ describe('ExerciseShuffleSummaryScreen', () => {
     // Test 85% score
     const highRoute = createMockRoute([true, true, true, true, false]);
     const { getByText: getHighText } = renderSimple(
-      <ExerciseShuffleSummaryScreen 
-        navigation={mockNavigation as any} 
-        route={highRoute as any} 
+      <ExerciseShuffleSummaryScreen
+        navigation={mockNavigation as any}
+        route={highRoute as any}
       />
     );
     expect(getHighText('Excellent work! 🌟')).toBeTruthy();
 
-    // Test 65% score  
+    // Test 65% score
     const mediumRoute = createMockRoute([true, true, true, false, false]);
     const { getByText: getMediumText } = renderSimple(
-      <ExerciseShuffleSummaryScreen 
-        navigation={mockNavigation as any} 
-        route={mediumRoute as any} 
+      <ExerciseShuffleSummaryScreen
+        navigation={mockNavigation as any}
+        route={mediumRoute as any}
       />
     );
     expect(getMediumText('Great progress! 👏')).toBeTruthy();
@@ -173,9 +173,9 @@ describe('ExerciseShuffleSummaryScreen', () => {
     // Test 45% score
     const lowMediumRoute = createMockRoute([true, true, false, false, false]);
     const { getByText: getLowMediumText } = renderSimple(
-      <ExerciseShuffleSummaryScreen 
-        navigation={mockNavigation as any} 
-        route={lowMediumRoute as any} 
+      <ExerciseShuffleSummaryScreen
+        navigation={mockNavigation as any}
+        route={lowMediumRoute as any}
       />
     );
     expect(getLowMediumText('Good effort! 💪')).toBeTruthy();
@@ -184,12 +184,12 @@ describe('ExerciseShuffleSummaryScreen', () => {
   it('handles single exercise result', () => {
     const route = createMockRoute([true]);
     const { getByText, getAllByText } = renderSimple(
-      <ExerciseShuffleSummaryScreen 
-        navigation={mockNavigation as any} 
-        route={route as any} 
+      <ExerciseShuffleSummaryScreen
+        navigation={mockNavigation as any}
+        route={route as any}
       />
     );
-    
+
     // Both completed and total should be 1
     const ones = getAllByText('1');
     expect(ones.length).toBe(2);
@@ -199,24 +199,24 @@ describe('ExerciseShuffleSummaryScreen', () => {
   it('renders back to main menu button', () => {
     const route = createMockRoute([true, false, true]);
     const { getByText } = renderSimple(
-      <ExerciseShuffleSummaryScreen 
-        navigation={mockNavigation as any} 
-        route={route as any} 
+      <ExerciseShuffleSummaryScreen
+        navigation={mockNavigation as any}
+        route={route as any}
       />
     );
-    
+
     expect(getByText('Back to Main Menu')).toBeTruthy();
   });
 
   it('navigates to main menu when back button is pressed', () => {
     const route = createMockRoute([true, false, true]);
     const { getByText } = renderSimple(
-      <ExerciseShuffleSummaryScreen 
-        navigation={mockNavigation as any} 
-        route={route as any} 
+      <ExerciseShuffleSummaryScreen
+        navigation={mockNavigation as any}
+        route={route as any}
       />
     );
-    
+
     const backButton = getByText('Back to Main Menu');
     fireEvent.press(backButton);
     expect(mockNavigation.navigate).toHaveBeenCalledWith('MainMenu');

@@ -154,7 +154,7 @@ const AppNavigator: React.FC = () => {
         <Stack.Screen
           name="ExerciseShuffleTransition"
           component={ExerciseShuffleTransitionScreen}
-          options={{ 
+          options={{
             title: 'Challenge Progress',
             headerBackButtonMenuEnabled: false,
           }}

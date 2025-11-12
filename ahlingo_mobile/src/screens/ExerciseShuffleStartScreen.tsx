@@ -54,8 +54,8 @@ const ExerciseShuffleStartScreen: React.FC<Props> = ({ navigation, route }) => {
       'Your progress will be lost if you exit now.',
       [
         { text: 'Cancel', style: 'cancel' },
-        { 
-          text: 'Exit', 
+        {
+          text: 'Exit',
           style: 'destructive',
           onPress: () => navigation.navigate('MainMenu')
         },
@@ -78,7 +78,7 @@ const ExerciseShuffleStartScreen: React.FC<Props> = ({ navigation, route }) => {
 
       // Get complete user context in single call
       const userContext = await getUserContext();
-      
+
       if (!userContext) {
         Alert.alert('Error', 'Failed to initialize user. Please try again.');
         return;
@@ -105,8 +105,8 @@ const ExerciseShuffleStartScreen: React.FC<Props> = ({ navigation, route }) => {
           `Only ${loadedExercises.length} exercises are available. The shuffle will continue with these exercises.`,
           [
             { text: 'Cancel', onPress: () => navigation.navigate('MainMenu') },
-            { 
-              text: 'Continue', 
+            {
+              text: 'Continue',
               onPress: () => setExercises(loadedExercises)
             },
           ]
@@ -128,7 +128,7 @@ const ExerciseShuffleStartScreen: React.FC<Props> = ({ navigation, route }) => {
 
   const startShuffle = () => {
     const firstExercise = exercises[0];
-    
+
     const shuffleContext: ExerciseShuffleContext = {
       isShuffleMode: true,
       currentChallenge: 1,
@@ -222,11 +222,11 @@ const ExerciseShuffleStartScreen: React.FC<Props> = ({ navigation, route }) => {
         <Text style={styles.icon}>🎲</Text>
         <Text style={styles.title}>Exercise Shuffle</Text>
         <Text style={styles.subtitle}>Ready to get started?</Text>
-        
+
         <View style={styles.challengeIndicator}>
           <Text style={styles.challengeText}>Challenge 1/{exercises.length}</Text>
         </View>
-        
+
         <View style={styles.exercisePreview}>
           <Text style={styles.previewTitle}>Your challenges include:</Text>
           {exercises.map((exercise, index) => (
@@ -235,7 +235,7 @@ const ExerciseShuffleStartScreen: React.FC<Props> = ({ navigation, route }) => {
             </Text>
           ))}
         </View>
-        
+
         <TouchableOpacity
           style={styles.startButton}
           onPress={startShuffle}
@@ -243,7 +243,7 @@ const ExerciseShuffleStartScreen: React.FC<Props> = ({ navigation, route }) => {
         >
           <Text style={styles.startButtonText}>Start Challenge</Text>
         </TouchableOpacity>
-        
+
       </View>
     </View>
   );

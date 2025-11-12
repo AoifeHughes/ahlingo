@@ -1,34 +1,51 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useTheme } from '../contexts/ThemeContext';
 
 interface MessageBubbleProps {
   speaker: string;
   message: string;
   isLeft: boolean;
+  onSpeak?: (message: string) => void;
 }
 
 const MessageBubble: React.FC<MessageBubbleProps> = ({
   speaker,
   message,
   isLeft,
+  onSpeak,
 }) => {
   const { theme } = useTheme();
+
+  const handlePress = () => {
+    if (onSpeak) {
+      onSpeak(message);
+    }
+  };
+
   return (
-    <View
+    <TouchableOpacity
       style={[styles.container, isLeft ? styles.leftAlign : styles.rightAlign]}
+      onPress={handlePress}
+      activeOpacity={onSpeak ? 0.7 : 1}
+      disabled={!onSpeak}
     >
       <View
         style={[
-          styles.bubble, 
-          { 
+          styles.bubble,
+          {
             backgroundColor: isLeft ? theme.colors.assistantMessage : theme.colors.userMessage,
             shadowColor: theme.colors.text,
           },
           isLeft ? styles.leftBubble : styles.rightBubble
         ]}
       >
-        <Text style={[styles.speakerName, { color: theme.colors.textSecondary }]}>{speaker}</Text>
+        <View style={styles.headerRow}>
+          <Text style={[styles.speakerName, { color: theme.colors.textSecondary }]}>{speaker}</Text>
+          {onSpeak && (
+            <Text style={styles.speakerIcon}>🔊</Text>
+          )}
+        </View>
         <Text
           style={[
             styles.messageText,
@@ -38,7 +55,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
           {message}
         </Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -72,10 +89,19 @@ const styles = StyleSheet.create({
   rightBubble: {
     borderBottomRightRadius: 4,
   },
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
   speakerName: {
     fontSize: 12,
     fontWeight: '600',
-    marginBottom: 4,
+  },
+  speakerIcon: {
+    fontSize: 14,
+    marginLeft: 8,
   },
   messageText: {
     fontSize: 16,

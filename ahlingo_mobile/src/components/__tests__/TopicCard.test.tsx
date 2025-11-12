@@ -6,7 +6,7 @@ import { createTopic } from '../../test-utils/factories';
 
 describe('TopicCard', () => {
   const mockOnPress = jest.fn();
-  
+
   const mockTopic = {
     ...createTopic({ topic: 'Greetings' }),
     progress: {

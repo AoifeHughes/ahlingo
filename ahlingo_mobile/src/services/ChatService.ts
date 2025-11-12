@@ -1,6 +1,6 @@
 /**
  * Chat Service
- * 
+ *
  * Handles all chat-related database operations using the modern database utilities
  */
 

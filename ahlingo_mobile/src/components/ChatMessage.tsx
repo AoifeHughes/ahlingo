@@ -18,7 +18,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
   const { theme } = useTheme();
   const isUser = role === 'user';
   const isSystem = role === 'system';
-  
+
   if (isSystem) {
     return (
       <View style={styles.systemContainer}>
@@ -36,15 +36,15 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
   return (
     <View style={[styles.container, isUser ? styles.userAlign : styles.assistantAlign]}>
       <View style={[
-        styles.bubble, 
-        { 
+        styles.bubble,
+        {
           backgroundColor: isUser ? theme.colors.userMessage : theme.colors.assistantMessage,
           shadowColor: theme.colors.text,
         },
         isUser ? styles.userBubble : styles.assistantBubble
       ]}>
         <Text style={[
-          styles.messageText, 
+          styles.messageText,
           { color: isUser ? '#fff' : theme.colors.text }
         ]}>
           {content}
@@ -52,7 +52,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
         </Text>
         {timestamp && (
           <Text style={[
-            styles.timestamp, 
+            styles.timestamp,
             { color: isUser ? '#fff' : theme.colors.textSecondary },
             isUser ? styles.userTimestamp : styles.assistantTimestamp
           ]}>

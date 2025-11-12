@@ -1,6 +1,6 @@
 /**
  * Exercise Randomization Helper
- * 
+ *
  * Utility functions to help integrate smart randomization with existing screens
  * and provide a consistent interface for exercise selection across the app.
  */
@@ -29,10 +29,10 @@ export const recordExerciseAsRecent = (exerciseInfo: ExerciseInfo): void => {
  */
 export const getRecentExercises = (): RecentExercise[] => {
   const state = store.getState();
-  
+
   // Clean up old exercises first
   store.dispatch(cleanupOldExercises());
-  
+
   return state.game.recentExercises;
 };
 
@@ -50,19 +50,19 @@ export const clearRecentExercises = (): void => {
 export const shouldAvoidExercise = (exerciseInfo: ExerciseInfo): boolean => {
   const recentExercises = getRecentExercises();
   const recentCount = Math.min(3, recentExercises.length); // Check last 3 exercises
-  
+
   for (let i = 0; i < recentCount; i++) {
     const recent = recentExercises[i];
-    
+
     // Avoid if same exercise
     if (recent.exerciseId === exerciseInfo.id) return true;
-    
+
     // Avoid if same topic and lesson
-    if (recent.topicId === exerciseInfo.topic_id && 
-        recent.lessonId === exerciseInfo.lesson_id && 
+    if (recent.topicId === exerciseInfo.topic_id &&
+        recent.lessonId === exerciseInfo.lesson_id &&
         exerciseInfo.lesson_id !== null) return true;
   }
-  
+
   return false;
 };
 
@@ -77,11 +77,11 @@ export const getRecentExerciseStats = (): {
 } => {
   const recentExercises = getRecentExercises();
   const now = Date.now();
-  
+
   const uniqueTopics = new Set(recentExercises.map(ex => ex.topicId));
   const uniqueLessons = new Set(recentExercises.map(ex => ex.lessonId).filter(Boolean));
-  
-  const oldestRecentAge = recentExercises.length > 0 
+
+  const oldestRecentAge = recentExercises.length > 0
     ? Math.max(...recentExercises.map(ex => now - ex.timestamp))
     : 0;
 
@@ -99,19 +99,19 @@ export const getRecentExerciseStats = (): {
 export const debugRandomizationState = (): void => {
   const stats = getRecentExerciseStats();
   const recentExercises = getRecentExercises();
-  
+
   console.log('=== Smart Randomization Debug ===');
   console.log('Recent exercises:', recentExercises.length);
   console.log('Unique topics:', stats.uniqueTopics);
   console.log('Unique lessons:', stats.uniqueLessons);
   console.log('Oldest recent age:', stats.oldestRecentAge, 'minutes');
-  
+
   console.log('\nRecent exercises details:');
   recentExercises.forEach((ex, index) => {
     const ageMinutes = Math.round((Date.now() - ex.timestamp) / (1000 * 60));
     console.log(`${index + 1}. Exercise ${ex.exerciseId} (Topic: ${ex.topicId}, Lesson: ${ex.lessonId || 'N/A'}) - ${ageMinutes}min ago`);
   });
-  
+
   console.log('=== End Debug ===');
 };
 

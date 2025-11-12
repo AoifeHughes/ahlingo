@@ -16,10 +16,10 @@ const formatFileSize = (bytes: number): string => {
   return `${mb.toFixed(0)} MB`;
 };
 
-const StorageInfoCard: React.FC<StorageInfoCardProps> = ({ 
-  storageUsage, 
-  onRefresh, 
-  theme 
+const StorageInfoCard: React.FC<StorageInfoCardProps> = ({
+  storageUsage,
+  onRefresh,
+  theme
 }) => {
   const styles = StyleSheet.create({
     storageInfo: {

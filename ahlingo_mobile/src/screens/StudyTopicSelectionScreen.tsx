@@ -55,7 +55,7 @@ const StudyTopicSelectionScreen: React.FC<Props> = ({ navigation, route }) => {
 
       // Get complete user context in single call
       const userContext = await getUserContext();
-      
+
       if (!userContext) {
         Alert.alert('Error', 'Failed to initialize user. Please try again.');
         return;
@@ -66,7 +66,7 @@ const StudyTopicSelectionScreen: React.FC<Props> = ({ navigation, route }) => {
 
       setUserLanguage(language);
       setUserDifficulty(difficulty);
-      
+
       // Load topics with progress and available exercise types
       const studyTopics = await getTopicsForStudy(userContext.userId, language, difficulty);
       setTopics(studyTopics);
@@ -84,7 +84,7 @@ const StudyTopicSelectionScreen: React.FC<Props> = ({ navigation, route }) => {
 
       // Get complete user context in single call
       const userContext = await getUserContext();
-      
+
       if (!userContext) {
         Alert.alert('Error', 'Failed to initialize user. Please try again.');
         return;
@@ -116,8 +116,8 @@ const StudyTopicSelectionScreen: React.FC<Props> = ({ navigation, route }) => {
           `Only ${exercises.length} exercises are available for this topic. The study session will continue with these exercises.`,
           [
             { text: 'Cancel' },
-            { 
-              text: 'Continue', 
+            {
+              text: 'Continue',
               onPress: () => navigation.navigate('StudyTopicShuffle', {
                 topicId: topic.id,
                 topicName: topic.topic,
@@ -157,14 +157,14 @@ const StudyTopicSelectionScreen: React.FC<Props> = ({ navigation, route }) => {
         <Text style={styles.topicTitle}>{item.topic}</Text>
         <Text style={styles.progressText}>{item.percentage}%</Text>
       </View>
-      
+
       <View style={styles.progressBarContainer}>
         <View style={styles.progressBarBackground}>
-          <View 
+          <View
             style={[
-              styles.progressBarFill, 
+              styles.progressBarFill,
               { width: `${item.percentage}%` }
-            ]} 
+            ]}
           />
         </View>
       </View>

@@ -11,19 +11,19 @@ interface LocalModelsSectionProps {
   enableLocalModels: boolean;
   preferLocalModels: boolean;
   onUpdateFormData: (field: keyof FormData, value: string | boolean) => void;
-  
+
   // Local models state
   availableLocalModels: LocalModel[];
   downloadedModels: LocalModel[];
   downloadProgress: Record<string, LocalModelDownloadProgress>;
   isLoadingLocalModels: boolean;
   storageUsage: { totalSize: number; modelCount: number };
-  
+
   // Functions
   loadLocalModels: () => Promise<void>;
   downloadModel: (modelId: string) => Promise<void>;
   deleteModel: (modelId: string) => Promise<void>;
-  
+
   // Theme
   theme: any;
 }

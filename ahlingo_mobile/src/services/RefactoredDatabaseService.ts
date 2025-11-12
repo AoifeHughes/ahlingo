@@ -153,12 +153,12 @@ export const getConversationExerciseWithData = async (
 ) => {
   const exercise = await getRandomConversationExerciseForTopic(topicId, language, difficulty);
   if (!exercise) return null;
-  
+
   const conversationData = await getConversationExerciseData(exercise.id);
   const topicName = await getTopicNameForExercise(exercise.id);
   const correctSummary = await getConversationSummary(exercise.id);
   const wrongSummaries = await getRandomConversationSummaries(language, difficulty, exercise.id);
-  
+
   return {
     exercise,
     conversationData,
@@ -176,10 +176,10 @@ export const getTranslationExerciseWithData = async (
 ) => {
   const exercise = await getRandomTranslationExerciseForTopic(topicId, language, difficulty);
   if (!exercise) return null;
-  
+
   const translationData = await getTranslationExerciseData(exercise.id);
   const topicName = await getTopicNameForExercise(exercise.id);
-  
+
   return {
     exercise,
     translationData,
@@ -195,10 +195,10 @@ export const getFillInBlankExerciseWithData = async (
 ) => {
   const exercise = await getRandomFillInBlankExerciseForTopic(topicId, language, difficulty);
   if (!exercise) return null;
-  
+
   const fillInBlankData = await getFillInBlankExerciseData(exercise.id);
   const topicName = await getTopicNameForExercise(exercise.id);
-  
+
   return {
     exercise,
     fillInBlankData,
@@ -214,10 +214,10 @@ export const getPairsExerciseWithData = async (
 ) => {
   const exercise = await getRandomExerciseForTopic(topicId, language, difficulty);
   if (!exercise) return null;
-  
+
   const pairsData = await getPairExercises(exercise.id);
   const topicName = await getTopicNameForExercise(exercise.id);
-  
+
   return {
     exercise,
     pairsData,

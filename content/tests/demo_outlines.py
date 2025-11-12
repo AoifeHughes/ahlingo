@@ -18,13 +18,15 @@ import json
 import logging
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 
 # Add the content_creation directory to the path
 sys.path.append(str(Path(__file__).parent))
 
-from content_creation.generate_lessons import populate_database
-from content_creation.outlines_generator import generate_lessons_data_structured
+from content.generation.core.generate_lessons import populate_database
+from content.generation.core.outlines_generator import generate_lessons_data_structured
 
 
 def demo_single_lesson():
@@ -50,7 +52,9 @@ def demo_single_lesson():
         print(f"Generated {len(data)} exercises:")
 
         for i, exercise in enumerate(data[:3]):  # Show first 3
-            print(f"  Exercise {i+1}: {json.dumps(exercise, ensure_ascii=False, indent=4)}")
+            print(
+                f"  Exercise {i+1}: {json.dumps(exercise, ensure_ascii=False, indent=4)}"
+            )
 
         if len(data) > 3:
             print(f"  ... and {len(data) - 3} more exercises")
@@ -90,7 +94,7 @@ if __name__ == "__main__":
         print("\n" + "=" * 60)
         print("SUCCESS: Outlines integration is working!")
         print("\nTo use this for full database population:")
-        print("from content_creation.generate_lessons import populate_database")
+        print("from content.generation.core.generate_lessons import populate_database")
         print(
             "populate_database()  # Uses Outlines structured generation with 10 exercises per topic!"
         )

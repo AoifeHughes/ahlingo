@@ -25,13 +25,13 @@ interface Props {
 
 const AboutScreen: React.FC<Props> = ({ navigation }) => {
   const { theme } = useTheme();
-  
+
   const handleEmailPress = async () => {
     const email = 'aoife.deltasolutions@gmail.com';
     const subject = 'AHLingo Feedback';
     const body = 'Hi Aoife,\n\nI have some feedback/suggestions/bug reports for AHLingo:\n\n';
     const mailtoUrl = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    
+
     try {
       const supported = await Linking.canOpenURL(mailtoUrl);
       if (supported) {
@@ -69,7 +69,7 @@ const AboutScreen: React.FC<Props> = ({ navigation }) => {
           <Text style={styles.title}>About</Text>
         </View>
 
-        <ScrollView 
+        <ScrollView
           style={styles.scrollContainer}
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
@@ -84,7 +84,7 @@ const AboutScreen: React.FC<Props> = ({ navigation }) => {
 
           <View style={styles.appInfo}>
             <Text style={styles.appName}>AHLingo</Text>
-            <Text style={styles.version}>Version 1.2.0</Text>
+            <Text style={styles.version}>Version 1.4.0</Text>
             <Text style={styles.description}>
               A comprehensive language learning application designed to help you master new languages through interactive exercises, conversations, and personalized learning experiences.
             </Text>
@@ -95,7 +95,7 @@ const AboutScreen: React.FC<Props> = ({ navigation }) => {
             <Text style={styles.contactText}>
               We'd love to hear from you! Share your feedback, suggestions, or report bugs to help us improve AHLingo.
             </Text>
-            
+
             <TouchableOpacity
               style={styles.emailButton}
               onPress={handleEmailPress}
