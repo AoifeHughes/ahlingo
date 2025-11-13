@@ -31,6 +31,20 @@ interface TTSVoiceSettingsProps {
   onVoiceChange: (languageCode: string, voiceId: string) => void;
 }
 
+const LANGUAGE_CODE_MAP: Array<{ keywords: string[]; ios: string; android: string }> = [
+  { keywords: ['english'], ios: 'en-US', android: 'en' },
+  { keywords: ['french'], ios: 'fr-FR', android: 'fr' },
+  { keywords: ['spanish', 'español'], ios: 'es-ES', android: 'es' },
+  { keywords: ['german', 'deutsch'], ios: 'de-DE', android: 'de' },
+  { keywords: ['italian'], ios: 'it-IT', android: 'it' },
+  { keywords: ['portuguese', 'brazil'], ios: 'pt-BR', android: 'pt' },
+  { keywords: ['japanese'], ios: 'ja-JP', android: 'ja' },
+  { keywords: ['chinese', 'mandarin'], ios: 'zh-CN', android: 'zh' },
+  { keywords: ['korean'], ios: 'ko-KR', android: 'ko' },
+  { keywords: ['russian'], ios: 'ru-RU', android: 'ru' },
+  { keywords: ['ukrainian'], ios: 'uk-UA', android: 'uk' },
+];
+
 const TTSVoiceSettings: React.FC<TTSVoiceSettingsProps> = ({
   selectedLanguages,
   preferredVoices,
@@ -114,20 +128,16 @@ const TTSVoiceSettings: React.FC<TTSVoiceSettingsProps> = ({
   };
 
   const getLanguageCode = (languageName: string): string => {
-    const languageMap: { [key: string]: string } = {
-      'english': Platform.OS === 'ios' ? 'en-US' : 'en',
-      'french': Platform.OS === 'ios' ? 'fr-FR' : 'fr',
-      'spanish': Platform.OS === 'ios' ? 'es-ES' : 'es',
-      'german': Platform.OS === 'ios' ? 'de-DE' : 'de',
-      'italian': Platform.OS === 'ios' ? 'it-IT' : 'it',
-      'portuguese': Platform.OS === 'ios' ? 'pt-BR' : 'pt',
-      'japanese': Platform.OS === 'ios' ? 'ja-JP' : 'ja',
-      'chinese': Platform.OS === 'ios' ? 'zh-CN' : 'zh',
-      'korean': Platform.OS === 'ios' ? 'ko-KR' : 'ko',
-      'russian': Platform.OS === 'ios' ? 'ru-RU' : 'ru',
-    };
+    const normalized = languageName.toLowerCase();
+    const match = LANGUAGE_CODE_MAP.find(entry =>
+      entry.keywords.some(keyword => normalized.includes(keyword))
+    );
 
-    return languageMap[languageName.toLowerCase()] || (Platform.OS === 'ios' ? 'en-US' : 'en');
+    if (match) {
+      return Platform.OS === 'ios' ? match.ios : match.android;
+    }
+
+    return Platform.OS === 'ios' ? 'en-US' : 'en';
   };
 
   const toggleLanguage = (languageCode: string) => {

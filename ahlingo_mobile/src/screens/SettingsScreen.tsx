@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import {
   View,
   ScrollView,
@@ -55,6 +55,11 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
       TTSService.setUserPreferredVoices(formData.preferredVoices);
     }
   }, [formData.preferredVoices]);
+
+  const selectedLanguages = useMemo(
+    () => languages.map(l => l.value),
+    [languages]
+  );
 
   const handleVoiceChange = (languageCode: string, voiceId: string) => {
     const newPreferredVoices = { ...formData.preferredVoices };
@@ -129,7 +134,7 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
           />
 
           <TTSVoiceSettings
-            selectedLanguages={languages.map(l => l.value)}
+            selectedLanguages={selectedLanguages}
             preferredVoices={formData.preferredVoices}
             onVoiceChange={handleVoiceChange}
           />

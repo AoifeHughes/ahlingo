@@ -69,6 +69,7 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
   const [isStreaming, setIsStreaming] = useState(false);
   const [streamingContent, setStreamingContent] = useState('');
   const [streamController, setStreamController] = useState<AbortController | null>(null);
+  const [initialChatCreated, setInitialChatCreated] = useState(false);
   const messagesScrollViewRef = useRef<ScrollView>(null);
   const scrollToBottom = useCallback(() => {
     messagesScrollViewRef.current?.scrollToEnd({ animated: true });
@@ -237,70 +238,119 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
     scrollToBottom();
   }, [scrollToBottom, messages.length, streamingContent]);
 
-  const createNewChat = async () => {
-    console.log('🆕 Creating new chat...');
-    try {
-      if (!userId) {
-        Alert.alert('Error', 'Failed to get user information');
-        return;
-      }
-
-      if (!selectedModel) {
-        Alert.alert(
-          'No Model Selected',
-          'Please wait while models load or select a model before starting a new chat.'
-        );
-        return;
-      }
-
-      const model = selectedModel;
-
-      console.log('📝 Creating chat with:', { userId, language, difficulty, model });
-
-      const chatId = await createChat(userId, language, difficulty, model);
-      console.log('🆔 Created chat with ID:', chatId);
-
-      if (chatId) {
-        const newChat = await getChatById(chatId);
-        console.log('💬 Retrieved new chat:', newChat);
-
-        if (newChat) {
-          setCurrentChat(newChat);
-          setMessages([]);
-          await loadUserChats();
-          console.log('✅ New chat set successfully');
+  useEffect(() => {
+    const ensureInitialChat = async () => {
+      if (
+        !isInitializing &&
+        !initialChatCreated &&
+        selectedModel &&
+        availableModels.length > 0 &&
+        conversations.length === 0
+      ) {
+        setInitialChatCreated(true);
+        const createdChat = await createNewChat(true);
+        if (!createdChat) {
+          setInitialChatCreated(false);
         }
       }
-    } catch (error) {
-      console.error('Failed to create new chat:', error);
-      Alert.alert('Error', 'Failed to create new chat');
-    }
-  };
+    };
+
+    ensureInitialChat();
+  }, [
+    isInitializing,
+    initialChatCreated,
+    selectedModel,
+    availableModels.length,
+    conversations.length,
+    createNewChat,
+  ]);
+
+  const createNewChat = useCallback(
+    async (suppressAlerts = false): Promise<ChatDetail | null> => {
+      console.log('🆕 Creating new chat...');
+      try {
+        if (!userId) {
+          if (!suppressAlerts) {
+            Alert.alert('Error', 'Failed to get user information');
+          }
+          return null;
+        }
+
+        if (!selectedModel) {
+          if (!suppressAlerts) {
+            Alert.alert(
+              'No Model Selected',
+              'Please wait while models load or select a model before starting a new chat.'
+            );
+          }
+          return null;
+        }
+
+        const model = selectedModel;
+
+        console.log('📝 Creating chat with:', { userId, language, difficulty, model });
+
+        const chatId = await createChat(userId, language, difficulty, model);
+        console.log('🆔 Created chat with ID:', chatId);
+
+        if (chatId) {
+          const newChat = await getChatById(chatId);
+          console.log('💬 Retrieved new chat:', newChat);
+
+          if (newChat) {
+            setCurrentChat(newChat);
+            setMessages([]);
+            await loadUserChats();
+            console.log('✅ New chat set successfully');
+            return newChat;
+          }
+        }
+
+        if (!suppressAlerts) {
+          Alert.alert('Error', 'Failed to create new chat');
+        }
+        return null;
+      } catch (error) {
+        console.error('Failed to create new chat:', error);
+        if (!suppressAlerts) {
+          Alert.alert('Error', 'Failed to create new chat');
+        }
+        return null;
+      }
+    },
+    [userId, language, difficulty, selectedModel, loadUserChats]
+  );
 
   const sendMessage = async (content: string) => {
     console.log('📤 ChatbotScreen sendMessage called with:', content);
-    console.log('📋 Current chat state:', currentChat ? `Chat ID: ${currentChat.id}` : 'No current chat');
 
-    if (!currentChat) {
+    let activeChat = currentChat;
+    if (!activeChat) {
       console.log('🔄 No current chat, creating new chat...');
-      await createNewChat();
-      if (!currentChat) {
+      const newChat = await createNewChat();
+      if (!newChat) {
         console.log('❌ Failed to create new chat');
         return;
       }
+      activeChat = newChat;
     }
+
+    console.log('📋 Current chat state:', `Chat ID: ${activeChat.id}`);
+
+    const chatId = activeChat.id;
+    const chatLanguage = activeChat.language;
+    const chatDifficulty = activeChat.difficulty;
+    const modelId = activeChat.model;
 
     console.log('⏳ Setting loading state...');
     setIsLoading(true);
 
     try {
-      // Add user message to database
-      await addChatMessage(currentChat.id, 'user', content);
-      const updatedMessages = await getChatMessages(currentChat.id);
+      await addChatMessage(chatId, 'user', content);
+      const updatedMessages = await getChatMessages(chatId);
       setMessages(updatedMessages);
 
       const userSettings = await getUserSettings(settings.username || 'default_user');
-      const modelId = currentChat.model;
       const isLocalModel = ModelService.isLocalModel(modelId);
 
       console.log('📋 Model routing info:', {
@@ -309,7 +359,6 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
         username: settings.username || 'default_user',
       });
 
-      // Start streaming
       setIsLoading(false);
       setIsStreaming(true);
       setStreamingContent('');
@@ -324,16 +373,12 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
         onComplete: async (fullContent: string) => {
           console.log('✅ Streaming completed. Full content length:', fullContent.length);
           try {
-            // Clear streaming state FIRST to prevent duplicate display
             setIsStreaming(false);
             setStreamingContent('');
             setStreamController(null);
 
-            // Save the complete assistant message to database
-            await addChatMessage(currentChat.id, 'assistant', fullContent);
-
-            // Reload messages from database
-            const finalMessages = await getChatMessages(currentChat.id);
+            await addChatMessage(chatId, 'assistant', fullContent);
+            const finalMessages = await getChatMessages(chatId);
             setMessages(finalMessages);
           } catch (error) {
             console.error('Failed to save streaming message:', error);
@@ -352,13 +397,11 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
       };
 
       if (isLocalModel) {
-        // Route to local model
         console.log('🏠 Using local model:', modelId);
 
         try {
           const localModelId = ModelService.extractLocalModelId(modelId);
 
-          // Initialize the model if needed
           if (!LocalLlamaService.isReady() || LocalLlamaService.getCurrentModel() !== localModelId) {
             console.log('🔧 Initializing local model...');
             setIsLoading(true);
@@ -368,15 +411,14 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
             setIsStreaming(true);
           }
 
-          // Prepare messages for local model
           const systemPrompt = OpenAIService.generateSystemPrompt(
-            currentChat.language,
-            currentChat.difficulty
+            chatLanguage,
+            chatDifficulty
           );
 
           const localMessages = [
             { role: 'system' as const, content: systemPrompt },
-            ...updatedMessages.slice(-10).map(msg => ({ // Limit context for performance
+            ...updatedMessages.slice(-10).map(msg => ({
               role: msg.role as 'user' | 'assistant',
               content: msg.content
             }))
@@ -390,7 +432,6 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
         }
 
       } else {
-        // Route to remote model
         console.log('🌐 Using remote model:', modelId);
 
         const apiSettings: APISettings = {
@@ -407,8 +448,8 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
         }
 
         const systemPrompt = OpenAIService.generateSystemPrompt(
-          currentChat.language,
-          currentChat.difficulty
+          chatLanguage,
+          chatDifficulty
         );
 
         const openAIMessages = OpenAIService.convertChatMessagesToOpenAI(

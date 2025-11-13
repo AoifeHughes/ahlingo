@@ -8,6 +8,7 @@ import {
   Alert,
   TouchableOpacity,
   BackHandler,
+  SafeAreaView,
 } from 'react-native';
 import { RouteProp, useFocusEffect, usePreventRemove } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -250,9 +251,6 @@ const TranslationExercisesScreen: React.FC<Props> = ({ route, navigation }) => {
   };
 
   const handleWordPress = (word: string, originalIndex: number) => {
-    // Speak the word in the target language when clicked
-    TTSService.speakWithLanguageDetection(word, userLanguage);
-
     setGameState(prev => {
       const wordInSelected = prev.selectedWords.find(
         w => w.originalIndex === originalIndex
@@ -269,16 +267,19 @@ const TranslationExercisesScreen: React.FC<Props> = ({ route, navigation }) => {
             w.originalIndex === originalIndex ? { ...w, isUsed: false } : w
           ),
         };
-      } else {
-        // Add word to selected
-        return {
-          ...prev,
-          selectedWords: [...prev.selectedWords, { word, originalIndex }],
-          targetWords: prev.targetWords.map(w =>
-            w.originalIndex === originalIndex ? { ...w, isUsed: true } : w
-          ),
-        };
       }
+
+      // Speak the word in the target language only when it is added
+      TTSService.speakWithLanguageDetection(word, userLanguage);
+
+      // Add word to selected
+      return {
+        ...prev,
+        selectedWords: [...prev.selectedWords, { word, originalIndex }],
+        targetWords: prev.targetWords.map(w =>
+          w.originalIndex === originalIndex ? { ...w, isUsed: true } : w
+        ),
+      };
     });
   };
 
@@ -354,251 +355,272 @@ const TranslationExercisesScreen: React.FC<Props> = ({ route, navigation }) => {
   }
 
   return (
-    <View style={styles.container}>
-      {/* Header with refresh button - hidden in shuffle mode */}
-      {!shuffleContext && (
-        <View style={styles.header}>
-          <TouchableOpacity style={styles.refreshButton} onPress={handleRefresh}>
-            <Text style={styles.refreshButtonText}>🔄 New Exercise</Text>
-          </TouchableOpacity>
-        </View>
-      )}
-
-      {/* Source text */}
-      <View style={styles.sourceContainer}>
-        <Text style={styles.sourceTitle}>Translate this sentence:</Text>
-        <Text style={styles.sourceText}>{gameState.sourceText}</Text>
-      </View>
-
-      {/* Answer box */}
-      <View style={styles.answerSection}>
-        <AnswerBox
-          selectedWords={gameState.selectedWords}
-          onWordRemove={handleWordPress}
-        />
-
-        {/* Feedback */}
-        {gameState.hasSubmitted && (
-          <View style={styles.feedbackContainer}>
-            <Text
-              style={[
-                styles.feedbackText,
-                gameState.isCorrect
-                  ? styles.correctFeedback
-                  : styles.incorrectFeedback,
-              ]}
-            >
-              {gameState.isCorrect ? '✅ Correct!' : '❌ Incorrect. Try again!'}
-            </Text>
-            {!gameState.isCorrect && (
-              <Text style={styles.correctAnswerText}>
-                Correct answer: {gameState.correctAnswer}
-              </Text>
-            )}
-            <TouchableOpacity
-              style={styles.nextButton}
-              onPress={handleNextExercise}
-            >
-              <Text style={styles.nextButtonText}>
-                {shuffleContext
-                  ? (gameState.isCorrect ? '✅ Perfect! Next Exercise' : '➡️ Next Exercise')
-                  : 'Next Exercise'
-                }
-              </Text>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        {/* Header with refresh button - hidden in shuffle mode */}
+        {!shuffleContext && (
+          <View style={styles.header}>
+            <TouchableOpacity style={styles.refreshButton} onPress={handleRefresh}>
+              <Text style={styles.refreshButtonText}>🔄 New Exercise</Text>
             </TouchableOpacity>
           </View>
         )}
-      </View>
 
-      {/* Word selection area */}
-      <View style={styles.wordsContainer}>
-        <Text style={styles.wordsTitle}>
-          Tap words to build your translation:
-        </Text>
-        <View style={styles.wordsGrid}>
-          {gameState.targetWords.map((wordState, index) => (
-            <WordButton
-              key={`${wordState.originalIndex}-${index}`}
-              word={wordState.word}
-              index={wordState.originalIndex}
-              isSelected={wordState.isUsed}
-              onPress={handleWordPress}
-              disabled={gameState.hasSubmitted}
+        <View style={styles.contentWrapper}>
+          {/* Source text */}
+          <View style={styles.sourceContainer}>
+            <Text style={styles.sourceTitle}>Translate this sentence:</Text>
+            <Text style={styles.sourceText}>{gameState.sourceText}</Text>
+          </View>
+
+          {/* Answer box */}
+          <View style={styles.answerSection}>
+            <AnswerBox
+              selectedWords={gameState.selectedWords}
+              onWordRemove={handleWordPress}
             />
-          ))}
+
+            {/* Feedback */}
+            {gameState.hasSubmitted && (
+              <View style={styles.feedbackContainer}>
+                <Text
+                  style={[
+                    styles.feedbackText,
+                    gameState.isCorrect
+                      ? styles.correctFeedback
+                      : styles.incorrectFeedback,
+                  ]}
+                >
+                  {gameState.isCorrect ? '✅ Correct!' : '❌ Incorrect. Try again!'}
+                </Text>
+                {!gameState.isCorrect && (
+                  <Text style={styles.correctAnswerText}>
+                    Correct answer: {gameState.correctAnswer}
+                  </Text>
+                )}
+                <TouchableOpacity
+                  style={styles.nextButton}
+                  onPress={handleNextExercise}
+                >
+                  <Text style={styles.nextButtonText}>
+                    {shuffleContext
+                      ? (gameState.isCorrect ? '✅ Perfect! Next Exercise' : '➡️ Next Exercise')
+                      : 'Next Exercise'}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            )}
+          </View>
+
+          {/* Word selection area */}
+          <View style={styles.wordsContainer}>
+            <Text style={styles.wordsTitle}>
+              Tap words to build your translation:
+            </Text>
+            <View style={styles.wordsGrid}>
+              {gameState.targetWords.map((wordState, index) => (
+                <WordButton
+                  key={`${wordState.originalIndex}-${index}`}
+                  word={wordState.word}
+                  index={wordState.originalIndex}
+                  isSelected={wordState.isUsed}
+                  onPress={handleWordPress}
+                  disabled={gameState.hasSubmitted}
+                />
+              ))}
+            </View>
+          </View>
         </View>
 
-        {/* Submit button - always visible */}
-        <TouchableOpacity
-          style={[
-            styles.submitButton,
-            (gameState.targetWords.length === 0 ||
-              gameState.targetWords.some(word => !word.isUsed) ||
-              gameState.hasSubmitted) &&
-              styles.submitButtonDisabled,
-          ]}
-          onPress={handleSubmit}
-          disabled={
-            gameState.targetWords.length === 0 ||
-            gameState.targetWords.some(word => !word.isUsed) ||
-            gameState.hasSubmitted
-          }
-        >
-          <Text
+        <View style={styles.submitWrapper}>
+          <TouchableOpacity
             style={[
-              styles.submitButtonText,
+              styles.submitButton,
               (gameState.targetWords.length === 0 ||
                 gameState.targetWords.some(word => !word.isUsed) ||
                 gameState.hasSubmitted) &&
-                styles.submitButtonTextDisabled,
+                styles.submitButtonDisabled,
             ]}
+            onPress={handleSubmit}
+            disabled={
+              gameState.targetWords.length === 0 ||
+              gameState.targetWords.some(word => !word.isUsed) ||
+              gameState.hasSubmitted
+            }
           >
-            Submit Translation
-          </Text>
-        </TouchableOpacity>
+            <Text
+              style={[
+                styles.submitButtonText,
+                (gameState.targetWords.length === 0 ||
+                  gameState.targetWords.some(word => !word.isUsed) ||
+                  gameState.hasSubmitted) &&
+                  styles.submitButtonTextDisabled,
+              ]}
+            >
+              Submit Translation
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
-const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) => StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: currentTheme.colors.background,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: currentTheme.colors.background,
-  },
-  loadingText: {
-    marginTop: currentTheme.spacing.lg,
-    fontSize: currentTheme.typography.fontSizes.lg,
-    color: currentTheme.colors.textSecondary,
-  },
-  header: {
-    backgroundColor: currentTheme.colors.surface,
-    paddingVertical: currentTheme.spacing.md,
-    paddingHorizontal: currentTheme.spacing.lg,
-    borderBottomWidth: 1,
-    borderBottomColor: currentTheme.colors.border,
-    alignItems: 'center',
-  },
-  refreshButton: {
-    backgroundColor: currentTheme.colors.primary,
-    paddingVertical: currentTheme.spacing.base,
-    paddingHorizontal: currentTheme.spacing.lg,
-    borderRadius: currentTheme.spacing.xl,
-    ...currentTheme.shadows.base,
-  },
-  refreshButtonText: {
-    color: currentTheme.colors.background,
-    fontSize: currentTheme.typography.fontSizes.base,
-    fontWeight: currentTheme.typography.fontWeights.semibold,
-  },
-  sourceContainer: {
-    backgroundColor: currentTheme.colors.surface,
-    padding: currentTheme.spacing.lg,
-    marginBottom: currentTheme.spacing.base,
-  },
-  sourceTitle: {
-    fontSize: currentTheme.typography.fontSizes.lg,
-    fontWeight: currentTheme.typography.fontWeights.semibold,
-    color: currentTheme.colors.text,
-    textAlign: 'center',
-    marginBottom: currentTheme.spacing.md,
-  },
-  sourceText: {
-    fontSize: currentTheme.typography.fontSizes.xl,
-    fontWeight: currentTheme.typography.fontWeights.bold,
-    color: currentTheme.colors.primary,
-    textAlign: 'center',
-    backgroundColor: currentTheme.colors.primaryLight + '20',
-    padding: currentTheme.spacing.lg,
-    borderRadius: currentTheme.borderRadius.md,
-    borderWidth: 2,
-    borderColor: currentTheme.colors.primaryLight,
-  },
-  answerSection: {
-    backgroundColor: currentTheme.colors.surface,
-    padding: currentTheme.spacing.lg,
-    marginBottom: currentTheme.spacing.base,
-  },
-  submitButton: {
-    backgroundColor: currentTheme.colors.success,
-    paddingVertical: currentTheme.spacing.md,
-    paddingHorizontal: currentTheme.spacing.xl,
-    borderRadius: currentTheme.borderRadius.md,
-    alignItems: 'center',
-    marginTop: currentTheme.spacing.lg,
-    ...currentTheme.shadows.base,
-  },
-  submitButtonDisabled: {
-    backgroundColor: currentTheme.colors.buttonDisabled,
-    opacity: 0.6,
-  },
-  submitButtonText: {
-    color: currentTheme.colors.background,
-    fontSize: currentTheme.typography.fontSizes.lg,
-    fontWeight: currentTheme.typography.fontWeights.semibold,
-  },
-  submitButtonTextDisabled: {
-    color: currentTheme.colors.textSecondary,
-  },
-  feedbackContainer: {
-    marginTop: currentTheme.spacing.lg,
-    alignItems: 'center',
-  },
-  feedbackText: {
-    fontSize: currentTheme.typography.fontSizes.xl,
-    fontWeight: currentTheme.typography.fontWeights.semibold,
-    textAlign: 'center',
-    marginBottom: currentTheme.spacing.base,
-  },
-  correctFeedback: {
-    color: currentTheme.colors.success,
-  },
-  incorrectFeedback: {
-    color: currentTheme.colors.error,
-  },
-  correctAnswerText: {
-    fontSize: currentTheme.typography.fontSizes.lg,
-    color: currentTheme.colors.textSecondary,
-    textAlign: 'center',
-    marginBottom: currentTheme.spacing.md,
-    fontStyle: 'italic',
-  },
-  nextButton: {
-    backgroundColor: currentTheme.colors.primary,
-    paddingVertical: currentTheme.spacing.md,
-    paddingHorizontal: currentTheme.spacing.xl,
-    borderRadius: currentTheme.borderRadius.base,
-    ...currentTheme.shadows.base,
-  },
-  nextButtonText: {
-    color: currentTheme.colors.background,
-    fontSize: currentTheme.typography.fontSizes.lg,
-    fontWeight: currentTheme.typography.fontWeights.semibold,
-  },
-  wordsContainer: {
-    flex: 1,
-    backgroundColor: currentTheme.colors.surface,
-    padding: currentTheme.spacing.lg,
-  },
-  wordsTitle: {
-    fontSize: currentTheme.typography.fontSizes.lg,
-    fontWeight: currentTheme.typography.fontWeights.semibold,
-    color: currentTheme.colors.text,
-    textAlign: 'center',
-    marginBottom: currentTheme.spacing.lg,
-  },
-  wordsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    alignItems: 'flex-start',
-  },
-});
+const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) =>
+  StyleSheet.create({
+    safeArea: {
+      flex: 1,
+      backgroundColor: currentTheme.colors.background,
+    },
+    container: {
+      flex: 1,
+      backgroundColor: currentTheme.colors.background,
+    },
+    loadingContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: currentTheme.colors.background,
+    },
+    loadingText: {
+      marginTop: currentTheme.spacing.lg,
+      fontSize: currentTheme.typography.fontSizes.lg,
+      color: currentTheme.colors.textSecondary,
+    },
+    header: {
+      backgroundColor: currentTheme.colors.surface,
+      paddingVertical: currentTheme.spacing.md,
+      paddingHorizontal: currentTheme.spacing.lg,
+      borderBottomWidth: 1,
+      borderBottomColor: currentTheme.colors.border,
+      alignItems: 'center',
+    },
+    refreshButton: {
+      backgroundColor: currentTheme.colors.primary,
+      paddingVertical: currentTheme.spacing.base,
+      paddingHorizontal: currentTheme.spacing.lg,
+      borderRadius: currentTheme.spacing.xl,
+      ...currentTheme.shadows.base,
+    },
+    refreshButtonText: {
+      color: currentTheme.colors.background,
+      fontSize: currentTheme.typography.fontSizes.base,
+      fontWeight: currentTheme.typography.fontWeights.semibold,
+    },
+    contentWrapper: {
+      flex: 1,
+    },
+    sourceContainer: {
+      backgroundColor: currentTheme.colors.surface,
+      padding: currentTheme.spacing.lg,
+      marginBottom: currentTheme.spacing.base,
+    },
+    sourceTitle: {
+      fontSize: currentTheme.typography.fontSizes.lg,
+      fontWeight: currentTheme.typography.fontWeights.semibold,
+      color: currentTheme.colors.text,
+      textAlign: 'center',
+      marginBottom: currentTheme.spacing.md,
+    },
+    sourceText: {
+      fontSize: currentTheme.typography.fontSizes.xl,
+      fontWeight: currentTheme.typography.fontWeights.bold,
+      color: currentTheme.colors.primary,
+      textAlign: 'center',
+      backgroundColor: currentTheme.colors.primaryLight + '20',
+      padding: currentTheme.spacing.lg,
+      borderRadius: currentTheme.borderRadius.md,
+      borderWidth: 2,
+      borderColor: currentTheme.colors.primaryLight,
+    },
+    answerSection: {
+      backgroundColor: currentTheme.colors.surface,
+      padding: currentTheme.spacing.lg,
+      marginBottom: currentTheme.spacing.base,
+      borderRadius: currentTheme.borderRadius.base,
+      flexShrink: 0,
+    },
+    submitButton: {
+      backgroundColor: currentTheme.colors.success,
+      paddingVertical: currentTheme.spacing.md,
+      paddingHorizontal: currentTheme.spacing.xl,
+      borderRadius: currentTheme.borderRadius.md,
+      alignItems: 'center',
+      marginTop: currentTheme.spacing.lg,
+      width: '100%',
+      ...currentTheme.shadows.base,
+    },
+    submitButtonDisabled: {
+      backgroundColor: currentTheme.colors.buttonDisabled,
+      opacity: 0.6,
+    },
+    submitButtonText: {
+      color: currentTheme.colors.background,
+      fontSize: currentTheme.typography.fontSizes.lg,
+      fontWeight: currentTheme.typography.fontWeights.semibold,
+    },
+    submitButtonTextDisabled: {
+      color: currentTheme.colors.textSecondary,
+    },
+    feedbackContainer: {
+      marginTop: currentTheme.spacing.lg,
+      alignItems: 'center',
+    },
+    feedbackText: {
+      fontSize: currentTheme.typography.fontSizes.xl,
+      fontWeight: currentTheme.typography.fontWeights.semibold,
+      textAlign: 'center',
+      marginBottom: currentTheme.spacing.base,
+    },
+    correctFeedback: {
+      color: currentTheme.colors.success,
+    },
+    incorrectFeedback: {
+      color: currentTheme.colors.error,
+    },
+    correctAnswerText: {
+      fontSize: currentTheme.typography.fontSizes.lg,
+      color: currentTheme.colors.textSecondary,
+      textAlign: 'center',
+      marginBottom: currentTheme.spacing.md,
+      fontStyle: 'italic',
+    },
+    nextButton: {
+      backgroundColor: currentTheme.colors.primary,
+      paddingVertical: currentTheme.spacing.md,
+      paddingHorizontal: currentTheme.spacing.xl,
+      borderRadius: currentTheme.borderRadius.base,
+      ...currentTheme.shadows.base,
+    },
+    nextButtonText: {
+      color: currentTheme.colors.background,
+      fontSize: currentTheme.typography.fontSizes.lg,
+      fontWeight: currentTheme.typography.fontWeights.semibold,
+    },
+    wordsContainer: {
+      flex: 1,
+      backgroundColor: currentTheme.colors.surface,
+      padding: currentTheme.spacing.lg,
+    },
+    wordsTitle: {
+      fontSize: currentTheme.typography.fontSizes.lg,
+      fontWeight: currentTheme.typography.fontWeights.semibold,
+      color: currentTheme.colors.text,
+      textAlign: 'center',
+      marginBottom: currentTheme.spacing.lg,
+    },
+    wordsGrid: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      justifyContent: 'center',
+      alignItems: 'flex-start',
+    },
+    submitWrapper: {
+      borderTopWidth: 1,
+      borderTopColor: currentTheme.colors.border,
+      backgroundColor: currentTheme.colors.surface,
+      padding: currentTheme.spacing.lg,
+    },
+  });
 
 export default TranslationExercisesScreen;
