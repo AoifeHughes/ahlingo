@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import WordButton from './WordButton';
 import { useTheme } from '../contexts/ThemeContext';
 
@@ -14,16 +14,21 @@ const AnswerBox: React.FC<AnswerBoxProps> = ({
 }) => {
   const { theme } = useTheme();
   const styles = createStyles(theme);
+  const hasWords = selectedWords.length > 0;
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Your Translation:</Text>
       <View style={styles.answerArea}>
-        {selectedWords.length === 0 ? (
+        {!hasWords ? (
           <Text style={styles.placeholder}>
             Tap words below to build your translation
           </Text>
         ) : (
-          <View style={styles.wordsContainer}>
+          <ScrollView
+            style={styles.wordsScroll}
+            contentContainerStyle={styles.wordsInner}
+            showsVerticalScrollIndicator={false}
+          >
             {selectedWords.map((wordObj, index) => (
               <WordButton
                 key={`${wordObj.originalIndex}-${index}`}
@@ -35,14 +40,9 @@ const AnswerBox: React.FC<AnswerBoxProps> = ({
                 }
               />
             ))}
-          </View>
+          </ScrollView>
         )}
       </View>
-      {selectedWords.length > 0 && (
-        <Text style={styles.sentence}>
-          {selectedWords.map(wordObj => wordObj.word).join(' ')}
-        </Text>
-      )}
     </View>
   );
 };
@@ -57,13 +57,6 @@ const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) => Sty
     borderColor: currentTheme.colors.border,
     ...currentTheme.shadows.base,
   },
-  title: {
-    fontSize: currentTheme.typography.fontSizes.lg,
-    fontWeight: currentTheme.typography.fontWeights.semibold,
-    color: currentTheme.colors.text,
-    marginBottom: currentTheme.spacing.md,
-    textAlign: 'center',
-  },
   answerArea: {
     minHeight: 60,
     backgroundColor: currentTheme.colors.background,
@@ -72,7 +65,7 @@ const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) => Sty
     borderColor: currentTheme.colors.border,
     borderStyle: 'dashed',
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'stretch',
     padding: currentTheme.spacing.base,
     marginBottom: currentTheme.spacing.md,
   },
@@ -82,21 +75,15 @@ const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) => Sty
     fontStyle: 'italic',
     textAlign: 'center',
   },
-  wordsContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flexWrap: 'wrap',
+  wordsScroll: {
+    width: '100%',
+    maxHeight: 140,
   },
-  sentence: {
-    fontSize: currentTheme.typography.fontSizes.lg,
-    color: currentTheme.colors.text,
-    textAlign: 'center',
-    backgroundColor: currentTheme.colors.primaryLight + '20',
-    padding: currentTheme.spacing.md,
-    borderRadius: currentTheme.borderRadius.base,
-    fontWeight: currentTheme.typography.fontWeights.medium,
-    borderWidth: 1,
-    borderColor: currentTheme.colors.primaryLight,
+  wordsInner: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'flex-start',
+    paddingBottom: currentTheme.spacing.sm,
   },
 });
 

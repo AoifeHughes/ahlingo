@@ -417,18 +417,24 @@ const TranslationExercisesScreen: React.FC<Props> = ({ route, navigation }) => {
             <Text style={styles.wordsTitle}>
               Tap words to build your translation:
             </Text>
-            <View style={styles.wordsGrid}>
-              {gameState.targetWords.map((wordState, index) => (
-                <WordButton
-                  key={`${wordState.originalIndex}-${index}`}
-                  word={wordState.word}
-                  index={wordState.originalIndex}
-                  isSelected={wordState.isUsed}
-                  onPress={handleWordPress}
-                  disabled={gameState.hasSubmitted}
-                />
-              ))}
-            </View>
+            <ScrollView
+              style={styles.wordsScrollArea}
+              contentContainerStyle={styles.wordsGrid}
+              showsVerticalScrollIndicator={false}
+            >
+              {gameState.targetWords
+                .filter(wordState => !wordState.isUsed)
+                .map((wordState, index) => (
+                  <WordButton
+                    key={`${wordState.originalIndex}-${index}`}
+                    word={wordState.word}
+                    index={wordState.originalIndex}
+                    isSelected={false}
+                    onPress={handleWordPress}
+                    disabled={gameState.hasSubmitted}
+                  />
+                ))}
+            </ScrollView>
           </View>
         </View>
 
@@ -608,6 +614,9 @@ const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) =>
       color: currentTheme.colors.text,
       textAlign: 'center',
       marginBottom: currentTheme.spacing.lg,
+    },
+    wordsScrollArea: {
+      maxHeight: 220,
     },
     wordsGrid: {
       flexDirection: 'row',
