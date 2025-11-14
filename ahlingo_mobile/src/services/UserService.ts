@@ -5,6 +5,11 @@ import {
 } from '../utils/databaseUtils';
 import { SQL_QUERIES, TIMEOUTS } from '../utils/constants';
 
+const isTestEnv =
+  typeof process !== 'undefined' &&
+  typeof process.env !== 'undefined' &&
+  typeof process.env.JEST_WORKER_ID !== 'undefined';
+
 /**
  * User management service - handles all user-related database operations
  */
@@ -86,7 +91,9 @@ export const getUserId = async (username: string): Promise<number | null> => {
     }
 
     // User doesn't exist, create them
-    console.log('User not found, creating user:', username);
+    if (!isTestEnv) {
+      console.log('User not found, creating user:', username);
+    }
     await executeSqlSingle(
       SQL_QUERIES.CREATE_USER,
       [username],
@@ -126,7 +133,8 @@ export const getUserSettings = async (
     );
 
     let userId: number;
-    if (!userResults || !userResults.rows || userResults.rows.length === 0) {
+    const userRow = getSingleRow(userResults);
+    if (!userRow) {
       // Create user if doesn't exist
       await executeSqlSingle(
         SQL_QUERIES.CREATE_USER,
@@ -138,9 +146,13 @@ export const getUserSettings = async (
         [username],
         TIMEOUTS.QUERY_MEDIUM
       );
-      userId = newUserResults.rows.item(0).id;
+      const newUserRow = getSingleRow(newUserResults);
+      if (!newUserRow) {
+        return {};
+      }
+      userId = newUserRow.id;
     } else {
-      userId = userResults.rows.item(0).id;
+      userId = userRow.id;
     }
 
     // Get user settings

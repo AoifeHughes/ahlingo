@@ -138,29 +138,24 @@ def _translation_schema(language: str) -> Dict[str, Any]:
 
 def _fill_in_blank_schema(language: str) -> Dict[str, Any]:
     return {
-        "type": "array",
-        "minItems": 5,
-        "maxItems": 8,
-        "items": {
-            "type": "object",
-            "required": [
-                "sentence",
-                "correct_answer",
-                "incorrect_1",
-                "incorrect_2",
-                "blank_position",
-                "translation",
-            ],
-            "properties": {
-                "sentence": {"type": "string"},
-                "correct_answer": {"type": "string"},
-                "incorrect_1": {"type": "string"},
-                "incorrect_2": {"type": "string"},
-                "blank_position": {"type": "integer"},
-                "translation": {"type": "string"},
-            },
-            "additionalProperties": False,
+        "type": "object",
+        "required": [
+            "sentence",
+            "correct_answer",
+            "incorrect_1",
+            "incorrect_2",
+            "blank_position",
+            "translation",
+        ],
+        "properties": {
+            "sentence": {"type": "string"},
+            "correct_answer": {"type": "string"},
+            "incorrect_1": {"type": "string"},
+            "incorrect_2": {"type": "string"},
+            "blank_position": {"type": "integer"},
+            "translation": {"type": "string"},
         },
+        "additionalProperties": False,
     }
 
 
@@ -796,20 +791,19 @@ Generate 2 alternatives (1-3 words each) that are obviously wrong in this contex
 
 
 def generate_fill_in_blank_structured(model, language: str, level: str, topic: str):
-    """Generate fill-in-blank exercises using single-step structured generation."""
+    """Generate a single fill-in-blank exercise using structured generation."""
     try:
         from generation.models.models import FillInBlankExercise
     except ImportError:
         from generation.models.models import FillInBlankExercise
-    from typing import List
 
     # Create comprehensive system message for structured generation
-    system_content = f"""You are a {language} language learning tool. Generate 5 fill-in-blank exercises about "{topic}" at {level} level.
+    system_content = f"""You are a {language} language learning tool. Generate 1 fill-in-blank exercise about "{topic}" at {level} level.
 
 REQUIREMENTS:
-- Generate complete exercises with all components in one step
-- Each exercise must have a {language} sentence with exactly one blank (_)
-- Choose content words (nouns, verbs, adjectives, adverbs) for blanks - avoid articles, prepositions, or obvious words
+- Generate a complete exercise with all components
+- Must have a {language} sentence with exactly one blank (_)
+- Choose content words (nouns, verbs, adjectives, adverbs) for the blank - avoid articles, prepositions, or obvious words
 - Provide one correct answer and two clearly incorrect alternatives
 - CRITICAL: All answer options (correct_answer, incorrect_1, incorrect_2) must be AT MOST 3 WORDS
 - Prefer single-word answers when possible, but compound words or short phrases (2-3 words max) are acceptable
@@ -819,13 +813,12 @@ REQUIREMENTS:
 - Blank position should be 0-indexed word position
 
 QUALITY STANDARDS:
-- Sentences should be 4-15 words long and natural for {level} learners
+- Sentence should be 4-15 words long and natural for {level} learners
 - Focus on practical, everyday situations related to {topic}
 - Answer options should be concise (1-3 words maximum)
 - Avoid long phrases like "suis en train de" - use simpler forms like "fais" instead
 - Incorrect options should be plausible words but clearly wrong
-- Ensure variety in sentence structure and vocabulary
-- Make exercises educational and engaging
+- Make the exercise educational and engaging
 
 EXAMPLES OF GOOD ANSWERS:
 ✓ "mange" (1 word - perfect)
@@ -836,7 +829,7 @@ EXAMPLES OF BAD ANSWERS:
 ✗ "suis en train de faire" (5 words - TOO LONG!)
 ✗ "je vais aller chercher" (4 words - TOO LONG!)
 
-CRITICAL: Each exercise's correct_answer, incorrect_1, and incorrect_2 must be three different words/phrases, each with AT MOST 3 WORDS."""
+CRITICAL: correct_answer, incorrect_1, and incorrect_2 must be three different words/phrases, each with AT MOST 3 WORDS."""
 
     # Create enhanced prompt with examples context
     examples_context = ""
@@ -846,11 +839,10 @@ CRITICAL: Each exercise's correct_answer, incorrect_1, and incorrect_2 must be t
         if language in default_fill_in_blank_assistants:
             examples_content = default_fill_in_blank_assistants[language]["content"]
             examples = parse_assistant_examples(examples_content)
-            if examples:
-                formatted_examples = format_examples_for_prompt(
-                    examples, max_examples=2
-                )
-                examples_context = f"\n\nReference examples (structure only):\n{formatted_examples}\n\nNow generate 5 NEW fill-in-blank exercises for: {topic}"
+            if examples and len(examples) > 0:
+                # Take just the first example for reference
+                formatted_example = json.dumps(examples[0], ensure_ascii=False, indent=2)
+                examples_context = f"\n\nReference example (structure only):\n{formatted_example}\n\nNow generate 1 NEW fill-in-blank exercise for: {topic}"
     except (ImportError, KeyError):
         # No examples available for this language, continue without them
         pass
@@ -862,7 +854,7 @@ CRITICAL: Each exercise's correct_answer, incorrect_1, and incorrect_2 must be t
         system_content
         + examples_context
         + schema_instruction
-        + "\n\nReturn a JSON array of exactly 5 fill-in-blank exercise objects."
+        + "\n\nReturn a JSON object for the fill-in-blank exercise."
     )
 
     prepared_prompt = prepare_prompt(full_prompt)
@@ -871,7 +863,7 @@ CRITICAL: Each exercise's correct_answer, incorrect_1, and incorrect_2 must be t
         prepared_prompt, model, schema=schema, temperature=temperature
     )
 
-    # Parse JSON response and convert to Pydantic models
+    # Parse JSON response and convert to Pydantic model
     if isinstance(result, str):
         # Clean the response by removing <think> blocks
         cleaned_result = clean_model_response(result)
@@ -879,8 +871,8 @@ CRITICAL: Each exercise's correct_answer, incorrect_1, and incorrect_2 must be t
         try:
             import re
 
-            # Look for JSON array in the cleaned response
-            json_match = re.search(r"\[.*\]", cleaned_result, re.DOTALL)
+            # Look for JSON object in the cleaned response
+            json_match = re.search(r"\{.*\}", cleaned_result, re.DOTALL)
             if json_match:
                 result_data = json.loads(json_match.group())
             else:
@@ -893,34 +885,28 @@ CRITICAL: Each exercise's correct_answer, incorrect_1, and incorrect_2 must be t
                 f"JSON Parse Error: {e}\nOriginal: {result!r}\nCleaned: {cleaned_result!r}",
                 f"Fill-in-Blank Structured Generation ({language}-{level}-{topic})",
             )
-            return []
+            return None
     else:
         result_data = result
 
-    # Validate and convert to Pydantic models
-    exercises = []
-    for i, exercise_data in enumerate(result_data):
-        try:
-            # Validate uniqueness before creating Pydantic model
-            correct = exercise_data.get("correct_answer", "")
-            incorrect1 = exercise_data.get("incorrect_1", "")
-            incorrect2 = exercise_data.get("incorrect_2", "")
+    # Validate uniqueness before creating Pydantic model
+    try:
+        correct = result_data.get("correct_answer", "")
+        incorrect1 = result_data.get("incorrect_1", "")
+        incorrect2 = result_data.get("incorrect_2", "")
 
-            if len(set([correct, incorrect1, incorrect2])) != 3:
-                logging.warning(
-                    f"Skipping exercise {i+1} due to duplicate answers: correct='{correct}', incorrect1='{incorrect1}', incorrect2='{incorrect2}'"
-                )
-                continue
-
-            exercise = FillInBlankExercise(**exercise_data)
-            exercises.append(exercise)
-        except Exception as e:
+        if len(set([correct, incorrect1, incorrect2])) != 3:
             logging.warning(
-                f"Error creating exercise {i+1}: {e}\nData: {exercise_data}"
+                f"Exercise has duplicate answers: correct='{correct}', incorrect1='{incorrect1}', incorrect2='{incorrect2}'"
             )
-            continue
+            return None
 
-    return exercises
+        exercise = FillInBlankExercise(**result_data)
+        # Return dict instead of Pydantic model for consistency with other exercise types
+        return exercise.dict() if hasattr(exercise, 'dict') else exercise.model_dump()
+    except Exception as e:
+        logging.warning(f"Error creating exercise: {e}\nData: {result_data}")
+        return None
 
 
 def generate_fill_in_blank(model, language: str, level: str, topic: str):

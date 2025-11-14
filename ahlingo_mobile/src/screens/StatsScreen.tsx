@@ -81,36 +81,50 @@ const StatsScreen: React.FC<Props> = ({ navigation }) => {
     try {
       setLoading(true);
 
-      // Add timeout promise
-      const timeoutPromise = new Promise<never>((_, reject) => {
-        const timeoutId = setTimeout(() => {
-          reject(new Error('Database operation timed out'));
-        }, 10000); // 10 second timeout
+      const raceWithTimeout = async <T>(task: Promise<T>): Promise<T> => {
+        let timeoutId: ReturnType<typeof setTimeout>;
+        let cleanupCalled = false;
+        let onAbort: () => void = () => {};
 
-        // Clear timeout if request is aborted
-        signal.addEventListener('abort', () => {
+        const cleanup = () => {
+          if (cleanupCalled) return;
+          cleanupCalled = true;
           clearTimeout(timeoutId);
-          reject(new Error('Request was cancelled'));
+          signal.removeEventListener('abort', onAbort);
+        };
+
+        const timeoutPromise = new Promise<never>((_, reject) => {
+          onAbort = () => {
+            cleanup();
+            reject(new Error('Request was cancelled'));
+          };
+
+          timeoutId = setTimeout(() => {
+            cleanup();
+            reject(new Error('Database operation timed out'));
+          }, 10000);
+
+          signal.addEventListener('abort', onAbort);
         });
-      });
+
+        try {
+          return await Promise.race([task, timeoutPromise]);
+        } finally {
+          cleanup();
+        }
+      };
 
       // Get user settings (this creates user if doesn't exist)
-      const username = await Promise.race([
-        getMostRecentUser(),
-        timeoutPromise,
-      ]);
+      const username = await raceWithTimeout(getMostRecentUser());
 
       if (signal.aborted) return;
 
-      const userSettings = await Promise.race([
-        getUserSettings(username),
-        timeoutPromise,
-      ]);
+      const userSettings = await raceWithTimeout(getUserSettings(username));
 
       if (signal.aborted) return;
 
       // Now get the user ID
-      const userId = await Promise.race([getUserId(username), timeoutPromise]);
+      const userId = await raceWithTimeout(getUserId(username));
 
       if (signal.aborted) return;
 
@@ -131,10 +145,8 @@ const StatsScreen: React.FC<Props> = ({ navigation }) => {
       setUserDifficulty(difficulty);
 
       // Load topic stats and progress summary with timeout using batched function
-      const { stats: topicData, summary: summaryData } = await Promise.race([
-        getUserStatsAndSummary(userId, language, difficulty),
-        timeoutPromise,
-      ]);
+      const { stats: topicData, summary: summaryData } =
+        await raceWithTimeout(getUserStatsAndSummary(userId, language, difficulty));
 
       if (signal.aborted) return;
 

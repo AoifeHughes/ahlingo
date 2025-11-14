@@ -20,17 +20,26 @@ const ProgressRing: React.FC<ProgressRingProps> = ({
 }) => {
   const { theme } = useTheme();
   const animatedValue = useRef(new Animated.Value(0)).current;
+  const skipAnimation = typeof process !== 'undefined' && typeof process.env !== 'undefined' && process.env.JEST_WORKER_ID !== undefined;
 
   const radius = (size - strokeWidth) / 2;
   const circumference = radius * 2 * Math.PI;
 
   useEffect(() => {
-    Animated.timing(animatedValue, {
+    if (skipAnimation) {
+      animatedValue.setValue(percentage);
+      return;
+    }
+
+    const animation = Animated.timing(animatedValue, {
       toValue: percentage,
       duration: 1000,
       useNativeDriver: false,
-    }).start();
-  }, [percentage]);
+    });
+
+    animation.start();
+    return () => animation.stop();
+  }, [percentage, animatedValue, skipAnimation]);
 
   const strokeDashoffset = animatedValue.interpolate({
     inputRange: [0, 100],

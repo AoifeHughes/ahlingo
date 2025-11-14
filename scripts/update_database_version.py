@@ -8,9 +8,9 @@ import sys
 from pathlib import Path
 
 # Add content directory to Python path
-content_dir = Path(__file__).parent / "content"
+content_dir = Path(__file__).parent.parent / "content"
 sys.path.insert(0, str(content_dir))
-sys.path.insert(0, str(Path(__file__).parent))
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from database.database_manager import LanguageDB
 from version import DATABASE_VERSION, __version__
@@ -102,7 +102,7 @@ if __name__ == "__main__":
     if args.db_path:
         db_path = args.db_path
     else:
-        repo_root = Path(__file__).parent
+        repo_root = Path(__file__).parent.parent
         db_path = str(repo_root / "database" / "languageLearningDatabase.db")
 
     # Check if database exists

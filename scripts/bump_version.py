@@ -2,19 +2,24 @@
 # -*- coding: utf-8 -*-
 """
 Version bump script for AhLingo.
-Updates version across all platform-specific files.
+Updates version across all platform-specific files and database.
 
-Usage:
-    python bump_version.py major  # 1.4.0 -> 2.0.0
-    python bump_version.py minor  # 1.4.0 -> 1.5.0
-    python bump_version.py patch  # 1.4.0 -> 1.4.1
-    python bump_version.py 1.5.0  # Set to specific version
+Usage (from repo root):
+    python scripts/bump_version.py major  # 1.4.0 -> 2.0.0
+    python scripts/bump_version.py minor  # 1.4.0 -> 1.5.0
+    python scripts/bump_version.py patch  # 1.4.0 -> 1.4.1
+    python scripts/bump_version.py 1.5.0  # Set to specific version
 """
 import json
 import re
 import sys
+import shutil
 from pathlib import Path
 from typing import Tuple
+
+# Add content directory to Python path for database access
+sys.path.insert(0, str(Path(__file__).parent.parent / "content"))
+from database.database_manager import LanguageDB
 
 
 def parse_version(version_str: str) -> Tuple[int, int, int]:
@@ -141,18 +146,68 @@ def update_ios_project(
         return False
 
 
+def update_database_version(db_path: Path, new_version_code: int) -> bool:
+    """Update the database version to match the app version."""
+    try:
+        if not db_path.exists():
+            print(f"⚠ Database not found at {db_path} - skipping database update")
+            print(
+                f"  (Database will be created with correct version when generated)"
+            )
+            return True
+
+        with LanguageDB(str(db_path)) as db:
+            old_version = db.get_database_version()
+            db.set_database_version(new_version_code)
+            print(
+                f"✓ Updated database version: {old_version} -> {new_version_code}"
+            )
+            return True
+    except Exception as e:
+        print(f"✗ Error updating database version: {e}")
+        return False
+
+
+def copy_database_to_assets(db_path: Path, repo_root: Path) -> bool:
+    """Copy the database to app assets folders for React Native and Android."""
+    if not db_path.exists():
+        print(f"⚠ Database not found at {db_path} - skipping copy to assets")
+        return True
+
+    # Define target directories
+    targets = [
+        repo_root / "ahlingo_mobile" / "assets" / "databases" / "languageLearningDatabase.db",
+        repo_root / "ahlingo_mobile" / "android" / "app" / "src" / "main" / "assets" / "databases" / "languageLearningDatabase.db",
+    ]
+
+    success = True
+    for target in targets:
+        try:
+            # Ensure target directory exists
+            target.parent.mkdir(parents=True, exist_ok=True)
+
+            # Copy database
+            shutil.copy2(db_path, target)
+            print(f"✓ Copied database to {target.relative_to(repo_root)}")
+        except Exception as e:
+            print(f"✗ Error copying database to {target.relative_to(repo_root)}: {e}")
+            success = False
+
+    return success
+
+
 def main():
     if len(sys.argv) != 2:
-        print("Usage: python bump_version.py [major|minor|patch|X.Y.Z]")
+        print("Usage: python scripts/bump_version.py [major|minor|patch|X.Y.Z]")
         print("\nExamples:")
-        print("  python bump_version.py major  # Bump major version")
-        print("  python bump_version.py minor  # Bump minor version")
-        print("  python bump_version.py patch  # Bump patch version")
-        print("  python bump_version.py 1.5.0  # Set specific version")
+        print("  python scripts/bump_version.py major  # Bump major version")
+        print("  python scripts/bump_version.py minor  # Bump minor version")
+        print("  python scripts/bump_version.py patch  # Bump patch version")
+        print("  python scripts/bump_version.py 1.5.0  # Set specific version")
         sys.exit(1)
 
     arg = sys.argv[1]
-    repo_root = Path(__file__).parent
+    repo_root = Path(__file__).parent.parent
 
     # File paths
     package_json = repo_root / "ahlingo_mobile" / "package.json"
@@ -160,6 +215,7 @@ def main():
     ios_project = (
         repo_root / "ahlingo_mobile" / "ios" / "AhLingo.xcodeproj" / "project.pbxproj"
     )
+    database_path = repo_root / "database" / "languageLearningDatabase.db"
 
     # Read current version from package.json
     try:
@@ -197,19 +253,21 @@ def main():
     success &= update_package_json(package_json, new_version_str)
     success &= update_android_gradle(android_gradle, new_version_str, version_code)
     success &= update_ios_project(ios_project, new_version_str, version_code)
+    success &= update_database_version(database_path, version_code)
+    success &= copy_database_to_assets(database_path, repo_root)
 
     if success:
         print(f"\n{'='*60}")
         print(f"✓ Version successfully bumped to {new_version_str}")
+        print(f"✓ Database version automatically updated to {version_code}")
+        print(f"✓ Database copied to app assets folders")
         print(f"{'='*60}")
         print(f"\nNext steps:")
         print(f"  1. Review the changes: git diff")
-        print(f"  2. Regenerate database if schema changed:")
-        print(f"     python content/create_exercise_database.py")
-        print(f"  3. Commit the changes:")
+        print(f"  2. Commit the changes:")
         print(f"     git add -A")
         print(f"     git commit -m 'chore: bump version to {new_version_str}'")
-        print(f"  4. Tag the release:")
+        print(f"  3. Tag the release:")
         print(f"     git tag v{new_version_str}")
         print(f"     git push origin v{new_version_str}")
     else:

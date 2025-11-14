@@ -46,10 +46,10 @@ def _convert_to_dict(obj):
 
     Recursively handles nested structures.
     """
-    if hasattr(obj, "dict"):
-        return obj.dict()
-    elif hasattr(obj, "model_dump"):
+    if hasattr(obj, "model_dump"):
         return obj.model_dump()
+    elif hasattr(obj, "dict"):
+        return obj.dict()
     elif isinstance(obj, dict):
         # Recursively convert nested dicts
         return {key: _convert_to_dict(value) for key, value in obj.items()}
@@ -256,25 +256,12 @@ class ContentGenerator:
                 result = outlines_generator.generate_fill_in_blank_structured(
                     self.generation_model, language, level, topic
                 )
-                # Result is a list of FillInBlankExercise Pydantic objects
-                if result and isinstance(result, list) and len(result) > 0:
-                    # Convert each Pydantic object to dict
-                    exercises = []
-                    for ex in result:
-                        if hasattr(ex, 'dict'):
-                            exercises.append(ex.dict())
-                        elif hasattr(ex, 'model_dump'):
-                            exercises.append(ex.model_dump())
-                        else:
-                            # Fallback: assume it's already a dict
-                            exercises.append(ex)
-
-                    # Count each generated exercise
-                    self.stats["total_generated"] += len(exercises)
-                    return exercises
+                # Result is now a single dict (not a list)
+                if result:
+                    self.stats["total_generated"] += 1
+                    return result
                 else:
-                    # Empty list or None means all exercises failed Pydantic validation
-                    # Return None to trigger retry
+                    # None means generation or validation failed
                     return None
             else:
                 raise ValueError(f"Unknown exercise type: {exercise_type}")
@@ -396,62 +383,58 @@ class ContentGenerator:
 
         try:
             with LanguageDB(self.db_path) as db:
-                # Get language, difficulty, and topic IDs
-                language_id = db.get_language_id(language)
-                difficulty_id = db.get_difficulty_id(level.capitalize())
-                topic_id = db.get_topic_id(topic)
-
                 # Generate lesson ID (unique identifier)
-                lesson_id = f"{language}_{level}_{topic}_{exercise_type}_{datetime.now().strftime('%Y%m%d%H%M%S%f')}"
+                timestamp = datetime.now().strftime('%Y%m%d%H%M%S%f')
+                lesson_id = f"{language}_{level}_{topic}_{exercise_type}_{timestamp}"
 
                 # Insert based on exercise type
                 if exercise_type == "conversations":
                     db.add_conversation_exercise(
-                        exercise_name=f"{topic} conversation",
-                        topic_id=topic_id,
-                        difficulty_id=difficulty_id,
-                        language_id=language_id,
-                        lesson_id=lesson_id,
+                        exercise_name=f"{language}_{level}_{topic}_conversation_{timestamp}",
+                        language=language,
+                        topic=topic,
+                        difficulty_level=level.capitalize(),
                         conversations=exercise_data.get("conversation", []),
                         summary=exercise_data.get("conversation_summary", ""),
+                        lesson_id=lesson_id,
                     )
                 elif exercise_type == "pairs":
                     pairs = exercise_data.get("word_pairs", [])
                     db.add_pair_exercise_batch(
-                        exercise_name=f"{topic} word pairs",
-                        topic_id=topic_id,
-                        difficulty_id=difficulty_id,
-                        language_id=language_id,
-                        lesson_id=lesson_id,
+                        exercise_name=f"{language}_{level}_{topic}_pairs_{timestamp}",
+                        language=language,
+                        topic=topic,
+                        difficulty_level=level.capitalize(),
                         language_1="English",
                         language_2=language,
                         pairs=pairs,
+                        lesson_id=lesson_id,
                     )
                 elif exercise_type == "translations":
                     db.add_translation_exercise(
-                        exercise_name=f"{topic} translation",
-                        topic_id=topic_id,
-                        difficulty_id=difficulty_id,
-                        language_id=language_id,
-                        lesson_id=lesson_id,
+                        exercise_name=f"{language}_{level}_{topic}_translation_{timestamp}",
+                        language=language,
+                        topic=topic,
+                        difficulty_level=level.capitalize(),
                         language_1="English",
                         language_2=language,
                         language_1_content=exercise_data.get("English", ""),
                         language_2_content=exercise_data.get(language, ""),
+                        lesson_id=lesson_id,
                     )
                 elif exercise_type == "fill_in_blank":
                     db.add_fill_in_blank_exercise(
-                        exercise_name=f"{topic} fill-in-blank",
-                        topic_id=topic_id,
-                        difficulty_id=difficulty_id,
-                        language_id=language_id,
-                        lesson_id=lesson_id,
+                        exercise_name=f"{language}_{level}_{topic}_fill_in_blank_{timestamp}",
+                        language=language,
+                        topic=topic,
+                        difficulty_level=level.capitalize(),
                         sentence=exercise_data.get("sentence", ""),
                         correct_answer=exercise_data.get("correct_answer", ""),
                         incorrect_1=exercise_data.get("incorrect_1", ""),
                         incorrect_2=exercise_data.get("incorrect_2", ""),
                         blank_position=exercise_data.get("blank_position", 0),
                         translation=exercise_data.get("translation", ""),
+                        lesson_id=lesson_id,
                     )
 
             self.stats["total_inserted"] += 1
@@ -464,11 +447,12 @@ class ContentGenerator:
             print(f"  Error inserting exercise: {e}")
             return False
 
-    def process_combination(self, combination: Dict) -> List[Dict]:
+    def process_combination(self, combination: Dict, pbar=None) -> List[Dict]:
         """Process a single combination with retries.
 
         Args:
             combination: Dictionary with language, level, topic, exercise_type
+            pbar: Optional tqdm progress bar to update
 
         Returns:
             List of failures (empty if all succeeded)
@@ -494,41 +478,14 @@ class ContentGenerator:
                 if exercise_data is None:
                     continue  # Try again
 
-                # For fill_in_blank, exercise_data is a list of exercises
-                # For others, it's a single dict
-                exercises_to_process = []
-                if exercise_type == "fill_in_blank" and isinstance(exercise_data, list):
-                    exercises_to_process = exercise_data
-                else:
-                    exercises_to_process = [exercise_data]
+                # All exercise types now return a single dict
+                # Validate exercise
+                passed, validation_result = self.validate_exercise(
+                    exercise_data, language, level, exercise_type
+                )
 
-                # Validate and insert each exercise
-                all_passed = True
-                failed_validation = None
-
-                for single_exercise in exercises_to_process:
-                    # Validate exercise
-                    passed, validation_result = self.validate_exercise(
-                        single_exercise, language, level, exercise_type
-                    )
-
-                    if not passed:
-                        all_passed = False
-                        failed_validation = validation_result
-                        # For fill_in_blank, if one exercise fails, we fail the whole batch
-                        if exercise_type == "fill_in_blank":
-                            break
-                        continue
-
-                    # Insert into database
-                    if not self.insert_exercise(single_exercise, language, level, topic, exercise_type):
-                        all_passed = False
-                        break
-
-                if all_passed:
-                    success = True
-                    break  # Success, move to next lesson
-                else:
+                if not passed:
+                    failed_validation = validation_result
                     # Log validation failure on last attempt
                     if attempt == max_retries - 1:
                         combination_failures.append(
@@ -543,6 +500,14 @@ class ContentGenerator:
                         )
                     continue  # Try again
 
+                # Insert into database
+                if self.insert_exercise(exercise_data, language, level, topic, exercise_type):
+                    success = True
+                    break  # Success, move to next lesson
+                else:
+                    # Database insertion failed - continue to retry
+                    continue
+
             if not success and len(combination_failures) == 0:
                 # Failed all retries but no validation failure logged (must be generation failure)
                 combination_failures.append(
@@ -554,6 +519,10 @@ class ContentGenerator:
                         "error_message": "Failed to generate exercise after max retries",
                     }
                 )
+
+            # Update progress bar after each lesson
+            if pbar:
+                pbar.update(1)
 
         return combination_failures
 
@@ -595,10 +564,14 @@ class ContentGenerator:
         # Setup models
         self.setup_models()
 
-        # Process each combination sequentially
-        for combination in tqdm(combinations, desc="Processing combinations"):
-            failures = self.process_combination(combination)
-            self.failures.extend(failures)
+        # Calculate total exercises for progress bar
+        total_exercises = len(combinations) * self.config['generation_settings']['lessons_per_combination']
+
+        # Process each combination sequentially with progress bar per exercise
+        with tqdm(total=total_exercises, desc="Generating exercises") as pbar:
+            for combination in combinations:
+                failures = self.process_combination(combination, pbar)
+                self.failures.extend(failures)
 
         # Print summary
         self.print_summary()
@@ -697,10 +670,14 @@ class ContentGenerator:
         # Setup models
         self.setup_models()
 
-        # Process each combination
-        for combination in tqdm(combinations, desc="Retrying failures"):
-            failures = self.process_combination(combination)
-            self.failures.extend(failures)
+        # Calculate total exercises for progress bar
+        total_exercises = len(combinations) * self.config['generation_settings']['lessons_per_combination']
+
+        # Process each combination with progress bar per exercise
+        with tqdm(total=total_exercises, desc="Retrying exercises") as pbar:
+            for combination in combinations:
+                failures = self.process_combination(combination, pbar)
+                self.failures.extend(failures)
 
         # Print summary
         self.print_summary()
@@ -725,29 +702,18 @@ class ContentGenerator:
         """
         try:
             with LanguageDB(self.db_path) as db:
-                # Get IDs
-                language_id = db.get_language_id(language)
-                if language_id is None:
-                    return False
-
-                difficulty_id = db.get_difficulty_id(level.capitalize())
-                if difficulty_id is None:
-                    return False
-
-                topic_id = db.get_topic_id(topic)
-                if topic_id is None:
-                    return False
-
-                # Query for existing exercises
+                # Query for existing exercises using JOINs to avoid needing IDs
                 query = """
-                    SELECT COUNT(*) FROM exercises_info
-                    WHERE language_id = ? AND difficulty_id = ? AND topic_id = ?
-                    AND exercise_type = ?
+                    SELECT COUNT(*) FROM exercises_info e
+                    JOIN languages l ON e.language_id = l.id
+                    JOIN difficulties d ON e.difficulty_id = d.id
+                    JOIN topics t ON e.topic_id = t.id
+                    WHERE l.language = ? AND d.difficulty_level = ? AND t.topic = ?
+                    AND e.exercise_type = ?
                 """
-                result = db.execute_query(
-                    query, (language_id, difficulty_id, topic_id, exercise_type)
-                )
-                count = result[0][0] if result else 0
+                db.cursor.execute(query, (language, level.capitalize(), topic, exercise_type))
+                result = db.cursor.fetchone()
+                count = result[0] if result else 0
 
                 return count > 0
 

@@ -12,6 +12,41 @@ import { performDatabaseMigration } from '../services/DatabaseMigrationService';
 SQLite.DEBUG(true);
 SQLite.enablePromise(true);
 
+const isTestEnv =
+  typeof process !== 'undefined' &&
+  typeof process.env !== 'undefined' &&
+  typeof process.env.JEST_WORKER_ID !== 'undefined';
+
+const createTestDatabase = (): SQLiteDatabase => {
+  const emptyResult = [{ rows: { length: 0, item: () => null } }];
+  const testTransaction = {
+    executeSql: async () => emptyResult,
+  } as unknown as Transaction;
+
+  const testDb: Partial<SQLiteDatabase> = {
+    executeSql: async () => emptyResult,
+    close: async () => {},
+    transaction: (_cb: (tx: Transaction) => void, errorCb?: (err: any) => void, successCb?: () => void) => {
+      try {
+        _cb(testTransaction);
+        successCb?.();
+      } catch (error) {
+        errorCb?.(error);
+      }
+    },
+    readTransaction: (_cb: (tx: Transaction) => void, errorCb?: (err: any) => void, successCb?: () => void) => {
+      try {
+        _cb(testTransaction);
+        successCb?.();
+      } catch (error) {
+        errorCb?.(error);
+      }
+    },
+  };
+
+  return testDb as SQLiteDatabase;
+};
+
 /**
  * Database initialization and connection utilities
  */
@@ -281,6 +316,15 @@ export const ensureDatabaseCopied = async (): Promise<void> => {
  * Initialize the global database connection (call once during app startup)
  */
 export const initializeDatabase = async (): Promise<void> => {
+  if (isTestEnv) {
+    if (!initializationPromise) {
+      globalDb = createTestDatabase();
+      isInitialized = true;
+      initializationPromise = Promise.resolve();
+    }
+    return initializationPromise;
+  }
+
   if (isInitialized && globalDb) {
     return;
   }

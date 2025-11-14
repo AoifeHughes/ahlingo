@@ -19,12 +19,34 @@ jest.mock('react-native-sqlite-storage', () => {
   };
 });
 
-jest.mock('react-native-fs', () => ({
-  DocumentDirectoryPath: '/mock/path',
-  exists: jest.fn(() => Promise.resolve(true)),
-  copyFile: jest.fn(() => Promise.resolve()),
-  mkdir: jest.fn(() => Promise.resolve()),
-}));
+jest.mock('react-native-fs', () => {
+  const existsMock = jest.fn(() => Promise.resolve(true));
+  const statMock = jest.fn(() => Promise.resolve({ size: 1024 }));
+  const unlinkMock = jest.fn(() => Promise.resolve());
+  const copyFileMock = jest.fn(() => Promise.resolve());
+  const copyFileAssetsMock = jest.fn(() => Promise.resolve());
+  const downloadFileMock = jest.fn(() => ({
+    promise: Promise.resolve(),
+    jobId: 1,
+    statusCode: 200,
+    contentLength: 1024,
+    bytesWritten: 0,
+    headers: {},
+  }));
+
+  return {
+    DocumentDirectoryPath: '/mock/documents',
+    ExternalDirectoryPath: '/mock/external',
+    MainBundlePath: '/mock/bundle',
+    exists: existsMock,
+    copyFile: copyFileMock,
+    copyFileAssets: copyFileAssetsMock,
+    mkdir: jest.fn(() => Promise.resolve()),
+    stat: statMock,
+    unlink: unlinkMock,
+    downloadFile: downloadFileMock,
+  };
+});
 
 jest.mock('@react-native-async-storage/async-storage', () => ({
   getItem: jest.fn(() => Promise.resolve(null)),
