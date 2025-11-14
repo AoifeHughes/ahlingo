@@ -26,6 +26,7 @@ import argparse
 import sys
 from pathlib import Path
 from datetime import datetime
+import uuid
 from typing import Dict, List, Any, Optional, Tuple
 from tqdm import tqdm
 
@@ -239,22 +240,30 @@ class ContentGenerator:
             For other types, returns a dict.
         """
         try:
+            # Fetch existing exercises to use as examples for diversity
+            existing_examples = self.fetch_existing_exercises_for_examples(
+                language, level, topic, exercise_type, limit=3
+            )
+
+            if existing_examples and self.debug:
+                print(f"Using {len(existing_examples)} existing exercises as examples for diversity")
+
             # Call appropriate generator function (model is first parameter)
             if exercise_type == "conversations":
                 result = outlines_generator.generate_conversations(
-                    self.generation_model, language, level, topic
+                    self.generation_model, language, level, topic, existing_examples
                 )
             elif exercise_type == "pairs":
                 result = outlines_generator.generate_pairs(
-                    self.generation_model, language, level, topic
+                    self.generation_model, language, level, topic, existing_examples
                 )
             elif exercise_type == "translations":
                 result = outlines_generator.generate_translations(
-                    self.generation_model, language, level, topic
+                    self.generation_model, language, level, topic, existing_examples
                 )
             elif exercise_type == "fill_in_blank":
                 result = outlines_generator.generate_fill_in_blank_structured(
-                    self.generation_model, language, level, topic
+                    self.generation_model, language, level, topic, existing_examples
                 )
                 # Result is now a single dict (not a list)
                 if result:
@@ -265,6 +274,56 @@ class ContentGenerator:
                     return None
             else:
                 raise ValueError(f"Unknown exercise type: {exercise_type}")
+
+            # Handle result - could be a list of Pydantic models or None
+            if result is None or (isinstance(result, list) and len(result) == 0):
+                return None
+
+            # Convert list of Pydantic models to appropriate dict format
+            if isinstance(result, list) and len(result) > 0:
+                # For pairs, conversations, and translations, the list IS the exercise
+                # We need to convert it to the format expected by insert_exercise
+                if exercise_type == "pairs":
+                    # Convert list of word pair models to dict with "word_pairs" field
+                    pairs_list = []
+                    for pair in result:
+                        if hasattr(pair, 'model_dump'):
+                            pairs_list.append(pair.model_dump())
+                        elif hasattr(pair, 'dict'):
+                            pairs_list.append(pair.dict())
+                        else:
+                            pairs_list.append(pair)
+                    result_dict = {"word_pairs": pairs_list}
+                elif exercise_type == "conversations":
+                    # Take first conversation from the list
+                    first_conv = result[0]
+                    if hasattr(first_conv, 'model_dump'):
+                        result_dict = first_conv.model_dump()
+                    elif hasattr(first_conv, 'dict'):
+                        result_dict = first_conv.dict()
+                    else:
+                        result_dict = first_conv
+                elif exercise_type == "translations":
+                    # Take first translation from the list
+                    first_trans = result[0]
+                    if hasattr(first_trans, 'model_dump'):
+                        result_dict = first_trans.model_dump()
+                    elif hasattr(first_trans, 'dict'):
+                        result_dict = first_trans.dict()
+                    else:
+                        result_dict = first_trans
+                else:
+                    # Unknown type, take first item
+                    first_item = result[0]
+                    if hasattr(first_item, 'model_dump'):
+                        result_dict = first_item.model_dump()
+                    elif hasattr(first_item, 'dict'):
+                        result_dict = first_item.dict()
+                    else:
+                        result_dict = first_item
+
+                self.stats["total_generated"] += 1
+                return result_dict
 
             self.stats["total_generated"] += 1
             return result
@@ -293,6 +352,15 @@ class ContentGenerator:
         try:
             # Get converter for this exercise type
             converter = get_converter(exercise_type, language, level)
+
+            # For fill-in-blank exercises, do pre-validation on translation
+            if exercise_type == "fill_in_blank" and hasattr(converter, 'validate_translation'):
+                translation = exercise_data.get('translation', '')
+                is_valid, error_msg = converter.validate_translation(translation)
+                if not is_valid:
+                    print(f"  ❌ Pre-validation failed: {error_msg}")
+                    self.stats["validation_failures"] += 1
+                    return False, {"error": error_msg, "issues_found": [error_msg]}
 
             # Convert exercise to text
             exercise_text = converter.convert_to_text(exercise_data)
@@ -340,17 +408,24 @@ class ContentGenerator:
             threshold = self.config["generation_settings"]["validation_threshold"]
             passed = validation_result.overall_quality_score >= threshold
 
-            # For fill-in-blank, also check ambiguity
+            # For fill-in-blank, also check ambiguity and translation blanks
             if (
                 exercise_type == "fill_in_blank"
                 and self.config["generation_settings"]["require_unambiguous_fill_in_blank"]
             ):
                 if isinstance(validation_result, FillInBlankValidation):
                     if not validation_result.is_unambiguous:
+                        print(f"  ❌ Validation failed: Exercise is ambiguous")
+                        passed = False
+                    # Also check that translation has no blanks
+                    if not validation_result.translation_has_no_blanks:
+                        print(f"  ❌ Validation failed: Translation has blanks")
                         passed = False
 
             if not passed:
                 self.stats["validation_failures"] += 1
+                if passed == (validation_result.overall_quality_score >= threshold):
+                    print(f"  ❌ Validation failed: Quality score {validation_result.overall_quality_score} < threshold {threshold}")
 
             return passed, validation_result
 
@@ -386,11 +461,12 @@ class ContentGenerator:
                 # Generate lesson ID (unique identifier)
                 timestamp = datetime.now().strftime('%Y%m%d%H%M%S%f')
                 lesson_id = f"{language}_{level}_{topic}_{exercise_type}_{timestamp}"
+                unique_suffix = f"{timestamp}_{uuid.uuid4().hex[:8]}"
 
                 # Insert based on exercise type
                 if exercise_type == "conversations":
                     db.add_conversation_exercise(
-                        exercise_name=f"{language}_{level}_{topic}_conversation_{timestamp}",
+                        exercise_name=f"{language}_{level}_{topic}_conversation_{unique_suffix}",
                         language=language,
                         topic=topic,
                         difficulty_level=level.capitalize(),
@@ -401,7 +477,7 @@ class ContentGenerator:
                 elif exercise_type == "pairs":
                     pairs = exercise_data.get("word_pairs", [])
                     db.add_pair_exercise_batch(
-                        exercise_name=f"{language}_{level}_{topic}_pairs_{timestamp}",
+                        exercise_name=f"{language}_{level}_{topic}_pairs_{unique_suffix}",
                         language=language,
                         topic=topic,
                         difficulty_level=level.capitalize(),
@@ -412,7 +488,7 @@ class ContentGenerator:
                     )
                 elif exercise_type == "translations":
                     db.add_translation_exercise(
-                        exercise_name=f"{language}_{level}_{topic}_translation_{timestamp}",
+                        exercise_name=f"{language}_{level}_{topic}_translation_{unique_suffix}",
                         language=language,
                         topic=topic,
                         difficulty_level=level.capitalize(),
@@ -424,7 +500,7 @@ class ContentGenerator:
                     )
                 elif exercise_type == "fill_in_blank":
                     db.add_fill_in_blank_exercise(
-                        exercise_name=f"{language}_{level}_{topic}_fill_in_blank_{timestamp}",
+                        exercise_name=f"{language}_{level}_{topic}_fill_in_blank_{unique_suffix}",
                         language=language,
                         topic=topic,
                         difficulty_level=level.capitalize(),
@@ -500,11 +576,42 @@ class ContentGenerator:
                         )
                     continue  # Try again
 
+                # Validation passed!
+                print(f"  ✅ Validation passed (score: {validation_result.overall_quality_score})")
+
+                # Check similarity to existing exercises
+                existing_for_similarity = self.fetch_existing_exercises_for_examples(
+                    language, level, topic, exercise_type, limit=10
+                )
+                if existing_for_similarity:
+                    converter = get_converter(exercise_type, language, level)
+                    is_similar, reason = converter.is_too_similar(
+                        exercise_data, existing_for_similarity, threshold=0.6
+                    )
+                    if is_similar:
+                        print(f"  ❌ Similarity check failed: {reason}")
+                        # Log similarity failure on last attempt
+                        if attempt == max_retries - 1:
+                            combination_failures.append(
+                                {
+                                    "combination": combination.copy(),
+                                    "lesson_number": lesson_num,
+                                    "attempt": attempt + 1,
+                                    "error_type": "similarity_check_failed",
+                                    "error_message": reason,
+                                    "generated_data": _convert_to_dict(exercise_data),
+                                }
+                            )
+                        continue  # Try again
+
+                print(f"  ✅ Similarity check passed, inserting into database...")
                 # Insert into database
                 if self.insert_exercise(exercise_data, language, level, topic, exercise_type):
+                    print(f"  ✅ Successfully inserted exercise!")
                     success = True
                     break  # Success, move to next lesson
                 else:
+                    print(f"  ❌ Failed to insert exercise")
                     # Database insertion failed - continue to retry
                     continue
 
@@ -721,6 +828,104 @@ class ContentGenerator:
             if self.debug:
                 print(f"Error checking existing content: {e}")
             return False
+
+    def fetch_existing_exercises_for_examples(
+        self, language: str, level: str, topic: str, exercise_type: str, limit: int = 3
+    ) -> Optional[List[Dict[str, Any]]]:
+        """Fetch existing exercises to use as examples for generation.
+
+        Args:
+            language: Target language
+            level: Difficulty level
+            topic: Topic
+            exercise_type: Exercise type
+            limit: Maximum number of examples to fetch (default 3)
+
+        Returns:
+            List of exercise dictionaries or None if no exercises exist
+        """
+        try:
+            with LanguageDB(self.db_path) as db:
+                # Map exercise types to their table names (support both singular and plural)
+                type_to_table = {
+                    "fill_in_blank": "fill_in_blank_exercises",
+                    "translation": "translation_exercises",
+                    "translations": "translation_exercises",  # Support plural form
+                    "multiple_choice": "multiple_choice_exercises",
+                    "conversation": "conversation_exercises",
+                    "conversations": "conversation_exercises",  # Support plural form
+                    "pair": "pair_exercises",
+                    "pairs": "pair_exercises",  # Support plural form
+                }
+
+                table_name = type_to_table.get(exercise_type)
+                if not table_name:
+                    if self.debug:
+                        print(f"Unknown exercise type for examples: {exercise_type}")
+                    return None
+
+                # Query for existing exercises
+                query = f"""
+                    SELECT ex.* FROM {table_name} ex
+                    JOIN exercises_info e ON ex.exercise_id = e.id
+                    JOIN languages l ON e.language_id = l.id
+                    JOIN difficulties d ON e.difficulty_id = d.id
+                    JOIN topics t ON e.topic_id = t.id
+                    WHERE l.language = ? AND d.difficulty_level = ? AND t.topic = ?
+                    ORDER BY RANDOM()
+                    LIMIT ?
+                """
+                db.cursor.execute(query, (language, level.capitalize(), topic, limit * 2))
+                rows = db.cursor.fetchall()
+
+                if not rows:
+                    return None
+
+                # Get column names
+                columns = [description[0] for description in db.cursor.description]
+
+                # Convert rows to dictionaries
+                exercises = []
+                seen_content = set()  # Track unique content
+
+                for row in rows:
+                    exercise_dict = dict(zip(columns, row))
+
+                    # Create a unique key based on exercise type
+                    # For fill-in-blank: sentence + translation
+                    # For translation: language_1_content + language_2_content
+                    # For others: primary content field
+                    if exercise_type == "fill_in_blank":
+                        unique_key = (
+                            exercise_dict.get("sentence", ""),
+                            exercise_dict.get("translation", "")
+                        )
+                    elif exercise_type == "translation":
+                        unique_key = (
+                            exercise_dict.get("language_1_content", ""),
+                            exercise_dict.get("language_2_content", "")
+                        )
+                    else:
+                        # For other types, use first text field as unique key
+                        unique_key = str(list(exercise_dict.values())[2:4])  # Skip id and exercise_id
+
+                    # Only add if we haven't seen this content before
+                    if unique_key not in seen_content:
+                        seen_content.add(unique_key)
+                        exercises.append(exercise_dict)
+
+                    # Stop if we have enough unique examples
+                    if len(exercises) >= limit:
+                        break
+
+                return exercises if exercises else None
+
+        except Exception as e:
+            if self.debug:
+                print(f"Error fetching existing exercises for examples: {e}")
+                import traceback
+                traceback.print_exc()
+            return None
 
     def filter_existing_combinations(
         self, combinations: List[Dict]

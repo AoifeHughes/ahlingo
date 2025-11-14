@@ -10,7 +10,7 @@ import threading
 
 import openai
 import outlines
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 import uuid
 
 try:
@@ -346,8 +346,16 @@ def format_examples_for_prompt(examples: List[Dict], max_examples: int = 2) -> s
     return json.dumps(limited_examples, ensure_ascii=False, indent=2)
 
 
-def generate_conversations(model, language: str, level: str, topic: str):
-    """Generate conversation exercises with guaranteed structure."""
+def generate_conversations(model, language: str, level: str, topic: str, existing_examples: Optional[List[Dict]] = None):
+    """Generate conversation exercises with guaranteed structure.
+
+    Args:
+        model: The model to use for generation
+        language: Target language
+        level: Difficulty level
+        topic: Topic for the exercise
+        existing_examples: Optional list of existing exercises from database to use as examples
+    """
     try:
         from generation.utils.assistants import default_conversation_assistants
         from generation.models.models import ConversationExercise
@@ -371,12 +379,43 @@ Avoid repetitive patterns. Focus on practical situations related to {topic}."""
 
     # Create enhanced prompt with examples context
     examples_context = ""
+    all_examples = []
+
+    # Add existing examples from database if provided
+    if existing_examples and len(existing_examples) > 0:
+        for ex in existing_examples:
+            # Convert database format to example format
+            # Conversations are stored as JSON string in database
+            conversations = ex.get("conversations", "")
+            if isinstance(conversations, str):
+                try:
+                    conversations = json.loads(conversations)
+                except:
+                    conversations = []
+            example_dict = {
+                "conversations": conversations,
+                "summary": ex.get("summary", "")
+            }
+            all_examples.append(example_dict)
+
+    # Add default examples if available
     if language in default_conversation_assistants:
         examples_content = default_conversation_assistants[language]["content"]
-        examples = parse_assistant_examples(examples_content)
-        if examples:
-            formatted_examples = format_examples_for_prompt(examples)
-            examples_context = f"\n\nReference examples (for structure only):\n{formatted_examples}\n\nNow generate NEW conversations for the topic: {topic}"
+        default_examples = parse_assistant_examples(examples_content)
+        if default_examples:
+            # Add default examples, avoiding duplicates
+            for ex in default_examples[:1]:  # Take just first default example
+                # Check if summary already exists in all_examples
+                if not any(e.get("summary") == ex.get("summary") for e in all_examples):
+                    all_examples.append(ex)
+
+    # Build examples context if we have examples
+    if all_examples:
+        formatted_examples = format_examples_for_prompt(all_examples)
+        diversity_note = ""
+        if existing_examples:
+            diversity_note = "\n\nIMPORTANT: The examples above show exercises that ALREADY EXIST in the database. Generate exercises that are DIFFERENT from these examples. Vary conversation topics, dialogue patterns, and vocabulary. Avoid repeating similar content."
+        examples_context = f"\n\nReference examples:\n{formatted_examples}{diversity_note}\n\nNow generate NEW conversations for the topic: {topic}"
 
     schema = build_schema_for_lesson("conversations", language)
     schema_instruction = format_schema_block(schema)
@@ -423,8 +462,16 @@ Avoid repetitive patterns. Focus on practical situations related to {topic}."""
     return [ConversationExercise(**item) for item in result_data]
 
 
-def generate_pairs(model, language: str, level: str, topic: str):
-    """Generate word pairs with guaranteed structure - creates exactly 5 pairs per exercise."""
+def generate_pairs(model, language: str, level: str, topic: str, existing_examples: Optional[List[Dict]] = None):
+    """Generate word pairs with guaranteed structure - creates exactly 5 pairs per exercise.
+
+    Args:
+        model: The model to use for generation
+        language: Target language
+        level: Difficulty level
+        topic: Topic for the exercise
+        existing_examples: Optional list of existing exercises from database to use as examples
+    """
     try:
         from generation.utils.assistants import default_pairs_assistants
         from generation.models.models import create_dynamic_word_pair_model
@@ -446,12 +493,43 @@ Create EXACTLY 5 word pairs at {level} level:
 
     # Create enhanced prompt with examples context
     examples_context = ""
+    all_examples = []
+
+    # Add existing examples from database if provided
+    if existing_examples and len(existing_examples) > 0:
+        for ex in existing_examples:
+            # Convert database format to example format
+            # Pairs are stored as JSON string in database
+            pairs = ex.get("pairs", "")
+            if isinstance(pairs, str):
+                try:
+                    pairs = json.loads(pairs)
+                except:
+                    pairs = []
+            example_dict = {
+                "pairs": pairs
+            }
+            all_examples.append(example_dict)
+
+    # Add default examples if available
     if language in default_pairs_assistants:
         examples_content = default_pairs_assistants[language]["content"]
-        examples = parse_assistant_examples(examples_content)
-        if examples:
-            formatted_examples = format_examples_for_prompt(examples)
-            examples_context = f"\n\nReference examples (for format only):\n{formatted_examples}\n\nNow generate 5 NEW word pairs for the topic: {topic}"
+        default_examples = parse_assistant_examples(examples_content)
+        if default_examples:
+            # Add default examples, avoiding duplicates
+            for ex in default_examples[:1]:  # Take just first default example
+                # Check if pairs already exist in all_examples
+                ex_pairs_str = json.dumps(ex.get("pairs", []), sort_keys=True)
+                if not any(json.dumps(e.get("pairs", []), sort_keys=True) == ex_pairs_str for e in all_examples):
+                    all_examples.append(ex)
+
+    # Build examples context if we have examples
+    if all_examples:
+        formatted_examples = format_examples_for_prompt(all_examples)
+        diversity_note = ""
+        if existing_examples:
+            diversity_note = "\n\nIMPORTANT: The examples above show exercises that ALREADY EXIST in the database. Generate exercises that are DIFFERENT from these examples. Use different vocabulary words and vary the word types. Avoid repeating similar content."
+        examples_context = f"\n\nReference examples:\n{formatted_examples}{diversity_note}\n\nNow generate 5 NEW word pairs for the topic: {topic}"
 
     schema = build_schema_for_lesson("pairs", language)
     schema_instruction = format_schema_block(schema)
@@ -500,8 +578,16 @@ Create EXACTLY 5 word pairs at {level} level:
     return [WordPairModel(**item) for item in result_data]
 
 
-def generate_translations(model, language: str, level: str, topic: str):
-    """Generate sentence translations with guaranteed structure."""
+def generate_translations(model, language: str, level: str, topic: str, existing_examples: Optional[List[Dict]] = None):
+    """Generate sentence translations with guaranteed structure.
+
+    Args:
+        model: The model to use for generation
+        language: Target language
+        level: Difficulty level
+        topic: Topic for the exercise
+        existing_examples: Optional list of existing exercises from database to use as examples
+    """
     try:
         from generation.utils.assistants import default_translation_assistants
         from generation.models.models import (
@@ -528,12 +614,40 @@ Create 5-8 sentence pairs at {level} level:
 
     # Create enhanced prompt with examples context
     examples_context = ""
+    all_examples = []
+
+    # Add existing examples from database if provided
+    if existing_examples and len(existing_examples) > 0:
+        for ex in existing_examples:
+            # Convert database format to example format
+            example_dict = {
+                "language_1_content": ex.get("language_1_content", ""),
+                "language_2_content": ex.get("language_2_content", "")
+            }
+            all_examples.append(example_dict)
+
+    # Add default examples if available
     if language in default_translation_assistants:
         examples_content = default_translation_assistants[language]["content"]
-        examples = parse_assistant_examples(examples_content)
-        if examples:
-            formatted_examples = format_examples_for_prompt(examples)
-            examples_context = f"\n\nReference examples (for format only):\n{formatted_examples}\n\nNow generate 5-8 NEW sentence translations for the topic: {topic}"
+        default_examples = parse_assistant_examples(examples_content)
+        if default_examples:
+            # Add default examples, avoiding duplicates
+            for ex in default_examples[:1]:  # Take just first default example
+                # Check if content already exists in all_examples
+                if not any(
+                    e.get("language_1_content") == ex.get("language_1_content") and
+                    e.get("language_2_content") == ex.get("language_2_content")
+                    for e in all_examples
+                ):
+                    all_examples.append(ex)
+
+    # Build examples context if we have examples
+    if all_examples:
+        formatted_examples = format_examples_for_prompt(all_examples)
+        diversity_note = ""
+        if existing_examples:
+            diversity_note = "\n\nIMPORTANT: The examples above show exercises that ALREADY EXIST in the database. Generate exercises that are DIFFERENT from these examples. Vary sentence structure, vocabulary, and grammar patterns. Avoid repeating similar content."
+        examples_context = f"\n\nReference examples:\n{formatted_examples}{diversity_note}\n\nNow generate 5-8 NEW sentence translations for the topic: {topic}"
 
     schema = build_schema_for_lesson("translations", language)
     schema_instruction = format_schema_block(schema)
@@ -790,8 +904,16 @@ Generate 2 alternatives (1-3 words each) that are obviously wrong in this contex
     )
 
 
-def generate_fill_in_blank_structured(model, language: str, level: str, topic: str):
-    """Generate a single fill-in-blank exercise using structured generation."""
+def generate_fill_in_blank_structured(model, language: str, level: str, topic: str, existing_examples: Optional[List[Dict]] = None):
+    """Generate a single fill-in-blank exercise using structured generation.
+
+    Args:
+        model: The model to use for generation
+        language: Target language
+        level: Difficulty level
+        topic: Topic for the exercise
+        existing_examples: Optional list of existing exercises from database to use as examples
+    """
     try:
         from generation.models.models import FillInBlankExercise
     except ImportError:
@@ -810,7 +932,9 @@ REQUIREMENTS:
 - All three answer options must be COMPLETELY UNIQUE from each other
 - Incorrect options should be the same part of speech but obviously wrong in context
 - Include accurate English translation of the complete sentence (without blank)
+- CRITICAL: The English translation must be a COMPLETE sentence with NO blanks (_) or underscores. Show the full sentence with the word filled in. For example, if the sentence is "Je mange une _ rouge" with answer "pomme", the translation should be "I eat a red apple" NOT "I eat a _ red" or "I eat a ___ apple"
 - Blank position should be 0-indexed word position
+- Critical exactly one "_" in the sentence to indicate the blank.
 
 QUALITY STANDARDS:
 - Sentence should be 4-15 words long and natural for {level} learners
@@ -833,19 +957,48 @@ CRITICAL: correct_answer, incorrect_1, and incorrect_2 must be three different w
 
     # Create enhanced prompt with examples context
     examples_context = ""
+    all_examples = []
+
+    # Add existing examples from database if provided
+    if existing_examples and len(existing_examples) > 0:
+        for ex in existing_examples:
+            # Convert database format to example format
+            example_dict = {
+                "sentence": ex.get("sentence", ""),
+                "correct_answer": ex.get("correct_answer", ""),
+                "incorrect_1": ex.get("incorrect_1", ""),
+                "incorrect_2": ex.get("incorrect_2", ""),
+                "blank_position": ex.get("blank_position", 0),
+                "translation": ex.get("translation", "")
+            }
+            all_examples.append(example_dict)
+
+    # Add default examples if available
     try:
         from generation.utils.assistants import default_fill_in_blank_assistants
 
         if language in default_fill_in_blank_assistants:
             examples_content = default_fill_in_blank_assistants[language]["content"]
-            examples = parse_assistant_examples(examples_content)
-            if examples and len(examples) > 0:
-                # Take just the first example for reference
-                formatted_example = json.dumps(examples[0], ensure_ascii=False, indent=2)
-                examples_context = f"\n\nReference example (structure only):\n{formatted_example}\n\nNow generate 1 NEW fill-in-blank exercise for: {topic}"
+            default_examples = parse_assistant_examples(examples_content)
+            if default_examples:
+                # Add default examples, avoiding duplicates
+                for ex in default_examples[:1]:  # Take just first default example
+                    # Check if sentence already exists in all_examples
+                    if not any(e.get("sentence") == ex.get("sentence") for e in all_examples):
+                        all_examples.append(ex)
     except (ImportError, KeyError):
-        # No examples available for this language, continue without them
         pass
+
+    # Build examples context if we have examples
+    if all_examples:
+        examples_text = "\n\n".join([
+            json.dumps(ex, ensure_ascii=False, indent=2)
+            for ex in all_examples
+        ])
+        diversity_note = ""
+        if existing_examples:
+            diversity_note = "\n\nIMPORTANT: The examples above show exercises that ALREADY EXIST in the database. Generate exercises that are DIFFERENT from these examples. Vary sentence structure, vocabulary, and grammar patterns. Avoid repeating similar content."
+        examples_context = f"\n\nReference examples:\n{examples_text}{diversity_note}\n\nNow generate 1 NEW fill-in-blank exercise for: {topic}"
 
     schema = build_schema_for_lesson("fill_in_blank", language)
     schema_instruction = format_schema_block(schema)

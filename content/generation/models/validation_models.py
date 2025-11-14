@@ -80,6 +80,10 @@ class FillInBlankValidation(ValidationResult):
         default=False,
         description="Does the English translation accurately convey the meaning of the original sentence? (true/false)",
     )
+    translation_has_no_blanks: bool = Field(
+        default=True,
+        description="Does the English translation contain NO blanks or underscores? It must be a complete sentence (true/false)",
+    )
     answer_options_appropriate: bool = Field(
         default=False,
         description="Are the answer options appropriate and at the right difficulty level? (true/false)",
@@ -120,6 +124,7 @@ def clean_validation_data(data: Dict[str, Any]) -> Dict[str, Any]:
         "preserves_meaning",
         "uses_natural_language",
         "translation_matches_original",
+        "translation_has_no_blanks",
         "answer_options_appropriate",
         "is_unambiguous",
     ]
