@@ -67,3 +67,5 @@ ahlingo_mobile/.ruby-version
 # Generation logs
 generation_failures*.csv
 logs/
+
+*/coverage/

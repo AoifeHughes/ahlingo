@@ -1,5 +1,6 @@
 import { jest } from '@jest/globals';
-import { createMockDatabaseResult, createMockUser, mockUserContext, createExercise, createPairExercise } from './factories';
+import { createMockDatabaseResult, createMockUser, createExercise, createPairExercise } from './factories';
+import { mockUserContext } from './index';
 
 // Database service mocks
 export const mockDatabaseService = {

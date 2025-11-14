@@ -14,7 +14,7 @@ from typing import Any, Dict, List
 import uuid
 
 try:
-    from content.generation.models.models import (
+    from generation.models.models import (
         ConversationExercise,
         create_pair_schema,
     )
@@ -354,11 +354,11 @@ def format_examples_for_prompt(examples: List[Dict], max_examples: int = 2) -> s
 def generate_conversations(model, language: str, level: str, topic: str):
     """Generate conversation exercises with guaranteed structure."""
     try:
-        from content.generation.utils.assistants import default_conversation_assistants
-        from content.generation.models.models import ConversationExercise
+        from generation.utils.assistants import default_conversation_assistants
+        from generation.models.models import ConversationExercise
     except ImportError:
-        from content.generation.utils.assistants import default_conversation_assistants
-        from content.generation.models.models import ConversationExercise
+        from generation.utils.assistants import default_conversation_assistants
+        from generation.models.models import ConversationExercise
     from typing import List
 
     # Create system message with clear instructions
@@ -431,11 +431,11 @@ Avoid repetitive patterns. Focus on practical situations related to {topic}."""
 def generate_pairs(model, language: str, level: str, topic: str):
     """Generate word pairs with guaranteed structure - creates exactly 5 pairs per exercise."""
     try:
-        from content.generation.utils.assistants import default_pairs_assistants
-        from content.generation.models.models import create_dynamic_word_pair_model
+        from generation.utils.assistants import default_pairs_assistants
+        from generation.models.models import create_dynamic_word_pair_model
     except ImportError:
-        from content.generation.utils.assistants import default_pairs_assistants
-        from content.generation.models.models import create_dynamic_word_pair_model
+        from generation.utils.assistants import default_pairs_assistants
+        from generation.models.models import create_dynamic_word_pair_model
     from typing import List
 
     # Create system message with clear instructions
@@ -508,13 +508,13 @@ Create EXACTLY 5 word pairs at {level} level:
 def generate_translations(model, language: str, level: str, topic: str):
     """Generate sentence translations with guaranteed structure."""
     try:
-        from content.generation.utils.assistants import default_translation_assistants
-        from content.generation.models.models import (
+        from generation.utils.assistants import default_translation_assistants
+        from generation.models.models import (
             create_dynamic_translation_pair_model,
         )
     except ImportError:
-        from content.generation.utils.assistants import default_translation_assistants
-        from content.generation.models.models import (
+        from generation.utils.assistants import default_translation_assistants
+        from generation.models.models import (
             create_dynamic_translation_pair_model,
         )
     from typing import List
@@ -798,9 +798,9 @@ Generate 2 alternatives (1-3 words each) that are obviously wrong in this contex
 def generate_fill_in_blank_structured(model, language: str, level: str, topic: str):
     """Generate fill-in-blank exercises using single-step structured generation."""
     try:
-        from content.generation.models.models import FillInBlankExercise
+        from generation.models.models import FillInBlankExercise
     except ImportError:
-        from content.generation.models.models import FillInBlankExercise
+        from generation.models.models import FillInBlankExercise
     from typing import List
 
     # Create comprehensive system message for structured generation
@@ -841,7 +841,7 @@ CRITICAL: Each exercise's correct_answer, incorrect_1, and incorrect_2 must be t
     # Create enhanced prompt with examples context
     examples_context = ""
     try:
-        from content.generation.utils.assistants import default_fill_in_blank_assistants
+        from generation.utils.assistants import default_fill_in_blank_assistants
 
         if language in default_fill_in_blank_assistants:
             examples_content = default_fill_in_blank_assistants[language]["content"]

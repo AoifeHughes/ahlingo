@@ -208,7 +208,7 @@ Please evaluate the following aspects and respond with ONLY a JSON object using 
   "is_unambiguous": true or false (CRITICAL - Is there only ONE clearly correct answer? Check if multiple options could work),
   "is_culturally_appropriate": true or false (Is the content culturally appropriate?),
   "is_educational_quality": true or false (Is this useful for language learning?),
-  "overall_quality_score": integer from 1 to 10 (10 = excellent, deduct points for ambiguous exercises),
+  "overall_quality_score": integer from 1 to 10 (10 = excellent, MAXIMUM 5 for ambiguous exercises - if is_unambiguous is false, score MUST be ≤5),
   "issues_found": ["list", "of", "specific", "problems", "found"] or [] if none
 }}
 

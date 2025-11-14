@@ -38,23 +38,44 @@ jest.mock('react-native-vector-icons/MaterialIcons', () => 'MaterialIcons');
 // Mock navigation-related modules for screen tests
 jest.mock('@react-navigation/native', () => {
   const actual = jest.requireActual('@react-navigation/native');
+  let focusEffectHasRun = false;
+
+  const resetFocusEffect = () => {
+    focusEffectHasRun = false;
+  };
+
+  (globalThis as any).__resetFocusEffectMock = resetFocusEffect;
+
   return {
     ...actual,
+    useNavigation: () => ({
+      navigate: jest.fn(),
+      goBack: jest.fn(),
+      replace: jest.fn(),
+    }),
+    useRoute: () => ({
+      params: {},
+    }),
     useFocusEffect: jest.fn((callback) => {
-      // Just call the callback immediately for testing
-      if (typeof callback === 'function') {
+      if (!focusEffectHasRun && typeof callback === 'function') {
+        focusEffectHasRun = true;
         const cleanup = callback();
         return cleanup;
       }
+      return () => {};
     }),
     usePreventRemove: jest.fn(),
+    NavigationContainer: ({ children }: any) => children,
   };
 });
 
 // Mock BackHandler
-jest.mock('react-native/Libraries/Utilities/BackHandler', () => ({
-  addEventListener: jest.fn(() => ({ remove: jest.fn() })),
-  removeEventListener: jest.fn(),
+jest.doMock('react-native/Libraries/Utilities/BackHandler', () => ({
+  __esModule: true,
+  default: {
+    addEventListener: jest.fn(() => ({ remove: jest.fn() })),
+    removeEventListener: jest.fn(),
+  },
 }));
 
 // Mock theme utilities
@@ -81,20 +102,6 @@ jest.mock('../utils/theme', () => ({
   })),
 }));
 
-// Mock navigation
-jest.mock('@react-navigation/native', () => ({
-  useNavigation: () => ({
-    navigate: jest.fn(),
-    goBack: jest.fn(),
-    replace: jest.fn(),
-  }),
-  useRoute: () => ({
-    params: {},
-  }),
-  useFocusEffect: jest.fn(),
-  NavigationContainer: ({ children }: any) => children,
-}));
-
 // Mock Redux hooks
 jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
@@ -105,3 +112,15 @@ jest.mock('react-redux', () => ({
 
 // Global test timeout
 jest.setTimeout(10000);
+
+if (typeof window === 'undefined') {
+  (global as any).window = global;
+}
+
+if (typeof window.dispatchEvent !== 'function') {
+  window.dispatchEvent = () => {};
+}
+
+beforeEach(() => {
+  (globalThis as any).__resetFocusEffectMock?.();
+});

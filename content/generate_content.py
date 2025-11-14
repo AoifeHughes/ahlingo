@@ -1,0 +1,968 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""
+Consolidated content generation system with integrated validation.
+
+This script:
+1. Loads configuration from database_generation.json
+2. Generates exercises using LLM
+3. Validates each exercise immediately after generation
+4. Only inserts validated exercises into database
+5. Tracks failures for retry
+6. Supports filtering and incremental database updates
+
+Usage:
+    python content/generate_content.py --db-path database/languageLearningDatabase.db
+    python content/generate_content.py --languages French --levels beginner
+    python content/generate_content.py --add-language Portuguese
+    python content/generate_content.py --retry-failures failures_2025.json
+"""
+
+import os
+os.environ["KIVY_NO_CONSOLELOG"] = "1"
+
+import json
+import argparse
+import sys
+from pathlib import Path
+from datetime import datetime
+from typing import Dict, List, Any, Optional, Tuple
+from tqdm import tqdm
+
+# Add parent directory to path for imports
+sys.path.insert(0, str(Path(__file__).parent))
+
+from database.database_manager import LanguageDB
+from generation.core import outlines_generator
+from generation.models.validation_models import (
+    parse_validation_result,
+    FillInBlankValidation,
+)
+from generation.utils.exercise_converters import get_converter
+
+
+def _convert_to_dict(obj):
+    """Convert Pydantic models or other objects to dict for JSON serialization.
+
+    Recursively handles nested structures.
+    """
+    if hasattr(obj, "dict"):
+        return obj.dict()
+    elif hasattr(obj, "model_dump"):
+        return obj.model_dump()
+    elif isinstance(obj, dict):
+        # Recursively convert nested dicts
+        return {key: _convert_to_dict(value) for key, value in obj.items()}
+    elif isinstance(obj, list):
+        # Recursively convert lists
+        return [_convert_to_dict(item) for item in obj]
+    elif isinstance(obj, (str, int, float, bool, type(None))):
+        return obj
+    else:
+        # Fallback: convert to string
+        return str(obj)
+
+
+class ContentGenerator:
+    """Main class for content generation with integrated validation."""
+
+    def __init__(
+        self,
+        config_path: str,
+        db_path: str,
+        generation_model: Optional[str] = None,
+        validation_model: Optional[str] = None,
+        debug: bool = False,
+        no_think: bool = False,
+        dry_run: bool = False,
+    ):
+        """Initialize the content generator.
+
+        Args:
+            config_path: Path to database_generation.json
+            db_path: Path to SQLite database
+            generation_model: Override generation model
+            validation_model: Override validation model
+            debug: Enable debug mode
+            no_think: Prepend /no_think to prompts
+            dry_run: Don't insert to database
+        """
+        self.config = self._load_config(config_path)
+        self.db_path = db_path
+        self.debug = debug
+        self.no_think = no_think
+        self.dry_run = dry_run
+
+        # Override models if specified
+        if generation_model:
+            self.config["llm_servers"]["generation"]["model"] = generation_model
+        if validation_model:
+            self.config["llm_servers"]["validation"]["model"] = validation_model
+        elif self.config["llm_servers"]["validation"]["model"] == "auto":
+            # Use generation model for validation if not specified
+            self.config["llm_servers"]["validation"]["model"] = self.config[
+                "llm_servers"
+            ]["generation"]["model"]
+
+        # Set up models
+        self.generation_model = None
+        self.validation_model = None
+
+        # Failure tracking
+        self.failures = []
+        self.stats = {
+            "total_attempted": 0,
+            "total_generated": 0,
+            "total_validated": 0,
+            "total_inserted": 0,
+            "validation_failures": 0,
+            "generation_failures": 0,
+        }
+
+    def _load_config(self, config_path: str) -> Dict:
+        """Load configuration from JSON file."""
+        config_file = Path(config_path)
+        if not config_file.exists():
+            raise FileNotFoundError(
+                f"Configuration file not found: {config_path}\n"
+                f"Expected location: {config_file.absolute()}"
+            )
+
+        with open(config_file, "r") as f:
+            config = json.load(f)
+
+        # Validate required fields
+        required_fields = [
+            "llm_servers",
+            "languages",
+            "levels",
+            "topics",
+            "exercise_types",
+        ]
+        for field in required_fields:
+            if field not in config:
+                raise ValueError(
+                    f"Missing required field in config: {field}"
+                )
+
+        return config
+
+    def setup_models(self):
+        """Set up generation and validation models."""
+        print("Setting up LLM models...")
+
+        # Set global config for outlines_generator
+        gen_config = self.config["llm_servers"]["generation"]
+        outlines_generator.MODEL_CONFIG.update(
+            {
+                "base_url": gen_config["url"],
+                "api_key": gen_config["api_key"],
+                "temperature": gen_config["temperature"],
+                "exercise_temperatures": self.config["exercise_temperatures"],
+                "no_think": self.no_think,
+                "debug": self.debug,
+            }
+        )
+
+        # Setup generation model
+        self.generation_model = outlines_generator.setup_outlines_model()
+        print(f"  Generation model: {type(self.generation_model).__name__}")
+
+        # Setup validation model (can be same as generation)
+        val_config = self.config["llm_servers"]["validation"]
+        if (
+            val_config["url"] == gen_config["url"]
+            and val_config["model"] == gen_config["model"]
+        ):
+            # Use same model for validation
+            self.validation_model = self.generation_model
+            print(f"  Validation model: (same as generation)")
+        else:
+            # Create separate validation model
+            # This is a simplified version - in production you'd need to create another model instance
+            print(f"  Validation model: Separate model not yet implemented, using generation model")
+            self.validation_model = self.generation_model
+
+    def get_combinations(
+        self,
+        languages_filter: Optional[List[str]] = None,
+        levels_filter: Optional[List[str]] = None,
+        topics_filter: Optional[List[str]] = None,
+        exercise_types_filter: Optional[List[str]] = None,
+    ) -> List[Dict[str, str]]:
+        """Get all (language, level, topic, exercise_type) combinations to process.
+
+        Args:
+            languages_filter: Filter to specific languages
+            levels_filter: Filter to specific levels
+            topics_filter: Filter to specific topics
+            exercise_types_filter: Filter to specific exercise types
+
+        Returns:
+            List of combination dictionaries
+        """
+        languages = languages_filter or self.config["languages"]
+        levels = levels_filter or self.config["levels"]
+        topics = topics_filter or self.config["topics"]
+        exercise_types = exercise_types_filter or self.config["exercise_types"]
+
+        combinations = []
+        for language in languages:
+            for level in levels:
+                for topic in topics:
+                    for exercise_type in exercise_types:
+                        combinations.append(
+                            {
+                                "language": language,
+                                "level": level,
+                                "topic": topic,
+                                "exercise_type": exercise_type,
+                            }
+                        )
+
+        return combinations
+
+    def generate_exercise(
+        self, language: str, level: str, topic: str, exercise_type: str
+    ) -> Optional[Any]:
+        """Generate a single exercise using the LLM.
+
+        Args:
+            language: Target language
+            level: Difficulty level
+            topic: Topic
+            exercise_type: Type of exercise
+
+        Returns:
+            Generated exercise data or None if generation failed.
+            For fill_in_blank, returns a FillInBlankExercise object with multiple exercises.
+            For other types, returns a dict.
+        """
+        try:
+            # Call appropriate generator function (model is first parameter)
+            if exercise_type == "conversations":
+                result = outlines_generator.generate_conversations(
+                    self.generation_model, language, level, topic
+                )
+            elif exercise_type == "pairs":
+                result = outlines_generator.generate_pairs(
+                    self.generation_model, language, level, topic
+                )
+            elif exercise_type == "translations":
+                result = outlines_generator.generate_translations(
+                    self.generation_model, language, level, topic
+                )
+            elif exercise_type == "fill_in_blank":
+                result = outlines_generator.generate_fill_in_blank_structured(
+                    self.generation_model, language, level, topic
+                )
+                # Result is a list of FillInBlankExercise Pydantic objects
+                if result and isinstance(result, list) and len(result) > 0:
+                    # Convert each Pydantic object to dict
+                    exercises = []
+                    for ex in result:
+                        if hasattr(ex, 'dict'):
+                            exercises.append(ex.dict())
+                        elif hasattr(ex, 'model_dump'):
+                            exercises.append(ex.model_dump())
+                        else:
+                            # Fallback: assume it's already a dict
+                            exercises.append(ex)
+
+                    # Count each generated exercise
+                    self.stats["total_generated"] += len(exercises)
+                    return exercises
+                else:
+                    # Empty list or None means all exercises failed Pydantic validation
+                    # Return None to trigger retry
+                    return None
+            else:
+                raise ValueError(f"Unknown exercise type: {exercise_type}")
+
+            self.stats["total_generated"] += 1
+            return result
+
+        except Exception as e:
+            if self.debug:
+                import traceback
+                traceback.print_exc()
+            self.stats["generation_failures"] += 1
+            return None
+
+    def validate_exercise(
+        self, exercise_data: Dict, language: str, level: str, exercise_type: str
+    ) -> Tuple[bool, Any]:
+        """Validate a generated exercise using the validation LLM.
+
+        Args:
+            exercise_data: Generated exercise data
+            language: Target language
+            level: Difficulty level
+            exercise_type: Type of exercise
+
+        Returns:
+            Tuple of (passed: bool, validation_result)
+        """
+        try:
+            # Get converter for this exercise type
+            converter = get_converter(exercise_type, language, level)
+
+            # Convert exercise to text
+            exercise_text = converter.convert_to_text(exercise_data)
+
+            # Get validation prompt
+            prompt = converter.get_validation_prompt(exercise_text)
+
+            # Prepare prompt with /no_think if requested
+            if self.no_think:
+                prompt = "/no_think\n" + prompt
+
+            # Call validation model
+            # Note: Using the same generation mechanism for validation
+            # In a more sophisticated setup, you'd have a separate validation call
+            import openai
+
+            client = openai.OpenAI(
+                base_url=self.config["llm_servers"]["validation"]["url"],
+                api_key=self.config["llm_servers"]["validation"]["api_key"],
+            )
+
+            # Get model name
+            models = client.models.list()
+            model_name = (
+                self.config["llm_servers"]["validation"]["model"]
+                if self.config["llm_servers"]["validation"]["model"] != "auto"
+                else models.data[0].id if models.data else "default"
+            )
+
+            response = client.chat.completions.create(
+                model=model_name,
+                messages=[{"role": "user", "content": prompt}],
+                temperature=self.config["llm_servers"]["validation"]["temperature"],
+            )
+
+            result_text = response.choices[0].message.content
+
+            # Clean and parse validation result
+            cleaned_text = outlines_generator.clean_model_response(result_text)
+            validation_result = parse_validation_result(cleaned_text, exercise_type)
+
+            self.stats["total_validated"] += 1
+
+            # Check if passed
+            threshold = self.config["generation_settings"]["validation_threshold"]
+            passed = validation_result.overall_quality_score >= threshold
+
+            # For fill-in-blank, also check ambiguity
+            if (
+                exercise_type == "fill_in_blank"
+                and self.config["generation_settings"]["require_unambiguous_fill_in_blank"]
+            ):
+                if isinstance(validation_result, FillInBlankValidation):
+                    if not validation_result.is_unambiguous:
+                        passed = False
+
+            if not passed:
+                self.stats["validation_failures"] += 1
+
+            return passed, validation_result
+
+        except Exception as e:
+            if self.debug:
+                import traceback
+                traceback.print_exc()
+            self.stats["validation_failures"] += 1
+            # Return failed validation
+            return False, {"error": str(e)}
+
+    def insert_exercise(
+        self, exercise_data: Dict, language: str, level: str, topic: str, exercise_type: str
+    ) -> bool:
+        """Insert validated exercise into database.
+
+        Args:
+            exercise_data: Validated exercise data
+            language: Target language
+            level: Difficulty level
+            topic: Topic
+            exercise_type: Type of exercise
+
+        Returns:
+            True if successfully inserted, False otherwise
+        """
+        if self.dry_run:
+            print(f"  [DRY RUN] Would insert {exercise_type} exercise")
+            return True
+
+        try:
+            with LanguageDB(self.db_path) as db:
+                # Get language, difficulty, and topic IDs
+                language_id = db.get_language_id(language)
+                difficulty_id = db.get_difficulty_id(level.capitalize())
+                topic_id = db.get_topic_id(topic)
+
+                # Generate lesson ID (unique identifier)
+                lesson_id = f"{language}_{level}_{topic}_{exercise_type}_{datetime.now().strftime('%Y%m%d%H%M%S%f')}"
+
+                # Insert based on exercise type
+                if exercise_type == "conversations":
+                    db.add_conversation_exercise(
+                        exercise_name=f"{topic} conversation",
+                        topic_id=topic_id,
+                        difficulty_id=difficulty_id,
+                        language_id=language_id,
+                        lesson_id=lesson_id,
+                        conversations=exercise_data.get("conversation", []),
+                        summary=exercise_data.get("conversation_summary", ""),
+                    )
+                elif exercise_type == "pairs":
+                    pairs = exercise_data.get("word_pairs", [])
+                    db.add_pair_exercise_batch(
+                        exercise_name=f"{topic} word pairs",
+                        topic_id=topic_id,
+                        difficulty_id=difficulty_id,
+                        language_id=language_id,
+                        lesson_id=lesson_id,
+                        language_1="English",
+                        language_2=language,
+                        pairs=pairs,
+                    )
+                elif exercise_type == "translations":
+                    db.add_translation_exercise(
+                        exercise_name=f"{topic} translation",
+                        topic_id=topic_id,
+                        difficulty_id=difficulty_id,
+                        language_id=language_id,
+                        lesson_id=lesson_id,
+                        language_1="English",
+                        language_2=language,
+                        language_1_content=exercise_data.get("English", ""),
+                        language_2_content=exercise_data.get(language, ""),
+                    )
+                elif exercise_type == "fill_in_blank":
+                    db.add_fill_in_blank_exercise(
+                        exercise_name=f"{topic} fill-in-blank",
+                        topic_id=topic_id,
+                        difficulty_id=difficulty_id,
+                        language_id=language_id,
+                        lesson_id=lesson_id,
+                        sentence=exercise_data.get("sentence", ""),
+                        correct_answer=exercise_data.get("correct_answer", ""),
+                        incorrect_1=exercise_data.get("incorrect_1", ""),
+                        incorrect_2=exercise_data.get("incorrect_2", ""),
+                        blank_position=exercise_data.get("blank_position", 0),
+                        translation=exercise_data.get("translation", ""),
+                    )
+
+            self.stats["total_inserted"] += 1
+            return True
+
+        except Exception as e:
+            if self.debug:
+                import traceback
+                traceback.print_exc()
+            print(f"  Error inserting exercise: {e}")
+            return False
+
+    def process_combination(self, combination: Dict) -> List[Dict]:
+        """Process a single combination with retries.
+
+        Args:
+            combination: Dictionary with language, level, topic, exercise_type
+
+        Returns:
+            List of failures (empty if all succeeded)
+        """
+        language = combination["language"]
+        level = combination["level"]
+        topic = combination["topic"]
+        exercise_type = combination["exercise_type"]
+
+        lessons_per_combo = self.config["generation_settings"]["lessons_per_combination"]
+        max_retries = self.config["generation_settings"]["max_retries"]
+
+        combination_failures = []
+
+        for lesson_num in range(lessons_per_combo):
+            self.stats["total_attempted"] += 1
+            success = False
+
+            for attempt in range(max_retries):
+                # Generate exercise (may return a single dict or list of dicts for fill_in_blank)
+                exercise_data = self.generate_exercise(language, level, topic, exercise_type)
+
+                if exercise_data is None:
+                    continue  # Try again
+
+                # For fill_in_blank, exercise_data is a list of exercises
+                # For others, it's a single dict
+                exercises_to_process = []
+                if exercise_type == "fill_in_blank" and isinstance(exercise_data, list):
+                    exercises_to_process = exercise_data
+                else:
+                    exercises_to_process = [exercise_data]
+
+                # Validate and insert each exercise
+                all_passed = True
+                failed_validation = None
+
+                for single_exercise in exercises_to_process:
+                    # Validate exercise
+                    passed, validation_result = self.validate_exercise(
+                        single_exercise, language, level, exercise_type
+                    )
+
+                    if not passed:
+                        all_passed = False
+                        failed_validation = validation_result
+                        # For fill_in_blank, if one exercise fails, we fail the whole batch
+                        if exercise_type == "fill_in_blank":
+                            break
+                        continue
+
+                    # Insert into database
+                    if not self.insert_exercise(single_exercise, language, level, topic, exercise_type):
+                        all_passed = False
+                        break
+
+                if all_passed:
+                    success = True
+                    break  # Success, move to next lesson
+                else:
+                    # Log validation failure on last attempt
+                    if attempt == max_retries - 1:
+                        combination_failures.append(
+                            {
+                                "combination": combination.copy(),
+                                "lesson_number": lesson_num,
+                                "attempt": attempt + 1,
+                                "error_type": "validation_failed",
+                                "validation_result": _convert_to_dict(failed_validation) if failed_validation else "Unknown error",
+                                "generated_data": _convert_to_dict(exercise_data),
+                            }
+                        )
+                    continue  # Try again
+
+            if not success and len(combination_failures) == 0:
+                # Failed all retries but no validation failure logged (must be generation failure)
+                combination_failures.append(
+                    {
+                        "combination": combination.copy(),
+                        "lesson_number": lesson_num,
+                        "attempt": max_retries,
+                        "error_type": "generation_failed",
+                        "error_message": "Failed to generate exercise after max retries",
+                    }
+                )
+
+        return combination_failures
+
+    def run(
+        self,
+        languages_filter: Optional[List[str]] = None,
+        levels_filter: Optional[List[str]] = None,
+        topics_filter: Optional[List[str]] = None,
+        exercise_types_filter: Optional[List[str]] = None,
+        max_combinations: Optional[int] = None,
+    ):
+        """Run the content generation pipeline.
+
+        Args:
+            languages_filter: Filter to specific languages
+            levels_filter: Filter to specific levels
+            topics_filter: Filter to specific topics
+            exercise_types_filter: Filter to specific exercise types
+            max_combinations: Limit number of combinations (for testing)
+        """
+        # Get combinations to process
+        combinations = self.get_combinations(
+            languages_filter, levels_filter, topics_filter, exercise_types_filter
+        )
+
+        if max_combinations:
+            combinations = combinations[:max_combinations]
+
+        print(f"\n{'='*80}")
+        print(f"CONTENT GENERATION PIPELINE")
+        print(f"{'='*80}")
+        print(f"Total combinations to process: {len(combinations)}")
+        print(f"Lessons per combination: {self.config['generation_settings']['lessons_per_combination']}")
+        print(
+            f"Total exercises to generate: {len(combinations) * self.config['generation_settings']['lessons_per_combination']}"
+        )
+        print(f"{'='*80}\n")
+
+        # Setup models
+        self.setup_models()
+
+        # Process each combination sequentially
+        for combination in tqdm(combinations, desc="Processing combinations"):
+            failures = self.process_combination(combination)
+            self.failures.extend(failures)
+
+        # Print summary
+        self.print_summary()
+
+        # Save failures
+        if self.failures:
+            self.save_failures()
+
+    def print_summary(self):
+        """Print generation statistics."""
+        print(f"\n{'='*80}")
+        print(f"GENERATION SUMMARY")
+        print(f"{'='*80}")
+        print(f"Total attempted: {self.stats['total_attempted']}")
+        print(f"Successfully generated: {self.stats['total_generated']}")
+        print(f"Successfully validated: {self.stats['total_validated']}")
+        print(f"Successfully inserted: {self.stats['total_inserted']}")
+        print(f"Generation failures: {self.stats['generation_failures']}")
+        print(f"Validation failures: {self.stats['validation_failures']}")
+        print(f"Total failures: {len(self.failures)}")
+
+        if self.stats['total_attempted'] > 0:
+            success_rate = (
+                self.stats['total_inserted'] / self.stats['total_attempted'] * 100
+            )
+            print(f"Success rate: {success_rate:.1f}%")
+
+        print(f"{'='*80}\n")
+
+    def save_failures(self):
+        """Save failures to JSON file."""
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        failures_dir = Path("logs/generation")
+        failures_dir.mkdir(parents=True, exist_ok=True)
+
+        failures_file = failures_dir / f"failures_{timestamp}.json"
+
+        # Convert all Pydantic models to dicts for JSON serialization
+        # Use the recursive converter on the entire failures list
+        failures_data = {
+            "timestamp": datetime.now().isoformat(),
+            "config_used": self.config,
+            "stats": self.stats,
+            "failures": _convert_to_dict(self.failures),
+        }
+
+        with open(failures_file, "w") as f:
+            json.dump(failures_data, f, indent=2)
+
+        print(f"Failures saved to: {failures_file}")
+
+    def load_failures(self, failures_file: str) -> List[Dict]:
+        """Load failures from JSON file for retry.
+
+        Args:
+            failures_file: Path to failures JSON file
+
+        Returns:
+            List of failure dictionaries
+        """
+        with open(failures_file, "r") as f:
+            failures_data = json.load(f)
+
+        return failures_data.get("failures", [])
+
+    def retry_failures(self, failures_file: str):
+        """Retry failed combinations from a previous run.
+
+        Args:
+            failures_file: Path to failures JSON file
+        """
+        print(f"\nLoading failures from: {failures_file}")
+        failures = self.load_failures(failures_file)
+
+        print(f"Found {len(failures)} failures to retry")
+
+        # Extract unique combinations from failures
+        combinations = []
+        seen = set()
+
+        for failure in failures:
+            combo = failure.get("combination", {})
+            combo_key = (
+                combo.get("language"),
+                combo.get("level"),
+                combo.get("topic"),
+                combo.get("exercise_type"),
+            )
+
+            if combo_key not in seen:
+                seen.add(combo_key)
+                combinations.append(combo)
+
+        print(f"Unique combinations to retry: {len(combinations)}")
+
+        # Setup models
+        self.setup_models()
+
+        # Process each combination
+        for combination in tqdm(combinations, desc="Retrying failures"):
+            failures = self.process_combination(combination)
+            self.failures.extend(failures)
+
+        # Print summary
+        self.print_summary()
+
+        # Save new failures
+        if self.failures:
+            self.save_failures()
+
+    def check_existing_content(
+        self, language: str, level: str, topic: str, exercise_type: str
+    ) -> bool:
+        """Check if content already exists in database for this combination.
+
+        Args:
+            language: Target language
+            level: Difficulty level
+            topic: Topic
+            exercise_type: Exercise type
+
+        Returns:
+            True if content exists, False otherwise
+        """
+        try:
+            with LanguageDB(self.db_path) as db:
+                # Get IDs
+                language_id = db.get_language_id(language)
+                if language_id is None:
+                    return False
+
+                difficulty_id = db.get_difficulty_id(level.capitalize())
+                if difficulty_id is None:
+                    return False
+
+                topic_id = db.get_topic_id(topic)
+                if topic_id is None:
+                    return False
+
+                # Query for existing exercises
+                query = """
+                    SELECT COUNT(*) FROM exercises_info
+                    WHERE language_id = ? AND difficulty_id = ? AND topic_id = ?
+                    AND exercise_type = ?
+                """
+                result = db.execute_query(
+                    query, (language_id, difficulty_id, topic_id, exercise_type)
+                )
+                count = result[0][0] if result else 0
+
+                return count > 0
+
+        except Exception as e:
+            if self.debug:
+                print(f"Error checking existing content: {e}")
+            return False
+
+    def filter_existing_combinations(
+        self, combinations: List[Dict]
+    ) -> Tuple[List[Dict], int]:
+        """Filter out combinations that already exist in the database.
+
+        Args:
+            combinations: List of combination dictionaries
+
+        Returns:
+            Tuple of (filtered_combinations, skipped_count)
+        """
+        filtered = []
+        skipped = 0
+
+        for combo in combinations:
+            exists = self.check_existing_content(
+                combo["language"],
+                combo["level"],
+                combo["topic"],
+                combo["exercise_type"],
+            )
+
+            if not exists:
+                filtered.append(combo)
+            else:
+                skipped += 1
+
+        return filtered, skipped
+
+
+def main():
+    """Main entry point."""
+    parser = argparse.ArgumentParser(
+        description="Generate language learning content with integrated validation"
+    )
+
+    # Basic arguments
+    parser.add_argument(
+        "--config",
+        type=str,
+        default="content/generation/config/database_generation.json",
+        help="Path to configuration JSON file",
+    )
+    parser.add_argument(
+        "--db-path",
+        type=str,
+        help="Path to database file (defaults to repo root/database/languageLearningDatabase.db)",
+    )
+
+    # Filtering arguments
+    parser.add_argument(
+        "--languages",
+        type=str,
+        help="Comma-separated list of languages to generate (e.g., 'French,Spanish')",
+    )
+    parser.add_argument(
+        "--levels",
+        type=str,
+        help="Comma-separated list of difficulty levels (e.g., 'beginner,intermediate')",
+    )
+    parser.add_argument(
+        "--topics",
+        type=str,
+        help="Comma-separated list of topics (e.g., 'Greetings and introductions,Food')",
+    )
+    parser.add_argument(
+        "--exercise-types",
+        type=str,
+        help="Comma-separated list of exercise types (e.g., 'conversations,fill_in_blank')",
+    )
+
+    # Model overrides
+    parser.add_argument(
+        "--generation-model",
+        type=str,
+        help="Override generation model from config",
+    )
+    parser.add_argument(
+        "--validation-model",
+        type=str,
+        help="Override validation model from config",
+    )
+
+    # Debug flags
+    parser.add_argument(
+        "--debug",
+        action="store_true",
+        help="Enable debug mode with prompt/response inspection",
+    )
+    parser.add_argument(
+        "--no-think",
+        action="store_true",
+        help="Prepend /no_think to model prompts",
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Don't insert to database (testing only)",
+    )
+    parser.add_argument(
+        "--max-combinations",
+        type=int,
+        help="Limit number of combinations (for testing)",
+    )
+
+    # Incremental database updates
+    parser.add_argument(
+        "--add-language",
+        type=str,
+        help="Add new language to existing database (generates all levels/topics/types for this language)",
+    )
+    parser.add_argument(
+        "--add-level",
+        type=str,
+        help="Add new level to existing database (generates all languages/topics/types for this level)",
+    )
+    parser.add_argument(
+        "--add-topic",
+        type=str,
+        help="Add new topic to existing database (generates all languages/levels/types for this topic)",
+    )
+
+    # Retry failures
+    parser.add_argument(
+        "--retry-failures",
+        type=str,
+        help="Retry from failures JSON file",
+    )
+
+    args = parser.parse_args()
+
+    # Set up database path
+    if args.db_path:
+        db_path = args.db_path
+    else:
+        script_dir = Path(__file__).parent.parent  # repo root directory
+        db_path = str(script_dir / "database" / "languageLearningDatabase.db")
+
+        # Create database directory if it doesn't exist
+        db_dir = script_dir / "database"
+        db_dir.mkdir(exist_ok=True)
+
+    # Parse filters
+    languages_filter = None
+    if args.languages:
+        languages_filter = [lang.strip() for lang in args.languages.split(",")]
+
+    levels_filter = None
+    if args.levels:
+        levels_filter = [level.strip() for level in args.levels.split(",")]
+
+    topics_filter = None
+    if args.topics:
+        topics_filter = [topic.strip() for topic in args.topics.split(",")]
+
+    exercise_types_filter = None
+    if args.exercise_types:
+        exercise_types_filter = [et.strip() for et in args.exercise_types.split(",")]
+
+    # Create generator
+    generator = ContentGenerator(
+        config_path=args.config,
+        db_path=db_path,
+        generation_model=args.generation_model,
+        validation_model=args.validation_model,
+        debug=args.debug,
+        no_think=args.no_think,
+        dry_run=args.dry_run,
+    )
+
+    # Handle retry failures mode
+    if args.retry_failures:
+        generator.retry_failures(args.retry_failures)
+        return
+
+    # Handle --add-* arguments (incremental updates)
+    if args.add_language:
+        if not args.add_language in generator.config["languages"]:
+            # Add to config temporarily
+            generator.config["languages"].append(args.add_language)
+        languages_filter = [args.add_language]
+        print(f"Adding new language: {args.add_language}")
+        print(f"Will generate all levels/topics/types for this language")
+
+    if args.add_level:
+        if not args.add_level in generator.config["levels"]:
+            generator.config["levels"].append(args.add_level)
+        levels_filter = [args.add_level]
+        print(f"Adding new level: {args.add_level}")
+        print(f"Will generate all languages/topics/types for this level")
+
+    if args.add_topic:
+        if not args.add_topic in generator.config["topics"]:
+            generator.config["topics"].append(args.add_topic)
+        topics_filter = [args.add_topic]
+        print(f"Adding new topic: {args.add_topic}")
+        print(f"Will generate all languages/levels/types for this topic")
+
+    # Run generation
+    generator.run(
+        languages_filter=languages_filter,
+        levels_filter=levels_filter,
+        topics_filter=topics_filter,
+        exercise_types_filter=exercise_types_filter,
+        max_combinations=args.max_combinations,
+    )
+
+
+if __name__ == "__main__":
+    main()

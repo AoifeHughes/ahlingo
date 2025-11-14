@@ -44,13 +44,9 @@ describe('PairButton', () => {
     );
 
     const button = getByTestId('pair-button');
-    expect(button.props.style).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          backgroundColor: expect.any(String),
-        }),
-      ])
-    );
+    // Check that the button has a backgroundColor style (flattened in RN Testing Library 13.x)
+    expect(button.props.style).toHaveProperty('backgroundColor');
+    expect(typeof button.props.style.backgroundColor).toBe('string');
   });
 
   it('shows matched state correctly', () => {
@@ -59,8 +55,8 @@ describe('PairButton', () => {
     );
 
     const button = getByTestId('pair-button');
-    // Button should be disabled when matched
-    expect(button.props.disabled).toBe(true);
+    // Check accessibility state for disabled instead of props.disabled
+    expect(button.props.accessibilityState?.disabled).toBe(true);
   });
 
   it('handles long text correctly', () => {

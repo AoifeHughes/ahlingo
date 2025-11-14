@@ -7,6 +7,9 @@ module.exports = {
     '<rootDir>/ios/',
     '<rootDir>/e2e/',
   ],
+  transform: {
+    '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
+  },
   transformIgnorePatterns: [
     'node_modules/(?!(jest-)?@?react-native|@react-native-community|@react-navigation)',
   ],
