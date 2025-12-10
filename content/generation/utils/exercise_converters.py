@@ -190,7 +190,8 @@ class PairConverter(ExerciseConverter):
 
     def convert_to_text(self, exercise_data: Dict[str, Any]) -> str:
         """Convert word pair exercise to readable format."""
-        pairs = exercise_data.get("pairs", [])
+        # Handle both "pairs" and "word_pairs" field names
+        pairs = exercise_data.get("word_pairs", exercise_data.get("pairs", []))
 
         # Parse pairs if they're stored as JSON string
         if isinstance(pairs, str):
@@ -240,12 +241,13 @@ class TranslationConverter(ExerciseConverter):
 
     def is_too_similar(self, new_exercise: Dict[str, Any], existing_exercises: List[Dict[str, Any]], threshold: float = 0.6) -> Tuple[bool, str]:
         """Check if translation exercise is too similar to existing ones."""
-        new_lang1 = new_exercise.get("language_1_content", "")
-        new_lang2 = new_exercise.get("language_2_content", "")
+        # Handle both database format (language_1_content) and Pydantic format (English/language)
+        new_lang1 = new_exercise.get("language_1_content", new_exercise.get("English", ""))
+        new_lang2 = new_exercise.get("language_2_content", new_exercise.get(self.language, ""))
 
         for existing in existing_exercises:
-            existing_lang1 = existing.get("language_1_content", "")
-            existing_lang2 = existing.get("language_2_content", "")
+            existing_lang1 = existing.get("language_1_content", existing.get("English", ""))
+            existing_lang2 = existing.get("language_2_content", existing.get(self.language, ""))
 
             # Check for exact match on either language
             if (new_lang1.lower() == existing_lang1.lower() or
@@ -261,10 +263,11 @@ class TranslationConverter(ExerciseConverter):
 
     def convert_to_text(self, exercise_data: Dict[str, Any]) -> str:
         """Convert translation exercise to readable format."""
-        language_1_content = exercise_data.get("language_1_content", "")
-        language_2_content = exercise_data.get("language_2_content", "")
-        language_1 = exercise_data.get("language_1", "English")
-        language_2 = exercise_data.get("language_2", self.language)
+        # Handle both database format (language_1_content) and Pydantic format (English/language)
+        language_1_content = exercise_data.get("language_1_content", exercise_data.get("English", ""))
+        language_2_content = exercise_data.get("language_2_content", exercise_data.get(self.language, ""))
+        language_1 = "English"
+        language_2 = self.language
 
         text_parts = ["=== TRANSLATION EXERCISE ==="]
         text_parts.append(f"{language_1}: {language_1_content}")

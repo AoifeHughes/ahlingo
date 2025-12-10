@@ -281,7 +281,6 @@ def debug_show_error(
         else:
             print("  ⚠️  RESPONSE IS EMPTY OR WHITESPACE ONLY!")
         print("\n" + "=" * 80)
-        input("🔍 Press ENTER to continue after error...")
         print()
 
 
