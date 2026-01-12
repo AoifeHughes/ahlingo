@@ -2,8 +2,16 @@
   "migIndex": 1,
   "data": [
     {
+      "path": "assets/databases/content.db",
+      "sha1": "c8d352b869e3347dc465dabb3663a2d400471dc0"
+    },
+    {
       "path": "assets/databases/languageLearningDatabase.db",
-      "sha1": "3a30737d34ad32bdd8b7d36b1476bd2db0830a1b"
+      "sha1": "6d7b6e604a02e0ab30830b3e4eb4d27279a47678"
+    },
+    {
+      "path": "assets/databases/userdata_template.db",
+      "sha1": "4f2bdf5b5c2aedd4b5b983ac9b6808be3fd62131"
     }
   ]
 }

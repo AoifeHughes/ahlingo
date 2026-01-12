@@ -13,6 +13,8 @@
 		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		F001FB4864F125E9F875561A /* libPods-AhLingo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 239004B452C1712D55E1A6E9 /* libPods-AhLingo.a */; };
+		3D73329C1A3CFC4BE477C21C /* content.db in Resources */ = {isa = PBXBuildFile; fileRef = 6CD9A462905D5624FE8D687D /* content.db */; };
+		6A22DBFBDD0B71B834C2790F /* userdata_template.db in Resources */ = {isa = PBXBuildFile; fileRef = 21CF463E4417CA2BAAC3A03E /* userdata_template.db */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +29,8 @@
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = AhLingo/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		81EDB185BBF158C4D05C020D /* Pods-AhLingo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AhLingo.debug.xcconfig"; path = "Target Support Files/Pods-AhLingo/Pods-AhLingo.debug.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		6CD9A462905D5624FE8D687D /* content.db */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = content.db; path = ../assets/databases/content.db; sourceTree = "<group>"; };
+		21CF463E4417CA2BAAC3A03E /* userdata_template.db */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = userdata_template.db; path = ../assets/databases/userdata_template.db; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,6 +99,8 @@
 		B9F7B0DC1D0F4095A195CE7E /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				21CF463E4417CA2BAAC3A03E /* userdata_template.db */,
+				6CD9A462905D5624FE8D687D /* content.db */,
 				188AC33B49A44C11B5DF7856 /* languageLearningDatabase.db */,
 			);
 			name = Resources;
@@ -169,6 +175,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6A22DBFBDD0B71B834C2790F /* userdata_template.db in Resources */,
+				3D73329C1A3CFC4BE477C21C /* content.db in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				31F070B7A76AA688C3401979 /* PrivacyInfo.xcprivacy in Resources */,

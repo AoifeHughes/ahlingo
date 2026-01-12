@@ -22,7 +22,8 @@
     "test:e2e:test:android": "detox test --configuration android.emu.debug",
     "build:apk": "../scripts/build_android_apk.sh",
     "clean": "react-native-clean-project",
-    "postinstall": "cd ios && pod install && cd .."
+    "sync:ios-assets": "node scripts/syncIosAssets.js",
+    "postinstall": "cd ios && pod install && cd .. && node scripts/syncIosAssets.js"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^2.2.0",
@@ -67,6 +68,7 @@
     "prettier": "2.8.8",
     "react-test-renderer": "19.1.0",
     "redux-mock-store": "^1.5.5",
+    "sqlite3": "^5.1.7",
     "typescript": "5.0.4"
   },
   "engines": {

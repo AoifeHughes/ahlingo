@@ -1,13 +1,27 @@
 // Database configuration constants
+// Two-database architecture:
+//   - content.db: Read-only, contains lessons/exercises (replaced on updates)
+//   - userdata.db: Read-write, contains user progress (never replaced)
 export const DATABASE_CONFIG = {
-  NAME: 'languageLearningDatabase.db',
-  // Increment this version number whenever you update the database schema or content
-  // The app will automatically perform a migration to preserve user data:
-  //   - User accounts, settings, and chat histories are preserved
-  //   - Aggregate progress stats (total attempts, correct count) are stored
-  //   - Individual exercise attempt history is reset (due to exercise ID changes)
-  // This should match the 'version' value in the database_metadata table
-  VERSION: 140,
+  // Legacy database name (for migration from old single-database approach)
+  LEGACY_NAME: 'languageLearningDatabase.db',
+  LEGACY_VERSION: 140,
+
+  // Content database (lessons, exercises, topics, etc.)
+  CONTENT_DB: {
+    NAME: 'content.db',
+    // Increment when updating content (new lessons, exercises, etc.)
+    // This should match the 'version' value in the content database_metadata table
+    VERSION: 141,
+  },
+
+  // User data database (progress, settings, chat history, etc.)
+  USER_DB: {
+    NAME: 'userdata.db',
+    // User schema version is managed separately via UserSchemaMigrationService
+    // This is just for reference - actual version stored in schema_version table
+    INITIAL_SCHEMA_VERSION: 1,
+  },
 } as const;
 
 // Timeout constants
@@ -42,27 +56,27 @@ export const SQL_QUERIES = {
   UPSERT_USER_SETTING:
     'INSERT OR REPLACE INTO user_settings (user_id, setting_name, setting_value) VALUES (?, ?, ?)',
 
-  // Base data queries
-  GET_LANGUAGES: 'SELECT * FROM languages ORDER BY language',
-  GET_DIFFICULTIES: 'SELECT * FROM difficulties ORDER BY difficulty_level',
-  GET_TOPICS: 'SELECT * FROM topics ORDER BY topic',
+  // Base data queries (content database)
+  GET_LANGUAGES: 'SELECT * FROM content.languages ORDER BY language',
+  GET_DIFFICULTIES: 'SELECT * FROM content.difficulties ORDER BY difficulty_level',
+  GET_TOPICS: 'SELECT * FROM content.topics ORDER BY topic',
 
   // Exercise filtering templates
   GET_TOPICS_BY_TYPE: (exerciseType: string) => {
     const exerciseTableMap = {
-      'pairs': 'pair_exercises pe',
-      'conversation': 'conversation_exercises ce',
-      'translation': 'translation_exercises te',
-      'fill_in_blank': 'fill_in_blank_exercises fibe'
+      'pairs': 'content.pair_exercises pe',
+      'conversation': 'content.conversation_exercises ce',
+      'translation': 'content.translation_exercises te',
+      'fill_in_blank': 'content.fill_in_blank_exercises fibe'
     };
-    const joinTable = exerciseTableMap[exerciseType as keyof typeof exerciseTableMap] || 'pair_exercises pe';
+    const joinTable = exerciseTableMap[exerciseType as keyof typeof exerciseTableMap] || 'content.pair_exercises pe';
 
     return `
       SELECT DISTINCT t.id, t.topic
-      FROM topics t
-      JOIN exercises_info ei ON t.id = ei.topic_id
-      JOIN languages l ON ei.language_id = l.id
-      JOIN difficulties d ON ei.difficulty_id = d.id
+      FROM content.topics t
+      JOIN content.exercises_info ei ON t.id = ei.topic_id
+      JOIN content.languages l ON ei.language_id = l.id
+      JOIN content.difficulties d ON ei.difficulty_id = d.id
       JOIN ${joinTable} ON ei.id = ${joinTable.split(' ')[1]}.exercise_id
       WHERE l.language = ?
         AND d.difficulty_level = ?
@@ -73,17 +87,17 @@ export const SQL_QUERIES = {
 
   GET_RANDOM_EXERCISE: (exerciseType: string) => {
     const exerciseTableJoins = {
-      'pairs': 'JOIN pair_exercises pe ON ei.id = pe.exercise_id',
-      'conversation': 'JOIN conversation_exercises ce ON ei.id = ce.exercise_id',
-      'translation': 'JOIN translation_exercises te ON ei.id = te.exercise_id',
-      'fill_in_blank': 'JOIN fill_in_blank_exercises fibe ON ei.id = fibe.exercise_id'
+      'pairs': 'JOIN content.pair_exercises pe ON ei.id = pe.exercise_id',
+      'conversation': 'JOIN content.conversation_exercises ce ON ei.id = ce.exercise_id',
+      'translation': 'JOIN content.translation_exercises te ON ei.id = te.exercise_id',
+      'fill_in_blank': 'JOIN content.fill_in_blank_exercises fibe ON ei.id = fibe.exercise_id'
     };
-    const dataJoin = exerciseTableJoins[exerciseType as keyof typeof exerciseTableJoins] || 'JOIN pair_exercises pe ON ei.id = pe.exercise_id';
+    const dataJoin = exerciseTableJoins[exerciseType as keyof typeof exerciseTableJoins] || 'JOIN content.pair_exercises pe ON ei.id = pe.exercise_id';
 
     return `
-      SELECT DISTINCT ei.* FROM exercises_info ei
-      JOIN languages l ON ei.language_id = l.id
-      JOIN difficulties d ON ei.difficulty_id = d.id
+      SELECT DISTINCT ei.* FROM content.exercises_info ei
+      JOIN content.languages l ON ei.language_id = l.id
+      JOIN content.difficulties d ON ei.difficulty_id = d.id
       ${dataJoin}
       WHERE ei.topic_id = ?
         AND l.language = ?
@@ -94,25 +108,25 @@ export const SQL_QUERIES = {
     `;
   },
 
-  // Exercise data queries
+  // Exercise data queries (content database)
   GET_PAIR_EXERCISES:
-    'SELECT * FROM pair_exercises WHERE exercise_id = ? ORDER BY id',
+    'SELECT * FROM content.pair_exercises WHERE exercise_id = ? ORDER BY id',
   GET_CONVERSATION_EXERCISES:
-    'SELECT * FROM conversation_exercises WHERE exercise_id = ? ORDER BY id',
+    'SELECT * FROM content.conversation_exercises WHERE exercise_id = ? ORDER BY id',
   GET_TRANSLATION_EXERCISES:
-    'SELECT * FROM translation_exercises WHERE exercise_id = ? ORDER BY id',
+    'SELECT * FROM content.translation_exercises WHERE exercise_id = ? ORDER BY id',
   GET_FILL_IN_BLANK_EXERCISES:
-    'SELECT * FROM fill_in_blank_exercises WHERE exercise_id = ? ORDER BY id',
+    'SELECT * FROM content.fill_in_blank_exercises WHERE exercise_id = ? ORDER BY id',
   GET_EXERCISES_BY_LESSON:
-    'SELECT * FROM exercises_info WHERE lesson_id = ? AND exercise_type = "pairs" ORDER BY id',
+    'SELECT * FROM content.exercises_info WHERE lesson_id = ? AND exercise_type = "pairs" ORDER BY id',
 
-  // Conversation specific queries
+  // Conversation specific queries (content database)
   GET_CONVERSATION_SUMMARY:
-    'SELECT summary FROM conversation_summaries WHERE exercise_id = ?',
+    'SELECT summary FROM content.conversation_summaries WHERE exercise_id = ?',
   GET_RANDOM_SUMMARIES:
-    'SELECT summary FROM conversation_summaries WHERE exercise_id != ? ORDER BY RANDOM() LIMIT ?',
+    'SELECT summary FROM content.conversation_summaries WHERE exercise_id != ? ORDER BY RANDOM() LIMIT ?',
   GET_TOPIC_FOR_EXERCISE:
-    'SELECT t.topic FROM exercises_info ei JOIN topics t ON ei.topic_id = t.id WHERE ei.id = ?',
+    'SELECT t.topic FROM content.exercises_info ei JOIN content.topics t ON ei.topic_id = t.id WHERE ei.id = ?',
 
   // Stats and progress queries
   RECORD_EXERCISE_ATTEMPT:
@@ -128,9 +142,9 @@ export const SQL_QUERIES = {
         -- Count non-pairs exercises normally
         COALESCE((
           SELECT COUNT(DISTINCT ei2.id)
-          FROM exercises_info ei2
-          JOIN languages l2 ON ei2.language_id = l2.id
-          JOIN difficulties d2 ON ei2.difficulty_id = d2.id
+          FROM content.exercises_info ei2
+          JOIN content.languages l2 ON ei2.language_id = l2.id
+          JOIN content.difficulties d2 ON ei2.difficulty_id = d2.id
           WHERE ei2.topic_id = t.id
             AND ei2.exercise_type != 'pairs'
             AND l2.language = ?
@@ -139,20 +153,20 @@ export const SQL_QUERIES = {
         -- Count pairs exercises only if they have data
         COALESCE((
           SELECT COUNT(DISTINCT pe.exercise_id)
-          FROM exercises_info ei3
-          JOIN languages l3 ON ei3.language_id = l3.id
-          JOIN difficulties d3 ON ei3.difficulty_id = d3.id
-          INNER JOIN pair_exercises pe ON ei3.id = pe.exercise_id
+          FROM content.exercises_info ei3
+          JOIN content.languages l3 ON ei3.language_id = l3.id
+          JOIN content.difficulties d3 ON ei3.difficulty_id = d3.id
+          INNER JOIN content.pair_exercises pe ON ei3.id = pe.exercise_id
           WHERE ei3.topic_id = t.id
             AND ei3.exercise_type = 'pairs'
             AND l3.language = ?
             AND d3.difficulty_level = ?
         ), 0)
       ) as total_exercises
-    FROM topics t
-    LEFT JOIN exercises_info ei ON t.id = ei.topic_id
-    LEFT JOIN languages l ON ei.language_id = l.id
-    LEFT JOIN difficulties d ON ei.difficulty_id = d.id
+    FROM content.topics t
+    LEFT JOIN content.exercises_info ei ON t.id = ei.topic_id
+    LEFT JOIN content.languages l ON ei.language_id = l.id
+    LEFT JOIN content.difficulties d ON ei.difficulty_id = d.id
     LEFT JOIN user_exercise_attempts uea ON ei.id = uea.exercise_id AND uea.user_id = ?
     WHERE l.language = ? AND d.difficulty_level = ?
     GROUP BY t.id, t.topic
@@ -160,9 +174,9 @@ export const SQL_QUERIES = {
       -- Count non-pairs exercises normally
       COALESCE((
         SELECT COUNT(DISTINCT ei2.id)
-        FROM exercises_info ei2
-        JOIN languages l2 ON ei2.language_id = l2.id
-        JOIN difficulties d2 ON ei2.difficulty_id = d2.id
+        FROM content.exercises_info ei2
+        JOIN content.languages l2 ON ei2.language_id = l2.id
+        JOIN content.difficulties d2 ON ei2.difficulty_id = d2.id
         WHERE ei2.topic_id = t.id
           AND ei2.exercise_type != 'pairs'
           AND l2.language = ?
@@ -171,10 +185,10 @@ export const SQL_QUERIES = {
       -- Count pairs exercises only if they have data
       COALESCE((
         SELECT COUNT(DISTINCT pe.exercise_id)
-        FROM exercises_info ei3
-        JOIN languages l3 ON ei3.language_id = l3.id
-        JOIN difficulties d3 ON ei3.difficulty_id = d3.id
-        INNER JOIN pair_exercises pe ON ei3.id = pe.exercise_id
+        FROM content.exercises_info ei3
+        JOIN content.languages l3 ON ei3.language_id = l3.id
+        JOIN content.difficulties d3 ON ei3.difficulty_id = d3.id
+        INNER JOIN content.pair_exercises pe ON ei3.id = pe.exercise_id
         WHERE ei3.topic_id = t.id
           AND ei3.exercise_type = 'pairs'
           AND l3.language = ?
@@ -192,9 +206,9 @@ export const SQL_QUERIES = {
         -- Count non-pairs exercises normally
         COALESCE((
           SELECT COUNT(DISTINCT ei2.id)
-          FROM exercises_info ei2
-          JOIN languages l2 ON ei2.language_id = l2.id
-          JOIN difficulties d2 ON ei2.difficulty_id = d2.id
+          FROM content.exercises_info ei2
+          JOIN content.languages l2 ON ei2.language_id = l2.id
+          JOIN content.difficulties d2 ON ei2.difficulty_id = d2.id
           WHERE ei2.exercise_type != 'pairs'
             AND l2.language = ?
             AND d2.difficulty_level = ?
@@ -202,18 +216,18 @@ export const SQL_QUERIES = {
         -- Count pairs exercises only if they have data
         COALESCE((
           SELECT COUNT(DISTINCT pe.exercise_id)
-          FROM exercises_info ei3
-          JOIN languages l3 ON ei3.language_id = l3.id
-          JOIN difficulties d3 ON ei3.difficulty_id = d3.id
-          INNER JOIN pair_exercises pe ON ei3.id = pe.exercise_id
+          FROM content.exercises_info ei3
+          JOIN content.languages l3 ON ei3.language_id = l3.id
+          JOIN content.difficulties d3 ON ei3.difficulty_id = d3.id
+          INNER JOIN content.pair_exercises pe ON ei3.id = pe.exercise_id
           WHERE ei3.exercise_type = 'pairs'
             AND l3.language = ?
             AND d3.difficulty_level = ?
         ), 0)
       ) as total_available
-    FROM exercises_info ei
-    JOIN languages l ON ei.language_id = l.id
-    JOIN difficulties d ON ei.difficulty_id = d.id
+    FROM content.exercises_info ei
+    JOIN content.languages l ON ei.language_id = l.id
+    JOIN content.difficulties d ON ei.difficulty_id = d.id
     LEFT JOIN user_exercise_attempts uea ON ei.id = uea.exercise_id AND uea.user_id = ?
     WHERE l.language = ? AND d.difficulty_level = ?
   `,
@@ -229,10 +243,10 @@ export const SQL_QUERIES = {
       l.language,
       MAX(uea.attempt_date) as last_failed_date
     FROM user_exercise_attempts uea
-    JOIN exercises_info ei ON uea.exercise_id = ei.id
-    JOIN topics t ON ei.topic_id = t.id
-    JOIN difficulties d ON ei.difficulty_id = d.id
-    JOIN languages l ON ei.language_id = l.id
+    JOIN content.exercises_info ei ON uea.exercise_id = ei.id
+    JOIN content.topics t ON ei.topic_id = t.id
+    JOIN content.difficulties d ON ei.difficulty_id = d.id
+    JOIN content.languages l ON ei.language_id = l.id
     WHERE uea.user_id = ?
       AND uea.is_correct = 0
       AND ei.id NOT IN (
@@ -294,19 +308,19 @@ export const SQL_QUERIES = {
   // Smart randomization queries
   GET_EXERCISES_EXCLUDING_RECENT: (exerciseType: string) => {
     const exerciseTableJoins = {
-      'pairs': 'JOIN pair_exercises pe ON ei.id = pe.exercise_id',
-      'conversation': 'JOIN conversation_exercises ce ON ei.id = ce.exercise_id',
-      'translation': 'JOIN translation_exercises te ON ei.id = te.exercise_id',
-      'fill_in_blank': 'JOIN fill_in_blank_exercises fibe ON ei.id = fibe.exercise_id'
+      'pairs': 'JOIN content.pair_exercises pe ON ei.id = pe.exercise_id',
+      'conversation': 'JOIN content.conversation_exercises ce ON ei.id = ce.exercise_id',
+      'translation': 'JOIN content.translation_exercises te ON ei.id = te.exercise_id',
+      'fill_in_blank': 'JOIN content.fill_in_blank_exercises fibe ON ei.id = fibe.exercise_id'
     };
-    const dataJoin = exerciseTableJoins[exerciseType as keyof typeof exerciseTableJoins] || 'JOIN pair_exercises pe ON ei.id = pe.exercise_id';
+    const dataJoin = exerciseTableJoins[exerciseType as keyof typeof exerciseTableJoins] || 'JOIN content.pair_exercises pe ON ei.id = pe.exercise_id';
 
     return `
       SELECT DISTINCT ei.*, t.topic as topic_name
-      FROM exercises_info ei
-      JOIN languages l ON ei.language_id = l.id
-      JOIN difficulties d ON ei.difficulty_id = d.id
-      JOIN topics t ON ei.topic_id = t.id
+      FROM content.exercises_info ei
+      JOIN content.languages l ON ei.language_id = l.id
+      JOIN content.difficulties d ON ei.difficulty_id = d.id
+      JOIN content.topics t ON ei.topic_id = t.id
       ${dataJoin}
       WHERE ei.topic_id = ?
         AND l.language = ?
@@ -320,19 +334,19 @@ export const SQL_QUERIES = {
 
   GET_ALL_EXERCISES_FOR_SMART_SELECTION: (exerciseType: string) => {
     const exerciseTableJoins = {
-      'pairs': 'JOIN pair_exercises pe ON ei.id = pe.exercise_id',
-      'conversation': 'JOIN conversation_exercises ce ON ei.id = ce.exercise_id',
-      'translation': 'JOIN translation_exercises te ON ei.id = te.exercise_id',
-      'fill_in_blank': 'JOIN fill_in_blank_exercises fibe ON ei.id = fibe.exercise_id'
+      'pairs': 'JOIN content.pair_exercises pe ON ei.id = pe.exercise_id',
+      'conversation': 'JOIN content.conversation_exercises ce ON ei.id = ce.exercise_id',
+      'translation': 'JOIN content.translation_exercises te ON ei.id = te.exercise_id',
+      'fill_in_blank': 'JOIN content.fill_in_blank_exercises fibe ON ei.id = fibe.exercise_id'
     };
-    const dataJoin = exerciseTableJoins[exerciseType as keyof typeof exerciseTableJoins] || 'JOIN pair_exercises pe ON ei.id = pe.exercise_id';
+    const dataJoin = exerciseTableJoins[exerciseType as keyof typeof exerciseTableJoins] || 'JOIN content.pair_exercises pe ON ei.id = pe.exercise_id';
 
     return `
       SELECT DISTINCT ei.*, t.topic as topic_name
-      FROM exercises_info ei
-      JOIN languages l ON ei.language_id = l.id
-      JOIN difficulties d ON ei.difficulty_id = d.id
-      JOIN topics t ON ei.topic_id = t.id
+      FROM content.exercises_info ei
+      JOIN content.languages l ON ei.language_id = l.id
+      JOIN content.difficulties d ON ei.difficulty_id = d.id
+      JOIN content.topics t ON ei.topic_id = t.id
       ${dataJoin}
       WHERE ei.topic_id = ?
         AND l.language = ?
@@ -347,10 +361,10 @@ export const SQL_QUERIES = {
       return `
         SELECT ei.*, t.topic as topic_name,
                CASE WHEN uea.exercise_id IS NULL THEN 0 ELSE 1 END as attempted_priority
-        FROM exercises_info ei
-        JOIN languages l ON ei.language_id = l.id
-        JOIN difficulties d ON ei.difficulty_id = d.id
-        JOIN topics t ON ei.topic_id = t.id
+        FROM content.exercises_info ei
+        JOIN content.languages l ON ei.language_id = l.id
+        JOIN content.difficulties d ON ei.difficulty_id = d.id
+        JOIN content.topics t ON ei.topic_id = t.id
         LEFT JOIN user_exercise_attempts uea ON ei.id = uea.exercise_id AND uea.user_id = ?
         WHERE l.language = ?
           AND d.difficulty_level = ?
@@ -360,10 +374,10 @@ export const SQL_QUERIES = {
     } else {
       return `
         SELECT ei.*, t.topic as topic_name, 0 as attempted_priority
-        FROM exercises_info ei
-        JOIN languages l ON ei.language_id = l.id
-        JOIN difficulties d ON ei.difficulty_id = d.id
-        JOIN topics t ON ei.topic_id = t.id
+        FROM content.exercises_info ei
+        JOIN content.languages l ON ei.language_id = l.id
+        JOIN content.difficulties d ON ei.difficulty_id = d.id
+        JOIN content.topics t ON ei.topic_id = t.id
         WHERE l.language = ?
           AND d.difficulty_level = ?
           AND ei.exercise_type IN ('pairs', 'conversation', 'translation', 'fill_in_blank')

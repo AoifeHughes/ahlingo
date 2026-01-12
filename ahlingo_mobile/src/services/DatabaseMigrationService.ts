@@ -3,14 +3,28 @@ import { SQLiteDatabase } from 'react-native-sqlite-storage';
 import { getDatabase, executeQuery, rowsToArray } from '../utils/databaseUtils';
 
 /**
- * Database Migration Service
+ * @deprecated DEPRECATED - No longer used with two-database architecture
  *
- * Handles database version migrations while preserving user data.
- * When a new database version is detected, this service:
- * 1. Backs up user data (users, settings, chats) to AsyncStorage
- * 2. Calculates and stores aggregate statistics
- * 3. Allows database replacement
- * 4. Restores user data to the new database
+ * This service is kept for historical reference only.
+ *
+ * OLD APPROACH (Single Database - v140 and earlier):
+ * - Used backup-replace-restore strategy
+ * - Backed up user data to AsyncStorage
+ * - Deleted entire database and copied new one
+ * - Restored user data (but lost individual exercise history)
+ *
+ * NEW APPROACH (Two-Database Architecture - v141+):
+ * - content.db: Read-only content (lessons/exercises) - safe to replace
+ * - userdata.db: User data (progress/settings) - NEVER replaced
+ * - User schema migrations via UserSchemaMigrationService
+ * - Zero data loss
+ *
+ * This file remains for:
+ * 1. Reference implementation for backup/restore logic
+ * 2. Potential recovery scenarios from old app versions
+ * 3. Historical context
+ *
+ * DO NOT USE for new migrations. Use UserSchemaMigrationService instead.
  */
 
 const MIGRATION_STORAGE_KEY = '@database_migration_backup';
