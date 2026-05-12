@@ -242,6 +242,24 @@ const ConversationExercisesScreen: React.FC<Props> = ({
           hasAnswered: false,
           isCorrect: null,
         }));
+      } else if (correctSummary) {
+        // Fewer than 2 wrong summaries - show quiz with available options only
+        const cleanCorrectSummary = cleanText(correctSummary);
+        const cleanWrongSummaries = wrongSummaries.map(summary =>
+          cleanText(summary)
+        );
+
+        const options = [cleanCorrectSummary, ...cleanWrongSummaries];
+        const shuffledOptions = options.sort(() => Math.random() - 0.5);
+
+        setQuizState(prev => ({
+          ...prev,
+          correctAnswer: cleanCorrectSummary,
+          options: shuffledOptions,
+          selectedOption: null,
+          hasAnswered: false,
+          isCorrect: null,
+        }));
       }
     } catch (error) {
       console.error('Failed to load conversation data:', error);
@@ -400,6 +418,16 @@ const ConversationExercisesScreen: React.FC<Props> = ({
                   : 'Next Exercise'
                 }
               </Text>
+            </TouchableOpacity>
+          </View>
+        )}
+        {quizState.options.length === 0 && (
+          <View style={styles.feedbackContainer}>
+            <TouchableOpacity
+              style={styles.nextButton}
+              onPress={handleNextExercise}
+            >
+              <Text style={styles.nextButtonText}>Next Exercise</Text>
             </TouchableOpacity>
           </View>
         )}

@@ -69,3 +69,6 @@ generation_failures*.csv
 logs/
 
 */coverage/
+
+# MkDocs build output
+site/

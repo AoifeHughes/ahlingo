@@ -15,6 +15,7 @@ class LanguageDB:
         self.conn = sqlite3.connect(db_path)
         self.conn.row_factory = sqlite3.Row
         self.cursor = self.conn.cursor()
+        self.cursor.execute("PRAGMA foreign_keys = ON")
         self._initialize()
         self._update_schema()
 

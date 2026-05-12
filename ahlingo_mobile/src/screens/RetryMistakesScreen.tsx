@@ -111,6 +111,8 @@ const RetryMistakesScreen: React.FC<Props> = ({ navigation }) => {
         return '💬';
       case 'translation':
         return '📝';
+      case 'fill_in_blank':
+        return '✏️';
       default:
         return '❓';
     }
@@ -124,6 +126,8 @@ const RetryMistakesScreen: React.FC<Props> = ({ navigation }) => {
         return 'Conversation';
       case 'translation':
         return 'Translation';
+      case 'fill_in_blank':
+        return 'Fill in the Blank';
       default:
         return 'Unknown';
     }

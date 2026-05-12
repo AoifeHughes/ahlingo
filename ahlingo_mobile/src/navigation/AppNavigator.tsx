@@ -1,10 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types';
 import { useTheme } from '../contexts/ThemeContext';
 import { checkUsersExist } from '../services/RefactoredDatabaseService';
 import { ActivityIndicator, View } from 'react-native';
+import HeaderIconButton from '../components/HeaderIconButton';
+
+type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
+
+interface MainMenuBackButtonProps {
+  navigation: NavigationProp;
+}
+
+const MainMenuBackButton: React.FC<MainMenuBackButtonProps> = ({ navigation }) => (
+  <HeaderIconButton onPress={() => navigation.navigate('MainMenu')} icon="←" />
+);
 
 // Import screens (placeholder imports for now)
 import WelcomeScreen from '../screens/WelcomeScreen';
@@ -69,6 +81,7 @@ const AppNavigator: React.FC = () => {
             fontWeight: theme.typography.fontWeights.semibold,
             fontSize: theme.typography.fontSizes.lg,
           },
+          headerBackButtonMenuEnabled: false,
         }}
       >
         <Stack.Screen
@@ -84,84 +97,114 @@ const AppNavigator: React.FC = () => {
         <Stack.Screen
           name="TopicSelection"
           component={TopicSelectionScreen}
-          options={{ title: 'Select Topic' }}
+          options={({ navigation }) => ({
+            title: 'Select Topic',
+            headerLeft: () => <MainMenuBackButton navigation={navigation} />,
+          })}
         />
         <Stack.Screen
           name="PairsGame"
           component={PairsGameScreen}
-          options={({ route }) => ({
+          options={({ navigation }) => ({
             title: 'Pairs Game',
-            headerBackButtonMenuEnabled: !route.params?.shuffleContext,
+            headerLeft: () => <MainMenuBackButton navigation={navigation} />,
           })}
         />
         <Stack.Screen
           name="ConversationExercises"
           component={ConversationExercisesScreen}
-          options={({ route }) => ({
+          options={({ navigation }) => ({
             title: 'Conversation',
-            headerBackButtonMenuEnabled: !route.params?.shuffleContext,
+            headerLeft: () => <MainMenuBackButton navigation={navigation} />,
           })}
         />
         <Stack.Screen
           name="TranslationExercises"
           component={TranslationExercisesScreen}
-          options={({ route }) => ({
+          options={({ navigation }) => ({
             title: 'Translation',
-            headerBackButtonMenuEnabled: !route.params?.shuffleContext,
+            headerLeft: () => <MainMenuBackButton navigation={navigation} />,
           })}
         />
         <Stack.Screen
           name="Chatbot"
           component={ChatbotScreen}
-          options={{ title: 'Chatbot', headerBackTitle: 'Main Menu' }}
+          options={({ navigation }) => ({
+            title: 'Chatbot',
+            headerLeft: () => <MainMenuBackButton navigation={navigation} />,
+          })}
         />
         <Stack.Screen
           name="Settings"
           component={SettingsScreen}
-          options={{ title: 'Settings', headerBackTitle: 'Main Menu' }}
+          options={({ navigation }) => ({
+            title: 'Settings',
+            headerLeft: () => <MainMenuBackButton navigation={navigation} />,
+          })}
         />
         <Stack.Screen
           name="Stats"
           component={StatsScreen}
-          options={{ title: 'Your Progress', headerBackTitle: 'Main Menu' }}
+          options={({ navigation }) => ({
+            title: 'Your Progress',
+            headerLeft: () => <MainMenuBackButton navigation={navigation} />,
+          })}
         />
         <Stack.Screen
           name="RetryMistakes"
           component={RetryMistakesScreen}
-          options={{ title: 'Retry Mistakes', headerBackTitle: 'Main Menu' }}
+          options={({ navigation }) => ({
+            title: 'Retry Mistakes',
+            headerLeft: () => <MainMenuBackButton navigation={navigation} />,
+          })}
         />
         <Stack.Screen
           name="StudyTopic"
           component={StudyTopicScreen}
-          options={{ title: 'Study Topic' }}
+          options={({ navigation }) => ({
+            title: 'Study Topic',
+            headerLeft: () => <MainMenuBackButton navigation={navigation} />,
+          })}
         />
         <Stack.Screen
           name="StudyTopicShuffle"
           component={StudyTopicShuffleScreen}
-          options={{ title: 'Study Session' }}
+          options={({ navigation }) => ({
+            title: 'Study Session',
+            headerLeft: () => <MainMenuBackButton navigation={navigation} />,
+          })}
         />
         <Stack.Screen
           name="FillInTheBlank"
           component={FillInTheBlankScreen}
-          options={{ title: 'Fill in the Blank' }}
+          options={({ navigation }) => ({
+            title: 'Fill in the Blank',
+            headerLeft: () => <MainMenuBackButton navigation={navigation} />,
+          })}
         />
         <Stack.Screen
           name="ExerciseShuffleStart"
           component={ExerciseShuffleStartScreen}
-          options={{ title: 'Exercise Shuffle' }}
+          options={({ navigation }) => ({
+            title: 'Exercise Shuffle',
+            headerLeft: () => <MainMenuBackButton navigation={navigation} />,
+          })}
         />
         <Stack.Screen
           name="ExerciseShuffleTransition"
           component={ExerciseShuffleTransitionScreen}
-          options={{
+          options={({ navigation }) => ({
             title: 'Challenge Progress',
-            headerBackButtonMenuEnabled: false,
-          }}
+            headerLeft: () => <MainMenuBackButton navigation={navigation} />,
+          })}
         />
         <Stack.Screen
           name="ExerciseShuffleSummary"
           component={ExerciseShuffleSummaryScreen}
-          options={{ title: 'Shuffle Results' }}
+          options={({ navigation }) => ({
+            title: 'Shuffle Results',
+            headerLeft: () => <MainMenuBackButton navigation={navigation} />,
+          })}
         />
         <Stack.Screen
           name="About"

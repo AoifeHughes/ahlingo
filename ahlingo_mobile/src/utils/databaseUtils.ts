@@ -12,8 +12,8 @@ import {
   needsUserSchemaInitialization,
 } from '../services/UserSchemaMigrationService';
 
-// Enable debug mode and promises
-SQLite.DEBUG(true);
+// Enable debug mode in development only
+SQLite.DEBUG(__DEV__);
 SQLite.enablePromise(true);
 
 const isTestEnv =
@@ -364,6 +364,17 @@ export const ensureDatabaseCopied = async (): Promise<void> => {
     if (needsContentUpdate) {
       console.log(`🔄 Updating content database to v${bundledContentVersion}...`);
 
+      // Backup old content database before replacement (keep one generation)
+      if (contentExists) {
+        const backupPath = `${contentDbPath}.backup`;
+        try {
+          await RNFS.copyFile(contentDbPath, backupPath);
+          console.log('✅ Old content database backed up');
+        } catch (backupError) {
+          console.warn('⚠️ Failed to backup old content database:', backupError);
+        }
+      }
+
       // Delete old content database if it exists
       if (contentExists) {
         await RNFS.unlink(contentDbPath);
@@ -377,13 +388,16 @@ export const ensureDatabaseCopied = async (): Promise<void> => {
         contentDbPath
       );
 
+      // Verify file integrity after copy
+      const stats = await RNFS.stat(contentDbPath);
+      console.log('Content database file size:', stats.size, 'bytes');
+      if (stats.size === 0) {
+        throw new Error('Content database copy failed: file is empty');
+      }
+
       // Update stored version
       await AsyncStorage.setItem(CONTENT_VERSION_KEY, bundledContentVersion.toString());
       console.log(`✅ Content database updated to v${bundledContentVersion}`);
-
-      // Verify file
-      const stats = await RNFS.stat(contentDbPath);
-      console.log('Content database file size:', stats.size, 'bytes');
     } else {
       console.log(`✅ Content database is up to date (v${installedContentVersion})`);
     }

@@ -13,6 +13,7 @@ import {
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types';
 import { useTheme } from '../contexts/ThemeContext';
+import HeaderIconButton from '../components/HeaderIconButton';
 
 type AboutScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -59,13 +60,7 @@ const AboutScreen: React.FC<Props> = ({ navigation }) => {
       <StatusBar backgroundColor={theme.colors.primary} barStyle="light-content" />
       <View style={styles.container}>
         <View style={styles.header}>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => navigation.goBack()}
-            testID="back-button"
-          >
-            <Text style={styles.backIcon}>←</Text>
-          </TouchableOpacity>
+          <HeaderIconButton onPress={() => navigation.navigate('MainMenu')} icon="←" testID="back-button" />
           <Text style={styles.title}>About</Text>
         </View>
 
@@ -129,22 +124,6 @@ const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) => Sty
     alignItems: 'center',
     justifyContent: 'center',
     ...currentTheme.shadows.lg,
-  },
-  backButton: {
-    position: 'absolute',
-    left: currentTheme.spacing.xl,
-    top: 60,
-    width: currentTheme.spacing['5xl'],
-    height: currentTheme.spacing['5xl'],
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: currentTheme.spacing.xl,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-  },
-  backIcon: {
-    fontSize: currentTheme.typography.fontSizes['2xl'],
-    color: currentTheme.colors.background,
-    fontWeight: 'bold',
   },
   title: {
     fontSize: currentTheme.typography.fontSizes['4xl'],

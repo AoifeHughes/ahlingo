@@ -1,14 +1,14 @@
 {
   "llm_servers": {
     "generation": {
-      "url": "http://localhost:11434/v1",
+      "url": "http://192.168.0.167:11434/v1",
       "api_key": "sk-no-key-required",
       "model": "auto",
       "temperature": 0.75,
       "comment": "Model 'auto' will use the first available model from the server. Override with --generation-model flag."
     },
     "validation": {
-      "url": "http://localhost:11434/v1",
+      "url": "http://192.168.0.167:11434/v1",
       "api_key": "sk-no-key-required",
       "model": "auto",
       "temperature": 0.3,

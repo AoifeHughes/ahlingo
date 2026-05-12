@@ -191,39 +191,126 @@ def get_exercise_temperature(lesson_kind: str) -> float:
     )
 
 
+def _extract_json_array(text: str) -> Optional[str]:
+    """Extract a JSON array from text robustly.
+
+    Handles markdown code fences, prose before/after JSON, and nested brackets
+    by finding the first balanced JSON array.
+    """
+    import re
+
+    cleaned = re.sub(r"^```(?:json)?\s*", "", text.strip(), flags=re.MULTILINE)
+    cleaned = re.sub(r"\s*```\s*$", "", cleaned, flags=re.MULTILINE)
+    cleaned = cleaned.strip()
+
+    try:
+        json.loads(cleaned)
+        return cleaned
+    except json.JSONDecodeError:
+        pass
+
+    depth = 0
+    start = None
+    for i, ch in enumerate(cleaned):
+        if ch == "[":
+            if start is None:
+                start = i
+            depth += 1
+        elif ch == "]":
+            depth -= 1
+            if depth == 0 and start is not None:
+                candidate = cleaned[start : i + 1]
+                try:
+                    json.loads(candidate)
+                    return candidate
+                except json.JSONDecodeError:
+                    start = None
+    return None
+
+
+def _extract_json_object(text: str) -> Optional[str]:
+    """Extract a JSON object from text robustly."""
+    import re
+
+    cleaned = re.sub(r"^```(?:json)?\s*", "", text.strip(), flags=re.MULTILINE)
+    cleaned = re.sub(r"\s*```\s*$", "", cleaned, flags=re.MULTILINE)
+    cleaned = cleaned.strip()
+
+    try:
+        json.loads(cleaned)
+        return cleaned
+    except json.JSONDecodeError:
+        pass
+
+    depth = 0
+    start = None
+    for i, ch in enumerate(cleaned):
+        if ch == "{":
+            if start is None:
+                start = i
+            depth += 1
+        elif ch == "}":
+            depth -= 1
+            if depth == 0 and start is not None:
+                candidate = cleaned[start : i + 1]
+                try:
+                    json.loads(candidate)
+                    return candidate
+                except json.JSONDecodeError:
+                    start = None
+    return None
+
+
+def _is_remote_model(model) -> bool:
+    """Check if the model is a remote API model (OpenAI, etc.) that can't enforce schemas."""
+    model_class = type(model).__name__
+    return model_class in ("OpenAI", "AzureOpenAI", "Ollama")
+
+
 def run_outlines_generation(
     prompt: str, model, schema: Dict[str, Any] = None, temperature: float = None
 ):
     resolved_model = resolve_outlines_model(model)
+    remote = _is_remote_model(resolved_model)
+
+    if remote and schema:
+        logging.warning(
+            "Schema enforcement is NOT available for remote model %s. "
+            "Using prompt-based JSON guidance only. "
+            "For strict schema enforcement, use a local model (llama.cpp, transformers, vLLM).",
+            type(resolved_model).__name__,
+        )
+
     generator = outlines.Generator(resolved_model)
     kwargs = {}
-    if schema:
-        kwargs["schema"] = schema
     if temperature is not None:
         kwargs["temperature"] = temperature
 
     try:
         return generator(prompt, **kwargs)
     except TypeError as exc:
-        logging.debug(
-            "Outlines generator rejected kwargs %s: %s", list(kwargs.keys()), exc
+        if schema and not remote:
+            logging.error(
+                "Schema enforcement failed for local model %s: %s. "
+                "Refusing to fall back to unstructured generation.",
+                type(resolved_model).__name__,
+                exc,
+            )
+            raise RuntimeError(
+                f"Schema enforcement failed: {exc}. "
+                "Check outlines library version compatibility."
+            ) from exc
+
+        logging.warning(
+            "Outlines generator rejected kwargs %s: %s — falling back",
+            list(kwargs.keys()),
+            exc,
         )
-        fallback_kwargs = kwargs.copy()
-
-        if "schema" in fallback_kwargs:
-            fallback_kwargs.pop("schema")
-            try:
-                return generator(prompt, **fallback_kwargs)
-            except TypeError:
-                logging.debug("Outlines generator still rejected kwargs after dropping schema")
-
-        if "temperature" in fallback_kwargs:
-            fallback_kwargs.pop("temperature")
-            try:
-                return generator(prompt, **fallback_kwargs)
-            except TypeError:
-                logging.debug("Outlines generator still rejected kwargs after dropping temperature")
-
+        fallback_kwargs = {k: v for k, v in kwargs.items() if k != "temperature"}
+        try:
+            return generator(prompt, **fallback_kwargs)
+        except TypeError:
+            pass
         return generator(prompt)
 
 

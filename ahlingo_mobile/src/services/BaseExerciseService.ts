@@ -73,17 +73,17 @@ export const getSmartRandomExerciseForTopic = async (
   try {
     // Get all available exercises for this topic
     const exerciseTableJoins = {
-      'pairs': 'JOIN pair_exercises pe ON ei.id = pe.exercise_id',
-      'conversation': 'JOIN conversation_exercises ce ON ei.id = ce.exercise_id',
-      'translation': 'JOIN translation_exercises te ON ei.id = te.exercise_id',
-      'fill_in_blank': 'JOIN fill_in_blank_exercises fibe ON ei.id = fibe.exercise_id'
+      'pairs': 'JOIN content.pair_exercises pe ON ei.id = pe.exercise_id',
+      'conversation': 'JOIN content.conversation_exercises ce ON ei.id = ce.exercise_id',
+      'translation': 'JOIN content.translation_exercises te ON ei.id = te.exercise_id',
+      'fill_in_blank': 'JOIN content.fill_in_blank_exercises fibe ON ei.id = fibe.exercise_id'
     };
-    const dataJoin = exerciseTableJoins[exerciseType as keyof typeof exerciseTableJoins] || 'JOIN pair_exercises pe ON ei.id = pe.exercise_id';
+    const dataJoin = exerciseTableJoins[exerciseType as keyof typeof exerciseTableJoins] || 'JOIN content.pair_exercises pe ON ei.id = pe.exercise_id';
 
     const query = `
-      SELECT DISTINCT ei.* FROM exercises_info ei
-      JOIN languages l ON ei.language_id = l.id
-      JOIN difficulties d ON ei.difficulty_id = d.id
+      SELECT DISTINCT ei.* FROM content.exercises_info ei
+      JOIN content.languages l ON ei.language_id = l.id
+      JOIN content.difficulties d ON ei.difficulty_id = d.id
       ${dataJoin}
       WHERE ei.topic_id = ?
         AND l.language = ?

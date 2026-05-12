@@ -38,6 +38,8 @@ from generation.core import outlines_generator
 from generation.models.validation_models import (
     parse_validation_result,
     FillInBlankValidation,
+    get_validation_schema,
+    _normalize_exercise_type,
 )
 from generation.utils.exercise_converters import get_converter
 
@@ -108,6 +110,7 @@ class ContentGenerator:
         # Set up models
         self.generation_model = None
         self.validation_model = None
+        self._cached_validation_model_name = None
 
         # Failure tracking
         self.failures = []
@@ -183,6 +186,26 @@ class ContentGenerator:
             # This is a simplified version - in production you'd need to create another model instance
             print(f"  Validation model: Separate model not yet implemented, using generation model")
             self.validation_model = self.generation_model
+
+        # Cache validation model name (avoids models.list() per exercise)
+        self._cached_validation_model_name = self._resolve_model_name(val_config)
+        print(f"  Cached validation model name: {self._cached_validation_model_name}")
+
+    def _resolve_model_name(self, server_config: Dict) -> str:
+        """Resolve and cache the model name for a server config."""
+        model = server_config.get("model", "auto")
+        if model != "auto":
+            return model
+        import openai
+
+        client = openai.OpenAI(
+            base_url=server_config["url"],
+            api_key=server_config["api_key"],
+        )
+        models = client.models.list()
+        if models.data:
+            return models.data[0].id
+        return "qwen3-4b"
 
     def get_combinations(
         self,
@@ -372,34 +395,28 @@ class ContentGenerator:
             if self.no_think:
                 prompt = "/no_think\n" + prompt
 
-            # Call validation model
-            # Note: Using the same generation mechanism for validation
-            # In a more sophisticated setup, you'd have a separate validation call
-            import openai
+            # Get validation schema for this exercise type (normalized to singular)
+            normalized_type = _normalize_exercise_type(exercise_type)
+            val_schema_json = get_validation_schema(normalized_type)
+            val_schema = json.loads(val_schema_json)
 
-            client = openai.OpenAI(
-                base_url=self.config["llm_servers"]["validation"]["url"],
-                api_key=self.config["llm_servers"]["validation"]["api_key"],
+            # Call validation using outlines generator with schema constraints
+            temperature = self.config["llm_servers"]["validation"]["temperature"]
+            result = outlines_generator.run_outlines_generation(
+                prompt,
+                self.validation_model,
+                schema=val_schema,
+                temperature=temperature,
             )
 
-            # Get model name
-            models = client.models.list()
-            model_name = (
-                self.config["llm_servers"]["validation"]["model"]
-                if self.config["llm_servers"]["validation"]["model"] != "auto"
-                else models.data[0].id if models.data else "default"
-            )
+            # Handle structured result from outlines (dict/list) or string fallback
+            if isinstance(result, dict):
+                cleaned_text = json.dumps(result)
+            elif isinstance(result, list):
+                cleaned_text = json.dumps(result[0]) if result else "{}"
+            else:
+                cleaned_text = outlines_generator.clean_model_response(str(result))
 
-            response = client.chat.completions.create(
-                model=model_name,
-                messages=[{"role": "user", "content": prompt}],
-                temperature=self.config["llm_servers"]["validation"]["temperature"],
-            )
-
-            result_text = response.choices[0].message.content
-
-            # Clean and parse validation result
-            cleaned_text = outlines_generator.clean_model_response(result_text)
             validation_result = parse_validation_result(cleaned_text, exercise_type)
 
             self.stats["total_validated"] += 1

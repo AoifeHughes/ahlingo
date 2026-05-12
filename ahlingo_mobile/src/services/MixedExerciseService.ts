@@ -38,11 +38,11 @@ export const getTopicsWithProgressForExerciseType = async (
           WHEN COUNT(DISTINCT pe.exercise_id) = 0 THEN 0
           ELSE ROUND((COUNT(DISTINCT CASE WHEN uea.is_correct = 1 THEN uea.exercise_id END) * 100.0) / COUNT(DISTINCT pe.exercise_id), 1)
         END as percentage
-      FROM topics t
-      LEFT JOIN exercises_info ei ON t.id = ei.topic_id
-      LEFT JOIN languages l ON ei.language_id = l.id
-      LEFT JOIN difficulties d ON ei.difficulty_id = d.id
-      INNER JOIN pair_exercises pe ON ei.id = pe.exercise_id
+      FROM content.topics t
+      LEFT JOIN content.exercises_info ei ON t.id = ei.topic_id
+      LEFT JOIN content.languages l ON ei.language_id = l.id
+      LEFT JOIN content.difficulties d ON ei.difficulty_id = d.id
+      INNER JOIN content.pair_exercises pe ON ei.id = pe.exercise_id
       LEFT JOIN user_exercise_attempts uea ON ei.id = uea.exercise_id AND uea.user_id = ?
       WHERE ei.exercise_type = ?
         AND l.language = ?
@@ -60,10 +60,10 @@ export const getTopicsWithProgressForExerciseType = async (
           WHEN COUNT(DISTINCT ei.id) = 0 THEN 0
           ELSE ROUND((COUNT(DISTINCT CASE WHEN uea.is_correct = 1 THEN uea.exercise_id END) * 100.0) / COUNT(DISTINCT ei.id), 1)
         END as percentage
-      FROM topics t
-      LEFT JOIN exercises_info ei ON t.id = ei.topic_id
-      LEFT JOIN languages l ON ei.language_id = l.id
-      LEFT JOIN difficulties d ON ei.difficulty_id = d.id
+      FROM content.topics t
+      LEFT JOIN content.exercises_info ei ON t.id = ei.topic_id
+      LEFT JOIN content.languages l ON ei.language_id = l.id
+      LEFT JOIN content.difficulties d ON ei.difficulty_id = d.id
       LEFT JOIN user_exercise_attempts uea ON ei.id = uea.exercise_id AND uea.user_id = ?
       WHERE ei.exercise_type = ?
         AND l.language = ?
@@ -100,7 +100,7 @@ export const getRandomMixedExercisesForTopic = async (
 ): Promise<ShuffleExercise[]> => {
   return executeQuery(async (db) => {
     // Get topic name first
-    const topicQuery = 'SELECT topic FROM topics WHERE id = ?';
+    const topicQuery = 'SELECT topic FROM content.topics WHERE id = ?';
     const topicResult = await db.executeSql(topicQuery, [topicId]);
     const topicName = topicResult[0].rows.length > 0 ? topicResult[0].rows.item(0).topic : 'Unknown Topic';
 
@@ -114,13 +114,13 @@ export const getRandomMixedExercisesForTopic = async (
           WHEN te.exercise_id IS NOT NULL THEN 'translation'
           WHEN fibe.exercise_id IS NOT NULL THEN 'fill_in_blank'
         END as verified_exercise_type
-      FROM exercises_info ei
-      JOIN languages l ON ei.language_id = l.id
-      JOIN difficulties d ON ei.difficulty_id = d.id
-      LEFT JOIN pair_exercises pe ON ei.id = pe.exercise_id AND ei.exercise_type = 'pairs'
-      LEFT JOIN conversation_exercises ce ON ei.id = ce.exercise_id AND ei.exercise_type = 'conversation'
-      LEFT JOIN translation_exercises te ON ei.id = te.exercise_id AND ei.exercise_type = 'translation'
-      LEFT JOIN fill_in_blank_exercises fibe ON ei.id = fibe.exercise_id AND ei.exercise_type = 'fill_in_blank'
+      FROM content.exercises_info ei
+      JOIN content.languages l ON ei.language_id = l.id
+      JOIN content.difficulties d ON ei.difficulty_id = d.id
+      LEFT JOIN content.pair_exercises pe ON ei.id = pe.exercise_id AND ei.exercise_type = 'pairs'
+      LEFT JOIN content.conversation_exercises ce ON ei.id = ce.exercise_id AND ei.exercise_type = 'conversation'
+      LEFT JOIN content.translation_exercises te ON ei.id = te.exercise_id AND ei.exercise_type = 'translation'
+      LEFT JOIN content.fill_in_blank_exercises fibe ON ei.id = fibe.exercise_id AND ei.exercise_type = 'fill_in_blank'
       WHERE ei.topic_id = ?
         AND l.language = ?
         AND d.difficulty_level = ?
@@ -182,10 +182,10 @@ export const getRandomMixedExercises = async (
       // Prioritize untried exercises for logged-in users
       query = `
         SELECT ei.*, t.topic as topic_name
-        FROM exercises_info ei
-        JOIN languages l ON ei.language_id = l.id
-        JOIN difficulties d ON ei.difficulty_id = d.id
-        JOIN topics t ON ei.topic_id = t.id
+        FROM content.exercises_info ei
+        JOIN content.languages l ON ei.language_id = l.id
+        JOIN content.difficulties d ON ei.difficulty_id = d.id
+        JOIN content.topics t ON ei.topic_id = t.id
         LEFT JOIN user_exercise_attempts uea ON ei.id = uea.exercise_id AND uea.user_id = ?
         WHERE l.language = ?
           AND d.difficulty_level = ?
@@ -198,10 +198,10 @@ export const getRandomMixedExercises = async (
     } else {
       query = `
         SELECT ei.*, t.topic as topic_name
-        FROM exercises_info ei
-        JOIN languages l ON ei.language_id = l.id
-        JOIN difficulties d ON ei.difficulty_id = d.id
-        JOIN topics t ON ei.topic_id = t.id
+        FROM content.exercises_info ei
+        JOIN content.languages l ON ei.language_id = l.id
+        JOIN content.difficulties d ON ei.difficulty_id = d.id
+        JOIN content.topics t ON ei.topic_id = t.id
         WHERE l.language = ?
           AND d.difficulty_level = ?
           AND ei.exercise_type IN ('pairs', 'conversation', 'translation', 'fill_in_blank')
@@ -273,9 +273,9 @@ export const getTopicsForStudy = async (
           -- Count non-pairs exercises normally
           COALESCE((
             SELECT COUNT(DISTINCT ei2.id)
-            FROM exercises_info ei2
-            JOIN languages l2 ON ei2.language_id = l2.id
-            JOIN difficulties d2 ON ei2.difficulty_id = d2.id
+            FROM content.exercises_info ei2
+            JOIN content.languages l2 ON ei2.language_id = l2.id
+            JOIN content.difficulties d2 ON ei2.difficulty_id = d2.id
             WHERE ei2.topic_id = t.id
               AND ei2.exercise_type != 'pairs'
               AND l2.language = ?
@@ -284,10 +284,10 @@ export const getTopicsForStudy = async (
           -- Count pairs exercises only if they have data
           COALESCE((
             SELECT COUNT(DISTINCT pe.exercise_id)
-            FROM exercises_info ei3
-            JOIN languages l3 ON ei3.language_id = l3.id
-            JOIN difficulties d3 ON ei3.difficulty_id = d3.id
-            INNER JOIN pair_exercises pe ON ei3.id = pe.exercise_id
+            FROM content.exercises_info ei3
+            JOIN content.languages l3 ON ei3.language_id = l3.id
+            JOIN content.difficulties d3 ON ei3.difficulty_id = d3.id
+            INNER JOIN content.pair_exercises pe ON ei3.id = pe.exercise_id
             WHERE ei3.topic_id = t.id
               AND ei3.exercise_type = 'pairs'
               AND l3.language = ?
@@ -296,10 +296,10 @@ export const getTopicsForStudy = async (
         ) as total_exercises,
         COUNT(DISTINCT CASE WHEN uea.is_correct = 1 THEN uea.exercise_id END) as completed_exercises,
         GROUP_CONCAT(DISTINCT ei.exercise_type) as exercise_types
-      FROM topics t
-      JOIN exercises_info ei ON t.id = ei.topic_id
-      JOIN languages l ON ei.language_id = l.id
-      JOIN difficulties d ON ei.difficulty_id = d.id
+      FROM content.topics t
+      JOIN content.exercises_info ei ON t.id = ei.topic_id
+      JOIN content.languages l ON ei.language_id = l.id
+      JOIN content.difficulties d ON ei.difficulty_id = d.id
       LEFT JOIN user_exercise_attempts uea ON ei.id = uea.exercise_id AND uea.user_id = ?
       WHERE l.language = ?
         AND d.difficulty_level = ?
@@ -308,9 +308,9 @@ export const getTopicsForStudy = async (
         -- Count non-pairs exercises normally
         COALESCE((
           SELECT COUNT(DISTINCT ei2.id)
-          FROM exercises_info ei2
-          JOIN languages l2 ON ei2.language_id = l2.id
-          JOIN difficulties d2 ON ei2.difficulty_id = d2.id
+          FROM content.exercises_info ei2
+          JOIN content.languages l2 ON ei2.language_id = l2.id
+          JOIN content.difficulties d2 ON ei2.difficulty_id = d2.id
           WHERE ei2.topic_id = t.id
             AND ei2.exercise_type != 'pairs'
             AND l2.language = ?
@@ -319,10 +319,10 @@ export const getTopicsForStudy = async (
         -- Count pairs exercises only if they have data
         COALESCE((
           SELECT COUNT(DISTINCT pe.exercise_id)
-          FROM exercises_info ei3
-          JOIN languages l3 ON ei3.language_id = l3.id
-          JOIN difficulties d3 ON ei3.difficulty_id = d3.id
-          INNER JOIN pair_exercises pe ON ei3.id = pe.exercise_id
+          FROM content.exercises_info ei3
+          JOIN content.languages l3 ON ei3.language_id = l3.id
+          JOIN content.difficulties d3 ON ei3.difficulty_id = d3.id
+          INNER JOIN content.pair_exercises pe ON ei3.id = pe.exercise_id
           WHERE ei3.topic_id = t.id
             AND ei3.exercise_type = 'pairs'
             AND l3.language = ?
@@ -374,10 +374,10 @@ export const getTopicProgress = async (
       SELECT
         COUNT(DISTINCT pe.exercise_id) as total_exercises,
         COUNT(DISTINCT CASE WHEN uea.is_correct = 1 THEN uea.exercise_id END) as completed_exercises
-      FROM exercises_info ei
-      JOIN languages l ON ei.language_id = l.id
-      JOIN difficulties d ON ei.difficulty_id = d.id
-      INNER JOIN pair_exercises pe ON ei.id = pe.exercise_id
+      FROM content.exercises_info ei
+      JOIN content.languages l ON ei.language_id = l.id
+      JOIN content.difficulties d ON ei.difficulty_id = d.id
+      INNER JOIN content.pair_exercises pe ON ei.id = pe.exercise_id
       LEFT JOIN user_exercise_attempts uea ON ei.id = uea.exercise_id AND uea.user_id = ?
       WHERE ei.topic_id = ?
         AND ei.exercise_type = ?
@@ -387,9 +387,9 @@ export const getTopicProgress = async (
       SELECT
         COUNT(DISTINCT ei.id) as total_exercises,
         COUNT(DISTINCT CASE WHEN uea.is_correct = 1 THEN uea.exercise_id END) as completed_exercises
-      FROM exercises_info ei
-      JOIN languages l ON ei.language_id = l.id
-      JOIN difficulties d ON ei.difficulty_id = d.id
+      FROM content.exercises_info ei
+      JOIN content.languages l ON ei.language_id = l.id
+      JOIN content.difficulties d ON ei.difficulty_id = d.id
       LEFT JOIN user_exercise_attempts uea ON ei.id = uea.exercise_id AND uea.user_id = ?
       WHERE ei.topic_id = ?
         AND ei.exercise_type = ?

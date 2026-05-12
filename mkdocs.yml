@@ -1,0 +1,97 @@
+site_name: AHLingo Documentation
+site_description: Comprehensive documentation for the AHLingo language learning platform
+site_author: AHLingo Team
+
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - toc.integrate
+    - search.suggest
+    - search.highlight
+    - content.tabs.link
+    - content.code.annotation
+    - content.code.copy
+    - navigation.top
+    - navigation.tracking
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+plugins:
+  - search
+  - mermaid2
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:mermaid2.fence_mermaid
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.details
+  - admonition
+  - tables
+  - def_list
+  - attr_list
+  - md_in_html
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+  - Content Generation:
+    - Overview: generation/index.md
+    - Architecture: generation/architecture.md
+    - Core Concepts: generation/core-concepts.md
+    - Getting Started: generation/getting-started.md
+    - Configuration: generation/configuration.md
+    - Developer Guide: generation/developer-guide.md
+    - API Reference: generation/api-reference.md
+    - Scripts & CLI: generation/scripts.md
+    - Database Schema: generation/database-schema.md
+    - Troubleshooting: generation/troubleshooting.md
+  - Mobile App:
+    - Overview: mobile/index.md
+    - Architecture: mobile/architecture.md
+    - Database: mobile/database.md
+    - Developer Setup: mobile/getting-started-dev.md
+    - Features: mobile/features.md
+    - State Management: mobile/state-management.md
+    - Services: mobile/services.md
+    - Components: mobile/components.md
+    - Navigation: mobile/navigation.md
+    - Testing: mobile/testing.md
+    - Configuration: mobile/configuration.md
+    - Developer Guide: mobile/developer-guide.md
+    - API Integration: mobile/api-integration.md
+    - Troubleshooting: mobile/troubleshooting.md
+  - Integration:
+    - Content Pipeline: integration/content-pipeline.md
+    - Versioning: integration/versioning.md
+    - Data Models: integration/data-models.md
+  - Operations:
+    - Content Generation Ops: operations/content-generation-ops.md
+    - Mobile Deployment: operations/mobile-deployment.md
+    - Monitoring: operations/monitoring.md
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/yourusername/ahlingo
