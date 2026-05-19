@@ -72,3 +72,6 @@ logs/
 
 # MkDocs build output
 site/
+
+# Generated images
+content/images/

@@ -152,6 +152,32 @@ class LanguageDB:
                 timestamp TIMESTAMP NOT NULL,
                 FOREIGN KEY (chat_id) REFERENCES chat_details (id)
             )""",
+            """CREATE TABLE IF NOT EXISTS image_exercises (
+                id INTEGER PRIMARY KEY,
+                topic_id INTEGER NOT NULL,
+                image_index INTEGER NOT NULL,
+                image_prompt TEXT NOT NULL,
+                image_filename TEXT NOT NULL,
+                image_path TEXT NOT NULL,
+                generated_at TIMESTAMP NOT NULL,
+                FOREIGN KEY (topic_id) REFERENCES topics (id),
+                UNIQUE(topic_id, image_index)
+            )""",
+            """CREATE TABLE IF NOT EXISTS image_descriptors (
+                id INTEGER PRIMARY KEY,
+                image_id INTEGER NOT NULL,
+                language_id INTEGER NOT NULL,
+                difficulty_id INTEGER NOT NULL,
+                correct_descriptor TEXT NOT NULL,
+                incorrect_1 TEXT NOT NULL,
+                incorrect_2 TEXT NOT NULL,
+                english_meaning TEXT NOT NULL,
+                generated_at TIMESTAMP NOT NULL,
+                FOREIGN KEY (image_id) REFERENCES image_exercises (id),
+                FOREIGN KEY (language_id) REFERENCES languages (id),
+                FOREIGN KEY (difficulty_id) REFERENCES difficulties (id),
+                UNIQUE(image_id, language_id, difficulty_id)
+            )""",
         ]
 
         for query in table_creation_queries:
@@ -1658,6 +1684,124 @@ class LanguageDB:
                 exercise["exercise_type"] = "fill_in_blank"
 
         return exercises
+
+    def add_image_exercise(
+        self,
+        topic: str,
+        image_index: int,
+        image_prompt: str,
+        image_filename: str,
+        image_path: str,
+    ) -> int:
+        """Add an image exercise to the database.
+
+        Args:
+            topic: Topic name
+            image_index: 0-indexed position within topic
+            image_prompt: English prompt used to generate the image
+            image_filename: Filename on disk (e.g., '00_eating_dinner.png')
+            image_path: Relative path (e.g., 'images/food/00_eating_dinner.png')
+
+        Returns:
+            The ID of the inserted image exercise
+        """
+        topic_id = self._get_or_create_topic(topic)
+
+        self.cursor.execute(
+            """INSERT OR REPLACE INTO image_exercises
+               (topic_id, image_index, image_prompt, image_filename, image_path, generated_at)
+               VALUES (?, ?, ?, ?, ?, ?)""",
+            (topic_id, image_index, image_prompt, image_filename, image_path, datetime.now()),
+        )
+        self.conn.commit()
+        return self.cursor.lastrowid
+
+    def add_image_descriptor(
+        self,
+        image_id: int,
+        language: str,
+        difficulty: str,
+        correct_descriptor: str,
+        incorrect_1: str,
+        incorrect_2: str,
+        english_meaning: str,
+    ) -> int:
+        """Add a descriptor set for an image.
+
+        Args:
+            image_id: FK to image_exercises
+            language: Target language name
+            difficulty: Difficulty level (Beginner/Intermediate/Advanced)
+            correct_descriptor: Correct description in target language
+            incorrect_1: Wrong descriptor 1
+            incorrect_2: Wrong descriptor 2
+            english_meaning: English meaning of correct descriptor
+
+        Returns:
+            The ID of the inserted descriptor
+        """
+        language_id = self._get_or_create_language(language)
+        difficulty_id = self._get_or_create_difficulty(difficulty)
+
+        self.cursor.execute(
+            """INSERT OR REPLACE INTO image_descriptors
+               (image_id, language_id, difficulty_id, correct_descriptor, incorrect_1, incorrect_2, english_meaning, generated_at)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
+            (image_id, language_id, difficulty_id, correct_descriptor, incorrect_1, incorrect_2, english_meaning, datetime.now()),
+        )
+        self.conn.commit()
+        return self.cursor.lastrowid
+
+    def get_image_exercises_by_topic(self, topic: str) -> List[Dict]:
+        """Get all image exercises for a topic.
+
+        Args:
+            topic: Topic name
+
+        Returns:
+            List of image exercise dicts
+        """
+        self.cursor.execute(
+            """SELECT ie.* FROM image_exercises ie
+               JOIN topics t ON ie.topic_id = t.id
+               WHERE t.topic = ?
+               ORDER BY ie.image_index""",
+            (topic,),
+        )
+        return [dict(row) for row in self.cursor.fetchall()]
+
+    def get_image_descriptor(self, image_id: int, language: str, difficulty: str) -> Optional[Dict]:
+        """Get descriptor for an image in a specific language/difficulty.
+
+        Args:
+            image_id: FK to image_exercises
+            language: Target language name
+            difficulty: Difficulty level
+
+        Returns:
+            Descriptor dict or None
+        """
+        self.cursor.execute(
+            """SELECT id, correct_descriptor, incorrect_1, incorrect_2, english_meaning
+               FROM image_descriptors
+               WHERE image_id = ?
+               AND language_id = (SELECT id FROM languages WHERE language = ?)
+               AND difficulty_id = (SELECT id FROM difficulties WHERE difficulty_level = ?)""",
+            (image_id, language, difficulty),
+        )
+        row = self.cursor.fetchone()
+        return dict(row) if row else None
+
+    def get_image_exercise_count_by_topic(self, topic: str) -> int:
+        """Get number of image exercises for a topic."""
+        self.cursor.execute(
+            """SELECT COUNT(*) FROM image_exercises ie
+               JOIN topics t ON ie.topic_id = t.id
+               WHERE t.topic = ?""",
+            (topic,),
+        )
+        result = self.cursor.fetchone()
+        return result[0] if result else 0
 
     def close(self):
         """Close the database connection."""

@@ -282,6 +282,61 @@ class {language}WordPair(BaseModel):
     return locals()[f"{language}WordPair"]
 
 
+class ImageDescriptor(BaseModel):
+    """A descriptor set for an image exercise."""
+
+    correct_descriptor: str = Field(..., description="Correct description of the image in the target language")
+    incorrect_1: str = Field(..., description="Clearly wrong description 1 in the target language")
+    incorrect_2: str = Field(..., description="Clearly wrong description 2 in the target language")
+    english_meaning: str = Field(..., description="English translation of the correct descriptor")
+
+    @validator("correct_descriptor", "incorrect_1", "incorrect_2", "english_meaning")
+    def not_empty(cls, v):
+        if not v or not v.strip():
+            raise ValueError("Descriptor values cannot be empty")
+        return v.strip()
+
+    @validator("incorrect_2")
+    def validate_unique_descriptors(cls, v, values):
+        if "correct_descriptor" in values and "incorrect_1" in values:
+            descriptors = [values["correct_descriptor"], values["incorrect_1"], v]
+            if len(set(d.lower() for d in descriptors)) != 3:
+                raise ValueError("All three descriptors must be different from each other")
+        return v
+
+
+class ImageDescriptorList(BaseModel):
+    """A list of image descriptors (for batch generation)."""
+
+    descriptors: List[ImageDescriptor] = Field(
+        ..., description="List of image descriptors", min_items=1, max_items=10
+    )
+
+
+class ImagePrompt(BaseModel):
+    """A single image prompt for clip-art generation."""
+
+    prompt: str = Field(..., description="English description of the scene for clip-art generation")
+    topic: str = Field(..., description="The topic this image belongs to")
+
+    @validator("prompt")
+    def prompt_valid(cls, v):
+        if not v or not v.strip():
+            raise ValueError("Image prompt cannot be empty")
+        word_count = len(v.strip().split())
+        if word_count < 3 or word_count > 20:
+            raise ValueError(f"Image prompt should be 3-20 words, got {word_count}")
+        return v.strip()
+
+
+class ImagePromptList(BaseModel):
+    """A list of image prompts for a topic."""
+
+    prompts: List[ImagePrompt] = Field(
+        ..., description="List of image prompts", min_items=5, max_items=15
+    )
+
+
 def create_dynamic_translation_pair_model(language: str) -> Type[BaseModel]:
     """
     Create a dynamic Pydantic model for translation pairs in a specific language.
