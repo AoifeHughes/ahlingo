@@ -5,7 +5,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types';
 import { useTheme } from '../contexts/ThemeContext';
 import { checkUsersExist } from '../services/RefactoredDatabaseService';
-import { ActivityIndicator, View } from 'react-native';
+import { ActivityIndicator, View, Text } from 'react-native';
 import HeaderIconButton from '../components/HeaderIconButton';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -17,6 +17,45 @@ interface MainMenuBackButtonProps {
 const MainMenuBackButton: React.FC<MainMenuBackButtonProps> = ({ navigation }) => (
   <HeaderIconButton onPress={() => navigation.navigate('MainMenu')} icon="←" />
 );
+
+interface CustomHeaderProps {
+  navigation: NavigationProp;
+  title: string;
+  showBack?: boolean;
+}
+
+const CustomHeader: React.FC<CustomHeaderProps> = ({ navigation, title, showBack = true }) => {
+  const { theme } = useTheme();
+  return (
+    <View
+      style={{
+        backgroundColor: theme.colors.primary,
+        paddingTop: 60,
+        paddingBottom: theme.spacing.md,
+        paddingHorizontal: theme.spacing.lg,
+        flexDirection: 'row',
+        alignItems: 'center',
+      }}
+    >
+      <View style={{ width: 52 }}>
+        {showBack && <MainMenuBackButton navigation={navigation} />}
+      </View>
+      <Text
+        style={{
+          flex: 1,
+          textAlign: 'center',
+          color: theme.colors.background,
+          fontSize: theme.typography.fontSizes.lg,
+          fontWeight: theme.typography.fontWeights.semibold,
+        }}
+        numberOfLines={1}
+      >
+        {title}
+      </Text>
+      <View style={{ width: 52 }} />
+    </View>
+  );
+};
 
 // Import screens (placeholder imports for now)
 import WelcomeScreen from '../screens/WelcomeScreen';
@@ -73,15 +112,13 @@ const AppNavigator: React.FC = () => {
       <Stack.Navigator
         initialRouteName={showWelcome ? "Welcome" : "MainMenu"}
         screenOptions={{
-          headerStyle: {
-            backgroundColor: theme.colors.primary,
-          },
-          headerTintColor: theme.colors.background,
-          headerTitleStyle: {
-            fontWeight: theme.typography.fontWeights.semibold,
-            fontSize: theme.typography.fontSizes.lg,
-          },
-          headerBackButtonMenuEnabled: false,
+          header: ({ navigation: nav, options, back }) => (
+            <CustomHeader
+              navigation={nav as NavigationProp}
+              title={typeof options.title === 'string' ? options.title : ''}
+              showBack={!!back}
+            />
+          ),
         }}
       >
         <Stack.Screen

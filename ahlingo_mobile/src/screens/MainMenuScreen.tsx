@@ -12,6 +12,7 @@ import {
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types';
 import { useTheme } from '../contexts/ThemeContext';
+import HeaderIconButton from '../components/HeaderIconButton';
 
 type MainMenuScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -162,13 +163,13 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.title} testID="app-title">AHLingo</Text>
-          <TouchableOpacity
-            style={styles.settingsButton}
-            onPress={() => navigation.navigate('Settings')}
-            testID="settings-button"
-          >
-            <Text style={styles.settingsIcon}>⚙️</Text>
-          </TouchableOpacity>
+          <View style={styles.settingsButton}>
+            <HeaderIconButton
+              onPress={() => navigation.navigate('Settings')}
+              icon="⚙️"
+              testID="settings-button"
+            />
+          </View>
         </View>
 
         <ScrollView
@@ -231,16 +232,6 @@ const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) => Sty
     position: 'absolute',
     right: currentTheme.spacing.xl,
     top: 60,
-    width: currentTheme.spacing['5xl'],
-    height: currentTheme.spacing['5xl'],
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: currentTheme.spacing.xl,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-  },
-  settingsIcon: {
-    fontSize: currentTheme.typography.fontSizes['2xl'],
-    color: currentTheme.colors.background,
   },
   scrollContainer: {
     flex: 1,

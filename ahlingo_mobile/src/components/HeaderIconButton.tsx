@@ -16,6 +16,7 @@ const HeaderIconButton: React.FC<HeaderIconButtonProps> = ({ onPress, icon, test
       style={styles.button}
       onPress={onPress}
       testID={testID}
+      hitSlop={{ top: 12, right: 12, bottom: 12, left: 12 }}
     >
       <Text style={styles.icon}>{icon}</Text>
     </TouchableOpacity>
@@ -24,12 +25,12 @@ const HeaderIconButton: React.FC<HeaderIconButtonProps> = ({ onPress, icon, test
 
 const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) => StyleSheet.create({
   button: {
-    width: currentTheme.spacing['5xl'],
-    height: currentTheme.spacing['5xl'],
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: currentTheme.spacing.xl,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+    paddingHorizontal: currentTheme.spacing.lg,
+    paddingVertical: currentTheme.spacing.md,
   },
   icon: {
     fontSize: currentTheme.typography.fontSizes['2xl'],

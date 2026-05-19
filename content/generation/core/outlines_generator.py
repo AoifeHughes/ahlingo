@@ -262,9 +262,20 @@ def _extract_json_object(text: str) -> Optional[str]:
 
 
 def _is_remote_model(model) -> bool:
-    """Check if the model is a remote API model (OpenAI, etc.) that can't enforce schemas."""
-    model_class = type(model).__name__
-    return model_class in ("OpenAI", "AzureOpenAI", "Ollama")
+    """Check if the model is a remote API model that can't enforce schemas.
+
+    Local models accessed via OpenAI-compatible API (Ollama, LM Studio, etc.)
+    are NOT considered remote — they just lack outlines-level schema enforcement.
+    """
+    base_url = str(getattr(getattr(model, "client", None), "base_url", ""))
+    if base_url and "api.openai.com" in base_url:
+        return True
+    return False
+
+
+def _is_openai_compat_model(model) -> bool:
+    """Check if the model is accessed via OpenAI-compatible API (local or remote)."""
+    return type(model).__name__ in ("OpenAI", "AzureOpenAI")
 
 
 def run_outlines_generation(
@@ -276,8 +287,13 @@ def run_outlines_generation(
     if remote and schema:
         logging.warning(
             "Schema enforcement is NOT available for remote model %s. "
-            "Using prompt-based JSON guidance only. "
-            "For strict schema enforcement, use a local model (llama.cpp, transformers, vLLM).",
+            "Using prompt-based JSON guidance only.",
+            type(resolved_model).__name__,
+        )
+    elif _is_openai_compat_model(resolved_model) and schema:
+        logging.warning(
+            "Schema enforcement is NOT available for OpenAI-compatible model (%s). "
+            "Using prompt-based JSON guidance only.",
             type(resolved_model).__name__,
         )
 
@@ -289,7 +305,7 @@ def run_outlines_generation(
     try:
         return generator(prompt, **kwargs)
     except TypeError as exc:
-        if schema and not remote:
+        if schema and not _is_openai_compat_model(resolved_model):
             logging.error(
                 "Schema enforcement failed for local model %s: %s. "
                 "Refusing to fall back to unstructured generation.",
