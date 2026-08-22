@@ -318,11 +318,26 @@ def run_outlines_generation(
             list(kwargs.keys()),
             exc,
         )
-        fallback_kwargs = {k: v for k, v in kwargs.items() if k != "temperature"}
-        try:
-            return generator(prompt, **fallback_kwargs)
-        except TypeError:
-            pass
+        fallback_kwargs = kwargs.copy()
+
+        if "schema" in fallback_kwargs:
+            fallback_kwargs.pop("schema")
+            try:
+                return generator(prompt, **fallback_kwargs)
+            except TypeError:
+                logging.debug(
+                    "Outlines generator still rejected kwargs after dropping schema"
+                )
+
+        if "temperature" in fallback_kwargs:
+            fallback_kwargs.pop("temperature")
+            try:
+                return generator(prompt, **fallback_kwargs)
+            except TypeError:
+                logging.debug(
+                    "Outlines generator still rejected kwargs after dropping temperature"
+                )
+
         return generator(prompt)
 
 
