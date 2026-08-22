@@ -23,7 +23,7 @@
     "build:apk": "../scripts/build_android_apk.sh",
     "clean": "react-native-clean-project",
     "sync:ios-assets": "node scripts/syncIosAssets.js",
-    "postinstall": "cd ios && pod install && cd .. && node scripts/syncIosAssets.js"
+    "postinstall": "node scripts/postinstall.js"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^2.2.0",
