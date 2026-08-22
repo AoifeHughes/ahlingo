@@ -220,9 +220,11 @@ class LanguageDB:
 
     def get_most_recent_user(self) -> Optional[str]:
         """Get the username of the most recently logged in user."""
-        self.cursor.execute("""SELECT name FROM users
+        self.cursor.execute(
+            """SELECT name FROM users
                WHERE last_login IS NOT NULL
-               ORDER BY last_login DESC LIMIT 1""")
+               ORDER BY last_login DESC LIMIT 1"""
+        )
         result = self.cursor.fetchone()
         return result["name"] if result else None
 
@@ -868,9 +870,11 @@ class LanguageDB:
 
     def get_languages(self) -> List[str]:
         """Get all available languages."""
-        self.cursor.execute("""SELECT DISTINCT l.language
+        self.cursor.execute(
+            """SELECT DISTINCT l.language
                FROM languages l
-               JOIN exercises_info e ON l.id = e.language_id""")
+               JOIN exercises_info e ON l.id = e.language_id"""
+        )
         return [row["language"] for row in self.cursor.fetchall()]
 
     def get_difficulty_levels(self) -> List[str]:

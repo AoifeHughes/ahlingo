@@ -151,17 +151,13 @@ def update_database_version(db_path: Path, new_version_code: int) -> bool:
     try:
         if not db_path.exists():
             print(f"⚠ Database not found at {db_path} - skipping database update")
-            print(
-                f"  (Database will be created with correct version when generated)"
-            )
+            print(f"  (Database will be created with correct version when generated)")
             return True
 
         with LanguageDB(str(db_path)) as db:
             old_version = db.get_database_version()
             db.set_database_version(new_version_code)
-            print(
-                f"✓ Updated database version: {old_version} -> {new_version_code}"
-            )
+            print(f"✓ Updated database version: {old_version} -> {new_version_code}")
             return True
     except Exception as e:
         print(f"✗ Error updating database version: {e}")
@@ -176,8 +172,20 @@ def copy_database_to_assets(db_path: Path, repo_root: Path) -> bool:
 
     # Define target directories
     targets = [
-        repo_root / "ahlingo_mobile" / "assets" / "databases" / "languageLearningDatabase.db",
-        repo_root / "ahlingo_mobile" / "android" / "app" / "src" / "main" / "assets" / "databases" / "languageLearningDatabase.db",
+        repo_root
+        / "ahlingo_mobile"
+        / "assets"
+        / "databases"
+        / "languageLearningDatabase.db",
+        repo_root
+        / "ahlingo_mobile"
+        / "android"
+        / "app"
+        / "src"
+        / "main"
+        / "assets"
+        / "databases"
+        / "languageLearningDatabase.db",
     ]
 
     success = True

@@ -253,7 +253,8 @@ def create_dynamic_word_pair_model(language: str) -> Type[BaseModel]:
     """
 
     # Create the dynamic model using the simpler approach
-    exec(f"""
+    exec(
+        f"""
 class {language}WordPair(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
@@ -275,7 +276,8 @@ class {language}WordPair(BaseModel):
         if len(v.split()) > 10:
             raise ValueError('{language} phrases should not exceed 10 words')
         return v.strip()
-    """)
+    """
+    )
 
     return locals()[f"{language}WordPair"]
 
@@ -359,7 +361,8 @@ def create_dynamic_translation_pair_model(language: str) -> Type[BaseModel]:
     """
 
     # Create the dynamic model using the simpler approach
-    exec(f"""
+    exec(
+        f"""
 class {language}TranslationPair(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
@@ -381,6 +384,7 @@ class {language}TranslationPair(BaseModel):
         if len(v.split()) < 1:
             raise ValueError('{language} sentences must have at least 1 word')
         return v.strip()
-    """)
+    """
+    )
 
     return locals()[f"{language}TranslationPair"]

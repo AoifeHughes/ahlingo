@@ -50,7 +50,10 @@ repos:
       - id: check-xml
         exclude: ^(test/|ahlingo_mobile/node_modules/|ahlingo_mobile/ios/|ahlingo_mobile/android/)
       - id: check-yaml
-        exclude: ^(test/|ahlingo_mobile/node_modules/|ahlingo_mobile/ios/|ahlingo_mobile/android/)
+        # mkdocs.yml uses a `!!python/name:` tag (mermaid2 plugin's custom_fences
+        # config) that plain yaml.safe_load can't parse, even though mkdocs
+        # itself handles it fine.
+        exclude: ^(test/|ahlingo_mobile/node_modules/|ahlingo_mobile/ios/|ahlingo_mobile/android/|mkdocs\.yml)
       - id: check-merge-conflict
         exclude: ^(test/|ahlingo_mobile/node_modules/|ahlingo_mobile/ios/|ahlingo_mobile/android/)
       - id: detect-private-key
