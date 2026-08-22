@@ -1,0 +1,100 @@
+name: Mobile CI
+
+# Consolidates what used to be ahlingo_mobile/.github/workflows/test.yml and
+# pr-checks.yml. GitHub Actions only discovers workflow files under the repo
+# root's .github/workflows/, so those two files (and nightly-e2e.yml, which
+# also had unvalidated/stub steps) had never actually run.
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+defaults:
+  run:
+    working-directory: ahlingo_mobile
+
+jobs:
+  quality:
+    name: Type Check, Lint & Format
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        cache-dependency-path: ahlingo_mobile/package-lock.json
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Type check
+      run: npm run type-check
+
+    - name: Lint
+      run: npm run lint
+
+    - name: Format check
+      run: npm run format:check
+
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        cache-dependency-path: ahlingo_mobile/package-lock.json
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run unit tests with coverage
+      run: npm run test:ci
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v4
+      if: always()
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: ./ahlingo_mobile/coverage/lcov.info
+        flags: unittests
+        name: codecov-umbrella
+        fail_ci_if_error: false
+
+    - name: Comment PR with coverage
+      uses: romeovs/lcov-reporter-action@v0.3.1
+      if: always() && github.event_name == 'pull_request'
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        lcov-file: ./ahlingo_mobile/coverage/lcov.info
+        delete-old-comments: true
+
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Run npm audit
+      run: npm audit --audit-level moderate
+      continue-on-error: true
+
+    - name: Check for sensitive files
+      working-directory: .
+      run: |
+        if find . -name "*.key" -o -name "*.pem" -o -name "*.p12" -o -name "*keystore*" -o -name "google-services.json" | grep -v node_modules | head -1; then
+          echo "Sensitive files found in repository"
+          exit 1
+        else
+          echo "No sensitive files found"
+        fi

@@ -318,6 +318,9 @@ When you generate new content and want to ship it to the mobile app:
 
 - **Tests** (`.github/workflows/tests.yml`) - Python pytest on `content/tests`; manual (`workflow_dispatch`) only, since the integration tests require a locally running LLM server
 - **Android Build** (`.github/workflows/android-build.yml`) - Debug APK build on push/PR to main
+- **Mobile CI** (`.github/workflows/mobile-ci.yml`) - Type check, lint, format check, unit tests + coverage, and a basic security scan for the mobile app on push/PR to main
+
+Note: workflow files only take effect from the repo root's `.github/workflows/` — a workflow file placed anywhere else (e.g. `ahlingo_mobile/.github/workflows/`) is never discovered or run by GitHub Actions.
 
 ---
 
