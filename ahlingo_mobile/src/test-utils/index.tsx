@@ -13,7 +13,7 @@ export const createMockStore = (initialState = {}) => {
       settings: settingsSlice,
     },
     preloadedState: initialState,
-    middleware: (getDefaultMiddleware) =>
+    middleware: getDefaultMiddleware =>
       getDefaultMiddleware({
         serializableCheck: false,
       }),
@@ -43,14 +43,12 @@ interface AllTheProvidersProps {
 const AllTheProviders: React.FC<AllTheProvidersProps> = ({
   children,
   initialState = defaultMockState,
-  store = createMockStore(initialState)
+  store = createMockStore(initialState),
 }) => {
   return (
     <Provider store={store}>
       <ThemeProvider>
-        <NavigationContainer>
-          {children}
-        </NavigationContainer>
+        <NavigationContainer>{children}</NavigationContainer>
       </ThemeProvider>
     </Provider>
   );

@@ -835,14 +835,9 @@ if (!hasEmail) {
 
 ## See Also
 
-- [Mobile Architecture](architecture.md) - Overall app architecture
-- [Services](services.md) - Database access layer
-- [State Management](state-management.md) - Redux + Context
-- [Testing](testing.md) - Database testing strategies
+- [Mobile Architecture](architecture.md) - Overall app architecture, including the service layer that wraps database access
 
 ---
 
 **Next Steps**:
-- Review [Mobile Architecture](architecture.md) for context
-- Explore [Services](services.md) to see how services use databases
-- Learn [Testing](testing.md) for database testing patterns
+- Review [Mobile Architecture](architecture.md) for context, including how services use these databases

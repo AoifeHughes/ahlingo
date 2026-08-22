@@ -22,7 +22,17 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
   if (isSystem) {
     return (
       <View style={styles.systemContainer}>
-        <Text style={[styles.systemText, { color: theme.colors.textSecondary, backgroundColor: theme.colors.surface }]}>{content}</Text>
+        <Text
+          style={[
+            styles.systemText,
+            {
+              color: theme.colors.textSecondary,
+              backgroundColor: theme.colors.surface,
+            },
+          ]}
+        >
+          {content}
+        </Text>
       </View>
     );
   }
@@ -34,28 +44,47 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
   };
 
   return (
-    <View style={[styles.container, isUser ? styles.userAlign : styles.assistantAlign]}>
-      <View style={[
-        styles.bubble,
-        {
-          backgroundColor: isUser ? theme.colors.userMessage : theme.colors.assistantMessage,
-          shadowColor: theme.colors.text,
-        },
-        isUser ? styles.userBubble : styles.assistantBubble
-      ]}>
-        <Text style={[
-          styles.messageText,
-          { color: isUser ? '#fff' : theme.colors.text }
-        ]}>
+    <View
+      style={[
+        styles.container,
+        isUser ? styles.userAlign : styles.assistantAlign,
+      ]}
+    >
+      <View
+        style={[
+          styles.bubble,
+          {
+            backgroundColor: isUser
+              ? theme.colors.userMessage
+              : theme.colors.assistantMessage,
+            shadowColor: theme.colors.text,
+          },
+          isUser ? styles.userBubble : styles.assistantBubble,
+        ]}
+      >
+        <Text
+          style={[
+            styles.messageText,
+            { color: isUser ? '#fff' : theme.colors.text },
+          ]}
+        >
           {content}
-          {isStreaming && !isUser && <Text style={[styles.streamingCursor, { color: theme.colors.primary }]}>▊</Text>}
+          {isStreaming && !isUser && (
+            <Text
+              style={[styles.streamingCursor, { color: theme.colors.primary }]}
+            >
+              ▊
+            </Text>
+          )}
         </Text>
         {timestamp && (
-          <Text style={[
-            styles.timestamp,
-            { color: isUser ? '#fff' : theme.colors.textSecondary },
-            isUser ? styles.userTimestamp : styles.assistantTimestamp
-          ]}>
+          <Text
+            style={[
+              styles.timestamp,
+              { color: isUser ? '#fff' : theme.colors.textSecondary },
+              isUser ? styles.userTimestamp : styles.assistantTimestamp,
+            ]}
+          >
             {formatTime(timestamp)}
           </Text>
         )}

@@ -372,7 +372,7 @@ export class StatsService {
 - Clear dependencies
 - Easy to test (mock dependencies)
 
-[See Services Documentation →](services.md)
+See the Service Patterns section above for how services compose.
 
 ## Technology Choices
 
@@ -792,19 +792,12 @@ The app uses multi-layer testing:
 3. **Integration Tests**: Service integration (Jest with mocks)
 4. **E2E Tests**: User flows (Detox)
 
-[See Testing Guide →](testing.md)
-
 ## See Also
 
 - [Database Architecture](database.md) - Deep dive on two-database pattern
-- [State Management](state-management.md) - Redux + Context details
-- [Services](services.md) - Service layer documentation
-- [Developer Setup](getting-started-dev.md) - Environment setup
-- [Components](components.md) - Reusable components
 
 ---
 
 **Next Steps**:
 - Understand [Database Architecture](database.md) (two-database pattern)
-- Explore [Services](services.md) (business logic layer)
-- Set up your environment: [Developer Setup](getting-started-dev.md)
+- Explore the Service Layer and Service Patterns sections above (business logic layer)

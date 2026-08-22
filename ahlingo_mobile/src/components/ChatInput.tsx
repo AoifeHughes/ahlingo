@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity, StyleSheet, Text } from 'react-native';
+import {
+  View,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Text,
+} from 'react-native';
 import { colors, spacing, borderRadius, typography } from '../utils/theme';
 
 interface ChatInputProps {
@@ -20,7 +26,11 @@ const ChatInput: React.FC<ChatInputProps> = ({
   const [message, setMessage] = useState('');
 
   const handleSend = () => {
-    console.log('🔘 ChatInput handleSend called:', { message: message.trim(), isLoading, isStreaming });
+    console.log('🔘 ChatInput handleSend called:', {
+      message: message.trim(),
+      isLoading,
+      isStreaming,
+    });
     if (message.trim() && !isLoading && !isStreaming) {
       console.log('✅ Calling onSendMessage with:', message.trim());
       onSendMessage(message.trim());
@@ -53,10 +63,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
           blurOnSubmit={false}
         />
         {isStreaming ? (
-          <TouchableOpacity
-            style={styles.stopButton}
-            onPress={handleStop}
-          >
+          <TouchableOpacity style={styles.stopButton} onPress={handleStop}>
             <Text style={styles.stopButtonText}>Stop</Text>
           </TouchableOpacity>
         ) : (

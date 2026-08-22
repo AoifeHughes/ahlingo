@@ -744,13 +744,10 @@ raise Exception("Failed to generate valid exercise")
 ## See Also
 
 - [Architecture](architecture.md) - Why the system is designed this way
-- [Configuration Guide](configuration.md) - Config file reference
-- [API Reference](api-reference.md) - Function signatures
-- [Developer Guide](developer-guide.md) - Adding exercise types
 
 ---
 
 **Next Steps**:
 - Understand the [Architecture](architecture.md) (design decisions)
-- Learn [Configuration](configuration.md) (tuning generation)
-- Start [Generating Content](getting-started.md) (hands-on)
+- Tune generation via `content/generation/config/database_generation.json`
+- Start generating content with `python content/generate_content.py`

@@ -8,7 +8,11 @@ interface HeaderIconButtonProps {
   testID?: string;
 }
 
-const HeaderIconButton: React.FC<HeaderIconButtonProps> = ({ onPress, icon, testID }) => {
+const HeaderIconButton: React.FC<HeaderIconButtonProps> = ({
+  onPress,
+  icon,
+  testID,
+}) => {
   const { theme } = useTheme();
   const styles = createStyles(theme);
   return (
@@ -23,19 +27,20 @@ const HeaderIconButton: React.FC<HeaderIconButtonProps> = ({ onPress, icon, test
   );
 };
 
-const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) => StyleSheet.create({
-  button: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: currentTheme.spacing.xl,
-    backgroundColor: 'rgba(0, 0, 0, 0.1)',
-    paddingHorizontal: currentTheme.spacing.lg,
-    paddingVertical: currentTheme.spacing.md,
-  },
-  icon: {
-    fontSize: currentTheme.typography.fontSizes['2xl'],
-    color: currentTheme.colors.background,
-  },
-});
+const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) =>
+  StyleSheet.create({
+    button: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderRadius: currentTheme.spacing.xl,
+      backgroundColor: 'rgba(0, 0, 0, 0.1)',
+      paddingHorizontal: currentTheme.spacing.lg,
+      paddingVertical: currentTheme.spacing.md,
+    },
+    icon: {
+      fontSize: currentTheme.typography.fontSizes['2xl'],
+      color: currentTheme.colors.background,
+    },
+  });
 
 export default HeaderIconButton;

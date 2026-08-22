@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 """
-Clip-art batch image generator using ComfyUI API with FLUX.2-klein-9B.
+Clip-art batch image generator using ComfyUI API with FLUX.1 Dev (GGUF).
 
-Refactored from content/img_gen/generate_clipart_flux2.py for integration
-with the AHLingo content generation pipeline.
+Generates flat vector clip-art illustrations via a ComfyUI workflow:
+  GGUF UNet + DualCLIP + Style LoRA -> dpmpp_2m sampler -> VAE decode -> save
+
+Requires ComfyUI-GGUF custom node: github.com/city96/ComfyUI-GGUF
 """
 
 import json
@@ -15,190 +17,242 @@ import urllib.error
 from pathlib import Path
 from typing import Optional
 
+# ---------------------------------------------------------------------------
+# Style prompt components
+# ---------------------------------------------------------------------------
+# FLUX prefers natural-language descriptions over SD-style tag soup.
+# The LoRA trigger word is injected separately by build_prompt().
 
 STYLE_PREFIX = (
-    "flat vector clip art illustration, "
-    "white background, "
-    "bold clean black outlines, "
-    "simple geometric shapes, "
-    "limited bright color palette, "
-    "no gradients, no shadows, no texture, "
+    "Flat vector clip art illustration. "
+    "Solid white background with no patterns. "
+    "Bold clean black outlines on all elements. "
+    "Flat solid colors with no gradients, no shading, no shadows, no texture. "
+    "Simple geometric shapes. "
+    "Limited bright color palette of 3 to 5 colors. "
     "2D graphic design style, "
 )
 
 STYLE_SUFFIX = (
-    ", svg icon style, "
-    "centered composition, "
-    "isolated on white"
+    "SVG icon aesthetic. "
+    "Centered composition. "
+    "Isolated on pure white background. "
+    "Minimalist and clean."
 )
 
-STYLE_EXAMPLES = [
-    "cartoon people sitting around a dinner table eating food",
-    "simple flat icon of a red bicycle",
-    "cute clip art dog holding a bone",
-]
 
-FEW_SHOT_PREAMBLE = (
-    "Examples of this style: "
-    + "; ".join(STYLE_EXAMPLES)
-    + ". Now generate: "
-)
-
-IMAGE_WIDTH = 512
-IMAGE_HEIGHT = 512
-STEPS = 4
-CFG = 1
+# ---------------------------------------------------------------------------
+# Generation defaults (overridable via config)
+# ---------------------------------------------------------------------------
+IMAGE_WIDTH = 1024
+IMAGE_HEIGHT = 1024
+STEPS = 20
+CFG = 1.0
 SAMPLER = "euler"
+SCHEDULER = "sgm_uniform"
 COMFY_HOST = "127.0.0.1:8188"
 
+# Model filenames (must match files in ComfyUI/models/)
+UNET_MODEL = "flux1-dev-Q6_K.gguf"
+LORA_MODEL = "simplevectorflux.safetensors"
+LORA_STRENGTH = 0.7
+LORA_TRIGGER = "v3ct0r"
+VAE_MODEL = "ae.safetensors"
+CLIP_L_MODEL = "clip_l.safetensors"
+T5_MODEL = "t5xxl_fp16.safetensors"
 
-def build_prompt(user_prompt: str) -> str:
-    """Wrap a user prompt in the clip-art style prefix/suffix."""
-    return STYLE_PREFIX + FEW_SHOT_PREAMBLE + user_prompt.strip() + STYLE_SUFFIX
+
+def build_prompt(user_prompt: str, trigger: str = LORA_TRIGGER) -> str:
+    """Wrap a user prompt in the clip-art style prefix/suffix with LoRA trigger."""
+    return f"{trigger}, {STYLE_PREFIX}{user_prompt.strip()}. {STYLE_SUFFIX}"
 
 
-def build_workflow(prompt_text: str, seed: int, output_prefix: str) -> dict:
-    """Build a ComfyUI API-format workflow dict for a single image."""
+def build_workflow(
+    prompt_text: str,
+    seed: int,
+    output_prefix: str,
+    width: int = IMAGE_WIDTH,
+    height: int = IMAGE_HEIGHT,
+    steps: int = STEPS,
+    cfg: float = CFG,
+    sampler: str = SAMPLER,
+    scheduler: str = SCHEDULER,
+    unet_model: str = UNET_MODEL,
+    lora_model: str = LORA_MODEL,
+    lora_strength: float = LORA_STRENGTH,
+    vae_model: str = VAE_MODEL,
+    clip_l_model: str = CLIP_L_MODEL,
+    t5_model: str = T5_MODEL,
+) -> dict:
+    """Build a ComfyUI API-format workflow dict for a single image.
+
+    Uses the standard FLUX.1 KSampler path (not the FLUX.2
+    SamplerCustomAdvanced path) which is better tested and produces
+    cleaner results with GGUF-quantized models.
+
+    Node chain:
+      1  UnetLoaderGGUF          -> model
+      2  LoraLoaderModelOnly     -> model (+ LoRA style)
+      3  DualCLIPLoader          -> clip (CLIP-L + T5-XXL)
+      4  VAELoader               -> vae
+      5  CLIPTextEncode          -> positive conditioning
+      6  ConditioningZeroOut     -> negative conditioning
+      7  KSampler                -> latent (handles sigmas internally)
+      8  VAEDecode               -> image
+      9  SaveImage               -> output file
+    """
     return {
+        # --- Model loading ---
         "1": {
-            "class_type": "UNETLoader",
+            "class_type": "UnetLoaderGGUF",
             "inputs": {
-                "unet_name": "flux-2-klein-9b.safetensors",
-                "weight_dtype": "default"
-            }
+                "unet_name": unet_model,
+            },
         },
         "2": {
+            "class_type": "LoraLoaderModelOnly",
+            "inputs": {
+                "model": ["1", 0],
+                "lora_name": lora_model,
+                "strength_model": lora_strength,
+            },
+        },
+        # --- Text encoding ---
+        "3": {
+            "class_type": "DualCLIPLoader",
+            "inputs": {
+                "clip_name1": clip_l_model,
+                "clip_name2": t5_model,
+                "type": "flux",
+            },
+        },
+        # --- VAE ---
+        "4": {
             "class_type": "VAELoader",
             "inputs": {
-                "vae_name": "flux2-vae.safetensors"
-            }
+                "vae_name": vae_model,
+            },
         },
-        "3": {
-            "class_type": "CLIPLoader",
-            "inputs": {
-                "clip_name": "qwen_3_8b_fp8mixed.safetensors",
-                "type": "flux2",
-                "device": "default"
-            }
-        },
-        "4": {
+        # --- Prompt encoding ---
+        "5": {
             "class_type": "CLIPTextEncode",
             "inputs": {
+                "text": prompt_text,
                 "clip": ["3", 0],
-                "text": prompt_text
-            }
+            },
         },
-        "5": {
-            "class_type": "EmptyLatentImage",
-            "inputs": {
-                "width": IMAGE_WIDTH,
-                "height": IMAGE_HEIGHT,
-                "batch_size": 1
-            }
-        },
+        # --- Negative conditioning ---
         "6": {
             "class_type": "ConditioningZeroOut",
             "inputs": {
-                "conditioning": ["4", 0]
-            }
+                "conditioning": ["5", 0],
+            },
         },
+        # --- Latent ---
         "7": {
-            "class_type": "CFGGuider",
+            "class_type": "EmptyLatentImage",
             "inputs": {
-                "model": ["1", 0],
-                "positive": ["4", 0],
-                "negative": ["6", 0],
-                "cfg": CFG
-            }
+                "width": width,
+                "height": height,
+                "batch_size": 1,
+            },
         },
+        # --- Sampling (KSampler handles sigma schedule internally) ---
         "8": {
-            "class_type": "KSamplerSelect",
+            "class_type": "KSampler",
             "inputs": {
-                "sampler_name": SAMPLER
-            }
+                "model": ["2", 0],
+                "seed": seed,
+                "steps": steps,
+                "cfg": cfg,
+                "sampler_name": sampler,
+                "scheduler": scheduler,
+                "denoise": 1.0,
+                "positive": ["5", 0],
+                "negative": ["6", 0],
+                "latent_image": ["7", 0],
+            },
         },
+        # --- Decode ---
         "9": {
-            "class_type": "RandomNoise",
-            "inputs": {
-                "noise_seed": seed
-            }
-        },
-        "10": {
-            "class_type": "Flux2Scheduler",
-            "inputs": {
-                "steps": STEPS,
-                "width": IMAGE_WIDTH,
-                "height": IMAGE_HEIGHT
-            }
-        },
-        "11": {
-            "class_type": "SamplerCustomAdvanced",
-            "inputs": {
-                "noise": ["9", 0],
-                "guider": ["7", 0],
-                "sampler": ["8", 0],
-                "sigmas": ["10", 0],
-                "latent_image": ["5", 0]
-            }
-        },
-        "12": {
             "class_type": "VAEDecode",
             "inputs": {
-                "samples": ["11", 0],
-                "vae": ["2", 0]
-            }
+                "samples": ["8", 0],
+                "vae": ["4", 0],
+            },
         },
-        "13": {
+        # --- Save ---
+        "10": {
             "class_type": "SaveImage",
             "inputs": {
-                "images": ["12", 0],
-                "filename_prefix": output_prefix
-            }
-        }
+                "images": ["9", 0],
+                "filename_prefix": output_prefix,
+            },
+        },
     }
 
 
-def queue_prompt(workflow: dict) -> str:
+def queue_prompt(comfy_host: str, workflow: dict) -> str:
     """Send a workflow to ComfyUI and return the prompt_id."""
     payload = json.dumps({"prompt": workflow}).encode("utf-8")
     req = urllib.request.Request(
-        f"http://{COMFY_HOST}/prompt",
+        f"http://{comfy_host}/prompt",
         data=payload,
         headers={"Content-Type": "application/json"},
     )
     try:
-        with urllib.request.urlopen(req) as resp:
+        with urllib.request.urlopen(req, timeout=30) as resp:
             result = json.loads(resp.read())
             return result["prompt_id"]
     except urllib.error.URLError as e:
-        print(f"\nCould not connect to ComfyUI at {COMFY_HOST}")
-        print("   Make sure it's running: python main.py --force-fp16")
+        print(f"\nCould not connect to ComfyUI at {comfy_host}")
+        print(f"  Error: {e}")
+        print("  Make sure it's running: python main.py --force-fp16")
         sys.exit(1)
 
 
-def get_queue_status() -> dict:
+def get_queue_status(comfy_host: str) -> dict:
+    """Get current ComfyUI queue status."""
     try:
-        with urllib.request.urlopen(f"http://{COMFY_HOST}/queue") as resp:
+        with urllib.request.urlopen(f"http://{comfy_host}/queue", timeout=10) as resp:
             return json.loads(resp.read())
     except urllib.error.URLError:
         return {}
 
 
-def wait_for_prompt(prompt_id: str, poll_interval: float = 2.0):
-    """Block until a specific prompt_id is no longer in the queue."""
+def wait_for_prompt(
+    comfy_host: str,
+    prompt_id: str,
+    poll_interval: float = 2.0,
+    timeout: float = 600.0,
+):
+    """Block until a specific prompt_id is no longer in the queue.
+
+    Args:
+        comfy_host: ComfyUI host:port
+        prompt_id: The prompt ID to wait for
+        poll_interval: Seconds between queue checks
+        timeout: Maximum seconds to wait (default 10 minutes)
+    """
+    elapsed = 0.0
     while True:
-        status = get_queue_status()
+        status = get_queue_status(comfy_host)
         running = [item[1] for item in status.get("queue_running", [])]
         pending = [item[1] for item in status.get("queue_pending", [])]
         if prompt_id not in running and prompt_id not in pending:
             return
+        elapsed += poll_interval
+        if elapsed >= timeout:
+            print(f"\n  TIMEOUT waiting for prompt {prompt_id} after {elapsed:.0f}s")
+            print(f"  Queue state: running={len(running)}, pending={len(pending)}")
+            return
         time.sleep(poll_interval)
 
 
-def check_comfy_running() -> bool:
+def check_comfy_running(comfy_host: str) -> bool:
     """Check if ComfyUI server is running."""
     try:
-        urllib.request.urlopen(f"http://{COMFY_HOST}/system_stats", timeout=3)
+        urllib.request.urlopen(f"http://{comfy_host}/system_stats", timeout=3)
         return True
     except Exception:
         return False
@@ -215,34 +269,60 @@ def find_output_image(comfy_output_dir: Path, output_prefix: str) -> Optional[Pa
     """Find the generated image file in ComfyUI's output directory."""
     if not comfy_output_dir.exists():
         return None
-    for f in comfy_output_dir.iterdir():
+    for f in sorted(
+        comfy_output_dir.iterdir(), key=lambda p: p.stat().st_mtime, reverse=True
+    ):
         if f.name.startswith(output_prefix) and f.suffix in (".png", ".jpg", ".jpeg"):
             return f
     return None
 
 
 class ImageGenerator:
-    """Client for generating clip-art images via ComfyUI."""
+    """Client for generating clip-art images via ComfyUI (FLUX.1 Dev GGUF)."""
 
     def __init__(
         self,
         comfy_host: str = COMFY_HOST,
         comfy_dir: Optional[Path] = None,
         output_dir: Optional[Path] = None,
+        width: int = IMAGE_WIDTH,
+        height: int = IMAGE_HEIGHT,
+        steps: int = STEPS,
+        cfg: float = CFG,
+        sampler: str = SAMPLER,
+        scheduler: str = SCHEDULER,
+        unet_model: str = UNET_MODEL,
+        lora_model: str = LORA_MODEL,
+        lora_strength: float = LORA_STRENGTH,
+        lora_trigger: str = LORA_TRIGGER,
+        vae_model: str = VAE_MODEL,
+        clip_l_model: str = CLIP_L_MODEL,
+        t5_model: str = T5_MODEL,
+        timeout: float = 600.0,
     ):
         self.comfy_host = comfy_host
         self.comfy_dir = comfy_dir
         self.comfy_output_dir = (
             output_dir if output_dir else (comfy_dir / "output" if comfy_dir else None)
         )
+        self.width = width
+        self.height = height
+        self.steps = steps
+        self.cfg = cfg
+        self.sampler = sampler
+        self.scheduler = scheduler
+        self.unet_model = unet_model
+        self.lora_model = lora_model
+        self.lora_strength = lora_strength
+        self.lora_trigger = lora_trigger
+        self.vae_model = vae_model
+        self.clip_l_model = clip_l_model
+        self.t5_model = t5_model
+        self.timeout = timeout
 
     def check_running(self) -> bool:
         """Check if ComfyUI is available."""
-        try:
-            urllib.request.urlopen(f"http://{self.comfy_host}/system_stats", timeout=3)
-            return True
-        except Exception:
-            return False
+        return check_comfy_running(self.comfy_host)
 
     def generate(
         self,
@@ -263,25 +343,36 @@ class ImageGenerator:
             Filename of the generated image, or None on failure
         """
         seed = seed if seed is not None else random.randint(0, 2**32 - 1)
-        full_prompt = build_prompt(user_prompt)
+        full_prompt = build_prompt(user_prompt, trigger=self.lora_trigger)
         slug = slugify(user_prompt)
         output_prefix = f"clipart_{index:04d}_{slug}"
 
-        workflow = build_workflow(full_prompt, seed, output_prefix)
+        workflow = build_workflow(
+            prompt_text=full_prompt,
+            seed=seed,
+            output_prefix=output_prefix,
+            width=self.width,
+            height=self.height,
+            steps=self.steps,
+            cfg=self.cfg,
+            sampler=self.sampler,
+            scheduler=self.scheduler,
+            unet_model=self.unet_model,
+            lora_model=self.lora_model,
+            lora_strength=self.lora_strength,
+            vae_model=self.vae_model,
+            clip_l_model=self.clip_l_model,
+            t5_model=self.t5_model,
+        )
 
-        prompt_id = queue_prompt(workflow)
+        prompt_id = queue_prompt(self.comfy_host, workflow)
+        wait_for_prompt(self.comfy_host, prompt_id, timeout=self.timeout)
 
-        # Wait for completion
-        wait_for_prompt(prompt_id)
-
-        # Find the output file
         if self.comfy_output_dir:
             output_file = find_output_image(self.comfy_output_dir, output_prefix)
             if output_file:
-                filename = output_file.name
-                return filename
+                return output_file.name
 
-        # Fallback: construct expected filename
         return f"{output_prefix}.png"
 
     def generate_batch(

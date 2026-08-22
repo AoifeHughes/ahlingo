@@ -29,7 +29,10 @@ from tqdm import tqdm
 from database.database_manager import LanguageDB
 from generation.core import outlines_generator
 from generation.core.image_generator import ImageGenerator, check_comfy_running, slugify
-from generation.core.descriptors_generator import generate_image_prompts, generate_descriptors
+from generation.core.descriptors_generator import (
+    generate_image_prompts,
+    generate_descriptors,
+)
 
 
 class ImageContentGenerator:
@@ -53,10 +56,30 @@ class ImageContentGenerator:
         self.dry_run = dry_run
 
         img_config = self.config.get("image_generation", {})
-        self.comfy_dir = Path(comfy_dir) if comfy_dir else Path(img_config.get("comfyui_dir", ""))
-        self.output_dir = Path(output_dir) if output_dir else Path(img_config.get("output_dir", "content/images"))
+        self.comfy_dir = (
+            Path(comfy_dir) if comfy_dir else Path(img_config.get("comfyui_dir", ""))
+        )
+        self.output_dir = (
+            Path(output_dir)
+            if output_dir
+            else Path(img_config.get("output_dir", "content/images"))
+        )
         self.images_per_topic = img_config.get("images_per_topic", 10)
         self.comfy_host = img_config.get("comfyui_host", "127.0.0.1:8188")
+        self.img_width = img_config.get("image_width", 1024)
+        self.img_height = img_config.get("image_height", 1024)
+        self.img_steps = img_config.get("steps", 6)
+        self.img_cfg = img_config.get("cfg", 1.0)
+        self.img_sampler = img_config.get("sampler", "dpmpp_2m")
+        self.img_scheduler = img_config.get("scheduler", "simple")
+        self.img_unet = img_config.get("unet_model", "flux1-dev-Q6_K.gguf")
+        self.img_lora = img_config.get("lora_model", "simplevectorflux.safetensors")
+        self.img_lora_strength = img_config.get("lora_strength", 0.7)
+        self.img_lora_trigger = img_config.get("lora_trigger", "v3ct0r")
+        self.img_vae = img_config.get("vae_model", "ae.safetensors")
+        self.img_clip_l = img_config.get("clip_l_model", "clip_l.safetensors")
+        self.img_t5 = img_config.get("t5_model", "t5xxl_fp16.safetensors")
+        self.img_timeout = img_config.get("timeout", 600)
 
         if generation_model:
             self.config["llm_servers"]["generation"]["model"] = generation_model
@@ -82,14 +105,16 @@ class ImageContentGenerator:
         """Set up LLM model and ComfyUI client."""
         print("Setting up LLM model...", flush=True)
         gen_config = self.config["llm_servers"]["generation"]
-        outlines_generator.MODEL_CONFIG.update({
-            "base_url": gen_config["url"],
-            "api_key": gen_config["api_key"],
-            "temperature": gen_config["temperature"],
-            "exercise_temperatures": self.config.get("exercise_temperatures", {}),
-            "no_think": self.no_think,
-            "debug": self.debug,
-        })
+        outlines_generator.MODEL_CONFIG.update(
+            {
+                "base_url": gen_config["url"],
+                "api_key": gen_config["api_key"],
+                "temperature": gen_config["temperature"],
+                "exercise_temperatures": self.config.get("exercise_temperatures", {}),
+                "no_think": self.no_think,
+                "debug": self.debug,
+            }
+        )
         self.model = outlines_generator.setup_outlines_model()
         print(f"  Model ready", flush=True)
 
@@ -99,12 +124,33 @@ class ImageContentGenerator:
                 comfy_host=self.comfy_host,
                 comfy_dir=self.comfy_dir,
                 output_dir=self.comfy_dir / "output" if self.comfy_dir else None,
+                width=self.img_width,
+                height=self.img_height,
+                steps=self.img_steps,
+                cfg=self.img_cfg,
+                sampler=self.img_sampler,
+                scheduler=self.img_scheduler,
+                unet_model=self.img_unet,
+                lora_model=self.img_lora,
+                lora_strength=self.img_lora_strength,
+                lora_trigger=self.img_lora_trigger,
+                vae_model=self.img_vae,
+                clip_l_model=self.img_clip_l,
+                t5_model=self.img_t5,
+                timeout=self.img_timeout,
             )
             if not self.image_gen.check_running():
                 print(f"\n  ERROR: ComfyUI not running at {self.comfy_host}")
-                print(f"  Start it with: cd {self.comfy_dir} && python main.py --force-fp16")
+                print(
+                    f"  Start it with: cd {self.comfy_dir} && python main.py --force-fp16"
+                )
                 sys.exit(1)
             print(f"  ComfyUI connected at {self.comfy_host}")
+            print(
+                f"  Pipeline: {self.img_unet} + {self.img_lora} "
+                f"({self.img_sampler}, {self.img_steps} steps, "
+                f"{self.img_width}x{self.img_height})"
+            )
 
     def get_topics(self, topics_filter: Optional[List[str]] = None) -> List[str]:
         all_topics = self.config.get("topics", [])
@@ -123,7 +169,9 @@ class ImageContentGenerator:
                 if found:
                     matched.append(found[0])
                 else:
-                    print(f"  WARNING: Topic '{tf_stripped}' not found in config, skipping")
+                    print(
+                        f"  WARNING: Topic '{tf_stripped}' not found in config, skipping"
+                    )
         return matched
 
     def get_languages(self, languages_filter: Optional[List[str]] = None) -> List[str]:
@@ -137,7 +185,9 @@ class ImageContentGenerator:
             if found:
                 matched.append(found[0])
             else:
-                print(f"  WARNING: Language '{lf_stripped}' not found in config, skipping")
+                print(
+                    f"  WARNING: Language '{lf_stripped}' not found in config, skipping"
+                )
         return matched
 
     def get_levels(self, levels_filter: Optional[List[str]] = None) -> List[str]:
@@ -208,7 +258,9 @@ class ImageContentGenerator:
                     existing_count = db.get_image_exercise_count_by_topic(topic)
 
             if existing_count >= self.images_per_topic:
-                print(f"  Topic already has {existing_count} images, skipping (use --regenerate to overwrite)")
+                print(
+                    f"  Topic already has {existing_count} images, skipping (use --regenerate to overwrite)"
+                )
                 # Still return empty so descriptors can be generated
                 with LanguageDB(self.db_path) as db:
                     existing = db.get_image_exercises_by_topic(topic)
@@ -217,7 +269,9 @@ class ImageContentGenerator:
 
             # Generate prompts via LLM
             print(f"  Generating {self.images_per_topic} image prompts...", flush=True)
-            prompts_result = generate_image_prompts(self.model, topic, count=self.images_per_topic)
+            prompts_result = generate_image_prompts(
+                self.model, topic, count=self.images_per_topic
+            )
 
             if not prompts_result:
                 print(f"  FAILED to generate prompts for '{topic}'")
@@ -225,7 +279,7 @@ class ImageContentGenerator:
                 continue
 
             self.stats["prompts_generated"] += len(prompts_result)
-            prompts = [p["prompt"] for p in prompts_result[:self.images_per_topic]]
+            prompts = [p["prompt"] for p in prompts_result[: self.images_per_topic]]
             print(f"  Generated {len(prompts)} prompts:")
             for i, p in enumerate(prompts):
                 print(f"    [{i}] {p}")
@@ -234,12 +288,14 @@ class ImageContentGenerator:
                 print(f"  [DRY RUN] Would generate {len(prompts)} images")
                 fake_images = []
                 for i, p in enumerate(prompts):
-                    fake_images.append({
-                        "id": -1,
-                        "image_prompt": p,
-                        "image_filename": f"{i:02d}_{slugify(p)}.png",
-                        "image_path": f"images/{topic_slug}/{i:02d}_{slugify(p)}.png",
-                    })
+                    fake_images.append(
+                        {
+                            "id": -1,
+                            "image_prompt": p,
+                            "image_filename": f"{i:02d}_{slugify(p)}.png",
+                            "image_path": f"images/{topic_slug}/{i:02d}_{slugify(p)}.png",
+                        }
+                    )
                 topic_images[topic] = fake_images
                 continue
 
@@ -259,7 +315,9 @@ class ImageContentGenerator:
                     if comfy_output.exists():
                         shutil.copy2(comfy_output, dest_file)
                     else:
-                        print(f"    WARNING: ComfyUI output file not found: {comfy_output}")
+                        print(
+                            f"    WARNING: ComfyUI output file not found: {comfy_output}"
+                        )
 
                     image_path = f"images/{topic_slug}/{filename}"
 
@@ -273,12 +331,14 @@ class ImageContentGenerator:
                             image_path=image_path,
                         )
 
-                    generated_images.append({
-                        "id": image_id,
-                        "image_prompt": prompt,
-                        "image_filename": filename,
-                        "image_path": image_path,
-                    })
+                    generated_images.append(
+                        {
+                            "id": image_id,
+                            "image_prompt": prompt,
+                            "image_filename": filename,
+                            "image_path": image_path,
+                        }
+                    )
                     self.stats["images_generated"] += 1
                     print(f"    [{i}] -> {filename} (DB id: {image_id})")
                 else:
@@ -318,7 +378,9 @@ class ImageContentGenerator:
                     for language in languages:
                         for level in levels:
                             if self.dry_run:
-                                print(f"  [DRY RUN] Descriptor: {language}/{level} for image '{image_prompt[:40]}'")
+                                print(
+                                    f"  [DRY RUN] Descriptor: {language}/{level} for image '{image_prompt[:40]}'"
+                                )
                                 self.stats["descriptors_generated"] += 1
                                 pbar.update(1)
                                 continue
@@ -326,7 +388,9 @@ class ImageContentGenerator:
                             # Check if already exists
                             existing = None
                             with LanguageDB(self.db_path) as db:
-                                existing = db.get_image_descriptor(image_id, language, level.capitalize())
+                                existing = db.get_image_descriptor(
+                                    image_id, language, level.capitalize()
+                                )
 
                             if existing:
                                 self.stats["descriptors_generated"] += 1
@@ -436,6 +500,23 @@ def main():
         action="store_true",
         help="Regenerate images even if topic already has images",
     )
+    parser.add_argument(
+        "--test-prompt",
+        type=str,
+        help="Generate a single test image from this prompt (bypasses full pipeline)",
+    )
+    parser.add_argument(
+        "--outfile",
+        type=str,
+        default="test_output.png",
+        help="Output filename for --test-prompt (default: test_output.png)",
+    )
+    parser.add_argument(
+        "--seed",
+        type=int,
+        default=None,
+        help="Fixed seed for --test-prompt (default: random)",
+    )
 
     args = parser.parse_args()
 
@@ -450,8 +531,84 @@ def main():
 
     # Parse filters
     topics_filter = [t.strip() for t in args.topics.split(",")] if args.topics else None
-    languages_filter = [l.strip() for l in args.languages.split(",")] if args.languages else None
+    languages_filter = (
+        [l.strip() for l in args.languages.split(",")] if args.languages else None
+    )
     levels_filter = [l.strip() for l in args.levels.split(",")] if args.levels else None
+
+    # --- Test-prompt mode: single image, bypasses full pipeline ---
+    if args.test_prompt:
+        import json as _json
+        from generation.core.image_generator import (
+            ImageGenerator,
+            build_prompt,
+            slugify,
+        )
+
+        with open(args.config, "r") as f:
+            config = _json.load(f)
+        img_cfg = config.get("image_generation", {})
+
+        comfy_dir = (
+            Path(args.comfy_dir)
+            if args.comfy_dir
+            else Path(img_cfg.get("comfyui_dir", ""))
+        )
+        comfy_host = img_cfg.get("comfyui_host", "127.0.0.1:8188")
+
+        gen = ImageGenerator(
+            comfy_host=comfy_host,
+            comfy_dir=comfy_dir,
+            output_dir=comfy_dir / "output" if comfy_dir else None,
+            width=img_cfg.get("image_width", 1024),
+            height=img_cfg.get("image_height", 1024),
+            steps=img_cfg.get("steps", 6),
+            cfg=img_cfg.get("cfg", 1.0),
+            sampler=img_cfg.get("sampler", "dpmpp_2m"),
+            scheduler=img_cfg.get("scheduler", "simple"),
+            unet_model=img_cfg.get("unet_model", "flux1-dev-Q6_K.gguf"),
+            lora_model=img_cfg.get("lora_model", "simplevectorflux.safetensors"),
+            lora_strength=img_cfg.get("lora_strength", 0.7),
+            lora_trigger=img_cfg.get("lora_trigger", "v3ct0r"),
+            vae_model=img_cfg.get("vae_model", "ae.safetensors"),
+            clip_l_model=img_cfg.get("clip_l_model", "clip_l.safetensors"),
+            t5_model=img_cfg.get("t5_model", "t5xxl_fp16.safetensors"),
+            timeout=img_cfg.get("timeout", 600),
+        )
+
+        if not gen.check_running():
+            print(f"ERROR: ComfyUI not running at {comfy_host}")
+            sys.exit(1)
+
+        full_prompt = build_prompt(args.test_prompt, trigger=gen.lora_trigger)
+        print(f"\n{'='*80}")
+        print(f"TEST IMAGE GENERATION")
+        print(f"{'='*80}")
+        print(f"User prompt: {args.test_prompt}")
+        print(f"Full prompt:\n  {full_prompt}")
+        print(f"Resolution: {gen.width}x{gen.height}")
+        print(f"Sampler: {gen.sampler}, Steps: {gen.steps}, CFG: {gen.cfg}")
+        print(
+            f"Model: {gen.unet_model} + {gen.lora_model} (strength {gen.lora_strength})"
+        )
+        print(f"{'='*80}\n")
+
+        filename = gen.generate(args.test_prompt, 0, "test", seed=args.seed)
+        if filename:
+            print(f"Generated: {filename}")
+            out = Path(args.outfile)
+            comfy_out = gen.comfy_output_dir / filename
+            if comfy_out.exists():
+                import shutil
+
+                shutil.copy2(comfy_out, out)
+                print(f"Copied to: {out.resolve()}")
+            else:
+                print(f"WARNING: ComfyUI output not found at {comfy_out}")
+        else:
+            print("FAILED to generate image")
+            sys.exit(1)
+        return
 
     generator = ImageContentGenerator(
         config_path=args.config,

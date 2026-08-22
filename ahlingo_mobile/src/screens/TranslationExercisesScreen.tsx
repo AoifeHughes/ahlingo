@@ -10,7 +10,11 @@ import {
   BackHandler,
   SafeAreaView,
 } from 'react-native';
-import { RouteProp, useFocusEffect, usePreventRemove } from '@react-navigation/native';
+import {
+  RouteProp,
+  useFocusEffect,
+  usePreventRemove,
+} from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useSelector } from 'react-redux';
 import { RootStackParamList, ExerciseInfo } from '../types';
@@ -110,7 +114,7 @@ const TranslationExercisesScreen: React.FC<Props> = ({ route, navigation }) => {
           {
             text: 'Exit',
             style: 'destructive',
-            onPress: () => navigation.navigate('MainMenu')
+            onPress: () => navigation.navigate('MainMenu'),
           },
         ]
       );
@@ -123,7 +127,10 @@ const TranslationExercisesScreen: React.FC<Props> = ({ route, navigation }) => {
     useCallback(() => {
       if (shuffleContext) {
         const onBackPress = () => handleBackPress();
-        const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress);
+        const subscription = BackHandler.addEventListener(
+          'hardwareBackPress',
+          onBackPress
+        );
         return () => subscription.remove();
       }
     }, [shuffleContext, handleBackPress])
@@ -139,7 +146,7 @@ const TranslationExercisesScreen: React.FC<Props> = ({ route, navigation }) => {
         {
           text: 'Exit',
           style: 'destructive',
-          onPress: () => navigation.navigate('MainMenu')
+          onPress: () => navigation.navigate('MainMenu'),
         },
       ]
     );
@@ -157,8 +164,10 @@ const TranslationExercisesScreen: React.FC<Props> = ({ route, navigation }) => {
         return;
       }
 
-      const language = userContext.settings.language || settings.language || 'French';
-      const difficulty = userContext.settings.difficulty || settings.difficulty || 'Beginner';
+      const language =
+        userContext.settings.language || settings.language || 'French';
+      const difficulty =
+        userContext.settings.difficulty || settings.difficulty || 'Beginner';
 
       setUserLanguage(language);
       setUserDifficulty(difficulty);
@@ -360,7 +369,10 @@ const TranslationExercisesScreen: React.FC<Props> = ({ route, navigation }) => {
         {/* Header with refresh button - hidden in shuffle mode */}
         {!shuffleContext && (
           <View style={styles.header}>
-            <TouchableOpacity style={styles.refreshButton} onPress={handleRefresh}>
+            <TouchableOpacity
+              style={styles.refreshButton}
+              onPress={handleRefresh}
+            >
               <Text style={styles.refreshButtonText}>🔄 New Exercise</Text>
             </TouchableOpacity>
           </View>
@@ -391,7 +403,9 @@ const TranslationExercisesScreen: React.FC<Props> = ({ route, navigation }) => {
                       : styles.incorrectFeedback,
                   ]}
                 >
-                  {gameState.isCorrect ? '✅ Correct!' : '❌ Incorrect. Try again!'}
+                  {gameState.isCorrect
+                    ? '✅ Correct!'
+                    : '❌ Incorrect. Try again!'}
                 </Text>
                 {!gameState.isCorrect && (
                   <Text style={styles.correctAnswerText}>
@@ -404,7 +418,9 @@ const TranslationExercisesScreen: React.FC<Props> = ({ route, navigation }) => {
                 >
                   <Text style={styles.nextButtonText}>
                     {shuffleContext
-                      ? (gameState.isCorrect ? '✅ Perfect! Next Exercise' : '➡️ Next Exercise')
+                      ? gameState.isCorrect
+                        ? '✅ Perfect! Next Exercise'
+                        : '➡️ Next Exercise'
                       : 'Next Exercise'}
                   </Text>
                 </TouchableOpacity>

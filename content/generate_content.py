@@ -19,6 +19,7 @@ Usage:
 """
 
 import os
+
 os.environ["KIVY_NO_CONSOLELOG"] = "1"
 
 import json
@@ -145,9 +146,7 @@ class ContentGenerator:
         ]
         for field in required_fields:
             if field not in config:
-                raise ValueError(
-                    f"Missing required field in config: {field}"
-                )
+                raise ValueError(f"Missing required field in config: {field}")
 
         return config
 
@@ -184,7 +183,9 @@ class ContentGenerator:
         else:
             # Create separate validation model
             # This is a simplified version - in production you'd need to create another model instance
-            print(f"  Validation model: Separate model not yet implemented, using generation model")
+            print(
+                f"  Validation model: Separate model not yet implemented, using generation model"
+            )
             self.validation_model = self.generation_model
 
         # Cache validation model name (avoids models.list() per exercise)
@@ -269,7 +270,9 @@ class ContentGenerator:
             )
 
             if existing_examples and self.debug:
-                print(f"Using {len(existing_examples)} existing exercises as examples for diversity")
+                print(
+                    f"Using {len(existing_examples)} existing exercises as examples for diversity"
+                )
 
             # Call appropriate generator function (model is first parameter)
             if exercise_type == "conversations":
@@ -310,9 +313,9 @@ class ContentGenerator:
                     # Convert list of word pair models to dict with "word_pairs" field
                     pairs_list = []
                     for pair in result:
-                        if hasattr(pair, 'model_dump'):
+                        if hasattr(pair, "model_dump"):
                             pairs_list.append(pair.model_dump())
-                        elif hasattr(pair, 'dict'):
+                        elif hasattr(pair, "dict"):
                             pairs_list.append(pair.dict())
                         else:
                             pairs_list.append(pair)
@@ -320,27 +323,27 @@ class ContentGenerator:
                 elif exercise_type == "conversations":
                     # Take first conversation from the list
                     first_conv = result[0]
-                    if hasattr(first_conv, 'model_dump'):
+                    if hasattr(first_conv, "model_dump"):
                         result_dict = first_conv.model_dump()
-                    elif hasattr(first_conv, 'dict'):
+                    elif hasattr(first_conv, "dict"):
                         result_dict = first_conv.dict()
                     else:
                         result_dict = first_conv
                 elif exercise_type == "translations":
                     # Take first translation from the list
                     first_trans = result[0]
-                    if hasattr(first_trans, 'model_dump'):
+                    if hasattr(first_trans, "model_dump"):
                         result_dict = first_trans.model_dump()
-                    elif hasattr(first_trans, 'dict'):
+                    elif hasattr(first_trans, "dict"):
                         result_dict = first_trans.dict()
                     else:
                         result_dict = first_trans
                 else:
                     # Unknown type, take first item
                     first_item = result[0]
-                    if hasattr(first_item, 'model_dump'):
+                    if hasattr(first_item, "model_dump"):
                         result_dict = first_item.model_dump()
-                    elif hasattr(first_item, 'dict'):
+                    elif hasattr(first_item, "dict"):
                         result_dict = first_item.dict()
                     else:
                         result_dict = first_item
@@ -354,6 +357,7 @@ class ContentGenerator:
         except Exception as e:
             if self.debug:
                 import traceback
+
                 traceback.print_exc()
             self.stats["generation_failures"] += 1
             return None
@@ -377,8 +381,10 @@ class ContentGenerator:
             converter = get_converter(exercise_type, language, level)
 
             # For fill-in-blank exercises, do pre-validation on translation
-            if exercise_type == "fill_in_blank" and hasattr(converter, 'validate_translation'):
-                translation = exercise_data.get('translation', '')
+            if exercise_type == "fill_in_blank" and hasattr(
+                converter, "validate_translation"
+            ):
+                translation = exercise_data.get("translation", "")
                 is_valid, error_msg = converter.validate_translation(translation)
                 if not is_valid:
                     print(f"  ❌ Pre-validation failed: {error_msg}")
@@ -428,7 +434,9 @@ class ContentGenerator:
             # For fill-in-blank, also check ambiguity and translation blanks
             if (
                 exercise_type == "fill_in_blank"
-                and self.config["generation_settings"]["require_unambiguous_fill_in_blank"]
+                and self.config["generation_settings"][
+                    "require_unambiguous_fill_in_blank"
+                ]
             ):
                 if isinstance(validation_result, FillInBlankValidation):
                     if not validation_result.is_unambiguous:
@@ -442,20 +450,28 @@ class ContentGenerator:
             if not passed:
                 self.stats["validation_failures"] += 1
                 if passed == (validation_result.overall_quality_score >= threshold):
-                    print(f"  ❌ Validation failed: Quality score {validation_result.overall_quality_score} < threshold {threshold}")
+                    print(
+                        f"  ❌ Validation failed: Quality score {validation_result.overall_quality_score} < threshold {threshold}"
+                    )
 
             return passed, validation_result
 
         except Exception as e:
             if self.debug:
                 import traceback
+
                 traceback.print_exc()
             self.stats["validation_failures"] += 1
             # Return failed validation
             return False, {"error": str(e)}
 
     def insert_exercise(
-        self, exercise_data: Dict, language: str, level: str, topic: str, exercise_type: str
+        self,
+        exercise_data: Dict,
+        language: str,
+        level: str,
+        topic: str,
+        exercise_type: str,
     ) -> bool:
         """Insert validated exercise into database.
 
@@ -476,7 +492,7 @@ class ContentGenerator:
         try:
             with LanguageDB(self.db_path) as db:
                 # Generate lesson ID (unique identifier)
-                timestamp = datetime.now().strftime('%Y%m%d%H%M%S%f')
+                timestamp = datetime.now().strftime("%Y%m%d%H%M%S%f")
                 lesson_id = f"{language}_{level}_{topic}_{exercise_type}_{timestamp}"
                 unique_suffix = f"{timestamp}_{uuid.uuid4().hex[:8]}"
 
@@ -536,6 +552,7 @@ class ContentGenerator:
         except Exception as e:
             if self.debug:
                 import traceback
+
                 traceback.print_exc()
             print(f"  Error inserting exercise: {e}")
             return False
@@ -555,7 +572,9 @@ class ContentGenerator:
         topic = combination["topic"]
         exercise_type = combination["exercise_type"]
 
-        lessons_per_combo = self.config["generation_settings"]["lessons_per_combination"]
+        lessons_per_combo = self.config["generation_settings"][
+            "lessons_per_combination"
+        ]
         max_retries = self.config["generation_settings"]["max_retries"]
 
         combination_failures = []
@@ -566,7 +585,9 @@ class ContentGenerator:
 
             for attempt in range(max_retries):
                 # Generate exercise (may return a single dict or list of dicts for fill_in_blank)
-                exercise_data = self.generate_exercise(language, level, topic, exercise_type)
+                exercise_data = self.generate_exercise(
+                    language, level, topic, exercise_type
+                )
 
                 if exercise_data is None:
                     continue  # Try again
@@ -587,14 +608,20 @@ class ContentGenerator:
                                 "lesson_number": lesson_num,
                                 "attempt": attempt + 1,
                                 "error_type": "validation_failed",
-                                "validation_result": _convert_to_dict(failed_validation) if failed_validation else "Unknown error",
+                                "validation_result": (
+                                    _convert_to_dict(failed_validation)
+                                    if failed_validation
+                                    else "Unknown error"
+                                ),
                                 "generated_data": _convert_to_dict(exercise_data),
                             }
                         )
                     continue  # Try again
 
                 # Validation passed!
-                print(f"  ✅ Validation passed (score: {validation_result.overall_quality_score})")
+                print(
+                    f"  ✅ Validation passed (score: {validation_result.overall_quality_score})"
+                )
 
                 # Check similarity to existing exercises
                 existing_for_similarity = self.fetch_existing_exercises_for_examples(
@@ -623,7 +650,9 @@ class ContentGenerator:
 
                 print(f"  ✅ Similarity check passed, inserting into database...")
                 # Insert into database
-                if self.insert_exercise(exercise_data, language, level, topic, exercise_type):
+                if self.insert_exercise(
+                    exercise_data, language, level, topic, exercise_type
+                ):
                     print(f"  ✅ Successfully inserted exercise!")
                     success = True
                     break  # Success, move to next lesson
@@ -679,7 +708,9 @@ class ContentGenerator:
         print(f"CONTENT GENERATION PIPELINE")
         print(f"{'='*80}")
         print(f"Total combinations to process: {len(combinations)}")
-        print(f"Lessons per combination: {self.config['generation_settings']['lessons_per_combination']}")
+        print(
+            f"Lessons per combination: {self.config['generation_settings']['lessons_per_combination']}"
+        )
         print(
             f"Total exercises to generate: {len(combinations) * self.config['generation_settings']['lessons_per_combination']}"
         )
@@ -689,7 +720,10 @@ class ContentGenerator:
         self.setup_models()
 
         # Calculate total exercises for progress bar
-        total_exercises = len(combinations) * self.config['generation_settings']['lessons_per_combination']
+        total_exercises = (
+            len(combinations)
+            * self.config["generation_settings"]["lessons_per_combination"]
+        )
 
         # Process each combination sequentially with progress bar per exercise
         with tqdm(total=total_exercises, desc="Generating exercises") as pbar:
@@ -717,9 +751,9 @@ class ContentGenerator:
         print(f"Validation failures: {self.stats['validation_failures']}")
         print(f"Total failures: {len(self.failures)}")
 
-        if self.stats['total_attempted'] > 0:
+        if self.stats["total_attempted"] > 0:
             success_rate = (
-                self.stats['total_inserted'] / self.stats['total_attempted'] * 100
+                self.stats["total_inserted"] / self.stats["total_attempted"] * 100
             )
             print(f"Success rate: {success_rate:.1f}%")
 
@@ -795,7 +829,10 @@ class ContentGenerator:
         self.setup_models()
 
         # Calculate total exercises for progress bar
-        total_exercises = len(combinations) * self.config['generation_settings']['lessons_per_combination']
+        total_exercises = (
+            len(combinations)
+            * self.config["generation_settings"]["lessons_per_combination"]
+        )
 
         # Process each combination with progress bar per exercise
         with tqdm(total=total_exercises, desc="Retrying exercises") as pbar:
@@ -835,7 +872,9 @@ class ContentGenerator:
                     WHERE l.language = ? AND d.difficulty_level = ? AND t.topic = ?
                     AND e.exercise_type = ?
                 """
-                db.cursor.execute(query, (language, level.capitalize(), topic, exercise_type))
+                db.cursor.execute(
+                    query, (language, level.capitalize(), topic, exercise_type)
+                )
                 result = db.cursor.fetchone()
                 count = result[0] if result else 0
 
@@ -892,7 +931,9 @@ class ContentGenerator:
                     ORDER BY RANDOM()
                     LIMIT ?
                 """
-                db.cursor.execute(query, (language, level.capitalize(), topic, limit * 2))
+                db.cursor.execute(
+                    query, (language, level.capitalize(), topic, limit * 2)
+                )
                 rows = db.cursor.fetchall()
 
                 if not rows:
@@ -915,16 +956,18 @@ class ContentGenerator:
                     if exercise_type == "fill_in_blank":
                         unique_key = (
                             exercise_dict.get("sentence", ""),
-                            exercise_dict.get("translation", "")
+                            exercise_dict.get("translation", ""),
                         )
                     elif exercise_type == "translation":
                         unique_key = (
                             exercise_dict.get("language_1_content", ""),
-                            exercise_dict.get("language_2_content", "")
+                            exercise_dict.get("language_2_content", ""),
                         )
                     else:
                         # For other types, use first text field as unique key
-                        unique_key = str(list(exercise_dict.values())[2:4])  # Skip id and exercise_id
+                        unique_key = str(
+                            list(exercise_dict.values())[2:4]
+                        )  # Skip id and exercise_id
 
                     # Only add if we haven't seen this content before
                     if unique_key not in seen_content:
@@ -941,6 +984,7 @@ class ContentGenerator:
             if self.debug:
                 print(f"Error fetching existing exercises for examples: {e}")
                 import traceback
+
                 traceback.print_exc()
             return None
 

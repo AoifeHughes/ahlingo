@@ -58,18 +58,21 @@ export const SQL_QUERIES = {
 
   // Base data queries (content database)
   GET_LANGUAGES: 'SELECT * FROM content.languages ORDER BY language',
-  GET_DIFFICULTIES: 'SELECT * FROM content.difficulties ORDER BY difficulty_level',
+  GET_DIFFICULTIES:
+    'SELECT * FROM content.difficulties ORDER BY difficulty_level',
   GET_TOPICS: 'SELECT * FROM content.topics ORDER BY topic',
 
   // Exercise filtering templates
   GET_TOPICS_BY_TYPE: (exerciseType: string) => {
     const exerciseTableMap = {
-      'pairs': 'content.pair_exercises pe',
-      'conversation': 'content.conversation_exercises ce',
-      'translation': 'content.translation_exercises te',
-      'fill_in_blank': 'content.fill_in_blank_exercises fibe'
+      pairs: 'content.pair_exercises pe',
+      conversation: 'content.conversation_exercises ce',
+      translation: 'content.translation_exercises te',
+      fill_in_blank: 'content.fill_in_blank_exercises fibe',
     };
-    const joinTable = exerciseTableMap[exerciseType as keyof typeof exerciseTableMap] || 'content.pair_exercises pe';
+    const joinTable =
+      exerciseTableMap[exerciseType as keyof typeof exerciseTableMap] ||
+      'content.pair_exercises pe';
 
     return `
       SELECT DISTINCT t.id, t.topic
@@ -87,12 +90,17 @@ export const SQL_QUERIES = {
 
   GET_RANDOM_EXERCISE: (exerciseType: string) => {
     const exerciseTableJoins = {
-      'pairs': 'JOIN content.pair_exercises pe ON ei.id = pe.exercise_id',
-      'conversation': 'JOIN content.conversation_exercises ce ON ei.id = ce.exercise_id',
-      'translation': 'JOIN content.translation_exercises te ON ei.id = te.exercise_id',
-      'fill_in_blank': 'JOIN content.fill_in_blank_exercises fibe ON ei.id = fibe.exercise_id'
+      pairs: 'JOIN content.pair_exercises pe ON ei.id = pe.exercise_id',
+      conversation:
+        'JOIN content.conversation_exercises ce ON ei.id = ce.exercise_id',
+      translation:
+        'JOIN content.translation_exercises te ON ei.id = te.exercise_id',
+      fill_in_blank:
+        'JOIN content.fill_in_blank_exercises fibe ON ei.id = fibe.exercise_id',
     };
-    const dataJoin = exerciseTableJoins[exerciseType as keyof typeof exerciseTableJoins] || 'JOIN content.pair_exercises pe ON ei.id = pe.exercise_id';
+    const dataJoin =
+      exerciseTableJoins[exerciseType as keyof typeof exerciseTableJoins] ||
+      'JOIN content.pair_exercises pe ON ei.id = pe.exercise_id';
 
     return `
       SELECT DISTINCT ei.* FROM content.exercises_info ei
@@ -281,8 +289,7 @@ export const SQL_QUERIES = {
   UPDATE_CHAT_NAME:
     'UPDATE chat_details SET chat_name = ?, last_updated = datetime("now") WHERE id = ?',
 
-  DELETE_CHAT:
-    'DELETE FROM chat_details WHERE id = ? AND user_id = ?',
+  DELETE_CHAT: 'DELETE FROM chat_details WHERE id = ? AND user_id = ?',
 
   ADD_CHAT_MESSAGE:
     'INSERT INTO chat_histories (chat_id, role, content, timestamp) VALUES (?, ?, ?, datetime("now"))',
@@ -294,8 +301,7 @@ export const SQL_QUERIES = {
     ORDER BY timestamp ASC
   `,
 
-  DELETE_CHAT_MESSAGES:
-    'DELETE FROM chat_histories WHERE chat_id = ?',
+  DELETE_CHAT_MESSAGES: 'DELETE FROM chat_histories WHERE chat_id = ?',
 
   GET_RECENT_CHAT_FOR_USER: `
     SELECT id, user_id, language, difficulty, model, chat_name, created_at, last_updated
@@ -308,12 +314,17 @@ export const SQL_QUERIES = {
   // Smart randomization queries
   GET_EXERCISES_EXCLUDING_RECENT: (exerciseType: string) => {
     const exerciseTableJoins = {
-      'pairs': 'JOIN content.pair_exercises pe ON ei.id = pe.exercise_id',
-      'conversation': 'JOIN content.conversation_exercises ce ON ei.id = ce.exercise_id',
-      'translation': 'JOIN content.translation_exercises te ON ei.id = te.exercise_id',
-      'fill_in_blank': 'JOIN content.fill_in_blank_exercises fibe ON ei.id = fibe.exercise_id'
+      pairs: 'JOIN content.pair_exercises pe ON ei.id = pe.exercise_id',
+      conversation:
+        'JOIN content.conversation_exercises ce ON ei.id = ce.exercise_id',
+      translation:
+        'JOIN content.translation_exercises te ON ei.id = te.exercise_id',
+      fill_in_blank:
+        'JOIN content.fill_in_blank_exercises fibe ON ei.id = fibe.exercise_id',
     };
-    const dataJoin = exerciseTableJoins[exerciseType as keyof typeof exerciseTableJoins] || 'JOIN content.pair_exercises pe ON ei.id = pe.exercise_id';
+    const dataJoin =
+      exerciseTableJoins[exerciseType as keyof typeof exerciseTableJoins] ||
+      'JOIN content.pair_exercises pe ON ei.id = pe.exercise_id';
 
     return `
       SELECT DISTINCT ei.*, t.topic as topic_name
@@ -334,12 +345,17 @@ export const SQL_QUERIES = {
 
   GET_ALL_EXERCISES_FOR_SMART_SELECTION: (exerciseType: string) => {
     const exerciseTableJoins = {
-      'pairs': 'JOIN content.pair_exercises pe ON ei.id = pe.exercise_id',
-      'conversation': 'JOIN content.conversation_exercises ce ON ei.id = ce.exercise_id',
-      'translation': 'JOIN content.translation_exercises te ON ei.id = te.exercise_id',
-      'fill_in_blank': 'JOIN content.fill_in_blank_exercises fibe ON ei.id = fibe.exercise_id'
+      pairs: 'JOIN content.pair_exercises pe ON ei.id = pe.exercise_id',
+      conversation:
+        'JOIN content.conversation_exercises ce ON ei.id = ce.exercise_id',
+      translation:
+        'JOIN content.translation_exercises te ON ei.id = te.exercise_id',
+      fill_in_blank:
+        'JOIN content.fill_in_blank_exercises fibe ON ei.id = fibe.exercise_id',
     };
-    const dataJoin = exerciseTableJoins[exerciseType as keyof typeof exerciseTableJoins] || 'JOIN content.pair_exercises pe ON ei.id = pe.exercise_id';
+    const dataJoin =
+      exerciseTableJoins[exerciseType as keyof typeof exerciseTableJoins] ||
+      'JOIN content.pair_exercises pe ON ei.id = pe.exercise_id';
 
     return `
       SELECT DISTINCT ei.*, t.topic as topic_name

@@ -34,22 +34,26 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
         style={[
           styles.bubble,
           {
-            backgroundColor: isLeft ? theme.colors.assistantMessage : theme.colors.userMessage,
+            backgroundColor: isLeft
+              ? theme.colors.assistantMessage
+              : theme.colors.userMessage,
             shadowColor: theme.colors.text,
           },
-          isLeft ? styles.leftBubble : styles.rightBubble
+          isLeft ? styles.leftBubble : styles.rightBubble,
         ]}
       >
         <View style={styles.headerRow}>
-          <Text style={[styles.speakerName, { color: theme.colors.textSecondary }]}>{speaker}</Text>
-          {onSpeak && (
-            <Text style={styles.speakerIcon}>🔊</Text>
-          )}
+          <Text
+            style={[styles.speakerName, { color: theme.colors.textSecondary }]}
+          >
+            {speaker}
+          </Text>
+          {onSpeak && <Text style={styles.speakerIcon}>🔊</Text>}
         </View>
         <Text
           style={[
             styles.messageText,
-            { color: isLeft ? theme.colors.text : '#fff' }
+            { color: isLeft ? theme.colors.text : '#fff' },
           ]}
         >
           {message}

@@ -2,7 +2,7 @@ name: Android Build
 
 on:
   push:
-    branches: [ main, adding-testing-back ]
+    branches: [ main ]
   pull_request:
     branches: [ main ]
   workflow_dispatch:  # Allows manual triggering

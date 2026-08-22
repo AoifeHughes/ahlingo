@@ -6,7 +6,10 @@
  */
 
 import { store } from '../store';
-import { addRecentExercise, cleanupOldExercises } from '../store/slices/gameSlice';
+import {
+  addRecentExercise,
+  cleanupOldExercises,
+} from '../store/slices/gameSlice';
 import { ExerciseInfo, RecentExercise } from '../types';
 
 /**
@@ -58,9 +61,12 @@ export const shouldAvoidExercise = (exerciseInfo: ExerciseInfo): boolean => {
     if (recent.exerciseId === exerciseInfo.id) return true;
 
     // Avoid if same topic and lesson
-    if (recent.topicId === exerciseInfo.topic_id &&
-        recent.lessonId === exerciseInfo.lesson_id &&
-        exerciseInfo.lesson_id !== null) return true;
+    if (
+      recent.topicId === exerciseInfo.topic_id &&
+      recent.lessonId === exerciseInfo.lesson_id &&
+      exerciseInfo.lesson_id !== null
+    )
+      return true;
   }
 
   return false;
@@ -79,11 +85,14 @@ export const getRecentExerciseStats = (): {
   const now = Date.now();
 
   const uniqueTopics = new Set(recentExercises.map(ex => ex.topicId));
-  const uniqueLessons = new Set(recentExercises.map(ex => ex.lessonId).filter(Boolean));
+  const uniqueLessons = new Set(
+    recentExercises.map(ex => ex.lessonId).filter(Boolean)
+  );
 
-  const oldestRecentAge = recentExercises.length > 0
-    ? Math.max(...recentExercises.map(ex => now - ex.timestamp))
-    : 0;
+  const oldestRecentAge =
+    recentExercises.length > 0
+      ? Math.max(...recentExercises.map(ex => now - ex.timestamp))
+      : 0;
 
   return {
     totalRecent: recentExercises.length,
@@ -109,7 +118,11 @@ export const debugRandomizationState = (): void => {
   console.log('\nRecent exercises details:');
   recentExercises.forEach((ex, index) => {
     const ageMinutes = Math.round((Date.now() - ex.timestamp) / (1000 * 60));
-    console.log(`${index + 1}. Exercise ${ex.exerciseId} (Topic: ${ex.topicId}, Lesson: ${ex.lessonId || 'N/A'}) - ${ageMinutes}min ago`);
+    console.log(
+      `${index + 1}. Exercise ${ex.exerciseId} (Topic: ${ex.topicId}, Lesson: ${
+        ex.lessonId || 'N/A'
+      }) - ${ageMinutes}min ago`
+    );
   });
 
   console.log('=== End Debug ===');
@@ -127,9 +140,16 @@ export const migrateToSmartRandomization = {
     language: string,
     difficulty: string
   ) => {
-    const { getRandomMixedExercises } = await import('../services/MixedExerciseService');
+    const { getRandomMixedExercises } = await import(
+      '../services/MixedExerciseService'
+    );
     const recentExercises = getRecentExercises();
-    return getRandomMixedExercises(userId, language, difficulty, recentExercises);
+    return getRandomMixedExercises(
+      userId,
+      language,
+      difficulty,
+      recentExercises
+    );
   },
 
   getRandomMixedExercisesForTopic: async (
@@ -138,9 +158,17 @@ export const migrateToSmartRandomization = {
     language: string,
     difficulty: string
   ) => {
-    const { getRandomMixedExercisesForTopic } = await import('../services/MixedExerciseService');
+    const { getRandomMixedExercisesForTopic } = await import(
+      '../services/MixedExerciseService'
+    );
     const recentExercises = getRecentExercises();
-    return getRandomMixedExercisesForTopic(topicId, userId, language, difficulty, recentExercises);
+    return getRandomMixedExercisesForTopic(
+      topicId,
+      userId,
+      language,
+      difficulty,
+      recentExercises
+    );
   },
 
   /**
@@ -152,8 +180,16 @@ export const migrateToSmartRandomization = {
     difficulty: string,
     exerciseType: 'pairs' | 'conversation' | 'translation' | 'fill_in_blank'
   ) => {
-    const { getSmartRandomExerciseForTopic } = await import('../services/BaseExerciseService');
+    const { getSmartRandomExerciseForTopic } = await import(
+      '../services/BaseExerciseService'
+    );
     const recentExercises = getRecentExercises();
-    return getSmartRandomExerciseForTopic(topicId, language, difficulty, exerciseType, recentExercises);
+    return getSmartRandomExerciseForTopic(
+      topicId,
+      language,
+      difficulty,
+      exerciseType,
+      recentExercises
+    );
   },
 };

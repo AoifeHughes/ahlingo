@@ -1,6 +1,10 @@
 import { RootStackParamList } from '../types';
 
-export type ExerciseType = 'pairs' | 'conversation' | 'translation' | 'fill_in_blank';
+export type ExerciseType =
+  | 'pairs'
+  | 'conversation'
+  | 'translation'
+  | 'fill_in_blank';
 
 /**
  * Navigation utilities for exercise types

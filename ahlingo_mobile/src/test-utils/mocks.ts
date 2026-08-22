@@ -1,5 +1,9 @@
-import { jest } from '@jest/globals';
-import { createMockDatabaseResult, createMockUser, createExercise, createPairExercise } from './factories';
+import {
+  createMockDatabaseResult,
+  createMockUser,
+  createExercise,
+  createPairExercise,
+} from './factories';
 import { mockUserContext } from './index';
 
 // Database service mocks
@@ -30,7 +34,9 @@ export const mockDatabaseService = {
   }),
 
   // Translation exercise mocks
-  getRandomTranslationExerciseForTopic: jest.fn().mockResolvedValue(createExercise({ exercise_type: 'translation' })),
+  getRandomTranslationExerciseForTopic: jest
+    .fn()
+    .mockResolvedValue(createExercise({ exercise_type: 'translation' })),
   getTranslationExerciseData: jest.fn().mockResolvedValue([]),
   getTranslationExerciseWithData: jest.fn().mockResolvedValue({
     exercise: createExercise({ exercise_type: 'translation' }),
@@ -38,10 +44,14 @@ export const mockDatabaseService = {
   }),
 
   // Conversation exercise mocks
-  getRandomConversationExerciseForTopic: jest.fn().mockResolvedValue(createExercise({ exercise_type: 'conversation' })),
+  getRandomConversationExerciseForTopic: jest
+    .fn()
+    .mockResolvedValue(createExercise({ exercise_type: 'conversation' })),
   getConversationExerciseData: jest.fn().mockResolvedValue([]),
   getConversationSummary: jest.fn().mockResolvedValue('Test summary'),
-  getRandomConversationSummaries: jest.fn().mockResolvedValue(['Wrong summary 1', 'Wrong summary 2']),
+  getRandomConversationSummaries: jest
+    .fn()
+    .mockResolvedValue(['Wrong summary 1', 'Wrong summary 2']),
   getTopicNameForExercise: jest.fn().mockResolvedValue('Test Topic'),
   getConversationExerciseWithData: jest.fn().mockResolvedValue({
     exercise: createExercise({ exercise_type: 'conversation' }),
@@ -52,7 +62,9 @@ export const mockDatabaseService = {
   }),
 
   // Fill-in-blank exercise mocks
-  getRandomFillInBlankExerciseForTopic: jest.fn().mockResolvedValue(createExercise({ exercise_type: 'fill_in_blank' })),
+  getRandomFillInBlankExerciseForTopic: jest
+    .fn()
+    .mockResolvedValue(createExercise({ exercise_type: 'fill_in_blank' })),
   getFillInBlankExerciseData: jest.fn().mockResolvedValue([]),
   getFillInBlankExerciseWithData: jest.fn().mockResolvedValue({
     exercise: createExercise({ exercise_type: 'fill_in_blank' }),
@@ -67,23 +79,33 @@ export const mockDatabaseService = {
 // SQLite mock
 export const mockSQLite = {
   openDatabase: jest.fn().mockReturnValue({
-    executeSql: jest.fn().mockImplementation((query: string, params?: any[]) => {
-      // Mock different responses based on query
-      if (query.includes('SELECT name FROM users')) {
-        return Promise.resolve(createMockDatabaseResult([{ name: 'testuser' }]));
-      }
-      if (query.includes('SELECT id FROM users')) {
-        return Promise.resolve(createMockDatabaseResult([{ id: 1 }]));
-      }
-      if (query.includes('user_settings')) {
-        return Promise.resolve(createMockDatabaseResult([
-          { user_id: 1, setting_name: 'language', setting_value: 'French' },
-          { user_id: 1, setting_name: 'difficulty', setting_value: 'Beginner' },
-        ]));
-      }
-      // Default empty result
-      return Promise.resolve(createMockDatabaseResult());
-    }),
+    executeSql: jest
+      .fn()
+      .mockImplementation((query: string, params?: any[]) => {
+        // Mock different responses based on query
+        if (query.includes('SELECT name FROM users')) {
+          return Promise.resolve(
+            createMockDatabaseResult([{ name: 'testuser' }])
+          );
+        }
+        if (query.includes('SELECT id FROM users')) {
+          return Promise.resolve(createMockDatabaseResult([{ id: 1 }]));
+        }
+        if (query.includes('user_settings')) {
+          return Promise.resolve(
+            createMockDatabaseResult([
+              { user_id: 1, setting_name: 'language', setting_value: 'French' },
+              {
+                user_id: 1,
+                setting_name: 'difficulty',
+                setting_value: 'Beginner',
+              },
+            ])
+          );
+        }
+        // Default empty result
+        return Promise.resolve(createMockDatabaseResult());
+      }),
     close: jest.fn().mockResolvedValue(undefined),
   }),
 };

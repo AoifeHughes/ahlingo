@@ -22,7 +22,13 @@ const isTestEnv =
   typeof process.env.JEST_WORKER_ID !== 'undefined';
 
 const createTestDatabase = (): SQLiteDatabase => {
-  const emptyResult = [{ rows: { length: 0, item: () => null } }];
+  const emptyResult = [
+    {
+      insertId: 0,
+      rowsAffected: 0,
+      rows: { length: 0, item: () => null, raw: () => [] },
+    },
+  ];
   const testTransaction = {
     executeSql: async () => emptyResult,
   } as unknown as Transaction;
@@ -30,7 +36,11 @@ const createTestDatabase = (): SQLiteDatabase => {
   const testDb: Partial<SQLiteDatabase> = {
     executeSql: async () => emptyResult,
     close: async () => {},
-    transaction: (_cb: (tx: Transaction) => void, errorCb?: (err: any) => void, successCb?: () => void) => {
+    transaction: (
+      _cb: (tx: Transaction) => void,
+      errorCb?: (err: any) => void,
+      successCb?: () => void
+    ) => {
       try {
         _cb(testTransaction);
         successCb?.();
@@ -38,7 +48,11 @@ const createTestDatabase = (): SQLiteDatabase => {
         errorCb?.(error);
       }
     },
-    readTransaction: (_cb: (tx: Transaction) => void, errorCb?: (err: any) => void, successCb?: () => void) => {
+    readTransaction: (
+      _cb: (tx: Transaction) => void,
+      errorCb?: (err: any) => void,
+      successCb?: () => void
+    ) => {
       try {
         _cb(testTransaction);
         successCb?.();
@@ -96,7 +110,8 @@ export const safeCloseDatabase = async (
       await withTimeout(db.executeSql('SELECT 1'), TIMEOUTS.QUERY_SHORT);
       isDatabaseOpen = true;
     } catch (testError) {
-      const testErrorMsg = testError instanceof Error ? testError.message : String(testError);
+      const testErrorMsg =
+        testError instanceof Error ? testError.message : String(testError);
 
       if (
         testErrorMsg.includes('database is not open') ||
@@ -106,7 +121,10 @@ export const safeCloseDatabase = async (
         console.log('ℹ️ Database already closed, no cleanup needed');
         return;
       } else {
-        console.log('⚠️ Database test query failed, but attempting cleanup anyway:', testErrorMsg);
+        console.log(
+          '⚠️ Database test query failed, but attempting cleanup anyway:',
+          testErrorMsg
+        );
         // Continue with cleanup attempt even if test query fails for other reasons
         isDatabaseOpen = true;
       }
@@ -118,7 +136,10 @@ export const safeCloseDatabase = async (
 
     // Try to detach the content database before closing
     try {
-      await withTimeout(db.executeSql('DETACH DATABASE content'), TIMEOUTS.QUERY_SHORT);
+      await withTimeout(
+        db.executeSql('DETACH DATABASE content'),
+        TIMEOUTS.QUERY_SHORT
+      );
       console.log('✅ Content database detached');
     } catch (detachError) {
       // Detach might fail if already detached or if database is closing
@@ -128,13 +149,22 @@ export const safeCloseDatabase = async (
     // Check if we're in a transaction by querying SQLite's internal state
     let inTransaction = false;
     try {
-      const result = await withTimeout(db.executeSql('PRAGMA journal_mode'), TIMEOUTS.QUERY_SHORT);
+      const result = await withTimeout(
+        db.executeSql('PRAGMA journal_mode'),
+        TIMEOUTS.QUERY_SHORT
+      );
       // If we can execute this, the database is responsive
 
       // Try to detect if we're in a transaction by attempting a savepoint
       try {
-        await withTimeout(db.executeSql('SAVEPOINT test_transaction_state'), TIMEOUTS.QUERY_SHORT);
-        await withTimeout(db.executeSql('RELEASE SAVEPOINT test_transaction_state'), TIMEOUTS.QUERY_SHORT);
+        await withTimeout(
+          db.executeSql('SAVEPOINT test_transaction_state'),
+          TIMEOUTS.QUERY_SHORT
+        );
+        await withTimeout(
+          db.executeSql('RELEASE SAVEPOINT test_transaction_state'),
+          TIMEOUTS.QUERY_SHORT
+        );
       } catch (savepointError) {
         // If savepoint fails, we might be in a transaction
         inTransaction = true;
@@ -156,7 +186,10 @@ export const safeCloseDatabase = async (
           console.log(`✅ Transaction rolled back on attempt ${attempt}`);
           break;
         } catch (rollbackError) {
-          const errorMsg = rollbackError instanceof Error ? rollbackError.message : String(rollbackError);
+          const errorMsg =
+            rollbackError instanceof Error
+              ? rollbackError.message
+              : String(rollbackError);
 
           if (errorMsg.includes('no transaction is active')) {
             // Transaction was already completed
@@ -165,7 +198,10 @@ export const safeCloseDatabase = async (
           }
 
           if (attempt === maxAttempts) {
-            console.log(`⚠️ Could not rollback transaction after ${maxAttempts} attempts:`, errorMsg);
+            console.log(
+              `⚠️ Could not rollback transaction after ${maxAttempts} attempts:`,
+              errorMsg
+            );
           } else {
             console.log(`🔄 Rollback attempt ${attempt} failed, retrying...`);
             // Wait longer between attempts
@@ -181,15 +217,17 @@ export const safeCloseDatabase = async (
     // Now try to close the database with timeout
     await withTimeout(db.close(), TIMEOUTS.CONNECTION);
     console.log('✅ Database closed safely');
-
   } catch (closeError) {
-    const errorMsg = closeError instanceof Error ? closeError.message : String(closeError);
+    const errorMsg =
+      closeError instanceof Error ? closeError.message : String(closeError);
 
     // Filter out expected/harmless errors and categorize them properly
     if (
       errorMsg.includes('database is closed') ||
       errorMsg.includes('invalid connection') ||
-      errorMsg.includes('database cannot be closed while a transaction is in progress') ||
+      errorMsg.includes(
+        'database cannot be closed while a transaction is in progress'
+      ) ||
       errorMsg.includes('database is not open') ||
       errorMsg.includes('cannot close: database is not open')
     ) {
@@ -235,7 +273,10 @@ const copyDatabaseFromBundle = async (
     }
 
     if (!copied) {
-      console.error(`❌ ${dbName} not found in iOS bundle. Tried paths:`, possiblePaths);
+      console.error(
+        `❌ ${dbName} not found in iOS bundle. Tried paths:`,
+        possiblePaths
+      );
       throw lastError || new Error(`${dbName} not found in iOS bundle`);
     }
   } else {
@@ -248,7 +289,10 @@ const copyDatabaseFromBundle = async (
       await RNFS.copyFileAssets(assetPath, destinationPath);
       console.log(`✅ ${dbName} copied from ${assetPath} (Android)`);
     } catch (androidError) {
-      console.error(`Android copy failed with ${assetPath} path:`, androidError);
+      console.error(
+        `Android copy failed with ${assetPath} path:`,
+        androidError
+      );
 
       // Try alternative paths
       const alternatives = [
@@ -271,7 +315,9 @@ const copyDatabaseFromBundle = async (
       }
 
       if (!copied) {
-        console.error(`All paths attempted have failed. ${dbName} not found in Android assets.`);
+        console.error(
+          `All paths attempted have failed. ${dbName} not found in Android assets.`
+        );
         throw androidError;
       }
     }
@@ -347,7 +393,9 @@ export const ensureDatabaseCopied = async (): Promise<void> => {
 
     // Handle content database
     const CONTENT_VERSION_KEY = '@content_db_version';
-    const installedContentVersionStr = await AsyncStorage.getItem(CONTENT_VERSION_KEY);
+    const installedContentVersionStr = await AsyncStorage.getItem(
+      CONTENT_VERSION_KEY
+    );
     const installedContentVersion = installedContentVersionStr
       ? parseInt(installedContentVersionStr, 10)
       : 0;
@@ -362,7 +410,9 @@ export const ensureDatabaseCopied = async (): Promise<void> => {
       !contentExists || installedContentVersion < bundledContentVersion;
 
     if (needsContentUpdate) {
-      console.log(`🔄 Updating content database to v${bundledContentVersion}...`);
+      console.log(
+        `🔄 Updating content database to v${bundledContentVersion}...`
+      );
 
       // Backup old content database before replacement (keep one generation)
       if (contentExists) {
@@ -371,7 +421,10 @@ export const ensureDatabaseCopied = async (): Promise<void> => {
           await RNFS.copyFile(contentDbPath, backupPath);
           console.log('✅ Old content database backed up');
         } catch (backupError) {
-          console.warn('⚠️ Failed to backup old content database:', backupError);
+          console.warn(
+            '⚠️ Failed to backup old content database:',
+            backupError
+          );
         }
       }
 
@@ -396,10 +449,15 @@ export const ensureDatabaseCopied = async (): Promise<void> => {
       }
 
       // Update stored version
-      await AsyncStorage.setItem(CONTENT_VERSION_KEY, bundledContentVersion.toString());
+      await AsyncStorage.setItem(
+        CONTENT_VERSION_KEY,
+        bundledContentVersion.toString()
+      );
       console.log(`✅ Content database updated to v${bundledContentVersion}`);
     } else {
-      console.log(`✅ Content database is up to date (v${installedContentVersion})`);
+      console.log(
+        `✅ Content database is up to date (v${installedContentVersion})`
+      );
     }
 
     // Handle user database
@@ -410,9 +468,8 @@ export const ensureDatabaseCopied = async (): Promise<void> => {
 
       // Try to copy from template (created by split script)
       const templatePath = `${RNFS.MainBundlePath}/userdata_template.db`;
-      const templateExists = Platform.OS === 'ios'
-        ? await RNFS.exists(templatePath)
-        : false; // Android doesn't support checking bundle files
+      const templateExists =
+        Platform.OS === 'ios' ? await RNFS.exists(templatePath) : false; // Android doesn't support checking bundle files
 
       if (Platform.OS === 'android' || templateExists) {
         try {
@@ -423,7 +480,9 @@ export const ensureDatabaseCopied = async (): Promise<void> => {
           );
           console.log('✅ User database copied from template');
         } catch (templateError) {
-          console.log('⚠️ Template not found, will initialize user schema manually');
+          console.log(
+            '⚠️ Template not found, will initialize user schema manually'
+          );
         }
       }
     } else {
@@ -435,7 +494,6 @@ export const ensureDatabaseCopied = async (): Promise<void> => {
       const userStats = await RNFS.stat(userDbPath);
       console.log('User database file size:', userStats.size, 'bytes');
     }
-
   } catch (error) {
     console.error('Failed to ensure databases copied:', error);
     throw error;
@@ -514,15 +572,16 @@ export const initializeDatabase = async (): Promise<void> => {
       const userDbPath = `${documentsPath}/${DATABASE_CONFIG.USER_DB.NAME}`;
 
       // Open the user database
-      const databaseConfig = Platform.OS === 'ios'
-        ? {
-            name: DATABASE_CONFIG.USER_DB.NAME,
-            location: 'Documents',
-          }
-        : {
-            name: userDbPath,
-            location: 'default',
-          };
+      const databaseConfig =
+        Platform.OS === 'ios'
+          ? {
+              name: DATABASE_CONFIG.USER_DB.NAME,
+              location: 'Documents',
+            }
+          : {
+              name: userDbPath,
+              location: 'default',
+            };
 
       globalDb = await withTimeout(
         SQLite.openDatabase(databaseConfig),

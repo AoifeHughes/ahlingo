@@ -1,4 +1,3 @@
-import { jest } from '@jest/globals';
 import {
   getUserContext,
   recordExerciseAttemptForCurrentUser,
@@ -40,7 +39,7 @@ describe('RefactoredDatabaseService', () => {
     jest.clearAllMocks();
 
     // Default mock implementations
-    mockRowsToArray.mockImplementation((rows) => {
+    mockRowsToArray.mockImplementation(rows => {
       if (!rows) return [];
       const result = [];
       for (let i = 0; i < rows.length; i++) {
@@ -49,7 +48,7 @@ describe('RefactoredDatabaseService', () => {
       return result;
     });
 
-    mockGetSingleRow.mockImplementation((result) => {
+    mockGetSingleRow.mockImplementation(result => {
       if (result && result.rows && result.rows.length > 0) {
         return result.rows.item(0);
       }
@@ -57,7 +56,7 @@ describe('RefactoredDatabaseService', () => {
     });
 
     // Setup executeQuery to call the callback with a mock database
-    mockExecuteQuery.mockImplementation(async (callback) => {
+    mockExecuteQuery.mockImplementation(async callback => {
       const mockDb = {
         executeSql: mockExecuteSql,
       };
@@ -69,7 +68,7 @@ describe('RefactoredDatabaseService', () => {
     it('should return user context with proper structure', async () => {
       // Mock basic database responses to ensure function works
       mockExecuteSqlSingle.mockResolvedValue({
-        rows: { length: 0, item: () => null }
+        rows: { length: 0, item: () => null },
       });
 
       const result = await getUserContext();
@@ -87,7 +86,7 @@ describe('RefactoredDatabaseService', () => {
       // Mock basic database responses
       mockExecuteSqlSingle.mockResolvedValue({
         insertId: 1,
-        rows: { length: 0, item: () => null }
+        rows: { length: 0, item: () => null },
       });
 
       await recordExerciseAttemptForCurrentUser(123, true);
@@ -100,14 +99,21 @@ describe('RefactoredDatabaseService', () => {
   describe('getTopicsWithProgressForExerciseType', () => {
     it('should return array of topics with progress structure', async () => {
       // Mock the executeSql call within executeQuery
-      mockExecuteSql.mockResolvedValue([{
-        rows: {
-          length: 0,
-          item: () => null
-        }
-      }]);
+      mockExecuteSql.mockResolvedValue([
+        {
+          rows: {
+            length: 0,
+            item: () => null,
+          },
+        },
+      ]);
 
-      const result = await getTopicsWithProgressForExerciseType(1, 'pairs', 'French', 'Beginner');
+      const result = await getTopicsWithProgressForExerciseType(
+        1,
+        'pairs',
+        'French',
+        'Beginner'
+      );
 
       expect(Array.isArray(result)).toBe(true);
     });
@@ -116,8 +122,14 @@ describe('RefactoredDatabaseService', () => {
   describe('exercise data functions', () => {
     it('should handle getPairsExerciseWithData', async () => {
       // Mock the dependencies
-      const mockExercise = { id: 1, exercise_name: 'Test Exercise', exercise_type: 'pairs' };
-      const mockPairsData = [{ id: 1, language_1_content: 'Hello', language_2_content: 'Bonjour' }];
+      const mockExercise = {
+        id: 1,
+        exercise_name: 'Test Exercise',
+        exercise_type: 'pairs',
+      };
+      const mockPairsData = [
+        { id: 1, language_1_content: 'Hello', language_2_content: 'Bonjour' },
+      ];
 
       // Mock the implementation to return test data
       jest.doMock('../BaseExerciseService', () => ({
@@ -148,22 +160,33 @@ describe('RefactoredDatabaseService', () => {
     it('should return mixed exercises for a topic', async () => {
       // Mock the SQL calls in sequence
       mockExecuteSql
-        .mockResolvedValueOnce([{ rows: { length: 1, item: () => ({ topic: 'Test Topic' }) } }]) // topic name
-        .mockResolvedValueOnce([{ rows: {
-          length: 1,
-          item: () => ({
-            id: 1,
-            exercise_name: 'Test Exercise',
-            topic_id: 1,
-            difficulty_id: 1,
-            language_id: 1,
-            exercise_type: 'pairs',
-            verified_exercise_type: 'pairs'
-          })
-        }}]) // exercises
+        .mockResolvedValueOnce([
+          { rows: { length: 1, item: () => ({ topic: 'Test Topic' }) } },
+        ]) // topic name
+        .mockResolvedValueOnce([
+          {
+            rows: {
+              length: 1,
+              item: () => ({
+                id: 1,
+                exercise_name: 'Test Exercise',
+                topic_id: 1,
+                difficulty_id: 1,
+                language_id: 1,
+                exercise_type: 'pairs',
+                verified_exercise_type: 'pairs',
+              }),
+            },
+          },
+        ]) // exercises
         .mockResolvedValueOnce([{ rows: { length: 0, item: () => null } }]); // user attempts
 
-      const result = await getRandomMixedExercisesForTopic(1, 1, 'French', 'Beginner');
+      const result = await getRandomMixedExercisesForTopic(
+        1,
+        1,
+        'French',
+        'Beginner'
+      );
 
       expect(Array.isArray(result)).toBe(true);
       // Note: The actual implementation is complex, so we're just testing the structure

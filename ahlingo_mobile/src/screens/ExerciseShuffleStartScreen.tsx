@@ -11,7 +11,11 @@ import {
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp, useFocusEffect } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
-import { RootStackParamList, ExerciseShuffleContext, ShuffleExercise } from '../types';
+import {
+  RootStackParamList,
+  ExerciseShuffleContext,
+  ShuffleExercise,
+} from '../types';
 import { RootState } from '../store';
 import { useTheme } from '../contexts/ThemeContext';
 import {
@@ -38,7 +42,8 @@ const ExerciseShuffleStartScreen: React.FC<Props> = ({ navigation, route }) => {
   const { exercises: initialExercises } = route.params;
   const { settings } = useSelector((state: RootState) => state.settings);
   const { theme } = useTheme();
-  const [exercises, setExercises] = useState<ShuffleExercise[]>(initialExercises);
+  const [exercises, setExercises] =
+    useState<ShuffleExercise[]>(initialExercises);
   const [loading, setLoading] = useState(initialExercises.length === 0);
 
   useEffect(() => {
@@ -57,7 +62,7 @@ const ExerciseShuffleStartScreen: React.FC<Props> = ({ navigation, route }) => {
         {
           text: 'Exit',
           style: 'destructive',
-          onPress: () => navigation.navigate('MainMenu')
+          onPress: () => navigation.navigate('MainMenu'),
         },
       ]
     );
@@ -67,7 +72,10 @@ const ExerciseShuffleStartScreen: React.FC<Props> = ({ navigation, route }) => {
   useFocusEffect(
     useCallback(() => {
       const onBackPress = () => handleBackPress();
-      const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress);
+      const subscription = BackHandler.addEventListener(
+        'hardwareBackPress',
+        onBackPress
+      );
       return () => subscription.remove();
     }, [handleBackPress])
   );
@@ -84,11 +92,17 @@ const ExerciseShuffleStartScreen: React.FC<Props> = ({ navigation, route }) => {
         return;
       }
 
-      const language = userContext.settings.language || settings.language || 'French';
-      const difficulty = userContext.settings.difficulty || settings.difficulty || 'Beginner';
+      const language =
+        userContext.settings.language || settings.language || 'French';
+      const difficulty =
+        userContext.settings.difficulty || settings.difficulty || 'Beginner';
 
       // Get 5 random mixed exercises
-      const loadedExercises = await getRandomMixedExercises(userContext.userId, language, difficulty);
+      const loadedExercises = await getRandomMixedExercises(
+        userContext.userId,
+        language,
+        difficulty
+      );
 
       if (loadedExercises.length === 0) {
         Alert.alert(
@@ -107,7 +121,7 @@ const ExerciseShuffleStartScreen: React.FC<Props> = ({ navigation, route }) => {
             { text: 'Cancel', onPress: () => navigation.navigate('MainMenu') },
             {
               text: 'Continue',
-              onPress: () => setExercises(loadedExercises)
+              onPress: () => setExercises(loadedExercises),
             },
           ]
         );
@@ -191,7 +205,11 @@ const ExerciseShuffleStartScreen: React.FC<Props> = ({ navigation, route }) => {
         <View style={styles.content}>
           <Text style={styles.icon}>🎲</Text>
           <Text style={styles.title}>Exercise Shuffle</Text>
-          <ActivityIndicator size="large" color={theme.colors.primary} style={styles.loader} />
+          <ActivityIndicator
+            size="large"
+            color={theme.colors.primary}
+            style={styles.loader}
+          />
           <Text style={styles.loadingText}>Preparing your shuffle...</Text>
         </View>
       </View>
@@ -224,7 +242,9 @@ const ExerciseShuffleStartScreen: React.FC<Props> = ({ navigation, route }) => {
         <Text style={styles.subtitle}>Ready to get started?</Text>
 
         <View style={styles.challengeIndicator}>
-          <Text style={styles.challengeText}>Challenge 1/{exercises.length}</Text>
+          <Text style={styles.challengeText}>
+            Challenge 1/{exercises.length}
+          </Text>
         </View>
 
         <View style={styles.exercisePreview}>
@@ -243,107 +263,107 @@ const ExerciseShuffleStartScreen: React.FC<Props> = ({ navigation, route }) => {
         >
           <Text style={styles.startButtonText}>Start Challenge</Text>
         </TouchableOpacity>
-
       </View>
     </View>
   );
 };
 
-const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) => StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: currentTheme.colors.background,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: currentTheme.spacing.xl,
-  },
-  content: {
-    alignItems: 'center',
-    maxWidth: 350,
-    width: '100%',
-  },
-  icon: {
-    fontSize: 80,
-    marginBottom: currentTheme.spacing.xl,
-  },
-  title: {
-    fontSize: currentTheme.typography.fontSizes['3xl'],
-    fontWeight: currentTheme.typography.fontWeights.bold,
-    color: currentTheme.colors.text,
-    textAlign: 'center',
-    marginBottom: currentTheme.spacing.base,
-  },
-  subtitle: {
-    fontSize: currentTheme.typography.fontSizes['2xl'],
-    fontWeight: currentTheme.typography.fontWeights.semibold,
-    color: currentTheme.colors.primary,
-    textAlign: 'center',
-    marginBottom: currentTheme.spacing.xl,
-  },
-  challengeIndicator: {
-    backgroundColor: currentTheme.colors.primary,
-    paddingVertical: currentTheme.spacing.base,
-    paddingHorizontal: currentTheme.spacing.lg,
-    borderRadius: currentTheme.borderRadius.lg,
-    marginBottom: currentTheme.spacing.xl,
-  },
-  challengeText: {
-    fontSize: currentTheme.typography.fontSizes.lg,
-    fontWeight: currentTheme.typography.fontWeights.bold,
-    color: currentTheme.colors.background,
-  },
-  exercisePreview: {
-    backgroundColor: currentTheme.colors.surface,
-    padding: currentTheme.spacing.lg,
-    borderRadius: currentTheme.borderRadius.lg,
-    marginBottom: currentTheme.spacing.xl,
-    width: '100%',
-  },
-  previewTitle: {
-    fontSize: currentTheme.typography.fontSizes.lg,
-    fontWeight: currentTheme.typography.fontWeights.semibold,
-    color: currentTheme.colors.text,
-    marginBottom: currentTheme.spacing.base,
-    textAlign: 'center',
-  },
-  exerciseItem: {
-    fontSize: currentTheme.typography.fontSizes.base,
-    color: currentTheme.colors.textSecondary,
-    marginBottom: currentTheme.spacing.xs,
-    textAlign: 'center',
-  },
-  startButton: {
-    backgroundColor: currentTheme.colors.success,
-    paddingVertical: currentTheme.spacing.lg,
-    paddingHorizontal: currentTheme.spacing['2xl'],
-    borderRadius: currentTheme.borderRadius.lg,
-    marginBottom: currentTheme.spacing.lg,
-    width: '100%',
-    ...currentTheme.shadows.base,
-  },
-  startButtonText: {
-    fontSize: currentTheme.typography.fontSizes.xl,
-    fontWeight: currentTheme.typography.fontWeights.semibold,
-    color: currentTheme.colors.background,
-    textAlign: 'center',
-  },
-  backButton: {
-    paddingVertical: currentTheme.spacing.lg,
-    paddingHorizontal: currentTheme.spacing.lg,
-  },
-  backButtonText: {
-    fontSize: currentTheme.typography.fontSizes.base,
-    color: currentTheme.colors.textSecondary,
-    textAlign: 'center',
-  },
-  loader: {
-    marginVertical: currentTheme.spacing.xl,
-  },
-  loadingText: {
-    fontSize: currentTheme.typography.fontSizes.lg,
-    color: currentTheme.colors.textSecondary,
-    textAlign: 'center',
-  },
-});
+const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: currentTheme.colors.background,
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: currentTheme.spacing.xl,
+    },
+    content: {
+      alignItems: 'center',
+      maxWidth: 350,
+      width: '100%',
+    },
+    icon: {
+      fontSize: 80,
+      marginBottom: currentTheme.spacing.xl,
+    },
+    title: {
+      fontSize: currentTheme.typography.fontSizes['3xl'],
+      fontWeight: currentTheme.typography.fontWeights.bold,
+      color: currentTheme.colors.text,
+      textAlign: 'center',
+      marginBottom: currentTheme.spacing.base,
+    },
+    subtitle: {
+      fontSize: currentTheme.typography.fontSizes['2xl'],
+      fontWeight: currentTheme.typography.fontWeights.semibold,
+      color: currentTheme.colors.primary,
+      textAlign: 'center',
+      marginBottom: currentTheme.spacing.xl,
+    },
+    challengeIndicator: {
+      backgroundColor: currentTheme.colors.primary,
+      paddingVertical: currentTheme.spacing.base,
+      paddingHorizontal: currentTheme.spacing.lg,
+      borderRadius: currentTheme.borderRadius.lg,
+      marginBottom: currentTheme.spacing.xl,
+    },
+    challengeText: {
+      fontSize: currentTheme.typography.fontSizes.lg,
+      fontWeight: currentTheme.typography.fontWeights.bold,
+      color: currentTheme.colors.background,
+    },
+    exercisePreview: {
+      backgroundColor: currentTheme.colors.surface,
+      padding: currentTheme.spacing.lg,
+      borderRadius: currentTheme.borderRadius.lg,
+      marginBottom: currentTheme.spacing.xl,
+      width: '100%',
+    },
+    previewTitle: {
+      fontSize: currentTheme.typography.fontSizes.lg,
+      fontWeight: currentTheme.typography.fontWeights.semibold,
+      color: currentTheme.colors.text,
+      marginBottom: currentTheme.spacing.base,
+      textAlign: 'center',
+    },
+    exerciseItem: {
+      fontSize: currentTheme.typography.fontSizes.base,
+      color: currentTheme.colors.textSecondary,
+      marginBottom: currentTheme.spacing.xs,
+      textAlign: 'center',
+    },
+    startButton: {
+      backgroundColor: currentTheme.colors.success,
+      paddingVertical: currentTheme.spacing.lg,
+      paddingHorizontal: currentTheme.spacing['2xl'],
+      borderRadius: currentTheme.borderRadius.lg,
+      marginBottom: currentTheme.spacing.lg,
+      width: '100%',
+      ...currentTheme.shadows.base,
+    },
+    startButtonText: {
+      fontSize: currentTheme.typography.fontSizes.xl,
+      fontWeight: currentTheme.typography.fontWeights.semibold,
+      color: currentTheme.colors.background,
+      textAlign: 'center',
+    },
+    backButton: {
+      paddingVertical: currentTheme.spacing.lg,
+      paddingHorizontal: currentTheme.spacing.lg,
+    },
+    backButtonText: {
+      fontSize: currentTheme.typography.fontSizes.base,
+      color: currentTheme.colors.textSecondary,
+      textAlign: 'center',
+    },
+    loader: {
+      marginVertical: currentTheme.spacing.xl,
+    },
+    loadingText: {
+      fontSize: currentTheme.typography.fontSizes.lg,
+      color: currentTheme.colors.textSecondary,
+      textAlign: 'center',
+    },
+  });
 
 export default ExerciseShuffleStartScreen;

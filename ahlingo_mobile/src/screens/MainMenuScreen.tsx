@@ -119,10 +119,13 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
     } else if (item.title === 'Chat Practice') {
       // Quick validation before navigating to Chat Practice
       try {
-        const { getUserSettings } = await import('../services/RefactoredDatabaseService');
+        const { getUserSettings } = await import(
+          '../services/RefactoredDatabaseService'
+        );
         const userSettings = await getUserSettings('default_user'); // Use default for quick check
 
-        const hasServerUrl = userSettings.server_url && userSettings.server_url.trim() !== '';
+        const hasServerUrl =
+          userSettings.server_url && userSettings.server_url.trim() !== '';
         const hasLocalEnabled = userSettings.enable_local_models === 'true';
 
         if (!hasServerUrl && !hasLocalEnabled) {
@@ -135,9 +138,9 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
                 onPress: () => {
                   // Navigation will happen after alert is dismissed
                   navigation.navigate('Settings');
-                }
+                },
               },
-              { text: 'Maybe Later', style: 'cancel' }
+              { text: 'Maybe Later', style: 'cancel' },
             ]
           );
           return; // Prevent navigation to chatbot
@@ -159,10 +162,15 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
 
   return (
     <>
-      <StatusBar backgroundColor={theme.colors.primary} barStyle="light-content" />
+      <StatusBar
+        backgroundColor={theme.colors.primary}
+        barStyle="light-content"
+      />
       <View style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.title} testID="app-title">AHLingo</Text>
+          <Text style={styles.title} testID="app-title">
+            AHLingo
+          </Text>
           <View style={styles.settingsButton}>
             <HeaderIconButton
               onPress={() => navigation.navigate('Settings')}
@@ -185,7 +193,9 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
                 style={[styles.exerciseCard, { backgroundColor: item.color }]}
                 onPress={() => handleExercisePress(item)}
                 activeOpacity={0.8}
-                testID={`exercise-${item.title.toLowerCase().replace(/\s+/g, '-')}`}
+                testID={`exercise-${item.title
+                  .toLowerCase()
+                  .replace(/\s+/g, '-')}`}
               >
                 <View style={styles.cardContent}>
                   <Text style={styles.cardIcon}>{item.icon}</Text>
@@ -206,84 +216,85 @@ const MainMenuScreen: React.FC<Props> = ({ navigation }) => {
   );
 };
 
-const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) => StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: currentTheme.colors.background,
-  },
-  header: {
-    backgroundColor: currentTheme.colors.primary,
-    paddingTop: 60,
-    paddingBottom: currentTheme.spacing['3xl'],
-    paddingHorizontal: currentTheme.spacing.xl,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    ...currentTheme.shadows.lg,
-  },
-  title: {
-    fontSize: currentTheme.typography.fontSizes['4xl'],
-    fontWeight: currentTheme.typography.fontWeights.bold,
-    color: currentTheme.colors.background,
-    textAlign: 'center',
-    flex: 1,
-  },
-  settingsButton: {
-    position: 'absolute',
-    right: currentTheme.spacing.xl,
-    top: 60,
-  },
-  scrollContainer: {
-    flex: 1,
-  },
-  scrollContent: {
-    paddingHorizontal: currentTheme.spacing.xl,
-    paddingVertical: currentTheme.spacing.xl,
-    paddingBottom: currentTheme.spacing['2xl'],
-  },
-  exercisesGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-  },
-  exerciseCard: {
-    width: cardSize,
-    height: cardSize,
-    borderRadius: currentTheme.spacing.xl,
-    marginBottom: currentTheme.spacing.lg,
-    ...currentTheme.shadows.lg,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  cardContent: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  cardIcon: {
-    fontSize: 72,
-    marginBottom: currentTheme.spacing.lg,
-  },
-  cardTitle: {
-    fontSize: currentTheme.typography.fontSizes.lg,
-    fontWeight: currentTheme.typography.fontWeights.semibold,
-    color: currentTheme.colors.background,
-    textAlign: 'center',
-    textShadowColor: 'rgba(0, 0, 0, 0.3)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 2,
-    paddingHorizontal: currentTheme.spacing.sm,
-  },
-  footer: {
-    paddingVertical: currentTheme.spacing.xl,
-    paddingHorizontal: currentTheme.spacing.xl,
-    alignItems: 'center',
-  },
-  footerText: {
-    fontSize: currentTheme.typography.fontSizes.lg,
-    color: currentTheme.colors.textSecondary,
-    fontStyle: 'italic',
-    textAlign: 'center',
-  },
-});
+const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: currentTheme.colors.background,
+    },
+    header: {
+      backgroundColor: currentTheme.colors.primary,
+      paddingTop: 60,
+      paddingBottom: currentTheme.spacing['3xl'],
+      paddingHorizontal: currentTheme.spacing.xl,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      ...currentTheme.shadows.lg,
+    },
+    title: {
+      fontSize: currentTheme.typography.fontSizes['4xl'],
+      fontWeight: currentTheme.typography.fontWeights.bold,
+      color: currentTheme.colors.background,
+      textAlign: 'center',
+      flex: 1,
+    },
+    settingsButton: {
+      position: 'absolute',
+      right: currentTheme.spacing.xl,
+      top: 60,
+    },
+    scrollContainer: {
+      flex: 1,
+    },
+    scrollContent: {
+      paddingHorizontal: currentTheme.spacing.xl,
+      paddingVertical: currentTheme.spacing.xl,
+      paddingBottom: currentTheme.spacing['2xl'],
+    },
+    exercisesGrid: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      justifyContent: 'space-between',
+    },
+    exerciseCard: {
+      width: cardSize,
+      height: cardSize,
+      borderRadius: currentTheme.spacing.xl,
+      marginBottom: currentTheme.spacing.lg,
+      ...currentTheme.shadows.lg,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    cardContent: {
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    cardIcon: {
+      fontSize: 72,
+      marginBottom: currentTheme.spacing.lg,
+    },
+    cardTitle: {
+      fontSize: currentTheme.typography.fontSizes.lg,
+      fontWeight: currentTheme.typography.fontWeights.semibold,
+      color: currentTheme.colors.background,
+      textAlign: 'center',
+      textShadowColor: 'rgba(0, 0, 0, 0.3)',
+      textShadowOffset: { width: 0, height: 1 },
+      textShadowRadius: 2,
+      paddingHorizontal: currentTheme.spacing.sm,
+    },
+    footer: {
+      paddingVertical: currentTheme.spacing.xl,
+      paddingHorizontal: currentTheme.spacing.xl,
+      alignItems: 'center',
+    },
+    footerText: {
+      fontSize: currentTheme.typography.fontSizes.lg,
+      color: currentTheme.colors.textSecondary,
+      fontStyle: 'italic',
+      textAlign: 'center',
+    },
+  });
 
 export default MainMenuScreen;

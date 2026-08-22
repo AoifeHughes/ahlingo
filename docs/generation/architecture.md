@@ -73,7 +73,7 @@ graph LR
 - Different environments (dev/prod) use different configs
 - Configuration versioning tracks what was generated when
 
-[See Configuration Guide →](configuration.md)
+See `content/generation/config/database_generation.json` for the full set of configuration options.
 
 ### Tier 2: Generation
 
@@ -406,7 +406,7 @@ When exploring the codebase, start here:
 - `initialize_database()` - Schema creation
 - `insert_exercise()` - Exercise storage
 
-[See API Reference for detailed function signatures →](api-reference.md)
+See `content/database/database_manager.py` for detailed function signatures.
 
 ## Performance Characteristics
 
@@ -586,7 +586,7 @@ else:
    }
    ```
 
-[See Developer Guide for detailed instructions →](developer-guide.md)
+See the "Adding a New Exercise Type" steps above for detailed instructions.
 
 ### Adding a New Language
 
@@ -608,14 +608,9 @@ No code changes needed.
 ## See Also
 
 - [Core Concepts](core-concepts.md) - Exercise types and generation pipeline
-- [Configuration Guide](configuration.md) - Config file reference
-- [Developer Guide](developer-guide.md) - Adding features and extending
-- [API Reference](api-reference.md) - Function signatures and examples
-- [Getting Started](getting-started.md) - Setup and first run
 
 ---
 
 **Next Steps**:
 - Understand [Core Concepts](core-concepts.md) (exercise types, pipeline flow)
-- Set up your environment: [Getting Started](getting-started.md)
-- Learn configuration options: [Configuration Guide](configuration.md)
+- Set up your environment and run `python content/generate_content.py` (see AGENTS.md for CLI options)

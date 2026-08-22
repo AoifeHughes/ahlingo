@@ -19,17 +19,13 @@ describe('PairButton', () => {
   });
 
   it('renders text correctly', () => {
-    const { getByText } = renderWithProviders(
-      <PairButton {...defaultProps} />
-    );
+    const { getByText } = renderWithProviders(<PairButton {...defaultProps} />);
 
     expect(getByText('Hello')).toBeTruthy();
   });
 
   it('calls onPress when button is pressed', () => {
-    const { getByText } = renderWithProviders(
-      <PairButton {...defaultProps} />
-    );
+    const { getByText } = renderWithProviders(<PairButton {...defaultProps} />);
 
     const button = getByText('Hello');
     fireEvent.press(button);
@@ -60,7 +56,8 @@ describe('PairButton', () => {
   });
 
   it('handles long text correctly', () => {
-    const longText = 'This is a very long text that should be handled properly by the button component';
+    const longText =
+      'This is a very long text that should be handled properly by the button component';
 
     const { getByText } = renderWithProviders(
       <PairButton {...defaultProps} text={longText} />

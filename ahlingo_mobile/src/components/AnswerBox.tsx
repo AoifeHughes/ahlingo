@@ -47,44 +47,45 @@ const AnswerBox: React.FC<AnswerBoxProps> = ({
   );
 };
 
-const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) => StyleSheet.create({
-  container: {
-    backgroundColor: currentTheme.colors.surface,
-    borderRadius: currentTheme.borderRadius.md,
-    padding: currentTheme.spacing.lg,
-    marginBottom: currentTheme.spacing.lg,
-    borderWidth: 2,
-    borderColor: currentTheme.colors.border,
-    ...currentTheme.shadows.base,
-  },
-  answerArea: {
-    minHeight: 60,
-    backgroundColor: currentTheme.colors.background,
-    borderRadius: currentTheme.borderRadius.base,
-    borderWidth: 1,
-    borderColor: currentTheme.colors.border,
-    borderStyle: 'dashed',
-    justifyContent: 'center',
-    alignItems: 'stretch',
-    padding: currentTheme.spacing.base,
-    marginBottom: currentTheme.spacing.md,
-  },
-  placeholder: {
-    fontSize: currentTheme.typography.fontSizes.base,
-    color: currentTheme.colors.textLight,
-    fontStyle: 'italic',
-    textAlign: 'center',
-  },
-  wordsScroll: {
-    width: '100%',
-    maxHeight: 140,
-  },
-  wordsInner: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    alignItems: 'flex-start',
-    paddingBottom: currentTheme.spacing.sm,
-  },
-});
+const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) =>
+  StyleSheet.create({
+    container: {
+      backgroundColor: currentTheme.colors.surface,
+      borderRadius: currentTheme.borderRadius.md,
+      padding: currentTheme.spacing.lg,
+      marginBottom: currentTheme.spacing.lg,
+      borderWidth: 2,
+      borderColor: currentTheme.colors.border,
+      ...currentTheme.shadows.base,
+    },
+    answerArea: {
+      minHeight: 60,
+      backgroundColor: currentTheme.colors.background,
+      borderRadius: currentTheme.borderRadius.base,
+      borderWidth: 1,
+      borderColor: currentTheme.colors.border,
+      borderStyle: 'dashed',
+      justifyContent: 'center',
+      alignItems: 'stretch',
+      padding: currentTheme.spacing.base,
+      marginBottom: currentTheme.spacing.md,
+    },
+    placeholder: {
+      fontSize: currentTheme.typography.fontSizes.base,
+      color: currentTheme.colors.textLight,
+      fontStyle: 'italic',
+      textAlign: 'center',
+    },
+    wordsScroll: {
+      width: '100%',
+      maxHeight: 140,
+    },
+    wordsInner: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      alignItems: 'flex-start',
+      paddingBottom: currentTheme.spacing.sm,
+    },
+  });
 
 export default AnswerBox;

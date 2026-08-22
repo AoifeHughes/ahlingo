@@ -1,6 +1,9 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react-native';
-import { renderSimple, createMockFunction } from '../../test-utils/simple-render';
+import {
+  renderSimple,
+  createMockFunction,
+} from '../../test-utils/simple-render';
 
 // Mock the theme hook
 jest.mock('../../contexts/ThemeContext', () => ({
@@ -28,7 +31,7 @@ jest.mock('../../contexts/ThemeContext', () => ({
       },
       borderRadius: {
         base: 8,
-        lg: 12
+        lg: 12,
       },
       typography: {
         fontSizes: {

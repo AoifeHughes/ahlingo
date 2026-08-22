@@ -78,7 +78,7 @@ jest.mock('@react-navigation/native', () => {
     useRoute: () => ({
       params: {},
     }),
-    useFocusEffect: jest.fn((callback) => {
+    useFocusEffect: jest.fn(callback => {
       if (!focusEffectHasRun && typeof callback === 'function') {
         focusEffectHasRun = true;
         const cleanup = callback();
@@ -139,8 +139,8 @@ if (typeof window === 'undefined') {
   (global as any).window = global;
 }
 
-if (typeof window.dispatchEvent !== 'function') {
-  window.dispatchEvent = () => {};
+if (typeof (window as any).dispatchEvent !== 'function') {
+  (window as any).dispatchEvent = () => {};
 }
 
 beforeEach(() => {

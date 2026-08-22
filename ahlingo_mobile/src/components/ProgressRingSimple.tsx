@@ -9,7 +9,7 @@ interface ProgressRingSimpleProps {
 
 const ProgressRingSimple: React.FC<ProgressRingSimpleProps> = ({
   percentage,
-  size = 60
+  size = 60,
 }) => {
   const { theme } = useTheme();
 
@@ -24,7 +24,7 @@ const ProgressRingSimple: React.FC<ProgressRingSimpleProps> = ({
           backgroundColor: theme.colors.surface,
           borderColor: theme.colors.primary,
           borderWidth: 3,
-        }
+        },
       ]}
     >
       <Text style={[styles.percentage, { color: theme.colors.text }]}>

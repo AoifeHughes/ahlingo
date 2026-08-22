@@ -1,20 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import {
+  NavigationContainer,
+  NavigationProp as RNNavigationProp,
+} from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types';
 import { useTheme } from '../contexts/ThemeContext';
 import { checkUsersExist } from '../services/RefactoredDatabaseService';
 import { ActivityIndicator, View, Text } from 'react-native';
 import HeaderIconButton from '../components/HeaderIconButton';
 
-type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
+type NavigationProp = RNNavigationProp<RootStackParamList>;
 
 interface MainMenuBackButtonProps {
   navigation: NavigationProp;
 }
 
-const MainMenuBackButton: React.FC<MainMenuBackButtonProps> = ({ navigation }) => (
+const MainMenuBackButton: React.FC<MainMenuBackButtonProps> = ({
+  navigation,
+}) => (
   <HeaderIconButton onPress={() => navigation.navigate('MainMenu')} icon="←" />
 );
 
@@ -24,7 +28,11 @@ interface CustomHeaderProps {
   showBack?: boolean;
 }
 
-const CustomHeader: React.FC<CustomHeaderProps> = ({ navigation, title, showBack = true }) => {
+const CustomHeader: React.FC<CustomHeaderProps> = ({
+  navigation,
+  title,
+  showBack = true,
+}) => {
   const { theme } = useTheme();
   return (
     <View
@@ -101,7 +109,14 @@ const AppNavigator: React.FC = () => {
 
   if (isLoading) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: theme.colors.background }}>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: theme.colors.background,
+        }}
+      >
         <ActivityIndicator size="large" color={theme.colors.primary} />
       </View>
     );
@@ -110,7 +125,7 @@ const AppNavigator: React.FC = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName={showWelcome ? "Welcome" : "MainMenu"}
+        initialRouteName={showWelcome ? 'Welcome' : 'MainMenu'}
         screenOptions={{
           header: ({ navigation: nav, options, back }) => (
             <CustomHeader

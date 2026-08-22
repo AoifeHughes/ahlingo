@@ -16,11 +16,14 @@ const ProgressRing: React.FC<ProgressRingProps> = ({
   percentage,
   size = 60,
   strokeWidth = 4,
-  testID
+  testID,
 }) => {
   const { theme } = useTheme();
   const animatedValue = useRef(new Animated.Value(0)).current;
-  const skipAnimation = typeof process !== 'undefined' && typeof process.env !== 'undefined' && process.env.JEST_WORKER_ID !== undefined;
+  const skipAnimation =
+    typeof process !== 'undefined' &&
+    typeof process.env !== 'undefined' &&
+    process.env.JEST_WORKER_ID !== undefined;
 
   const radius = (size - strokeWidth) / 2;
   const circumference = radius * 2 * Math.PI;
@@ -48,12 +51,29 @@ const ProgressRing: React.FC<ProgressRingProps> = ({
   });
 
   return (
-    <View style={[styles.container, { width: size, height: size }]} testID={testID}>
+    <View
+      style={[styles.container, { width: size, height: size }]}
+      testID={testID}
+    >
       <Svg width={size} height={size} style={styles.svg}>
         <Defs>
-          <LinearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <Stop offset="0%" stopColor={theme.colors.primary} stopOpacity="1" />
-            <Stop offset="100%" stopColor={theme.colors.primary} stopOpacity="0.7" />
+          <LinearGradient
+            id="progressGradient"
+            x1="0%"
+            y1="0%"
+            x2="100%"
+            y2="100%"
+          >
+            <Stop
+              offset="0%"
+              stopColor={theme.colors.primary}
+              stopOpacity="1"
+            />
+            <Stop
+              offset="100%"
+              stopColor={theme.colors.primary}
+              stopOpacity="0.7"
+            />
           </LinearGradient>
         </Defs>
         {/* Background circle */}

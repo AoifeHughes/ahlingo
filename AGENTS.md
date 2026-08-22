@@ -18,11 +18,15 @@ AHLingo is a language learning platform with two major components:
 ```
 ahlingo/
 ├── content/                          # Content generation system
-│   ├── generate_content.py           # Main entry point for generation
+│   ├── generate_content.py           # Main entry point for exercise generation
+│   ├── generate_images.py            # Main entry point for image generation
 │   ├── generation/
 │   │   ├── core/
 │   │   │   ├── outlines_generator.py # LLM generation with JSON schema constraints
-│   │   │   └── audio_generator.py    # TTS audio generation
+│   │   │   ├── audio_generator.py    # TTS audio generation
+│   │   │   ├── image_generator.py    # ComfyUI/FLUX.1 clip-art image generation
+│   │   │   ├── descriptors_generator.py # Image prompt/descriptor generation
+│   │   │   └── model_downloader.py   # Downloads models/LoRAs for the image pipeline
 │   │   ├── models/
 │   │   │   ├── models.py             # Pydantic models for exercise types
 │   │   │   ├── schemas.py            # JSON schemas
@@ -148,14 +152,19 @@ The `TTS` Python library (with XTTS-v2) generates pronunciation audio. Special h
 ### Python Dependencies
 
 ```
-openai      # LLM API client
-outlines    # Schema-constrained generation
-pydantic    # Data models
-tqdm        # Progress bars
-TTS         # Text-to-speech
+huggingface_hub  # Model downloads for the image generation pipeline
+openai           # LLM API client
+outlines         # Schema-constrained generation
+pydantic         # Data models
+tqdm             # Progress bars
+TTS              # Text-to-speech
 ```
 
 Install: `pip install -r requirements.txt`
+
+### Image Generation
+
+`content/generate_images.py` drives a ComfyUI-based pipeline (via `content/generation/core/image_generator.py`) that produces flat vector clip-art illustrations per topic using FLUX.1 Dev (GGUF) plus a style LoRA. `content/generation/core/model_downloader.py` fetches the required models/LoRAs/upscalers into a local ComfyUI install (`--list` to see them, `--dry-run` to preview, `--pipeline` to print the node chain). Requires a running ComfyUI instance with the `ComfyUI-GGUF` custom node.
 
 ---
 
@@ -307,8 +316,8 @@ When you generate new content and want to ship it to the mobile app:
 
 ### GitHub Actions
 
-- **Tests** (`.github/workflows/tests.yml`) - Python pytest on push/PR to main
-- **Android Build** (`.github/workflows/android-build.yml`) - Debug APK build on push/PR
+- **Tests** (`.github/workflows/tests.yml`) - Python pytest on `content/tests`; manual (`workflow_dispatch`) only, since the integration tests require a locally running LLM server
+- **Android Build** (`.github/workflows/android-build.yml`) - Debug APK build on push/PR to main
 
 ---
 

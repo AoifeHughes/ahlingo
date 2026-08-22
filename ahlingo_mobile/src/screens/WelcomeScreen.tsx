@@ -44,18 +44,18 @@ const WelcomeScreen: React.FC<Props> = ({ navigation }) => {
 
   // Language to flag emoji mapping
   const languageFlags: { [key: string]: string } = {
-    'French': '🇫🇷',
-    'German': '🇩🇪',
-    'Italian': '🇮🇹',
-    'Spanish': '🇪🇸',
-    'Ukrainian': '🇺🇦',
+    French: '🇫🇷',
+    German: '🇩🇪',
+    Italian: '🇮🇹',
+    Spanish: '🇪🇸',
+    Ukrainian: '🇺🇦',
   };
 
   // Difficulty descriptions
   const difficultyDescriptions: { [key: string]: string } = {
-    'Beginner': 'Perfect for starting your language journey',
-    'Intermediate': 'Great for building on your existing knowledge',
-    'Advanced': 'Challenge yourself with complex exercises',
+    Beginner: 'Perfect for starting your language journey',
+    Intermediate: 'Great for building on your existing knowledge',
+    Advanced: 'Challenge yourself with complex exercises',
   };
 
   useEffect(() => {
@@ -83,7 +83,10 @@ const WelcomeScreen: React.FC<Props> = ({ navigation }) => {
       }
     } catch (error) {
       console.error('Failed to load initial data:', error);
-      Alert.alert('Error', 'Failed to load language options. Please try again.');
+      Alert.alert(
+        'Error',
+        'Failed to load language options. Please try again.'
+      );
     } finally {
       setLoading(false);
     }
@@ -97,7 +100,10 @@ const WelcomeScreen: React.FC<Props> = ({ navigation }) => {
 
   const handleGetStarted = async () => {
     if (!selectedLanguage || !selectedDifficulty) {
-      Alert.alert('Selection Required', 'Please select both a language and difficulty level.');
+      Alert.alert(
+        'Selection Required',
+        'Please select both a language and difficulty level.'
+      );
       return;
     }
 
@@ -118,11 +124,13 @@ const WelcomeScreen: React.FC<Props> = ({ navigation }) => {
       await setUserSetting(username, 'has_completed_welcome', 'true');
 
       // Update Redux store
-      dispatch(setSettings({
-        language: selectedLanguage,
-        difficulty: selectedDifficulty,
-        userId: userId,
-      }));
+      dispatch(
+        setSettings({
+          language: selectedLanguage,
+          difficulty: selectedDifficulty,
+          userId: userId,
+        })
+      );
 
       // Navigate to main app
       navigation.reset({
@@ -158,9 +166,11 @@ const WelcomeScreen: React.FC<Props> = ({ navigation }) => {
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>What language would you like to learn?</Text>
+        <Text style={styles.sectionTitle}>
+          What language would you like to learn?
+        </Text>
         <View style={styles.optionGrid}>
-          {languages.map((language) => (
+          {languages.map(language => (
             <TouchableOpacity
               key={language.language}
               style={[
@@ -172,10 +182,13 @@ const WelcomeScreen: React.FC<Props> = ({ navigation }) => {
               <Text style={styles.flagEmoji}>
                 {languageFlags[language.language] || '🌐'}
               </Text>
-              <Text style={[
-                styles.optionText,
-                selectedLanguage === language.language && styles.selectedOptionText,
-              ]}>
+              <Text
+                style={[
+                  styles.optionText,
+                  selectedLanguage === language.language &&
+                    styles.selectedOptionText,
+                ]}
+              >
                 {language.language}
               </Text>
             </TouchableOpacity>
@@ -186,26 +199,34 @@ const WelcomeScreen: React.FC<Props> = ({ navigation }) => {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>What's your experience level?</Text>
         <View style={styles.difficultyContainer}>
-          {difficulties.map((difficulty) => (
+          {difficulties.map(difficulty => (
             <TouchableOpacity
               key={difficulty.difficulty_level}
               style={[
                 styles.difficultyButton,
-                selectedDifficulty === difficulty.difficulty_level && styles.selectedDifficulty,
+                selectedDifficulty === difficulty.difficulty_level &&
+                  styles.selectedDifficulty,
               ]}
               onPress={() => setSelectedDifficulty(difficulty.difficulty_level)}
             >
-              <Text style={[
-                styles.difficultyTitle,
-                selectedDifficulty === difficulty.difficulty_level && styles.selectedDifficultyText,
-              ]}>
+              <Text
+                style={[
+                  styles.difficultyTitle,
+                  selectedDifficulty === difficulty.difficulty_level &&
+                    styles.selectedDifficultyText,
+                ]}
+              >
                 {difficulty.difficulty_level}
               </Text>
-              <Text style={[
-                styles.difficultyDescription,
-                selectedDifficulty === difficulty.difficulty_level && styles.selectedDifficultyText,
-              ]}>
-                {difficultyDescriptions[difficulty.difficulty_level] || 'Learn at your own pace'}
+              <Text
+                style={[
+                  styles.difficultyDescription,
+                  selectedDifficulty === difficulty.difficulty_level &&
+                    styles.selectedDifficultyText,
+                ]}
+              >
+                {difficultyDescriptions[difficulty.difficulty_level] ||
+                  'Learn at your own pace'}
               </Text>
             </TouchableOpacity>
           ))}
@@ -215,17 +236,28 @@ const WelcomeScreen: React.FC<Props> = ({ navigation }) => {
       {Platform.OS === 'ios' && (
         <View style={styles.section}>
           <View style={styles.voiceSetupHeader}>
-            <Text style={styles.sectionTitle}>🎙️ Enhanced Voice Setup (Optional)</Text>
+            <Text style={styles.sectionTitle}>
+              🎙️ Enhanced Voice Setup (Optional)
+            </Text>
           </View>
           <View style={styles.infoBox}>
             <Text style={styles.infoText}>
-              For the best text-to-speech experience, download premium and enhanced voices for your chosen language:
+              For the best text-to-speech experience, download premium and
+              enhanced voices for your chosen language:
             </Text>
             <View style={styles.instructionsList}>
-              <Text style={styles.instructionStep}>1. Tap "Open Voice Settings" below</Text>
-              <Text style={styles.instructionStep}>2. Scroll down to find your language (e.g., French)</Text>
-              <Text style={styles.instructionStep}>3. Download "Premium" and "Enhanced" quality voices</Text>
-              <Text style={styles.instructionStep}>4. Return here and tap "Get Started"</Text>
+              <Text style={styles.instructionStep}>
+                1. Tap "Open Voice Settings" below
+              </Text>
+              <Text style={styles.instructionStep}>
+                2. Scroll down to find your language (e.g., French)
+              </Text>
+              <Text style={styles.instructionStep}>
+                3. Download "Premium" and "Enhanced" quality voices
+              </Text>
+              <Text style={styles.instructionStep}>
+                4. Return here and tap "Get Started"
+              </Text>
             </View>
             <TouchableOpacity
               style={styles.settingsButton}
@@ -240,7 +272,9 @@ const WelcomeScreen: React.FC<Props> = ({ navigation }) => {
       {Platform.OS === 'android' && (
         <View style={styles.section}>
           <View style={styles.voiceSetupHeader}>
-            <Text style={styles.sectionTitle}>🎙️ Enhanced Voice Setup (Optional)</Text>
+            <Text style={styles.sectionTitle}>
+              🎙️ Enhanced Voice Setup (Optional)
+            </Text>
           </View>
           <View style={styles.infoBox}>
             <Text style={styles.infoText}>
@@ -272,182 +306,183 @@ const WelcomeScreen: React.FC<Props> = ({ navigation }) => {
   );
 };
 
-const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) => StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: currentTheme.colors.background,
-  },
-  content: {
-    padding: currentTheme.spacing.xl,
-    paddingTop: currentTheme.spacing['3xl'],
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: currentTheme.colors.background,
-  },
-  loadingText: {
-    marginTop: currentTheme.spacing.lg,
-    fontSize: currentTheme.typography.fontSizes.lg,
-    color: currentTheme.colors.textSecondary,
-  },
-  header: {
-    alignItems: 'center',
-    marginBottom: currentTheme.spacing['3xl'],
-  },
-  title: {
-    fontSize: currentTheme.typography.fontSizes['3xl'],
-    fontWeight: currentTheme.typography.fontWeights.bold,
-    color: currentTheme.colors.text,
-    textAlign: 'center',
-    marginBottom: currentTheme.spacing.lg,
-  },
-  subtitle: {
-    fontSize: currentTheme.typography.fontSizes.lg,
-    color: currentTheme.colors.textSecondary,
-    textAlign: 'center',
-    lineHeight: 24,
-  },
-  section: {
-    marginBottom: currentTheme.spacing['3xl'],
-  },
-  sectionTitle: {
-    fontSize: currentTheme.typography.fontSizes.xl,
-    fontWeight: currentTheme.typography.fontWeights.semibold,
-    color: currentTheme.colors.text,
-    marginBottom: currentTheme.spacing.lg,
-  },
-  optionGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-  },
-  optionButton: {
-    width: '48%',
-    backgroundColor: currentTheme.colors.surface,
-    borderRadius: currentTheme.borderRadius.lg,
-    padding: currentTheme.spacing.lg,
-    alignItems: 'center',
-    marginBottom: currentTheme.spacing.base,
-    borderWidth: 2,
-    borderColor: currentTheme.colors.border,
-    ...currentTheme.shadows.base,
-  },
-  selectedOption: {
-    borderColor: currentTheme.colors.primary,
-    backgroundColor: currentTheme.colors.primary + '10',
-  },
-  flagEmoji: {
-    fontSize: 32,
-    marginBottom: currentTheme.spacing.base,
-  },
-  optionText: {
-    fontSize: currentTheme.typography.fontSizes.lg,
-    fontWeight: currentTheme.typography.fontWeights.medium,
-    color: currentTheme.colors.text,
-  },
-  selectedOptionText: {
-    color: currentTheme.colors.primary,
-  },
-  difficultyContainer: {
-    gap: currentTheme.spacing.base,
-  },
-  difficultyButton: {
-    backgroundColor: currentTheme.colors.surface,
-    borderRadius: currentTheme.borderRadius.lg,
-    padding: currentTheme.spacing.lg,
-    borderWidth: 2,
-    borderColor: currentTheme.colors.border,
-    ...currentTheme.shadows.base,
-  },
-  selectedDifficulty: {
-    borderColor: currentTheme.colors.primary,
-    backgroundColor: currentTheme.colors.primary + '10',
-  },
-  difficultyTitle: {
-    fontSize: currentTheme.typography.fontSizes.lg,
-    fontWeight: currentTheme.typography.fontWeights.semibold,
-    color: currentTheme.colors.text,
-    marginBottom: currentTheme.spacing.xs,
-  },
-  difficultyDescription: {
-    fontSize: currentTheme.typography.fontSizes.base,
-    color: currentTheme.colors.textSecondary,
-    lineHeight: 20,
-  },
-  selectedDifficultyText: {
-    color: currentTheme.colors.primary,
-  },
-  footer: {
-    alignItems: 'center',
-    marginTop: currentTheme.spacing.xl,
-  },
-  footerText: {
-    fontSize: currentTheme.typography.fontSizes.base,
-    color: currentTheme.colors.textSecondary,
-    textAlign: 'center',
-    marginBottom: currentTheme.spacing.xl,
-    lineHeight: 20,
-  },
-  getStartedButton: {
-    backgroundColor: currentTheme.colors.primary,
-    paddingVertical: currentTheme.spacing.lg,
-    paddingHorizontal: currentTheme.spacing['3xl'],
-    borderRadius: currentTheme.borderRadius.lg,
-    minWidth: 200,
-    alignItems: 'center',
-    ...currentTheme.shadows.base,
-  },
-  disabledButton: {
-    opacity: 0.6,
-  },
-  getStartedButtonText: {
-    color: currentTheme.colors.surface,
-    fontSize: currentTheme.typography.fontSizes.lg,
-    fontWeight: currentTheme.typography.fontWeights.bold,
-  },
-  voiceSetupHeader: {
-    marginBottom: currentTheme.spacing.base,
-  },
-  infoBox: {
-    backgroundColor: currentTheme.colors.surface,
-    borderRadius: currentTheme.borderRadius.lg,
-    padding: currentTheme.spacing.lg,
-    borderWidth: 1,
-    borderColor: currentTheme.colors.border,
-    ...currentTheme.shadows.base,
-  },
-  infoText: {
-    fontSize: currentTheme.typography.fontSizes.base,
-    color: currentTheme.colors.text,
-    lineHeight: 22,
-    marginBottom: currentTheme.spacing.lg,
-  },
-  instructionsList: {
-    marginBottom: currentTheme.spacing.lg,
-    paddingLeft: currentTheme.spacing.base,
-  },
-  instructionStep: {
-    fontSize: currentTheme.typography.fontSizes.base,
-    color: currentTheme.colors.textSecondary,
-    lineHeight: 24,
-    marginBottom: currentTheme.spacing.xs,
-  },
-  settingsButton: {
-    backgroundColor: currentTheme.colors.primary + '20',
-    paddingVertical: currentTheme.spacing.base,
-    paddingHorizontal: currentTheme.spacing.lg,
-    borderRadius: currentTheme.borderRadius.base,
-    borderWidth: 1,
-    borderColor: currentTheme.colors.primary,
-    alignItems: 'center',
-  },
-  settingsButtonText: {
-    color: currentTheme.colors.primary,
-    fontSize: currentTheme.typography.fontSizes.base,
-    fontWeight: currentTheme.typography.fontWeights.semibold,
-  },
-});
+const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: currentTheme.colors.background,
+    },
+    content: {
+      padding: currentTheme.spacing.xl,
+      paddingTop: currentTheme.spacing['3xl'],
+    },
+    loadingContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: currentTheme.colors.background,
+    },
+    loadingText: {
+      marginTop: currentTheme.spacing.lg,
+      fontSize: currentTheme.typography.fontSizes.lg,
+      color: currentTheme.colors.textSecondary,
+    },
+    header: {
+      alignItems: 'center',
+      marginBottom: currentTheme.spacing['3xl'],
+    },
+    title: {
+      fontSize: currentTheme.typography.fontSizes['3xl'],
+      fontWeight: currentTheme.typography.fontWeights.bold,
+      color: currentTheme.colors.text,
+      textAlign: 'center',
+      marginBottom: currentTheme.spacing.lg,
+    },
+    subtitle: {
+      fontSize: currentTheme.typography.fontSizes.lg,
+      color: currentTheme.colors.textSecondary,
+      textAlign: 'center',
+      lineHeight: 24,
+    },
+    section: {
+      marginBottom: currentTheme.spacing['3xl'],
+    },
+    sectionTitle: {
+      fontSize: currentTheme.typography.fontSizes.xl,
+      fontWeight: currentTheme.typography.fontWeights.semibold,
+      color: currentTheme.colors.text,
+      marginBottom: currentTheme.spacing.lg,
+    },
+    optionGrid: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      justifyContent: 'space-between',
+    },
+    optionButton: {
+      width: '48%',
+      backgroundColor: currentTheme.colors.surface,
+      borderRadius: currentTheme.borderRadius.lg,
+      padding: currentTheme.spacing.lg,
+      alignItems: 'center',
+      marginBottom: currentTheme.spacing.base,
+      borderWidth: 2,
+      borderColor: currentTheme.colors.border,
+      ...currentTheme.shadows.base,
+    },
+    selectedOption: {
+      borderColor: currentTheme.colors.primary,
+      backgroundColor: currentTheme.colors.primary + '10',
+    },
+    flagEmoji: {
+      fontSize: 32,
+      marginBottom: currentTheme.spacing.base,
+    },
+    optionText: {
+      fontSize: currentTheme.typography.fontSizes.lg,
+      fontWeight: currentTheme.typography.fontWeights.medium,
+      color: currentTheme.colors.text,
+    },
+    selectedOptionText: {
+      color: currentTheme.colors.primary,
+    },
+    difficultyContainer: {
+      gap: currentTheme.spacing.base,
+    },
+    difficultyButton: {
+      backgroundColor: currentTheme.colors.surface,
+      borderRadius: currentTheme.borderRadius.lg,
+      padding: currentTheme.spacing.lg,
+      borderWidth: 2,
+      borderColor: currentTheme.colors.border,
+      ...currentTheme.shadows.base,
+    },
+    selectedDifficulty: {
+      borderColor: currentTheme.colors.primary,
+      backgroundColor: currentTheme.colors.primary + '10',
+    },
+    difficultyTitle: {
+      fontSize: currentTheme.typography.fontSizes.lg,
+      fontWeight: currentTheme.typography.fontWeights.semibold,
+      color: currentTheme.colors.text,
+      marginBottom: currentTheme.spacing.xs,
+    },
+    difficultyDescription: {
+      fontSize: currentTheme.typography.fontSizes.base,
+      color: currentTheme.colors.textSecondary,
+      lineHeight: 20,
+    },
+    selectedDifficultyText: {
+      color: currentTheme.colors.primary,
+    },
+    footer: {
+      alignItems: 'center',
+      marginTop: currentTheme.spacing.xl,
+    },
+    footerText: {
+      fontSize: currentTheme.typography.fontSizes.base,
+      color: currentTheme.colors.textSecondary,
+      textAlign: 'center',
+      marginBottom: currentTheme.spacing.xl,
+      lineHeight: 20,
+    },
+    getStartedButton: {
+      backgroundColor: currentTheme.colors.primary,
+      paddingVertical: currentTheme.spacing.lg,
+      paddingHorizontal: currentTheme.spacing['3xl'],
+      borderRadius: currentTheme.borderRadius.lg,
+      minWidth: 200,
+      alignItems: 'center',
+      ...currentTheme.shadows.base,
+    },
+    disabledButton: {
+      opacity: 0.6,
+    },
+    getStartedButtonText: {
+      color: currentTheme.colors.surface,
+      fontSize: currentTheme.typography.fontSizes.lg,
+      fontWeight: currentTheme.typography.fontWeights.bold,
+    },
+    voiceSetupHeader: {
+      marginBottom: currentTheme.spacing.base,
+    },
+    infoBox: {
+      backgroundColor: currentTheme.colors.surface,
+      borderRadius: currentTheme.borderRadius.lg,
+      padding: currentTheme.spacing.lg,
+      borderWidth: 1,
+      borderColor: currentTheme.colors.border,
+      ...currentTheme.shadows.base,
+    },
+    infoText: {
+      fontSize: currentTheme.typography.fontSizes.base,
+      color: currentTheme.colors.text,
+      lineHeight: 22,
+      marginBottom: currentTheme.spacing.lg,
+    },
+    instructionsList: {
+      marginBottom: currentTheme.spacing.lg,
+      paddingLeft: currentTheme.spacing.base,
+    },
+    instructionStep: {
+      fontSize: currentTheme.typography.fontSizes.base,
+      color: currentTheme.colors.textSecondary,
+      lineHeight: 24,
+      marginBottom: currentTheme.spacing.xs,
+    },
+    settingsButton: {
+      backgroundColor: currentTheme.colors.primary + '20',
+      paddingVertical: currentTheme.spacing.base,
+      paddingHorizontal: currentTheme.spacing.lg,
+      borderRadius: currentTheme.borderRadius.base,
+      borderWidth: 1,
+      borderColor: currentTheme.colors.primary,
+      alignItems: 'center',
+    },
+    settingsButtonText: {
+      color: currentTheme.colors.primary,
+      fontSize: currentTheme.typography.fontSizes.base,
+      fontWeight: currentTheme.typography.fontWeights.semibold,
+    },
+  });
 
 export default WelcomeScreen;

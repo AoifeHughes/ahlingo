@@ -64,7 +64,10 @@ class TestContentGenerationPipeline:
                 )
 
             # Topics
-            for topic in ["Greetings and introductions", "Food, drinks, and restaurants"]:
+            for topic in [
+                "Greetings and introductions",
+                "Food, drinks, and restaurants",
+            ]:
                 db.execute_query(
                     "INSERT OR IGNORE INTO topics (topic_name) VALUES (?)", (topic,)
                 )
@@ -83,8 +86,12 @@ class TestContentGenerationPipeline:
 
         generator.setup_models()
 
-        assert generator.generation_model is not None, "Generation model should be set up"
-        assert generator.validation_model is not None, "Validation model should be set up"
+        assert (
+            generator.generation_model is not None
+        ), "Generation model should be set up"
+        assert (
+            generator.validation_model is not None
+        ), "Validation model should be set up"
 
         print("✅ Successfully connected to LLM server")
 
@@ -156,7 +163,9 @@ class TestContentGenerationPipeline:
         )
 
         # Check statistics
-        assert generator.stats["total_attempted"] > 0, "Should have attempted generations"
+        assert (
+            generator.stats["total_attempted"] > 0
+        ), "Should have attempted generations"
         assert generator.stats["total_generated"] > 0, "Should have generated exercises"
         assert generator.stats["total_validated"] > 0, "Should have validated exercises"
 
@@ -213,9 +222,7 @@ class TestContentGenerationPipeline:
                 "✅ Validation correctly detected ambiguity (may still pass if score >= threshold)"
             )
         else:
-            print(
-                "⚠️  Validation did not detect ambiguity (LLM decision may vary)"
-            )
+            print("⚠️  Validation did not detect ambiguity (LLM decision may vary)")
 
         if validation_result.overall_quality_score < 6:
             print("✅ Low quality score correctly assigned")

@@ -10,7 +10,7 @@ import {
   SafeAreaView,
   TextInput,
   KeyboardAvoidingView,
-  Platform
+  Platform,
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useSelector } from 'react-redux';
@@ -31,12 +31,12 @@ import {
   getRecentChatForUser,
   getChatById,
   updateChatModel,
-  updateChatName
+  updateChatName,
 } from '../services/ChatService';
 import {
   OpenAIService,
   APISettings,
-  StreamingCallbacks
+  StreamingCallbacks,
 } from '../services/OpenAIService';
 import { ModelService, ModelInfo } from '../services/ModelService';
 import { getUserSettings } from '../services/RefactoredDatabaseService';
@@ -68,7 +68,8 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
   const [showModelDropdown, setShowModelDropdown] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
   const [streamingContent, setStreamingContent] = useState('');
-  const [streamController, setStreamController] = useState<AbortController | null>(null);
+  const [streamController, setStreamController] =
+    useState<AbortController | null>(null);
   const [initialChatCreated, setInitialChatCreated] = useState(false);
   const messagesScrollViewRef = useRef<ScrollView>(null);
   const scrollToBottom = useCallback(() => {
@@ -88,6 +89,67 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
       return null;
     }
   }, [userId]);
+
+  const createNewChat = useCallback(
+    async (suppressAlerts = false): Promise<ChatDetail | null> => {
+      console.log('🆕 Creating new chat...');
+      try {
+        if (!userId) {
+          if (!suppressAlerts) {
+            Alert.alert('Error', 'Failed to get user information');
+          }
+          return null;
+        }
+
+        if (!selectedModel) {
+          if (!suppressAlerts) {
+            Alert.alert(
+              'No Model Selected',
+              'Please wait while models load or select a model before starting a new chat.'
+            );
+          }
+          return null;
+        }
+
+        const model = selectedModel;
+
+        console.log('📝 Creating chat with:', {
+          userId,
+          language,
+          difficulty,
+          model,
+        });
+
+        const chatId = await createChat(userId, language, difficulty, model);
+        console.log('🆔 Created chat with ID:', chatId);
+
+        if (chatId) {
+          const newChat = await getChatById(chatId);
+          console.log('💬 Retrieved new chat:', newChat);
+
+          if (newChat) {
+            setCurrentChat(newChat);
+            setMessages([]);
+            await loadUserChats();
+            console.log('✅ New chat set successfully');
+            return newChat;
+          }
+        }
+
+        if (!suppressAlerts) {
+          Alert.alert('Error', 'Failed to create new chat');
+        }
+        return null;
+      } catch (error) {
+        console.error('Failed to create new chat:', error);
+        if (!suppressAlerts) {
+          Alert.alert('Error', 'Failed to create new chat');
+        }
+        return null;
+      }
+    },
+    [userId, language, difficulty, selectedModel, loadUserChats]
+  );
 
   const loadChatMessages = useCallback(async (chatId: number) => {
     try {
@@ -121,7 +183,9 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
 
   const loadAvailableModels = useCallback(async () => {
     try {
-      const userSettings = await getUserSettings(settings.username || 'default_user');
+      const userSettings = await getUserSettings(
+        settings.username || 'default_user'
+      );
       const includeLocal = userSettings.enable_local_models === 'true' || false;
 
       console.log('🔍 Loading available models...', {
@@ -141,7 +205,8 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
       const remoteModels = models.filter(m => !m.isLocal);
 
       // Check if we have valid configuration
-      const hasServerUrl = userSettings.server_url && userSettings.server_url.trim() !== '';
+      const hasServerUrl =
+        userSettings.server_url && userSettings.server_url.trim() !== '';
       const hasLocalModels = includeLocal && localModels.length > 0;
       const hasRemoteModels = hasServerUrl && remoteModels.length > 0;
 
@@ -151,8 +216,11 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
           'No AI Server Configured',
           'To use Chat Practice, you need to configure an AI server in Settings or enable local models.\n\nGo to Settings → AI Server to set up your server configuration.',
           [
-            { text: 'Go to Settings', onPress: () => navigation.navigate('Settings') },
-            { text: 'Cancel', onPress: () => navigation.goBack() }
+            {
+              text: 'Go to Settings',
+              onPress: () => navigation.navigate('Settings'),
+            },
+            { text: 'Cancel', onPress: () => navigation.goBack() },
           ]
         );
         return;
@@ -163,14 +231,13 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
           ? `No AI models available. Please check your server configuration in Settings or try enabling local models.\n\nServer: ${userSettings.server_url}`
           : 'No AI models available. Please configure a server in Settings or enable local models.';
 
-        Alert.alert(
-          'No AI Models Available',
-          message,
-          [
-            { text: 'Go to Settings', onPress: () => navigation.navigate('Settings') },
-            { text: 'Cancel', onPress: () => navigation.goBack() }
-          ]
-        );
+        Alert.alert('No AI Models Available', message, [
+          {
+            text: 'Go to Settings',
+            onPress: () => navigation.navigate('Settings'),
+          },
+          { text: 'Cancel', onPress: () => navigation.goBack() },
+        ]);
         return;
       }
 
@@ -178,11 +245,18 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
         Alert.alert(
           'No Working AI Models',
           'Models were found but none are accessible:\n\n' +
-          (hasServerUrl ? '• Server models: Connection failed\n' : '• No server configured\n') +
-          (includeLocal ? '• Local models: None downloaded' : '• Local models: Disabled'),
+            (hasServerUrl
+              ? '• Server models: Connection failed\n'
+              : '• No server configured\n') +
+            (includeLocal
+              ? '• Local models: None downloaded'
+              : '• Local models: Disabled'),
           [
-            { text: 'Go to Settings', onPress: () => navigation.navigate('Settings') },
-            { text: 'Cancel', onPress: () => navigation.goBack() }
+            {
+              text: 'Go to Settings',
+              onPress: () => navigation.navigate('Settings'),
+            },
+            { text: 'Cancel', onPress: () => navigation.goBack() },
           ]
         );
         return;
@@ -208,7 +282,8 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
       }
 
       if (defaultModel) {
-        setSelectedModel(prev => prev || defaultModel.id);
+        const modelId = defaultModel.id;
+        setSelectedModel(prev => prev || modelId);
       }
 
       console.log('✅ Loaded models:', models);
@@ -219,8 +294,11 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
         'Failed to Load AI Models',
         'There was an error loading AI models. Please check your network connection and server settings.',
         [
-          { text: 'Go to Settings', onPress: () => navigation.navigate('Settings') },
-          { text: 'Cancel', onPress: () => navigation.goBack() }
+          {
+            text: 'Go to Settings',
+            onPress: () => navigation.navigate('Settings'),
+          },
+          { text: 'Cancel', onPress: () => navigation.goBack() },
         ]
       );
     }
@@ -265,62 +343,6 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
     createNewChat,
   ]);
 
-  const createNewChat = useCallback(
-    async (suppressAlerts = false): Promise<ChatDetail | null> => {
-      console.log('🆕 Creating new chat...');
-      try {
-        if (!userId) {
-          if (!suppressAlerts) {
-            Alert.alert('Error', 'Failed to get user information');
-          }
-          return null;
-        }
-
-        if (!selectedModel) {
-          if (!suppressAlerts) {
-            Alert.alert(
-              'No Model Selected',
-              'Please wait while models load or select a model before starting a new chat.'
-            );
-          }
-          return null;
-        }
-
-        const model = selectedModel;
-
-        console.log('📝 Creating chat with:', { userId, language, difficulty, model });
-
-        const chatId = await createChat(userId, language, difficulty, model);
-        console.log('🆔 Created chat with ID:', chatId);
-
-        if (chatId) {
-          const newChat = await getChatById(chatId);
-          console.log('💬 Retrieved new chat:', newChat);
-
-          if (newChat) {
-            setCurrentChat(newChat);
-            setMessages([]);
-            await loadUserChats();
-            console.log('✅ New chat set successfully');
-            return newChat;
-          }
-        }
-
-        if (!suppressAlerts) {
-          Alert.alert('Error', 'Failed to create new chat');
-        }
-        return null;
-      } catch (error) {
-        console.error('Failed to create new chat:', error);
-        if (!suppressAlerts) {
-          Alert.alert('Error', 'Failed to create new chat');
-        }
-        return null;
-      }
-    },
-    [userId, language, difficulty, selectedModel, loadUserChats]
-  );
-
   const sendMessage = async (content: string) => {
     console.log('📤 ChatbotScreen sendMessage called with:', content);
 
@@ -350,7 +372,9 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
       const updatedMessages = await getChatMessages(chatId);
       setMessages(updatedMessages);
 
-      const userSettings = await getUserSettings(settings.username || 'default_user');
+      const userSettings = await getUserSettings(
+        settings.username || 'default_user'
+      );
       const isLocalModel = ModelService.isLocalModel(modelId);
 
       console.log('📋 Model routing info:', {
@@ -371,7 +395,10 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
           setStreamingContent(prev => prev + chunk);
         },
         onComplete: async (fullContent: string) => {
-          console.log('✅ Streaming completed. Full content length:', fullContent.length);
+          console.log(
+            '✅ Streaming completed. Full content length:',
+            fullContent.length
+          );
           try {
             setIsStreaming(false);
             setStreamingContent('');
@@ -393,7 +420,7 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
           setIsStreaming(false);
           setStreamingContent('');
           setStreamController(null);
-        }
+        },
       };
 
       if (isLocalModel) {
@@ -402,7 +429,10 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
         try {
           const localModelId = ModelService.extractLocalModelId(modelId);
 
-          if (!LocalLlamaService.isReady() || LocalLlamaService.getCurrentModel() !== localModelId) {
+          if (
+            !LocalLlamaService.isReady() ||
+            LocalLlamaService.getCurrentModel() !== localModelId
+          ) {
             console.log('🔧 Initializing local model...');
             setIsLoading(true);
             setIsStreaming(false);
@@ -420,17 +450,17 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
             { role: 'system' as const, content: systemPrompt },
             ...updatedMessages.slice(-10).map(msg => ({
               role: msg.role as 'user' | 'assistant',
-              content: msg.content
-            }))
+              content: msg.content,
+            })),
           ];
 
           await LocalLlamaService.completion(localMessages, commonCallbacks);
-
         } catch (error) {
           console.error('Local model error:', error);
-          commonCallbacks.onError(error instanceof Error ? error : new Error('Local model failed'));
+          commonCallbacks.onError(
+            error instanceof Error ? error : new Error('Local model failed')
+          );
         }
-
       } else {
         console.log('🌐 Using remote model:', modelId);
 
@@ -468,10 +498,10 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
 
         setStreamController(controller);
       }
-
     } catch (error) {
       console.error('Failed to send message:', error);
-      const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
+      const errorMessage =
+        error instanceof Error ? error.message : 'An unexpected error occurred';
       Alert.alert('Error', errorMessage);
       setIsLoading(false);
       setIsStreaming(false);
@@ -494,7 +524,6 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
     setStreamingContent('');
   };
 
-
   const handleModelChange = async (newModel: string) => {
     try {
       console.log('🔄 Changing model to:', newModel);
@@ -504,13 +533,15 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
         const localModelId = ModelService.extractLocalModelId(newModel);
         console.log('🏠 Local model detected:', {
           originalModelId: newModel,
-          extractedLocalModelId: localModelId
+          extractedLocalModelId: localModelId,
         });
 
-        const isDownloaded = await LocalLlamaService.isModelDownloaded(localModelId);
+        const isDownloaded = await LocalLlamaService.isModelDownloaded(
+          localModelId
+        );
         console.log('📋 Download status check result:', {
           localModelId,
-          isDownloaded
+          isDownloaded,
         });
 
         if (!isDownloaded) {
@@ -522,8 +553,8 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
               { text: 'Cancel', style: 'cancel' },
               {
                 text: 'Go to Settings',
-                onPress: () => navigation.navigate('Settings' as any)
-              }
+                onPress: () => navigation.navigate('Settings' as any),
+              },
             ]
           );
           return;
@@ -539,7 +570,7 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
         console.log('✅ Updated chat model to:', newModel);
 
         // Update the current chat object
-        setCurrentChat(prev => prev ? { ...prev, model: newModel } : null);
+        setCurrentChat(prev => (prev ? { ...prev, model: newModel } : null));
       }
     } catch (error) {
       console.error('Failed to update chat model:', error);
@@ -600,23 +631,24 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
           </TouchableOpacity>
           <View style={styles.headerCenter}>
             <Text style={styles.headerTitle}>
-              {currentChat ? (currentChat.chat_name || `${currentChat.language} - ${currentChat.difficulty}`) : 'New Chat'}
+              {currentChat
+                ? currentChat.chat_name ||
+                  `${currentChat.language} - ${currentChat.difficulty}`
+                : 'New Chat'}
             </Text>
             {availableModels.length > 0 && (
               <TouchableOpacity
                 style={styles.modelSelector}
                 onPress={() => setShowModelDropdown(!showModelDropdown)}
               >
-                <Text style={styles.modelSelectorText}>
-                  {selectedModel}
-                </Text>
+                <Text style={styles.modelSelectorText}>{selectedModel}</Text>
                 <Text style={styles.dropdownArrow}>▼</Text>
               </TouchableOpacity>
             )}
           </View>
           <TouchableOpacity
             style={styles.newChatButton}
-            onPress={createNewChat}
+            onPress={() => createNewChat()}
           >
             <Text style={styles.newChatButtonText}>New</Text>
           </TouchableOpacity>
@@ -624,8 +656,11 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
 
         {showModelDropdown && availableModels.length > 0 && (
           <View style={styles.modelDropdownContainer}>
-            <ScrollView style={styles.modelDropdown} showsVerticalScrollIndicator={false}>
-              {availableModels.map((model) => (
+            <ScrollView
+              style={styles.modelDropdown}
+              showsVerticalScrollIndicator={false}
+            >
+              {availableModels.map(model => (
                 <TouchableOpacity
                   key={model.id}
                   style={[
@@ -638,20 +673,27 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
                   }}
                 >
                   <View style={styles.modelOptionContent}>
-                    <Text style={[
-                      styles.modelOptionText,
-                      selectedModel === model.id && styles.selectedModelOptionText,
-                    ]}>
+                    <Text
+                      style={[
+                        styles.modelOptionText,
+                        selectedModel === model.id &&
+                          styles.selectedModelOptionText,
+                      ]}
+                    >
                       {model.name}
                     </Text>
                     <View style={styles.modelMetadata}>
                       {model.isLocal && (
-                        <Text style={[
-                          styles.modelBadge,
-                          styles.localBadge,
-                          !model.isDownloaded && styles.notDownloadedBadge
-                        ]}>
-                          {model.isDownloaded ? '📱 Local' : '📱 Not Downloaded'}
+                        <Text
+                          style={[
+                            styles.modelBadge,
+                            styles.localBadge,
+                            !model.isDownloaded && styles.notDownloadedBadge,
+                          ]}
+                        >
+                          {model.isDownloaded
+                            ? '📱 Local'
+                            : '📱 Not Downloaded'}
                         </Text>
                       )}
                       {!model.isLocal && (
@@ -682,7 +724,11 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
             <View style={styles.emptyState}>
               <Text style={styles.emptyStateText}>Start a conversation!</Text>
               <Text style={styles.emptyStateSubtext}>
-                Type a message below to begin chatting in {currentChat?.language || settings.language || 'your target language'}.
+                Type a message below to begin chatting in{' '}
+                {currentChat?.language ||
+                  settings.language ||
+                  'your target language'}
+                .
               </Text>
             </View>
           ) : (
@@ -708,7 +754,9 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
           {isLoading && (
             <View style={styles.loadingMessage}>
               <ActivityIndicator size="small" color="#1976D2" />
-              <Text style={styles.loadingMessageText}>Assistant is typing...</Text>
+              <Text style={styles.loadingMessageText}>
+                Assistant is typing...
+              </Text>
             </View>
           )}
         </ScrollView>
@@ -736,184 +784,185 @@ const ChatbotScreen: React.FC<Props> = ({ navigation }) => {
   );
 };
 
-const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) => StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: currentTheme.colors.background,
-  },
-  keyboardAvoidingView: {
-    flex: 1,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: currentTheme.spacing.lg,
-    paddingVertical: currentTheme.spacing.md,
-    backgroundColor: currentTheme.colors.surface,
-    borderBottomWidth: 1,
-    borderBottomColor: currentTheme.colors.border,
-  },
-  conversationsButton: {
-    paddingHorizontal: currentTheme.spacing.md,
-    paddingVertical: currentTheme.spacing.sm,
-    borderRadius: currentTheme.borderRadius.base,
-    backgroundColor: currentTheme.colors.surfaceDark,
-    ...currentTheme.shadows.sm,
-  },
-  conversationsButtonText: {
-    fontSize: currentTheme.typography.fontSizes.base,
-    color: currentTheme.colors.primary,
-    fontWeight: currentTheme.typography.fontWeights.semibold,
-  },
-  headerCenter: {
-    flex: 1,
-    alignItems: 'center',
-  },
-  headerTitle: {
-    fontSize: currentTheme.typography.fontSizes.lg,
-    fontWeight: currentTheme.typography.fontWeights.semibold,
-    color: currentTheme.colors.text,
-    textAlign: 'center',
-  },
-  modelSelector: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: currentTheme.colors.surfaceDark,
-    paddingHorizontal: currentTheme.spacing.base,
-    paddingVertical: currentTheme.spacing.xs,
-    borderRadius: currentTheme.borderRadius.base,
-    marginTop: currentTheme.spacing.xs,
-  },
-  modelSelectorText: {
-    fontSize: currentTheme.typography.fontSizes.sm,
-    color: currentTheme.colors.textSecondary,
-    marginRight: currentTheme.spacing.xs,
-  },
-  dropdownArrow: {
-    fontSize: currentTheme.typography.fontSizes.xs,
-    color: currentTheme.colors.textSecondary,
-  },
-  modelDropdownContainer: {
-    backgroundColor: currentTheme.colors.surface,
-    borderBottomWidth: 1,
-    borderBottomColor: currentTheme.colors.border,
-    maxHeight: 200,
-  },
-  modelDropdown: {
-    maxHeight: 200,
-  },
-  modelOption: {
-    paddingHorizontal: currentTheme.spacing.lg,
-    paddingVertical: currentTheme.spacing.md,
-    borderBottomWidth: 1,
-    borderBottomColor: currentTheme.colors.borderLight,
-  },
-  selectedModelOption: {
-    backgroundColor: currentTheme.colors.secondary,
-  },
-  modelOptionContent: {
-    flex: 1,
-  },
-  modelOptionText: {
-    fontSize: currentTheme.typography.fontSizes.base,
-    color: currentTheme.colors.text,
-    marginBottom: currentTheme.spacing.xs,
-  },
-  selectedModelOptionText: {
-    color: currentTheme.colors.primary,
-    fontWeight: currentTheme.typography.fontWeights.semibold,
-  },
-  modelMetadata: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flexWrap: 'wrap',
-    gap: currentTheme.spacing.xs,
-  },
-  modelBadge: {
-    fontSize: currentTheme.typography.fontSizes.xs,
-    paddingHorizontal: currentTheme.spacing.xs,
-    paddingVertical: 2,
-    borderRadius: currentTheme.borderRadius.sm,
-    overflow: 'hidden',
-  },
-  localBadge: {
-    backgroundColor: currentTheme.colors.success,
-    color: currentTheme.colors.background,
-  },
-  remoteBadge: {
-    backgroundColor: currentTheme.colors.primary,
-    color: currentTheme.colors.background,
-  },
-  notDownloadedBadge: {
-    backgroundColor: currentTheme.colors.warning,
-    color: currentTheme.colors.text,
-  },
-  modelSizeText: {
-    fontSize: currentTheme.typography.fontSizes.xs,
-    color: currentTheme.colors.textSecondary,
-  },
-  newChatButton: {
-    paddingHorizontal: currentTheme.spacing.md,
-    paddingVertical: currentTheme.spacing.sm,
-    borderRadius: currentTheme.borderRadius.base,
-    backgroundColor: currentTheme.colors.primary,
-    ...currentTheme.shadows.sm,
-  },
-  newChatButtonText: {
-    fontSize: currentTheme.typography.fontSizes.base,
-    color: currentTheme.colors.background,
-    fontWeight: currentTheme.typography.fontWeights.semibold,
-  },
-  messagesContainer: {
-    flex: 1,
-    backgroundColor: currentTheme.colors.background,
-  },
-  messagesContent: {
-    paddingVertical: currentTheme.spacing.lg,
-    flexGrow: 1,
-  },
-  emptyState: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: currentTheme.spacing['4xl'],
-  },
-  emptyStateText: {
-    fontSize: currentTheme.typography.fontSizes.xl,
-    fontWeight: currentTheme.typography.fontWeights.semibold,
-    color: currentTheme.colors.textSecondary,
-    marginBottom: currentTheme.spacing.base,
-    textAlign: 'center',
-  },
-  emptyStateSubtext: {
-    fontSize: currentTheme.typography.fontSizes.base,
-    color: currentTheme.colors.textLight,
-    textAlign: 'center',
-    lineHeight: currentTheme.spacing.xl,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loadingText: {
-    marginTop: currentTheme.spacing.lg,
-    fontSize: currentTheme.typography.fontSizes.lg,
-    color: currentTheme.colors.textSecondary,
-  },
-  loadingMessage: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: currentTheme.spacing.lg,
-  },
-  loadingMessageText: {
-    marginLeft: currentTheme.spacing.base,
-    fontSize: currentTheme.typography.fontSizes.base,
-    color: currentTheme.colors.textSecondary,
-    fontStyle: 'italic',
-  },
-});
+const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: currentTheme.colors.background,
+    },
+    keyboardAvoidingView: {
+      flex: 1,
+    },
+    header: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingHorizontal: currentTheme.spacing.lg,
+      paddingVertical: currentTheme.spacing.md,
+      backgroundColor: currentTheme.colors.surface,
+      borderBottomWidth: 1,
+      borderBottomColor: currentTheme.colors.border,
+    },
+    conversationsButton: {
+      paddingHorizontal: currentTheme.spacing.md,
+      paddingVertical: currentTheme.spacing.sm,
+      borderRadius: currentTheme.borderRadius.base,
+      backgroundColor: currentTheme.colors.surfaceDark,
+      ...currentTheme.shadows.sm,
+    },
+    conversationsButtonText: {
+      fontSize: currentTheme.typography.fontSizes.base,
+      color: currentTheme.colors.primary,
+      fontWeight: currentTheme.typography.fontWeights.semibold,
+    },
+    headerCenter: {
+      flex: 1,
+      alignItems: 'center',
+    },
+    headerTitle: {
+      fontSize: currentTheme.typography.fontSizes.lg,
+      fontWeight: currentTheme.typography.fontWeights.semibold,
+      color: currentTheme.colors.text,
+      textAlign: 'center',
+    },
+    modelSelector: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: currentTheme.colors.surfaceDark,
+      paddingHorizontal: currentTheme.spacing.base,
+      paddingVertical: currentTheme.spacing.xs,
+      borderRadius: currentTheme.borderRadius.base,
+      marginTop: currentTheme.spacing.xs,
+    },
+    modelSelectorText: {
+      fontSize: currentTheme.typography.fontSizes.sm,
+      color: currentTheme.colors.textSecondary,
+      marginRight: currentTheme.spacing.xs,
+    },
+    dropdownArrow: {
+      fontSize: currentTheme.typography.fontSizes.xs,
+      color: currentTheme.colors.textSecondary,
+    },
+    modelDropdownContainer: {
+      backgroundColor: currentTheme.colors.surface,
+      borderBottomWidth: 1,
+      borderBottomColor: currentTheme.colors.border,
+      maxHeight: 200,
+    },
+    modelDropdown: {
+      maxHeight: 200,
+    },
+    modelOption: {
+      paddingHorizontal: currentTheme.spacing.lg,
+      paddingVertical: currentTheme.spacing.md,
+      borderBottomWidth: 1,
+      borderBottomColor: currentTheme.colors.borderLight,
+    },
+    selectedModelOption: {
+      backgroundColor: currentTheme.colors.secondary,
+    },
+    modelOptionContent: {
+      flex: 1,
+    },
+    modelOptionText: {
+      fontSize: currentTheme.typography.fontSizes.base,
+      color: currentTheme.colors.text,
+      marginBottom: currentTheme.spacing.xs,
+    },
+    selectedModelOptionText: {
+      color: currentTheme.colors.primary,
+      fontWeight: currentTheme.typography.fontWeights.semibold,
+    },
+    modelMetadata: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      flexWrap: 'wrap',
+      gap: currentTheme.spacing.xs,
+    },
+    modelBadge: {
+      fontSize: currentTheme.typography.fontSizes.xs,
+      paddingHorizontal: currentTheme.spacing.xs,
+      paddingVertical: 2,
+      borderRadius: currentTheme.borderRadius.sm,
+      overflow: 'hidden',
+    },
+    localBadge: {
+      backgroundColor: currentTheme.colors.success,
+      color: currentTheme.colors.background,
+    },
+    remoteBadge: {
+      backgroundColor: currentTheme.colors.primary,
+      color: currentTheme.colors.background,
+    },
+    notDownloadedBadge: {
+      backgroundColor: currentTheme.colors.warning,
+      color: currentTheme.colors.text,
+    },
+    modelSizeText: {
+      fontSize: currentTheme.typography.fontSizes.xs,
+      color: currentTheme.colors.textSecondary,
+    },
+    newChatButton: {
+      paddingHorizontal: currentTheme.spacing.md,
+      paddingVertical: currentTheme.spacing.sm,
+      borderRadius: currentTheme.borderRadius.base,
+      backgroundColor: currentTheme.colors.primary,
+      ...currentTheme.shadows.sm,
+    },
+    newChatButtonText: {
+      fontSize: currentTheme.typography.fontSizes.base,
+      color: currentTheme.colors.background,
+      fontWeight: currentTheme.typography.fontWeights.semibold,
+    },
+    messagesContainer: {
+      flex: 1,
+      backgroundColor: currentTheme.colors.background,
+    },
+    messagesContent: {
+      paddingVertical: currentTheme.spacing.lg,
+      flexGrow: 1,
+    },
+    emptyState: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingHorizontal: currentTheme.spacing['4xl'],
+    },
+    emptyStateText: {
+      fontSize: currentTheme.typography.fontSizes.xl,
+      fontWeight: currentTheme.typography.fontWeights.semibold,
+      color: currentTheme.colors.textSecondary,
+      marginBottom: currentTheme.spacing.base,
+      textAlign: 'center',
+    },
+    emptyStateSubtext: {
+      fontSize: currentTheme.typography.fontSizes.base,
+      color: currentTheme.colors.textLight,
+      textAlign: 'center',
+      lineHeight: currentTheme.spacing.xl,
+    },
+    loadingContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    loadingText: {
+      marginTop: currentTheme.spacing.lg,
+      fontSize: currentTheme.typography.fontSizes.lg,
+      color: currentTheme.colors.textSecondary,
+    },
+    loadingMessage: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingVertical: currentTheme.spacing.lg,
+    },
+    loadingMessageText: {
+      marginLeft: currentTheme.spacing.base,
+      fontSize: currentTheme.typography.fontSizes.base,
+      color: currentTheme.colors.textSecondary,
+      fontStyle: 'italic',
+    },
+  });
 
 export default ChatbotScreen;

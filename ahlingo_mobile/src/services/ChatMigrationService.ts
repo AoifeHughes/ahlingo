@@ -10,7 +10,7 @@ import { executeQuery } from '../utils/databaseUtils';
  * Migration function to add chat_name column if it doesn't exist
  */
 export const migrateChatNameColumn = async (): Promise<void> => {
-  return executeQuery(async (db) => {
+  return executeQuery(async db => {
     try {
       console.log('🔄 Checking chat_name column migration...');
 
@@ -44,7 +44,9 @@ export const migrateChatNameColumn = async (): Promise<void> => {
           'UPDATE chat_details SET chat_name = "Unnamed chat" WHERE chat_name IS NULL OR chat_name = ""'
         );
 
-        console.log('✅ Successfully added chat_name column and set default names');
+        console.log(
+          '✅ Successfully added chat_name column and set default names'
+        );
       } else {
         console.log('✅ chat_name column already exists');
       }

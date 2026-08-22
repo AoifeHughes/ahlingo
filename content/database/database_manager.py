@@ -220,11 +220,9 @@ class LanguageDB:
 
     def get_most_recent_user(self) -> Optional[str]:
         """Get the username of the most recently logged in user."""
-        self.cursor.execute(
-            """SELECT name FROM users
+        self.cursor.execute("""SELECT name FROM users
                WHERE last_login IS NOT NULL
-               ORDER BY last_login DESC LIMIT 1"""
-        )
+               ORDER BY last_login DESC LIMIT 1""")
         result = self.cursor.fetchone()
         return result["name"] if result else None
 
@@ -870,11 +868,9 @@ class LanguageDB:
 
     def get_languages(self) -> List[str]:
         """Get all available languages."""
-        self.cursor.execute(
-            """SELECT DISTINCT l.language
+        self.cursor.execute("""SELECT DISTINCT l.language
                FROM languages l
-               JOIN exercises_info e ON l.id = e.language_id"""
-        )
+               JOIN exercises_info e ON l.id = e.language_id""")
         return [row["language"] for row in self.cursor.fetchall()]
 
     def get_difficulty_levels(self) -> List[str]:
@@ -1711,7 +1707,14 @@ class LanguageDB:
             """INSERT OR REPLACE INTO image_exercises
                (topic_id, image_index, image_prompt, image_filename, image_path, generated_at)
                VALUES (?, ?, ?, ?, ?, ?)""",
-            (topic_id, image_index, image_prompt, image_filename, image_path, datetime.now()),
+            (
+                topic_id,
+                image_index,
+                image_prompt,
+                image_filename,
+                image_path,
+                datetime.now(),
+            ),
         )
         self.conn.commit()
         return self.cursor.lastrowid
@@ -1747,7 +1750,16 @@ class LanguageDB:
             """INSERT OR REPLACE INTO image_descriptors
                (image_id, language_id, difficulty_id, correct_descriptor, incorrect_1, incorrect_2, english_meaning, generated_at)
                VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
-            (image_id, language_id, difficulty_id, correct_descriptor, incorrect_1, incorrect_2, english_meaning, datetime.now()),
+            (
+                image_id,
+                language_id,
+                difficulty_id,
+                correct_descriptor,
+                incorrect_1,
+                incorrect_2,
+                english_meaning,
+                datetime.now(),
+            ),
         )
         self.conn.commit()
         return self.cursor.lastrowid
@@ -1770,7 +1782,9 @@ class LanguageDB:
         )
         return [dict(row) for row in self.cursor.fetchall()]
 
-    def get_image_descriptor(self, image_id: int, language: str, difficulty: str) -> Optional[Dict]:
+    def get_image_descriptor(
+        self, image_id: int, language: str, difficulty: str
+    ) -> Optional[Dict]:
         """Get descriptor for an image in a specific language/difficulty.
 
         Args:

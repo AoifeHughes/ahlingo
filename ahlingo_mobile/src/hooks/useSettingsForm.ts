@@ -5,7 +5,7 @@ import { NavigationProp } from '@react-navigation/native';
 import {
   setSettings,
   setLoading,
-  setError
+  setError,
 } from '../store/slices/settingsSlice';
 import {
   getLanguages,
@@ -53,13 +53,18 @@ interface UseSettingsFormReturn {
   serverModelOptions: DropdownItem[];
 
   // Functions
-  updateFormData: (field: keyof FormData, value: string | boolean) => void;
+  updateFormData: <K extends keyof FormData>(
+    field: K,
+    value: FormData[K]
+  ) => void;
   handleReset: () => Promise<void>;
   loadInitialData: () => Promise<void>;
   refreshServerModels: () => void;
 }
 
-export const useSettingsForm = (navigation?: NavigationProp<RootStackParamList>): UseSettingsFormReturn => {
+export const useSettingsForm = (
+  navigation?: NavigationProp<RootStackParamList>
+): UseSettingsFormReturn => {
   const dispatch = useDispatch();
   const { themeVariant, setTheme } = useTheme();
 
@@ -86,21 +91,28 @@ export const useSettingsForm = (navigation?: NavigationProp<RootStackParamList>)
   );
   const [isResetting, setIsResetting] = useState(false);
   const [initialFormData, setInitialFormData] = useState<FormData | null>(null);
-  const [serverStatus, setServerStatus] = useState<ServerStatusState>({ status: 'idle' });
-  const [serverModelOptions, setServerModelOptions] = useState<DropdownItem[]>([]);
+  const [serverStatus, setServerStatus] = useState<ServerStatusState>({
+    status: 'idle',
+  });
+  const [serverModelOptions, setServerModelOptions] = useState<DropdownItem[]>(
+    []
+  );
   const [serverRefreshKey, setServerRefreshKey] = useState(0);
 
-  const dedupeDropdownItems = useCallback((items: DropdownItem[]): DropdownItem[] => {
-    const seen = new Set<string>();
-    const result: DropdownItem[] = [];
-    items.forEach(item => {
-      if (!seen.has(item.value)) {
-        seen.add(item.value);
-        result.push(item);
-      }
-    });
-    return result;
-  }, []);
+  const dedupeDropdownItems = useCallback(
+    (items: DropdownItem[]): DropdownItem[] => {
+      const seen = new Set<string>();
+      const result: DropdownItem[] = [];
+      items.forEach(item => {
+        if (!seen.has(item.value)) {
+          seen.add(item.value);
+          result.push(item);
+        }
+      });
+      return result;
+    },
+    []
+  );
 
   // Load initial data on mount
   useEffect(() => {
@@ -136,14 +148,17 @@ export const useSettingsForm = (navigation?: NavigationProp<RootStackParamList>)
       );
 
       // Fallback if no languages in database
-      const fallbackLanguages: DropdownItem[] = languageItems.length === 0
-        ? [
-            { label: 'French', value: 'French' },
-            { label: 'Spanish', value: 'Spanish' },
-            { label: 'German', value: 'German' },
-          ]
-        : languageItems;
-      const languagesWithEnglish = fallbackLanguages.some(item => item.value.toLowerCase() === 'english')
+      const fallbackLanguages: DropdownItem[] =
+        languageItems.length === 0
+          ? [
+              { label: 'French', value: 'French' },
+              { label: 'Spanish', value: 'Spanish' },
+              { label: 'German', value: 'German' },
+            ]
+          : languageItems;
+      const languagesWithEnglish = fallbackLanguages.some(
+        item => item.value.toLowerCase() === 'english'
+      )
         ? fallbackLanguages
         : [{ label: 'English', value: 'English' }, ...fallbackLanguages];
       setLanguages(dedupeDropdownItems(languagesWithEnglish));
@@ -158,13 +173,14 @@ export const useSettingsForm = (navigation?: NavigationProp<RootStackParamList>)
       );
 
       // Fallback if no difficulties in database
-      const fallbackDifficulties = difficultyItems.length === 0
-        ? [
-            { label: 'Beginner', value: 'Beginner' },
-            { label: 'Intermediate', value: 'Intermediate' },
-            { label: 'Advanced', value: 'Advanced' },
-          ]
-        : difficultyItems;
+      const fallbackDifficulties =
+        difficultyItems.length === 0
+          ? [
+              { label: 'Beginner', value: 'Beginner' },
+              { label: 'Intermediate', value: 'Intermediate' },
+              { label: 'Advanced', value: 'Advanced' },
+            ]
+          : difficultyItems;
       setDifficulties(dedupeDropdownItems(fallbackDifficulties));
 
       // Load user settings
@@ -213,8 +229,10 @@ export const useSettingsForm = (navigation?: NavigationProp<RootStackParamList>)
         setSettings({
           language: userSettings.language || 'French',
           difficulty: userSettings.difficulty || 'Beginner',
-          enableLocalModels: userSettings.enable_local_models === 'true' || false,
-          preferLocalModels: userSettings.prefer_local_models === 'true' || false,
+          enableLocalModels:
+            userSettings.enable_local_models === 'true' || false,
+          preferLocalModels:
+            userSettings.prefer_local_models === 'true' || false,
           preferredVoices: preferredVoices,
         })
       );
@@ -222,7 +240,6 @@ export const useSettingsForm = (navigation?: NavigationProp<RootStackParamList>)
       console.error('Failed to load user settings:', error);
     }
   };
-
 
   const handleAutoSave = async () => {
     try {
@@ -234,9 +251,21 @@ export const useSettingsForm = (navigation?: NavigationProp<RootStackParamList>)
       await setUserSetting(username, 'api_key', formData.apiKey);
       await setUserSetting(username, 'server_url', formData.serverUrl);
       await setUserSetting(username, 'server_model', formData.serverModel);
-      await setUserSetting(username, 'enable_local_models', formData.enableLocalModels.toString());
-      await setUserSetting(username, 'prefer_local_models', formData.preferLocalModels.toString());
-      await setUserSetting(username, 'preferred_voices', JSON.stringify(formData.preferredVoices));
+      await setUserSetting(
+        username,
+        'enable_local_models',
+        formData.enableLocalModels.toString()
+      );
+      await setUserSetting(
+        username,
+        'prefer_local_models',
+        formData.preferLocalModels.toString()
+      );
+      await setUserSetting(
+        username,
+        'preferred_voices',
+        JSON.stringify(formData.preferredVoices)
+      );
 
       // Apply theme change immediately
       await setTheme(formData.theme as ThemeVariant);
@@ -259,7 +288,10 @@ export const useSettingsForm = (navigation?: NavigationProp<RootStackParamList>)
     } catch (error) {
       console.error('Failed to auto-save settings:', error);
       // Show error only if auto-save fails
-      Alert.alert('Error', 'Failed to save settings automatically. Please try again.');
+      Alert.alert(
+        'Error',
+        'Failed to save settings automatically. Please try again.'
+      );
     }
   };
 
@@ -270,13 +302,15 @@ export const useSettingsForm = (navigation?: NavigationProp<RootStackParamList>)
       await resetAppCompletely();
 
       // Clear Redux store
-      dispatch(setSettings({
-        language: '',
-        difficulty: '',
-        userId: 1,
-        enableLocalModels: false,
-        preferLocalModels: false,
-      }));
+      dispatch(
+        setSettings({
+          language: '',
+          difficulty: '',
+          userId: 1,
+          enableLocalModels: false,
+          preferLocalModels: false,
+        })
+      );
 
       // Navigate to Welcome screen for fresh setup
       if (navigation) {
@@ -293,7 +327,10 @@ export const useSettingsForm = (navigation?: NavigationProp<RootStackParamList>)
     }
   };
 
-  const updateFormData = (field: keyof FormData, value: string | boolean) => {
+  const updateFormData = <K extends keyof FormData>(
+    field: K,
+    value: FormData[K]
+  ) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
@@ -308,7 +345,9 @@ export const useSettingsForm = (navigation?: NavigationProp<RootStackParamList>)
     if (!url) {
       setServerStatus({ status: 'idle' });
       setServerModelOptions([]);
-      setFormData(prev => (prev.serverModel ? { ...prev, serverModel: '' } : prev));
+      setFormData(prev =>
+        prev.serverModel ? { ...prev, serverModel: '' } : prev
+      );
       return undefined;
     }
 
@@ -317,22 +356,26 @@ export const useSettingsForm = (navigation?: NavigationProp<RootStackParamList>)
       ModelService.fetchAvailableModels(url, formData.apiKey)
         .then(models => {
           if (isCancelled) return;
-          const options = dedupeDropdownItems(models.map(model => ({
-            label: model.name || model.id,
-            value: model.id,
-          })));
+          const options = dedupeDropdownItems(
+            models.map(model => ({
+              label: model.name || model.id,
+              value: model.id,
+            }))
+          );
           setServerModelOptions(options);
           setServerStatus({
             status: 'success',
-            message: `${models.length} model${models.length === 1 ? '' : 's'} available`,
+            message: `${models.length} model${
+              models.length === 1 ? '' : 's'
+            } available`,
           });
           setFormData(prev => {
             if (models.length === 0) {
               return prev.serverModel ? { ...prev, serverModel: '' } : prev;
             }
 
-            const hasSelected = prev.serverModel
-              && models.some(m => m.id === prev.serverModel);
+            const hasSelected =
+              prev.serverModel && models.some(m => m.id === prev.serverModel);
 
             if (hasSelected) {
               return prev;
@@ -343,10 +386,13 @@ export const useSettingsForm = (navigation?: NavigationProp<RootStackParamList>)
         })
         .catch(error => {
           if (isCancelled) return;
-          const errorMessage = error instanceof Error ? error.message : 'Failed to reach server';
+          const errorMessage =
+            error instanceof Error ? error.message : 'Failed to reach server';
           setServerStatus({ status: 'error', message: errorMessage });
           setServerModelOptions([]);
-          setFormData(prev => (prev.serverModel ? { ...prev, serverModel: '' } : prev));
+          setFormData(prev =>
+            prev.serverModel ? { ...prev, serverModel: '' } : prev
+          );
         });
     }, 600);
 
@@ -354,7 +400,12 @@ export const useSettingsForm = (navigation?: NavigationProp<RootStackParamList>)
       isCancelled = true;
       clearTimeout(timeoutId);
     };
-  }, [formData.serverUrl, formData.apiKey, serverRefreshKey, dedupeDropdownItems]);
+  }, [
+    formData.serverUrl,
+    formData.apiKey,
+    serverRefreshKey,
+    dedupeDropdownItems,
+  ]);
 
   return {
     // State

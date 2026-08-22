@@ -67,7 +67,13 @@ import {
   getTopicsForExerciseType,
   getRandomExerciseForTopic as getRandomExerciseForTopicBase,
   recordExerciseAttempt,
+  getTopicNameForExercise,
 } from './BaseExerciseService';
+
+import {
+  getConversationSummary,
+  getRandomConversationSummaries,
+} from './ConversationExerciseService';
 
 import { getUserContext } from './UserService';
 
@@ -154,7 +160,11 @@ export const getConversationExerciseWithData = async (
   difficulty: string,
   userId?: number | null
 ) => {
-  const exercise = await getRandomConversationExerciseForTopic(topicId, language, difficulty);
+  const exercise = await getRandomConversationExerciseForTopic(
+    topicId,
+    language,
+    difficulty
+  );
   if (!exercise) return null;
 
   const conversationData = await getConversationExerciseData(exercise.id);
@@ -177,7 +187,11 @@ export const getTranslationExerciseWithData = async (
   difficulty: string,
   userId?: number | null
 ) => {
-  const exercise = await getRandomTranslationExerciseForTopic(topicId, language, difficulty);
+  const exercise = await getRandomTranslationExerciseForTopic(
+    topicId,
+    language,
+    difficulty
+  );
   if (!exercise) return null;
 
   const translationData = await getTranslationExerciseData(exercise.id);
@@ -196,7 +210,11 @@ export const getFillInBlankExerciseWithData = async (
   difficulty: string,
   userId?: number | null
 ) => {
-  const exercise = await getRandomFillInBlankExerciseForTopic(topicId, language, difficulty);
+  const exercise = await getRandomFillInBlankExerciseForTopic(
+    topicId,
+    language,
+    difficulty
+  );
   if (!exercise) return null;
 
   const fillInBlankData = await getFillInBlankExerciseData(exercise.id);
@@ -215,7 +233,11 @@ export const getPairsExerciseWithData = async (
   difficulty: string,
   userId?: number | null
 ) => {
-  const exercise = await getRandomExerciseForTopic(topicId, language, difficulty);
+  const exercise = await getRandomExerciseForTopic(
+    topicId,
+    language,
+    difficulty
+  );
   if (!exercise) return null;
 
   const pairsData = await getPairExercises(exercise.id);

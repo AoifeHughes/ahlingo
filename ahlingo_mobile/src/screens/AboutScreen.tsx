@@ -30,8 +30,11 @@ const AboutScreen: React.FC<Props> = ({ navigation }) => {
   const handleEmailPress = async () => {
     const email = 'aoife.deltasolutions@gmail.com';
     const subject = 'AHLingo Feedback';
-    const body = 'Hi Aoife,\n\nI have some feedback/suggestions/bug reports for AHLingo:\n\n';
-    const mailtoUrl = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    const body =
+      'Hi Aoife,\n\nI have some feedback/suggestions/bug reports for AHLingo:\n\n';
+    const mailtoUrl = `mailto:${email}?subject=${encodeURIComponent(
+      subject
+    )}&body=${encodeURIComponent(body)}`;
 
     try {
       const supported = await Linking.canOpenURL(mailtoUrl);
@@ -57,10 +60,17 @@ const AboutScreen: React.FC<Props> = ({ navigation }) => {
 
   return (
     <>
-      <StatusBar backgroundColor={theme.colors.primary} barStyle="light-content" />
+      <StatusBar
+        backgroundColor={theme.colors.primary}
+        barStyle="light-content"
+      />
       <View style={styles.container}>
         <View style={styles.header}>
-          <HeaderIconButton onPress={() => navigation.navigate('MainMenu')} icon="←" testID="back-button" />
+          <HeaderIconButton
+            onPress={() => navigation.navigate('MainMenu')}
+            icon="←"
+            testID="back-button"
+          />
           <Text style={styles.title}>About</Text>
         </View>
 
@@ -81,14 +91,17 @@ const AboutScreen: React.FC<Props> = ({ navigation }) => {
             <Text style={styles.appName}>AHLingo</Text>
             <Text style={styles.version}>Version 1.4.0</Text>
             <Text style={styles.description}>
-              A comprehensive language learning application designed to help you master new languages through interactive exercises, conversations, and personalized learning experiences.
+              A comprehensive language learning application designed to help you
+              master new languages through interactive exercises, conversations,
+              and personalized learning experiences.
             </Text>
           </View>
 
           <View style={styles.contactSection}>
             <Text style={styles.sectionTitle}>Contact & Feedback</Text>
             <Text style={styles.contactText}>
-              We'd love to hear from you! Share your feedback, suggestions, or report bugs to help us improve AHLingo.
+              We'd love to hear from you! Share your feedback, suggestions, or
+              report bugs to help us improve AHLingo.
             </Text>
 
             <TouchableOpacity
@@ -99,130 +112,132 @@ const AboutScreen: React.FC<Props> = ({ navigation }) => {
               <Text style={styles.emailIcon}>✉️</Text>
               <View style={styles.emailTextContainer}>
                 <Text style={styles.emailLabel}>Send Feedback</Text>
-                <Text style={styles.emailAddress}>aoife.deltasolutions@gmail.com</Text>
+                <Text style={styles.emailAddress}>
+                  aoife.deltasolutions@gmail.com
+                </Text>
               </View>
             </TouchableOpacity>
           </View>
-
         </ScrollView>
       </View>
     </>
   );
 };
 
-const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) => StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: currentTheme.colors.background,
-  },
-  header: {
-    backgroundColor: currentTheme.colors.primary,
-    paddingTop: 60,
-    paddingBottom: currentTheme.spacing['3xl'],
-    paddingHorizontal: currentTheme.spacing.xl,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    ...currentTheme.shadows.lg,
-  },
-  title: {
-    fontSize: currentTheme.typography.fontSizes['4xl'],
-    fontWeight: currentTheme.typography.fontWeights.bold,
-    color: currentTheme.colors.background,
-    textAlign: 'center',
-  },
-  scrollContainer: {
-    flex: 1,
-  },
-  scrollContent: {
-    paddingHorizontal: currentTheme.spacing.xl,
-    paddingVertical: currentTheme.spacing.xl,
-    paddingBottom: currentTheme.spacing['2xl'],
-  },
-  logoContainer: {
-    alignItems: 'center',
-    marginBottom: currentTheme.spacing['2xl'],
-  },
-  logo: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    borderWidth: 3,
-    borderColor: currentTheme.colors.primary,
-  },
-  appInfo: {
-    alignItems: 'center',
-    marginBottom: currentTheme.spacing['3xl'],
-  },
-  appName: {
-    fontSize: currentTheme.typography.fontSizes['3xl'],
-    fontWeight: currentTheme.typography.fontWeights.bold,
-    color: currentTheme.colors.text,
-    marginBottom: currentTheme.spacing.sm,
-  },
-  version: {
-    fontSize: currentTheme.typography.fontSizes.lg,
-    color: currentTheme.colors.textSecondary,
-    marginBottom: currentTheme.spacing.lg,
-  },
-  description: {
-    fontSize: currentTheme.typography.fontSizes.base,
-    color: currentTheme.colors.textSecondary,
-    textAlign: 'center',
-    lineHeight: 24,
-  },
-  contactSection: {
-    marginBottom: currentTheme.spacing['3xl'],
-  },
-  sectionTitle: {
-    fontSize: currentTheme.typography.fontSizes['2xl'],
-    fontWeight: currentTheme.typography.fontWeights.bold,
-    color: currentTheme.colors.text,
-    marginBottom: currentTheme.spacing.lg,
-  },
-  contactText: {
-    fontSize: currentTheme.typography.fontSizes.base,
-    color: currentTheme.colors.textSecondary,
-    lineHeight: 22,
-    marginBottom: currentTheme.spacing.lg,
-  },
-  emailButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: currentTheme.colors.primary,
-    borderRadius: currentTheme.spacing.lg,
-    padding: currentTheme.spacing.lg,
-    ...currentTheme.shadows.md,
-  },
-  emailIcon: {
-    fontSize: currentTheme.typography.fontSizes['2xl'],
-    marginRight: currentTheme.spacing.lg,
-  },
-  emailTextContainer: {
-    flex: 1,
-  },
-  emailLabel: {
-    fontSize: currentTheme.typography.fontSizes.lg,
-    fontWeight: currentTheme.typography.fontWeights.semibold,
-    color: currentTheme.colors.background,
-    marginBottom: currentTheme.spacing.xs,
-  },
-  emailAddress: {
-    fontSize: currentTheme.typography.fontSizes.sm,
-    color: 'rgba(255, 255, 255, 0.9)',
-  },
-  featuresSection: {
-    marginBottom: currentTheme.spacing.xl,
-  },
-  featuresList: {
-    marginTop: currentTheme.spacing.sm,
-  },
-  featureItem: {
-    fontSize: currentTheme.typography.fontSizes.base,
-    color: currentTheme.colors.textSecondary,
-    lineHeight: 26,
-    marginBottom: currentTheme.spacing.xs,
-  },
-});
+const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: currentTheme.colors.background,
+    },
+    header: {
+      backgroundColor: currentTheme.colors.primary,
+      paddingTop: 60,
+      paddingBottom: currentTheme.spacing['3xl'],
+      paddingHorizontal: currentTheme.spacing.xl,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      ...currentTheme.shadows.lg,
+    },
+    title: {
+      fontSize: currentTheme.typography.fontSizes['4xl'],
+      fontWeight: currentTheme.typography.fontWeights.bold,
+      color: currentTheme.colors.background,
+      textAlign: 'center',
+    },
+    scrollContainer: {
+      flex: 1,
+    },
+    scrollContent: {
+      paddingHorizontal: currentTheme.spacing.xl,
+      paddingVertical: currentTheme.spacing.xl,
+      paddingBottom: currentTheme.spacing['2xl'],
+    },
+    logoContainer: {
+      alignItems: 'center',
+      marginBottom: currentTheme.spacing['2xl'],
+    },
+    logo: {
+      width: 120,
+      height: 120,
+      borderRadius: 60,
+      borderWidth: 3,
+      borderColor: currentTheme.colors.primary,
+    },
+    appInfo: {
+      alignItems: 'center',
+      marginBottom: currentTheme.spacing['3xl'],
+    },
+    appName: {
+      fontSize: currentTheme.typography.fontSizes['3xl'],
+      fontWeight: currentTheme.typography.fontWeights.bold,
+      color: currentTheme.colors.text,
+      marginBottom: currentTheme.spacing.sm,
+    },
+    version: {
+      fontSize: currentTheme.typography.fontSizes.lg,
+      color: currentTheme.colors.textSecondary,
+      marginBottom: currentTheme.spacing.lg,
+    },
+    description: {
+      fontSize: currentTheme.typography.fontSizes.base,
+      color: currentTheme.colors.textSecondary,
+      textAlign: 'center',
+      lineHeight: 24,
+    },
+    contactSection: {
+      marginBottom: currentTheme.spacing['3xl'],
+    },
+    sectionTitle: {
+      fontSize: currentTheme.typography.fontSizes['2xl'],
+      fontWeight: currentTheme.typography.fontWeights.bold,
+      color: currentTheme.colors.text,
+      marginBottom: currentTheme.spacing.lg,
+    },
+    contactText: {
+      fontSize: currentTheme.typography.fontSizes.base,
+      color: currentTheme.colors.textSecondary,
+      lineHeight: 22,
+      marginBottom: currentTheme.spacing.lg,
+    },
+    emailButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: currentTheme.colors.primary,
+      borderRadius: currentTheme.spacing.lg,
+      padding: currentTheme.spacing.lg,
+      ...currentTheme.shadows.md,
+    },
+    emailIcon: {
+      fontSize: currentTheme.typography.fontSizes['2xl'],
+      marginRight: currentTheme.spacing.lg,
+    },
+    emailTextContainer: {
+      flex: 1,
+    },
+    emailLabel: {
+      fontSize: currentTheme.typography.fontSizes.lg,
+      fontWeight: currentTheme.typography.fontWeights.semibold,
+      color: currentTheme.colors.background,
+      marginBottom: currentTheme.spacing.xs,
+    },
+    emailAddress: {
+      fontSize: currentTheme.typography.fontSizes.sm,
+      color: 'rgba(255, 255, 255, 0.9)',
+    },
+    featuresSection: {
+      marginBottom: currentTheme.spacing.xl,
+    },
+    featuresList: {
+      marginTop: currentTheme.spacing.sm,
+    },
+    featureItem: {
+      fontSize: currentTheme.typography.fontSizes.base,
+      color: currentTheme.colors.textSecondary,
+      lineHeight: 26,
+      marginBottom: currentTheme.spacing.xs,
+    },
+  });
 
 export default AboutScreen;

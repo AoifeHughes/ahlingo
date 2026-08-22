@@ -695,7 +695,7 @@ npm run android:build
 
 - [Content Pipeline](content-pipeline.md) - How versions flow through pipeline
 - [Database Architecture](../mobile/database.md) - Database version tracking
-- [Content Generation](../generation/getting-started.md) - Setting versions in content
+- [Content Generation Architecture](../generation/architecture.md) - Setting versions in content
 
 ---
 

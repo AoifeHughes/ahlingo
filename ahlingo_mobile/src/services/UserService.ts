@@ -133,7 +133,7 @@ export const getUserSettings = async (
     );
 
     let userId: number;
-    const userRow = getSingleRow(userResults);
+    const userRow = getSingleRow<{ id: number }>(userResults);
     if (!userRow) {
       // Create user if doesn't exist
       await executeSqlSingle(
@@ -146,7 +146,7 @@ export const getUserSettings = async (
         [username],
         TIMEOUTS.QUERY_MEDIUM
       );
-      const newUserRow = getSingleRow(newUserResults);
+      const newUserRow = getSingleRow<{ id: number }>(newUserResults);
       if (!newUserRow) {
         return {};
       }
@@ -288,9 +288,12 @@ export const getUserContext = async (): Promise<{
             [],
             TIMEOUTS.QUERY_MEDIUM
           );
-          language = languageResult && languageResult.rows && languageResult.rows.length > 0
-            ? languageResult.rows.item(0).language
-            : 'English';
+          language =
+            languageResult &&
+            languageResult.rows &&
+            languageResult.rows.length > 0
+              ? languageResult.rows.item(0).language
+              : 'English';
         } catch (error) {
           console.error('Failed to get default language:', error);
           language = 'English';
@@ -304,9 +307,12 @@ export const getUserContext = async (): Promise<{
             [],
             TIMEOUTS.QUERY_MEDIUM
           );
-          difficulty = difficultyResult && difficultyResult.rows && difficultyResult.rows.length > 0
-            ? difficultyResult.rows.item(0).difficulty_level
-            : 'Beginner';
+          difficulty =
+            difficultyResult &&
+            difficultyResult.rows &&
+            difficultyResult.rows.length > 0
+              ? difficultyResult.rows.item(0).difficulty_level
+              : 'Beginner';
         } catch (error) {
           console.error('Failed to get default difficulty:', error);
           difficulty = 'Beginner';
@@ -330,8 +336,16 @@ export const getUserContext = async (): Promise<{
       let difficulty = 'Beginner';
 
       try {
-        const languageResult = await executeSqlSingle(SQL_QUERIES.GET_LANGUAGES, [], TIMEOUTS.QUERY_MEDIUM);
-        if (languageResult && languageResult.rows && languageResult.rows.length > 0) {
+        const languageResult = await executeSqlSingle(
+          SQL_QUERIES.GET_LANGUAGES,
+          [],
+          TIMEOUTS.QUERY_MEDIUM
+        );
+        if (
+          languageResult &&
+          languageResult.rows &&
+          languageResult.rows.length > 0
+        ) {
           language = languageResult.rows.item(0).language;
         }
       } catch (langError) {
@@ -339,8 +353,16 @@ export const getUserContext = async (): Promise<{
       }
 
       try {
-        const difficultyResult = await executeSqlSingle(SQL_QUERIES.GET_DIFFICULTIES, [], TIMEOUTS.QUERY_MEDIUM);
-        if (difficultyResult && difficultyResult.rows && difficultyResult.rows.length > 0) {
+        const difficultyResult = await executeSqlSingle(
+          SQL_QUERIES.GET_DIFFICULTIES,
+          [],
+          TIMEOUTS.QUERY_MEDIUM
+        );
+        if (
+          difficultyResult &&
+          difficultyResult.rows &&
+          difficultyResult.rows.length > 0
+        ) {
           difficulty = difficultyResult.rows.item(0).difficulty_level;
         }
       } catch (diffError) {
@@ -421,11 +443,7 @@ export const resetAppCompletely = async (): Promise<void> => {
     );
 
     // Delete all users
-    await executeSqlSingle(
-      'DELETE FROM users',
-      [],
-      TIMEOUTS.QUERY_MEDIUM
-    );
+    await executeSqlSingle('DELETE FROM users', [], TIMEOUTS.QUERY_MEDIUM);
 
     console.log('✅ App reset completely - all user data deleted');
   } catch (error) {

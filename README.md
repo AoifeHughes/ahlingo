@@ -37,24 +37,21 @@ AHLingo includes a sophisticated AI-powered content generation system that creat
 
 ### Setting up the Database
 
-You can setup the database by running the following command:
+You can generate the exercise database by running the following command from the repo root:
 
 ```bash
-python content/create_exercise_database.py
+python content/generate_content.py
 ```
 
 **Requirements:**
 - An OpenAI-compatible server running locally (default: `http://localhost:11434/v1`)
-- Ollama or similar local LLM server with a model named "llama"
+- Ollama or similar local LLM server
 
 ### Content Generation Configuration
 
-The generation system is configured through files in the `content/generation_data/` directory:
-- `languages.txt` - Target languages to generate content for
-- `levels.txt` - Difficulty levels (Beginner, Intermediate, Advanced)
-- `topics.txt` - Learning topics and themes
+The generation system is configured through `content/generation/config/database_generation.json`, which defines the target languages, difficulty levels, topics, exercise types, and LLM settings.
 
-For detailed information about the content generation architecture, see [Content Generation Documentation](content/content_creation/CONTENT_GENERATION.md).
+For detailed information about the content generation architecture, see [Content Generation Documentation](content/generation/CONTENT_GENERATION.md) and [AGENTS.md](AGENTS.md).
 
 ## Mobile App Development
 
@@ -66,7 +63,7 @@ To work on the content generation system:
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/ahughes/ahlingo.git
+git clone https://github.com/AoifeHughes/ahlingo.git
 cd ahlingo
 ```
 
@@ -77,8 +74,7 @@ pip install -r requirements.txt
 
 3. Run content generation:
 ```bash
-cd content
-python create_exercise_database.py
+python content/generate_content.py
 ```
 
 ## Contributing

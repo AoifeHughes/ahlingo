@@ -75,3 +75,7 @@ site/
 
 # Generated images
 content/images/
+
+# Local AI-assistant tool configs
+.opencode/
+.claude/

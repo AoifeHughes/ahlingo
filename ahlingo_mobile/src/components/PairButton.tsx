@@ -77,59 +77,60 @@ const PairButton: React.FC<PairButtonProps> = ({
   );
 };
 
-const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) => StyleSheet.create({
-  buttonContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: currentTheme.spacing.xs,
-  },
-  button: {
-    flex: 1,
-    minHeight: 60,
-    borderRadius: currentTheme.borderRadius.base,
-    paddingHorizontal: currentTheme.spacing.lg,
-    paddingVertical: currentTheme.spacing.md,
-    justifyContent: 'center',
-    alignItems: 'center',
-    ...currentTheme.shadows.base,
-  },
-  speakButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    marginLeft: currentTheme.spacing.sm,
-    backgroundColor: currentTheme.colors.secondary,
-    justifyContent: 'center',
-    alignItems: 'center',
-    ...currentTheme.shadows.base,
-  },
-  speakButtonText: {
-    fontSize: 16,
-  },
-  normal: {
-    backgroundColor: currentTheme.colors.primary,
-  },
-  selected: {
-    backgroundColor: currentTheme.colors.secondary,
-  },
-  matched: {
-    backgroundColor: currentTheme.colors.success,
-  },
-  text: {
-    fontSize: currentTheme.typography.fontSizes.lg,
-    fontWeight: currentTheme.typography.fontWeights.medium,
-    textAlign: 'center',
-    flexWrap: 'wrap',
-  },
-  normalText: {
-    color: currentTheme.colors.background,
-  },
-  selectedText: {
-    color: currentTheme.colors.text,
-  },
-  matchedText: {
-    color: currentTheme.colors.background,
-  },
-});
+const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) =>
+  StyleSheet.create({
+    buttonContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginVertical: currentTheme.spacing.xs,
+    },
+    button: {
+      flex: 1,
+      minHeight: 60,
+      borderRadius: currentTheme.borderRadius.base,
+      paddingHorizontal: currentTheme.spacing.lg,
+      paddingVertical: currentTheme.spacing.md,
+      justifyContent: 'center',
+      alignItems: 'center',
+      ...currentTheme.shadows.base,
+    },
+    speakButton: {
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      marginLeft: currentTheme.spacing.sm,
+      backgroundColor: currentTheme.colors.secondary,
+      justifyContent: 'center',
+      alignItems: 'center',
+      ...currentTheme.shadows.base,
+    },
+    speakButtonText: {
+      fontSize: 16,
+    },
+    normal: {
+      backgroundColor: currentTheme.colors.primary,
+    },
+    selected: {
+      backgroundColor: currentTheme.colors.secondary,
+    },
+    matched: {
+      backgroundColor: currentTheme.colors.success,
+    },
+    text: {
+      fontSize: currentTheme.typography.fontSizes.lg,
+      fontWeight: currentTheme.typography.fontWeights.medium,
+      textAlign: 'center',
+      flexWrap: 'wrap',
+    },
+    normalText: {
+      color: currentTheme.colors.background,
+    },
+    selectedText: {
+      color: currentTheme.colors.text,
+    },
+    matchedText: {
+      color: currentTheme.colors.background,
+    },
+  });
 
 export default PairButton;

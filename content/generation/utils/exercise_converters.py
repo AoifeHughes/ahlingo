@@ -22,7 +22,12 @@ class ExerciseConverter:
         """Generate validation prompt for the LLM."""
         raise NotImplementedError
 
-    def is_too_similar(self, new_exercise: Dict[str, Any], existing_exercises: List[Dict[str, Any]], threshold: float = 0.6) -> Tuple[bool, str]:
+    def is_too_similar(
+        self,
+        new_exercise: Dict[str, Any],
+        existing_exercises: List[Dict[str, Any]],
+        threshold: float = 0.6,
+    ) -> Tuple[bool, str]:
         """
         Check if new exercise is too similar to existing exercises.
 
@@ -68,12 +73,21 @@ class ExerciseConverter:
 class ConversationConverter(ExerciseConverter):
     """Converter for conversation exercises."""
 
-    def is_too_similar(self, new_exercise: Dict[str, Any], existing_exercises: List[Dict[str, Any]], threshold: float = 0.6) -> Tuple[bool, str]:
+    def is_too_similar(
+        self,
+        new_exercise: Dict[str, Any],
+        existing_exercises: List[Dict[str, Any]],
+        threshold: float = 0.6,
+    ) -> Tuple[bool, str]:
         """Check if conversation exercise is too similar to existing ones."""
-        new_summary = new_exercise.get("conversation_summary", new_exercise.get("summary", ""))
+        new_summary = new_exercise.get(
+            "conversation_summary", new_exercise.get("summary", "")
+        )
 
         for existing in existing_exercises:
-            existing_summary = existing.get("conversation_summary", existing.get("summary", ""))
+            existing_summary = existing.get(
+                "conversation_summary", existing.get("summary", "")
+            )
 
             # Check for exact match
             if new_summary.lower() == existing_summary.lower():
@@ -82,16 +96,23 @@ class ConversationConverter(ExerciseConverter):
             # Check word overlap
             overlap = self._calculate_word_overlap(new_summary, existing_summary)
             if overlap >= threshold:
-                return True, f"Too similar to existing conversation (overlap: {overlap:.2%})"
+                return (
+                    True,
+                    f"Too similar to existing conversation (overlap: {overlap:.2%})",
+                )
 
         return False, ""
 
     def convert_to_text(self, exercise_data: Dict[str, Any]) -> str:
         """Convert conversation exercise to readable dialogue format."""
         # Handle both "conversation" and "conversations" field names
-        conversations = exercise_data.get("conversation", exercise_data.get("conversations", []))
+        conversations = exercise_data.get(
+            "conversation", exercise_data.get("conversations", [])
+        )
         # Handle both "summary" and "conversation_summary" field names
-        summary = exercise_data.get("conversation_summary", exercise_data.get("summary", ""))
+        summary = exercise_data.get(
+            "conversation_summary", exercise_data.get("summary", "")
+        )
 
         # Parse conversations if they're stored as JSON string
         if isinstance(conversations, str):
@@ -143,7 +164,12 @@ CRITICAL: Use only true/false (not True/False or null). Return only the JSON obj
 class PairConverter(ExerciseConverter):
     """Converter for word pair exercises."""
 
-    def is_too_similar(self, new_exercise: Dict[str, Any], existing_exercises: List[Dict[str, Any]], threshold: float = 0.6) -> Tuple[bool, str]:
+    def is_too_similar(
+        self,
+        new_exercise: Dict[str, Any],
+        existing_exercises: List[Dict[str, Any]],
+        threshold: float = 0.6,
+    ) -> Tuple[bool, str]:
         """Check if pair exercise is too similar to existing ones."""
         import json
 
@@ -182,7 +208,9 @@ class PairConverter(ExerciseConverter):
                                 existing_words.add(val.lower())
 
                 if new_words and existing_words:
-                    overlap = len(new_words & existing_words) / len(new_words | existing_words)
+                    overlap = len(new_words & existing_words) / len(
+                        new_words | existing_words
+                    )
                     if overlap >= threshold:
                         return True, f"Too similar vocabulary (overlap: {overlap:.2%})"
 
@@ -239,33 +267,55 @@ CRITICAL: Use only true/false (not True/False or null). Return only the JSON obj
 class TranslationConverter(ExerciseConverter):
     """Converter for translation exercises."""
 
-    def is_too_similar(self, new_exercise: Dict[str, Any], existing_exercises: List[Dict[str, Any]], threshold: float = 0.6) -> Tuple[bool, str]:
+    def is_too_similar(
+        self,
+        new_exercise: Dict[str, Any],
+        existing_exercises: List[Dict[str, Any]],
+        threshold: float = 0.6,
+    ) -> Tuple[bool, str]:
         """Check if translation exercise is too similar to existing ones."""
         # Handle both database format (language_1_content) and Pydantic format (English/language)
-        new_lang1 = new_exercise.get("language_1_content", new_exercise.get("English", ""))
-        new_lang2 = new_exercise.get("language_2_content", new_exercise.get(self.language, ""))
+        new_lang1 = new_exercise.get(
+            "language_1_content", new_exercise.get("English", "")
+        )
+        new_lang2 = new_exercise.get(
+            "language_2_content", new_exercise.get(self.language, "")
+        )
 
         for existing in existing_exercises:
-            existing_lang1 = existing.get("language_1_content", existing.get("English", ""))
-            existing_lang2 = existing.get("language_2_content", existing.get(self.language, ""))
+            existing_lang1 = existing.get(
+                "language_1_content", existing.get("English", "")
+            )
+            existing_lang2 = existing.get(
+                "language_2_content", existing.get(self.language, "")
+            )
 
             # Check for exact match on either language
-            if (new_lang1.lower() == existing_lang1.lower() or
-                new_lang2.lower() == existing_lang2.lower()):
+            if (
+                new_lang1.lower() == existing_lang1.lower()
+                or new_lang2.lower() == existing_lang2.lower()
+            ):
                 return True, f"Exact duplicate content"
 
             # Check word overlap on primary language content
             overlap = self._calculate_word_overlap(new_lang1, existing_lang1)
             if overlap >= threshold:
-                return True, f"Too similar to existing translation (overlap: {overlap:.2%})"
+                return (
+                    True,
+                    f"Too similar to existing translation (overlap: {overlap:.2%})",
+                )
 
         return False, ""
 
     def convert_to_text(self, exercise_data: Dict[str, Any]) -> str:
         """Convert translation exercise to readable format."""
         # Handle both database format (language_1_content) and Pydantic format (English/language)
-        language_1_content = exercise_data.get("language_1_content", exercise_data.get("English", ""))
-        language_2_content = exercise_data.get("language_2_content", exercise_data.get(self.language, ""))
+        language_1_content = exercise_data.get(
+            "language_1_content", exercise_data.get("English", "")
+        )
+        language_2_content = exercise_data.get(
+            "language_2_content", exercise_data.get(self.language, "")
+        )
         language_1 = "English"
         language_2 = self.language
 
@@ -309,11 +359,19 @@ class FillInBlankConverter(ExerciseConverter):
         Returns:
             Tuple of (is_valid, error_message)
         """
-        if '_' in translation:
-            return False, "Translation contains blanks or underscores - must be a complete sentence"
+        if "_" in translation:
+            return (
+                False,
+                "Translation contains blanks or underscores - must be a complete sentence",
+            )
         return True, ""
 
-    def is_too_similar(self, new_exercise: Dict[str, Any], existing_exercises: List[Dict[str, Any]], threshold: float = 0.6) -> Tuple[bool, str]:
+    def is_too_similar(
+        self,
+        new_exercise: Dict[str, Any],
+        existing_exercises: List[Dict[str, Any]],
+        threshold: float = 0.6,
+    ) -> Tuple[bool, str]:
         """Check if fill-in-blank exercise is too similar to existing ones."""
         new_sentence = new_exercise.get("sentence", "")
 
@@ -327,7 +385,10 @@ class FillInBlankConverter(ExerciseConverter):
             # Check word overlap
             overlap = self._calculate_word_overlap(new_sentence, existing_sentence)
             if overlap >= threshold:
-                return True, f"Too similar to existing sentence (overlap: {overlap:.2%})"
+                return (
+                    True,
+                    f"Too similar to existing sentence (overlap: {overlap:.2%})",
+                )
 
         return False, ""
 

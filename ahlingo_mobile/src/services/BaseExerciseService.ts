@@ -6,7 +6,10 @@ import {
 import { SQL_QUERIES, TIMEOUTS } from '../utils/constants';
 import { Topic, ExerciseInfo, RecentExercise } from '../types';
 import { ExerciseType } from '../utils/navigationUtils';
-import { SmartRandomizer, DEFAULT_RANDOMIZATION_CONFIG } from '../utils/smartRandomization';
+import {
+  SmartRandomizer,
+  DEFAULT_RANDOMIZATION_CONFIG,
+} from '../utils/smartRandomization';
 
 /**
  * Base exercise service - provides common functionality for all exercise types
@@ -73,12 +76,17 @@ export const getSmartRandomExerciseForTopic = async (
   try {
     // Get all available exercises for this topic
     const exerciseTableJoins = {
-      'pairs': 'JOIN content.pair_exercises pe ON ei.id = pe.exercise_id',
-      'conversation': 'JOIN content.conversation_exercises ce ON ei.id = ce.exercise_id',
-      'translation': 'JOIN content.translation_exercises te ON ei.id = te.exercise_id',
-      'fill_in_blank': 'JOIN content.fill_in_blank_exercises fibe ON ei.id = fibe.exercise_id'
+      pairs: 'JOIN content.pair_exercises pe ON ei.id = pe.exercise_id',
+      conversation:
+        'JOIN content.conversation_exercises ce ON ei.id = ce.exercise_id',
+      translation:
+        'JOIN content.translation_exercises te ON ei.id = te.exercise_id',
+      fill_in_blank:
+        'JOIN content.fill_in_blank_exercises fibe ON ei.id = fibe.exercise_id',
     };
-    const dataJoin = exerciseTableJoins[exerciseType as keyof typeof exerciseTableJoins] || 'JOIN content.pair_exercises pe ON ei.id = pe.exercise_id';
+    const dataJoin =
+      exerciseTableJoins[exerciseType as keyof typeof exerciseTableJoins] ||
+      'JOIN content.pair_exercises pe ON ei.id = pe.exercise_id';
 
     const query = `
       SELECT DISTINCT ei.* FROM content.exercises_info ei
@@ -113,8 +121,8 @@ export const getSmartRandomExerciseForTopic = async (
           difficulty_id: row.difficulty_id,
           language_id: row.language_id,
           exercise_type: row.exercise_type,
-          lesson_id: row.lesson_id
-        }
+          lesson_id: row.lesson_id,
+        },
       });
     }
 
@@ -122,7 +130,8 @@ export const getSmartRandomExerciseForTopic = async (
     const smartRandomizer = new SmartRandomizer(DEFAULT_RANDOMIZATION_CONFIG);
     smartRandomizer.loadRecentExercises(recentExercises);
 
-    const selectedExercise = smartRandomizer.selectSingleExercise(availableExercises);
+    const selectedExercise =
+      smartRandomizer.selectSingleExercise(availableExercises);
 
     return selectedExercise ? selectedExercise.exerciseInfo : null;
   } catch (error) {

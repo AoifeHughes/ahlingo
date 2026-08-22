@@ -43,7 +43,12 @@ def _image_descriptor_schema() -> Dict:
     """JSON schema for image descriptors."""
     return {
         "type": "object",
-        "required": ["correct_descriptor", "incorrect_1", "incorrect_2", "english_meaning"],
+        "required": [
+            "correct_descriptor",
+            "incorrect_1",
+            "incorrect_2",
+            "english_meaning",
+        ],
         "properties": {
             "correct_descriptor": {"type": "string"},
             "incorrect_1": {"type": "string"},
@@ -80,9 +85,7 @@ def _difficulty_instructions(difficulty: str) -> str:
     return instructions.get(difficulty.lower(), instructions["intermediate"])
 
 
-def generate_image_prompts(
-    model, topic: str, count: int = 10
-) -> Optional[List[Dict]]:
+def generate_image_prompts(model, topic: str, count: int = 10) -> Optional[List[Dict]]:
     """Generate image prompts for a topic using the LLM.
 
     Args:
@@ -125,7 +128,7 @@ def generate_image_prompts(
         logging.warning(f"Failed to generate image prompts for topic '{topic}': {e}")
         debug_show_error(
             prepared_prompt,
-            str(result) if 'result' in locals() else "",
+            str(result) if "result" in locals() else "",
             str(e),
             f"Image Prompt Generation ({topic})",
         )
@@ -207,7 +210,7 @@ The incorrect descriptors should be about different actions, objects, or setting
         )
         debug_show_error(
             prepared_prompt,
-            str(result) if 'result' in locals() else "",
+            str(result) if "result" in locals() else "",
             str(e),
             f"Descriptor Generation ({language}-{difficulty})",
         )

@@ -38,7 +38,10 @@ describe('StatsScreen', () => {
 
   it('renders loading state then loads stats', async () => {
     getMostRecentUser.mockResolvedValue('testuser');
-    getUserSettings.mockResolvedValue({ language: 'French', difficulty: 'Beginner' });
+    getUserSettings.mockResolvedValue({
+      language: 'French',
+      difficulty: 'Beginner',
+    });
     getUserId.mockResolvedValue(1);
     getUserStatsAndSummary.mockResolvedValue({
       stats: [
@@ -60,7 +63,9 @@ describe('StatsScreen', () => {
       },
     });
 
-    const { getByText } = renderWithProviders(<StatsScreen navigation={{} as any} />);
+    const { getByText } = renderWithProviders(
+      <StatsScreen navigation={{} as any} />
+    );
 
     await waitFor(() => expect(getByText('Overall Progress')).toBeTruthy());
     expect(getByText('Showing French • Beginner Level')).toBeTruthy();

@@ -90,9 +90,7 @@ async function setUserSchemaVersion(
 /**
  * Apply all pending migrations to the user database
  */
-export async function migrateUserSchema(
-  db: SQLiteDatabase
-): Promise<void> {
+export async function migrateUserSchema(db: SQLiteDatabase): Promise<void> {
   const currentVersion = await getUserSchemaVersion(db);
 
   console.log(`📊 Current user schema version: ${currentVersion}`);
@@ -106,13 +104,17 @@ export async function migrateUserSchema(
     return;
   }
 
-  console.log(`🔄 Applying ${pendingMigrations.length} user schema migrations...`);
+  console.log(
+    `🔄 Applying ${pendingMigrations.length} user schema migrations...`
+  );
 
   for (const migration of pendingMigrations) {
-    console.log(`  ⬆️  Applying migration ${migration.version}: ${migration.description}`);
+    console.log(
+      `  ⬆️  Applying migration ${migration.version}: ${migration.description}`
+    );
 
     try {
-      await db.transaction(async (tx) => {
+      await db.transaction(async tx => {
         await migration.up(tx as any);
         await setUserSchemaVersion(tx as any, migration.version);
       });
@@ -176,12 +178,10 @@ export async function needsUserSchemaInitialization(
  * Initialize user database schema (for new installations)
  * This creates all user tables from scratch
  */
-export async function initializeUserSchema(
-  db: SQLiteDatabase
-): Promise<void> {
+export async function initializeUserSchema(db: SQLiteDatabase): Promise<void> {
   console.log('🔧 Initializing user database schema...');
 
-  await db.transaction(async (tx) => {
+  await db.transaction(async tx => {
     // Create schema version table
     await tx.executeSql(`
       CREATE TABLE IF NOT EXISTS schema_version (

@@ -1,6 +1,9 @@
 import React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react-native';
-import { renderWithProviders, createMockNavigationProp } from '../../test-utils';
+import {
+  renderWithProviders,
+  createMockNavigationProp,
+} from '../../test-utils';
 import MainMenuScreen from '../MainMenuScreen';
 import { mockTheme } from '../../test-utils/mocks';
 

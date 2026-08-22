@@ -5,15 +5,9 @@
  * to prevent consecutive lessons and ensure balanced exercise distribution.
  */
 
-import { ExerciseInfo } from '../types';
+import { ExerciseInfo, RecentExercise } from '../types';
 
-export interface RecentExercise {
-  exerciseId: number;
-  topicId: number;
-  exerciseType: string;
-  lessonId?: number;
-  timestamp: number;
-}
+export type { RecentExercise };
 
 export interface SmartRandomizationConfig {
   // Number of recent exercises to completely exclude
@@ -68,7 +62,9 @@ export class SmartRandomizer {
    * Load recent exercises from external source (e.g., Redux state)
    */
   loadRecentExercises(exercises: RecentExercise[]): void {
-    this.recentExercises = exercises.filter(ex => this.isRecentExerciseValid(ex));
+    this.recentExercises = exercises.filter(ex =>
+      this.isRecentExerciseValid(ex)
+    );
     this.cleanupOldExercises();
   }
 
@@ -123,7 +119,10 @@ export class SmartRandomizer {
    * Check if an exercise should be excluded based on recent usage
    */
   private shouldExcludeExercise(exercise: ExerciseInfo): boolean {
-    const recentCount = Math.min(this.config.immediateExclusionCount, this.recentExercises.length);
+    const recentCount = Math.min(
+      this.config.immediateExclusionCount,
+      this.recentExercises.length
+    );
 
     for (let i = 0; i < recentCount; i++) {
       const recent = this.recentExercises[i];
@@ -132,9 +131,12 @@ export class SmartRandomizer {
       if (recent.exerciseId === exercise.id) return true;
 
       // Exclude if same topic and lesson (if lesson exists)
-      if (recent.topicId === exercise.topic_id &&
-          recent.lessonId === exercise.lesson_id &&
-          exercise.lesson_id !== null) return true;
+      if (
+        recent.topicId === exercise.topic_id &&
+        recent.lessonId === exercise.lesson_id &&
+        exercise.lesson_id !== null
+      )
+        return true;
     }
 
     return false;
@@ -148,12 +150,19 @@ export class SmartRandomizer {
     let weight = 1.0;
 
     // Check if exercise is in reduced probability range
-    const reducedProbabilityEnd = this.config.immediateExclusionCount + this.config.reducedProbabilityCount;
-    const relevantRecent = this.recentExercises.slice(this.config.immediateExclusionCount, reducedProbabilityEnd);
+    const reducedProbabilityEnd =
+      this.config.immediateExclusionCount + this.config.reducedProbabilityCount;
+    const relevantRecent = this.recentExercises.slice(
+      this.config.immediateExclusionCount,
+      reducedProbabilityEnd
+    );
 
     for (const recent of relevantRecent) {
-      if (recent.exerciseId === exercise.id ||
-          (recent.topicId === exercise.topic_id && recent.lessonId === exercise.lesson_id)) {
+      if (
+        recent.exerciseId === exercise.id ||
+        (recent.topicId === exercise.topic_id &&
+          recent.lessonId === exercise.lesson_id)
+      ) {
         weight *= this.config.reducedProbabilityMultiplier;
         break;
       }
@@ -172,7 +181,7 @@ export class SmartRandomizer {
       .filter(ex => !this.shouldExcludeExercise(ex.exerciseInfo))
       .map(exercise => ({
         exercise,
-        weight: this.calculateExerciseWeight(exercise.exerciseInfo)
+        weight: this.calculateExerciseWeight(exercise.exerciseInfo),
       }));
   }
 
@@ -213,10 +222,12 @@ export class SmartRandomizer {
     for (let i = pool.length - 1; i >= 0; i--) {
       const poolExercise = pool[i].exercise.exerciseInfo;
 
-      if (poolExercise.id === selectedInfo.id ||
-          (poolExercise.topic_id === selectedInfo.topic_id &&
-           poolExercise.lesson_id === selectedInfo.lesson_id &&
-           selectedInfo.lesson_id !== null)) {
+      if (
+        poolExercise.id === selectedInfo.id ||
+        (poolExercise.topic_id === selectedInfo.topic_id &&
+          poolExercise.lesson_id === selectedInfo.lesson_id &&
+          selectedInfo.lesson_id !== null)
+      ) {
         pool.splice(i, 1);
       }
     }
@@ -247,7 +258,9 @@ export class SmartRandomizer {
    * Remove old exercises from recent list
    */
   private cleanupOldExercises(): void {
-    this.recentExercises = this.recentExercises.filter(ex => this.isRecentExerciseValid(ex));
+    this.recentExercises = this.recentExercises.filter(ex =>
+      this.isRecentExerciseValid(ex)
+    );
   }
 }
 

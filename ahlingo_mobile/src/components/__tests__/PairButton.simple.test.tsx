@@ -1,6 +1,9 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react-native';
-import { renderSimple, createMockFunction } from '../../test-utils/simple-render';
+import {
+  renderSimple,
+  createMockFunction,
+} from '../../test-utils/simple-render';
 
 // Mock the theme hook before importing component
 jest.mock('../../contexts/ThemeContext', () => ({

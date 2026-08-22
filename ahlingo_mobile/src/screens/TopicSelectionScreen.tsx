@@ -67,16 +67,22 @@ const TopicSelectionScreen: React.FC<Props> = ({ navigation, route }) => {
         return;
       }
 
-      const language = userContext.settings.language || settings.language || 'French';
-      const difficulty = userContext.settings.difficulty || settings.difficulty || 'Beginner';
+      const language =
+        userContext.settings.language || settings.language || 'French';
+      const difficulty =
+        userContext.settings.difficulty || settings.difficulty || 'Beginner';
 
       setUserLanguage(language);
       setUserDifficulty(difficulty);
 
       // Load topics with progress in a single optimized query
       let topicsWithProgress: TopicWithProgress[] = [];
-      if (exerciseType === 'pairs' || exerciseType === 'conversation' ||
-          exerciseType === 'translation' || exerciseType === 'fill_in_blank') {
+      if (
+        exerciseType === 'pairs' ||
+        exerciseType === 'conversation' ||
+        exerciseType === 'translation' ||
+        exerciseType === 'fill_in_blank'
+      ) {
         topicsWithProgress = await getTopicsWithProgressForExerciseType(
           userContext.userId,
           exerciseType,
@@ -135,7 +141,13 @@ const TopicSelectionScreen: React.FC<Props> = ({ navigation, route }) => {
     setRefreshing(false);
   };
 
-  const renderTopicCard = ({ item, index }: { item: TopicWithProgress; index: number }) => (
+  const renderTopicCard = ({
+    item,
+    index,
+  }: {
+    item: TopicWithProgress;
+    index: number;
+  }) => (
     <View style={styles.cardWrapper}>
       <TopicCard topic={item} onPress={handleTopicPress} />
     </View>
@@ -168,7 +180,9 @@ const TopicSelectionScreen: React.FC<Props> = ({ navigation, route }) => {
   return (
     <View style={styles.container} testID="topic-selection-screen">
       <View style={styles.header} testID="topic-selection-header">
-        <Text style={styles.headerTitle} testID="exercise-type-title">{getExerciseTypeTitle()}</Text>
+        <Text style={styles.headerTitle} testID="exercise-type-title">
+          {getExerciseTypeTitle()}
+        </Text>
         <Text style={styles.headerSubtitle} testID="user-settings-display">
           {userLanguage} • {userDifficulty}
         </Text>
@@ -197,77 +211,78 @@ const TopicSelectionScreen: React.FC<Props> = ({ navigation, route }) => {
   );
 };
 
-const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) => StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: currentTheme.colors.background,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: currentTheme.colors.background,
-  },
-  loadingText: {
-    marginTop: currentTheme.spacing.lg,
-    fontSize: currentTheme.typography.fontSizes.lg,
-    color: currentTheme.colors.textSecondary,
-  },
-  header: {
-    backgroundColor: currentTheme.colors.surface,
-    paddingVertical: currentTheme.spacing.xl,
-    paddingHorizontal: currentTheme.spacing.lg,
-    borderBottomWidth: 1,
-    borderBottomColor: currentTheme.colors.border,
-  },
-  headerTitle: {
-    fontSize: currentTheme.typography.fontSizes['3xl'],
-    fontWeight: currentTheme.typography.fontWeights.bold,
-    color: currentTheme.colors.text,
-    textAlign: 'center',
-  },
-  headerSubtitle: {
-    fontSize: currentTheme.typography.fontSizes.lg,
-    color: currentTheme.colors.textSecondary,
-    textAlign: 'center',
-    marginTop: currentTheme.spacing.xs,
-  },
-  listContainer: {
-    paddingVertical: currentTheme.spacing.base,
-    paddingHorizontal: currentTheme.spacing.base,
-    flexGrow: 1,
-  },
-  columnWrapper: {
-    justifyContent: 'space-between',
-  },
-  cardWrapper: {
-    flex: 0.5,
-  },
-  emptyContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: currentTheme.spacing['4xl'],
-  },
-  emptyTitle: {
-    fontSize: currentTheme.typography.fontSizes['2xl'],
-    fontWeight: currentTheme.typography.fontWeights.bold,
-    color: currentTheme.colors.text,
-    marginBottom: currentTheme.spacing.base,
-    textAlign: 'center',
-  },
-  emptyText: {
-    fontSize: currentTheme.typography.fontSizes.lg,
-    color: currentTheme.colors.textSecondary,
-    textAlign: 'center',
-    marginBottom: currentTheme.spacing.base,
-  },
-  emptyHint: {
-    fontSize: currentTheme.typography.fontSizes.base,
-    color: currentTheme.colors.textLight,
-    textAlign: 'center',
-    fontStyle: 'italic',
-  },
-});
+const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: currentTheme.colors.background,
+    },
+    loadingContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: currentTheme.colors.background,
+    },
+    loadingText: {
+      marginTop: currentTheme.spacing.lg,
+      fontSize: currentTheme.typography.fontSizes.lg,
+      color: currentTheme.colors.textSecondary,
+    },
+    header: {
+      backgroundColor: currentTheme.colors.surface,
+      paddingVertical: currentTheme.spacing.xl,
+      paddingHorizontal: currentTheme.spacing.lg,
+      borderBottomWidth: 1,
+      borderBottomColor: currentTheme.colors.border,
+    },
+    headerTitle: {
+      fontSize: currentTheme.typography.fontSizes['3xl'],
+      fontWeight: currentTheme.typography.fontWeights.bold,
+      color: currentTheme.colors.text,
+      textAlign: 'center',
+    },
+    headerSubtitle: {
+      fontSize: currentTheme.typography.fontSizes.lg,
+      color: currentTheme.colors.textSecondary,
+      textAlign: 'center',
+      marginTop: currentTheme.spacing.xs,
+    },
+    listContainer: {
+      paddingVertical: currentTheme.spacing.base,
+      paddingHorizontal: currentTheme.spacing.base,
+      flexGrow: 1,
+    },
+    columnWrapper: {
+      justifyContent: 'space-between',
+    },
+    cardWrapper: {
+      flex: 0.5,
+    },
+    emptyContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingHorizontal: currentTheme.spacing['4xl'],
+    },
+    emptyTitle: {
+      fontSize: currentTheme.typography.fontSizes['2xl'],
+      fontWeight: currentTheme.typography.fontWeights.bold,
+      color: currentTheme.colors.text,
+      marginBottom: currentTheme.spacing.base,
+      textAlign: 'center',
+    },
+    emptyText: {
+      fontSize: currentTheme.typography.fontSizes.lg,
+      color: currentTheme.colors.textSecondary,
+      textAlign: 'center',
+      marginBottom: currentTheme.spacing.base,
+    },
+    emptyHint: {
+      fontSize: currentTheme.typography.fontSizes.base,
+      color: currentTheme.colors.textLight,
+      textAlign: 'center',
+      fontStyle: 'italic',
+    },
+  });
 
 export default TopicSelectionScreen;

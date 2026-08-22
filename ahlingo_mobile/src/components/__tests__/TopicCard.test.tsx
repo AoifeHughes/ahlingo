@@ -97,7 +97,9 @@ describe('TopicCard', () => {
       <TopicCard topic={longNameTopic} onPress={mockOnPress} />
     );
 
-    expect(getByText('Very Long Topic Name That Should Be Handled Properly')).toBeTruthy();
+    expect(
+      getByText('Very Long Topic Name That Should Be Handled Properly')
+    ).toBeTruthy();
   });
 
   it('applies correct accessibility props', () => {

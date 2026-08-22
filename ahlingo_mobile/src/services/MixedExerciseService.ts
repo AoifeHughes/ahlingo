@@ -6,9 +6,24 @@
  * Now includes smart randomization with anti-repetition logic.
  */
 
-import { executeQuery, executeSqlSingle, rowsToArray, getSingleRow } from '../utils/databaseUtils';
-import { TopicWithProgress, ShuffleExercise, ExerciseInfo, Topic, StudyTopicInfo, RecentExercise } from '../types';
-import { SmartRandomizer, DEFAULT_RANDOMIZATION_CONFIG } from '../utils/smartRandomization';
+import {
+  executeQuery,
+  executeSqlSingle,
+  rowsToArray,
+  getSingleRow,
+} from '../utils/databaseUtils';
+import {
+  TopicWithProgress,
+  ShuffleExercise,
+  ExerciseInfo,
+  Topic,
+  StudyTopicInfo,
+  RecentExercise,
+} from '../types';
+import {
+  SmartRandomizer,
+  DEFAULT_RANDOMIZATION_CONFIG,
+} from '../utils/smartRandomization';
 
 export interface TopicProgress {
   totalExercises: number;
@@ -25,10 +40,12 @@ export const getTopicsWithProgressForExerciseType = async (
   language: string,
   difficulty: string
 ): Promise<TopicWithProgress[]> => {
-  return executeQuery(async (db) => {
+  return executeQuery(async db => {
     // Single optimized query that gets topics and calculates progress
     // For pairs exercises, only count exercises that have actual pair data
-    const query = exerciseType === 'pairs' ? `
+    const query =
+      exerciseType === 'pairs'
+        ? `
       SELECT
         t.id,
         t.topic,
@@ -50,7 +67,8 @@ export const getTopicsWithProgressForExerciseType = async (
       GROUP BY t.id, t.topic
       HAVING COUNT(DISTINCT pe.exercise_id) > 0
       ORDER BY t.topic;
-    ` : `
+    `
+        : `
       SELECT
         t.id,
         t.topic,
@@ -73,7 +91,12 @@ export const getTopicsWithProgressForExerciseType = async (
       ORDER BY t.topic;
     `;
 
-    const result = await db.executeSql(query, [userId, exerciseType, language, difficulty]);
+    const result = await db.executeSql(query, [
+      userId,
+      exerciseType,
+      language,
+      difficulty,
+    ]);
     const topics = rowsToArray<any>(result[0].rows);
 
     return topics.map(topic => ({
@@ -82,8 +105,8 @@ export const getTopicsWithProgressForExerciseType = async (
       progress: {
         totalExercises: topic.total_exercises,
         completedExercises: topic.completed_exercises,
-        percentage: topic.percentage
-      }
+        percentage: topic.percentage,
+      },
     }));
   });
 };
@@ -98,11 +121,14 @@ export const getRandomMixedExercisesForTopic = async (
   difficulty: string,
   recentExercises: RecentExercise[] = []
 ): Promise<ShuffleExercise[]> => {
-  return executeQuery(async (db) => {
+  return executeQuery(async db => {
     // Get topic name first
     const topicQuery = 'SELECT topic FROM content.topics WHERE id = ?';
     const topicResult = await db.executeSql(topicQuery, [topicId]);
-    const topicName = topicResult[0].rows.length > 0 ? topicResult[0].rows.item(0).topic : 'Unknown Topic';
+    const topicName =
+      topicResult[0].rows.length > 0
+        ? topicResult[0].rows.item(0).topic
+        : 'Unknown Topic';
 
     // Get all available exercises for this topic that have actual data in their respective tables
     const exercisesQuery = `
@@ -128,9 +154,17 @@ export const getRandomMixedExercisesForTopic = async (
         AND (pe.exercise_id IS NOT NULL OR ce.exercise_id IS NOT NULL OR te.exercise_id IS NOT NULL OR fibe.exercise_id IS NOT NULL)
     `;
 
-    const exercisesResult = await db.executeSql(exercisesQuery, [topicId, language, difficulty]);
+    const exercisesResult = await db.executeSql(exercisesQuery, [
+      topicId,
+      language,
+      difficulty,
+    ]);
 
-    if (!exercisesResult || !exercisesResult[0] || exercisesResult[0].rows.length === 0) {
+    if (
+      !exercisesResult ||
+      !exercisesResult[0] ||
+      exercisesResult[0].rows.length === 0
+    ) {
       return [];
     }
 
@@ -146,10 +180,14 @@ export const getRandomMixedExercisesForTopic = async (
           difficulty_id: exerciseRow.difficulty_id,
           language_id: exerciseRow.language_id,
           exercise_type: exerciseRow.exercise_type,
-          lesson_id: exerciseRow.lesson_id
+          lesson_id: exerciseRow.lesson_id,
         },
-        exerciseType: exerciseRow.verified_exercise_type as 'pairs' | 'conversation' | 'translation' | 'fill_in_blank',
-        topicName: topicName
+        exerciseType: exerciseRow.verified_exercise_type as
+          | 'pairs'
+          | 'conversation'
+          | 'translation'
+          | 'fill_in_blank',
+        topicName: topicName,
       });
     }
 
@@ -158,7 +196,10 @@ export const getRandomMixedExercisesForTopic = async (
     smartRandomizer.loadRecentExercises(recentExercises);
 
     // Return up to 10 exercises using smart selection
-    const selectedExercises = smartRandomizer.selectExercises(allExercises, Math.min(10, allExercises.length));
+    const selectedExercises = smartRandomizer.selectExercises(
+      allExercises,
+      Math.min(10, allExercises.length)
+    );
 
     return selectedExercises;
   });
@@ -173,7 +214,7 @@ export const getRandomMixedExercises = async (
   difficulty: string,
   recentExercises: RecentExercise[] = []
 ): Promise<ShuffleExercise[]> => {
-  return executeQuery(async (db) => {
+  return executeQuery(async db => {
     // Get all available exercises across all topics and types
     let query: string;
     let params: any[];
@@ -228,10 +269,14 @@ export const getRandomMixedExercises = async (
           difficulty_id: exerciseRow.difficulty_id,
           language_id: exerciseRow.language_id,
           exercise_type: exerciseRow.exercise_type,
-          lesson_id: exerciseRow.lesson_id
+          lesson_id: exerciseRow.lesson_id,
         },
-        exerciseType: exerciseRow.exercise_type as 'pairs' | 'conversation' | 'translation' | 'fill_in_blank',
-        topicName: exerciseRow.topic_name
+        exerciseType: exerciseRow.exercise_type as
+          | 'pairs'
+          | 'conversation'
+          | 'translation'
+          | 'fill_in_blank',
+        topicName: exerciseRow.topic_name,
       });
     }
 
@@ -261,7 +306,7 @@ export const getTopicsForStudy = async (
   language: string,
   difficulty: string
 ): Promise<StudyTopicInfo[]> => {
-  return executeQuery(async (db) => {
+  return executeQuery(async db => {
     // Complex query to properly count exercises with data
     // For pairs, only count exercises with actual pair data
     // For other types, count all exercises (they have 1:1 data relationship)
@@ -333,18 +378,27 @@ export const getTopicsForStudy = async (
     `;
 
     const result = await db.executeSql(query, [
-      language, difficulty, // for non-pairs count
-      language, difficulty, // for pairs count
-      userId, language, difficulty, // for main query
-      language, difficulty, // for having clause non-pairs
-      language, difficulty  // for having clause pairs
+      language,
+      difficulty, // for non-pairs count
+      language,
+      difficulty, // for pairs count
+      userId,
+      language,
+      difficulty, // for main query
+      language,
+      difficulty, // for having clause non-pairs
+      language,
+      difficulty, // for having clause pairs
     ]);
     const rows = rowsToArray<any>(result[0].rows);
 
     return rows.map(row => {
       const totalExercises = row.total_exercises;
       const completedExercises = row.completed_exercises;
-      const percentage = totalExercises > 0 ? Math.round((completedExercises * 100) / totalExercises) : 0;
+      const percentage =
+        totalExercises > 0
+          ? Math.round((completedExercises * 100) / totalExercises)
+          : 0;
 
       return {
         id: row.id,
@@ -352,7 +406,14 @@ export const getTopicsForStudy = async (
         totalExercises,
         completedExercises,
         percentage,
-        availableExerciseTypes: row.exercise_types ? row.exercise_types.split(',') as ('pairs' | 'conversation' | 'translation' | 'fill_in_blank')[] : []
+        availableExerciseTypes: row.exercise_types
+          ? (row.exercise_types.split(',') as (
+              | 'pairs'
+              | 'conversation'
+              | 'translation'
+              | 'fill_in_blank'
+            )[])
+          : [],
       };
     });
   });
@@ -367,10 +428,16 @@ export const getTopicProgress = async (
   exerciseType: string,
   language: string,
   difficulty: string
-): Promise<{ totalExercises: number; completedExercises: number; percentage: number }> => {
-  return executeQuery(async (db) => {
+): Promise<{
+  totalExercises: number;
+  completedExercises: number;
+  percentage: number;
+}> => {
+  return executeQuery(async db => {
     // For pairs exercises, only count exercises that have actual pair data
-    const query = exerciseType === 'pairs' ? `
+    const query =
+      exerciseType === 'pairs'
+        ? `
       SELECT
         COUNT(DISTINCT pe.exercise_id) as total_exercises,
         COUNT(DISTINCT CASE WHEN uea.is_correct = 1 THEN uea.exercise_id END) as completed_exercises
@@ -383,7 +450,8 @@ export const getTopicProgress = async (
         AND ei.exercise_type = ?
         AND l.language = ?
         AND d.difficulty_level = ?
-    ` : `
+    `
+        : `
       SELECT
         COUNT(DISTINCT ei.id) as total_exercises,
         COUNT(DISTINCT CASE WHEN uea.is_correct = 1 THEN uea.exercise_id END) as completed_exercises
@@ -397,12 +465,21 @@ export const getTopicProgress = async (
         AND d.difficulty_level = ?
     `;
 
-    const result = await db.executeSql(query, [userId, topicId, exerciseType, language, difficulty]);
+    const result = await db.executeSql(query, [
+      userId,
+      topicId,
+      exerciseType,
+      language,
+      difficulty,
+    ]);
     const row = result[0].rows.item(0);
 
     const totalExercises = row.total_exercises;
     const completedExercises = row.completed_exercises;
-    const percentage = totalExercises > 0 ? Math.round((completedExercises * 100) / totalExercises) : 0;
+    const percentage =
+      totalExercises > 0
+        ? Math.round((completedExercises * 100) / totalExercises)
+        : 0;
 
     return {
       totalExercises,

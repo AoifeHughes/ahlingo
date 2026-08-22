@@ -50,4 +50,19 @@ module.exports = {
       version: 'detect',
     },
   },
+  overrides: [
+    {
+      files: ['e2e/**/*.js'],
+      env: {
+        jest: true,
+      },
+      globals: {
+        device: 'readonly',
+        element: 'readonly',
+        by: 'readonly',
+        waitFor: 'readonly',
+        expect: 'readonly',
+      },
+    },
+  ],
 };

@@ -1,6 +1,9 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react-native';
-import { renderSimple, createMockFunction } from '../../test-utils/simple-render';
+import {
+  renderSimple,
+  createMockFunction,
+} from '../../test-utils/simple-render';
 
 // Mock the theme hook before importing component
 jest.mock('../../contexts/ThemeContext', () => ({
@@ -112,7 +115,9 @@ describe('TopicCard (Simple)', () => {
     const { getByText } = renderSimple(
       <TopicCard topic={longNameTopic} onPress={mockOnPress} />
     );
-    expect(getByText('Very Long Topic Name That Should Be Handled Properly')).toBeTruthy();
+    expect(
+      getByText('Very Long Topic Name That Should Be Handled Properly')
+    ).toBeTruthy();
   });
 
   it('handles large numbers correctly', () => {

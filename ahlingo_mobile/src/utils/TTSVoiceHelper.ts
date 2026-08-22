@@ -17,7 +17,9 @@ export class TTSVoiceHelper {
   /**
    * Check if high-quality voices are available for given languages
    */
-  static async checkVoiceAvailability(languages: string[]): Promise<VoiceAvailability[]> {
+  static async checkVoiceAvailability(
+    languages: string[]
+  ): Promise<VoiceAvailability[]> {
     const results: VoiceAvailability[] = [];
 
     for (const language of languages) {
@@ -78,7 +80,9 @@ export class TTSVoiceHelper {
 
     Alert.alert(
       'Improve Voice Quality',
-      `For the best learning experience with ${languageList}, we recommend downloading high-quality voices.\n\n${instructions.steps.join('\n')}`,
+      `For the best learning experience with ${languageList}, we recommend downloading high-quality voices.\n\n${instructions.steps.join(
+        '\n'
+      )}`,
       [
         {
           text: 'Not Now',
@@ -145,9 +149,13 @@ export class TTSVoiceHelper {
 
     let summary = '';
     if (allHighQuality) {
-      summary = `High-quality voices available for all languages (${languages.join(', ')})`;
+      summary = `High-quality voices available for all languages (${languages.join(
+        ', '
+      )})`;
     } else {
-      summary = `High-quality voices missing for: ${missingLanguages.join(', ')}`;
+      summary = `High-quality voices missing for: ${missingLanguages.join(
+        ', '
+      )}`;
     }
 
     return {
@@ -159,18 +167,21 @@ export class TTSVoiceHelper {
 
   private static getLanguageCode(languageName: string): string {
     const languageMap: { [key: string]: string } = {
-      'english': Platform.OS === 'ios' ? 'en-US' : 'en',
-      'french': Platform.OS === 'ios' ? 'fr-FR' : 'fr',
-      'spanish': Platform.OS === 'ios' ? 'es-ES' : 'es',
-      'german': Platform.OS === 'ios' ? 'de-DE' : 'de',
-      'italian': Platform.OS === 'ios' ? 'it-IT' : 'it',
-      'portuguese': Platform.OS === 'ios' ? 'pt-BR' : 'pt',
-      'japanese': Platform.OS === 'ios' ? 'ja-JP' : 'ja',
-      'chinese': Platform.OS === 'ios' ? 'zh-CN' : 'zh',
-      'korean': Platform.OS === 'ios' ? 'ko-KR' : 'ko',
-      'russian': Platform.OS === 'ios' ? 'ru-RU' : 'ru',
+      english: Platform.OS === 'ios' ? 'en-US' : 'en',
+      french: Platform.OS === 'ios' ? 'fr-FR' : 'fr',
+      spanish: Platform.OS === 'ios' ? 'es-ES' : 'es',
+      german: Platform.OS === 'ios' ? 'de-DE' : 'de',
+      italian: Platform.OS === 'ios' ? 'it-IT' : 'it',
+      portuguese: Platform.OS === 'ios' ? 'pt-BR' : 'pt',
+      japanese: Platform.OS === 'ios' ? 'ja-JP' : 'ja',
+      chinese: Platform.OS === 'ios' ? 'zh-CN' : 'zh',
+      korean: Platform.OS === 'ios' ? 'ko-KR' : 'ko',
+      russian: Platform.OS === 'ios' ? 'ru-RU' : 'ru',
     };
 
-    return languageMap[languageName.toLowerCase()] || (Platform.OS === 'ios' ? 'en-US' : 'en');
+    return (
+      languageMap[languageName.toLowerCase()] ||
+      (Platform.OS === 'ios' ? 'en-US' : 'en')
+    );
   }
 }

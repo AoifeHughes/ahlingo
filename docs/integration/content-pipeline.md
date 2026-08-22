@@ -763,4 +763,4 @@ async applyDelta(delta: ContentDelta) {
 **Next Steps**:
 - Learn [Versioning Strategy](versioning.md) for version management
 - Review [Database Architecture](../mobile/database.md) for two-database details
-- Explore [Generation System](../generation/getting-started.md) to generate content
+- Explore [Generation Architecture](../generation/architecture.md) to generate content

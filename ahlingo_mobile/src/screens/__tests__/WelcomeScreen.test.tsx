@@ -1,8 +1,14 @@
 import React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react-native';
-import { renderWithProviders, createMockNavigationProp } from '../../test-utils';
+import {
+  renderWithProviders,
+  createMockNavigationProp,
+} from '../../test-utils';
 import WelcomeScreen from '../WelcomeScreen';
-import { sampleLanguages, sampleDifficulties } from '../../test-utils/databaseSample';
+import {
+  sampleLanguages,
+  sampleDifficulties,
+} from '../../test-utils/databaseSample';
 import { mockTheme } from '../../test-utils/mocks';
 
 jest.mock('../../services/RefactoredDatabaseService', () => ({
@@ -50,7 +56,9 @@ describe('WelcomeScreen', () => {
       <WelcomeScreen navigation={navigation} />
     );
 
-    await waitFor(() => expect(getByText('Welcome to AHLingo! 🎉')).toBeTruthy());
+    await waitFor(() =>
+      expect(getByText('Welcome to AHLingo! 🎉')).toBeTruthy()
+    );
 
     expect(getByText('French')).toBeTruthy();
     expect(getByText('Beginner')).toBeTruthy();
@@ -69,9 +77,21 @@ describe('WelcomeScreen', () => {
 
     await waitFor(() => {
       expect(mockGetUserId).toHaveBeenCalledWith('default_user');
-      expect(mockSetUserSetting).toHaveBeenCalledWith('default_user', 'language', 'French');
-      expect(mockSetUserSetting).toHaveBeenCalledWith('default_user', 'difficulty', 'Beginner');
-      expect(mockSetUserSetting).toHaveBeenCalledWith('default_user', 'has_completed_welcome', 'true');
+      expect(mockSetUserSetting).toHaveBeenCalledWith(
+        'default_user',
+        'language',
+        'French'
+      );
+      expect(mockSetUserSetting).toHaveBeenCalledWith(
+        'default_user',
+        'difficulty',
+        'Beginner'
+      );
+      expect(mockSetUserSetting).toHaveBeenCalledWith(
+        'default_user',
+        'has_completed_welcome',
+        'true'
+      );
       expect(navigation.reset).toHaveBeenCalledWith({
         index: 0,
         routes: [{ name: 'MainMenu' }],

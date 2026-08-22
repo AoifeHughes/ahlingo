@@ -253,8 +253,7 @@ def create_dynamic_word_pair_model(language: str) -> Type[BaseModel]:
     """
 
     # Create the dynamic model using the simpler approach
-    exec(
-        f"""
+    exec(f"""
 class {language}WordPair(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
@@ -276,8 +275,7 @@ class {language}WordPair(BaseModel):
         if len(v.split()) > 10:
             raise ValueError('{language} phrases should not exceed 10 words')
         return v.strip()
-    """
-    )
+    """)
 
     return locals()[f"{language}WordPair"]
 
@@ -285,10 +283,18 @@ class {language}WordPair(BaseModel):
 class ImageDescriptor(BaseModel):
     """A descriptor set for an image exercise."""
 
-    correct_descriptor: str = Field(..., description="Correct description of the image in the target language")
-    incorrect_1: str = Field(..., description="Clearly wrong description 1 in the target language")
-    incorrect_2: str = Field(..., description="Clearly wrong description 2 in the target language")
-    english_meaning: str = Field(..., description="English translation of the correct descriptor")
+    correct_descriptor: str = Field(
+        ..., description="Correct description of the image in the target language"
+    )
+    incorrect_1: str = Field(
+        ..., description="Clearly wrong description 1 in the target language"
+    )
+    incorrect_2: str = Field(
+        ..., description="Clearly wrong description 2 in the target language"
+    )
+    english_meaning: str = Field(
+        ..., description="English translation of the correct descriptor"
+    )
 
     @validator("correct_descriptor", "incorrect_1", "incorrect_2", "english_meaning")
     def not_empty(cls, v):
@@ -301,7 +307,9 @@ class ImageDescriptor(BaseModel):
         if "correct_descriptor" in values and "incorrect_1" in values:
             descriptors = [values["correct_descriptor"], values["incorrect_1"], v]
             if len(set(d.lower() for d in descriptors)) != 3:
-                raise ValueError("All three descriptors must be different from each other")
+                raise ValueError(
+                    "All three descriptors must be different from each other"
+                )
         return v
 
 
@@ -316,7 +324,9 @@ class ImageDescriptorList(BaseModel):
 class ImagePrompt(BaseModel):
     """A single image prompt for clip-art generation."""
 
-    prompt: str = Field(..., description="English description of the scene for clip-art generation")
+    prompt: str = Field(
+        ..., description="English description of the scene for clip-art generation"
+    )
     topic: str = Field(..., description="The topic this image belongs to")
 
     @validator("prompt")
@@ -349,8 +359,7 @@ def create_dynamic_translation_pair_model(language: str) -> Type[BaseModel]:
     """
 
     # Create the dynamic model using the simpler approach
-    exec(
-        f"""
+    exec(f"""
 class {language}TranslationPair(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
@@ -372,7 +381,6 @@ class {language}TranslationPair(BaseModel):
         if len(v.split()) < 1:
             raise ValueError('{language} sentences must have at least 1 word')
         return v.strip()
-    """
-    )
+    """)
 
     return locals()[f"{language}TranslationPair"]

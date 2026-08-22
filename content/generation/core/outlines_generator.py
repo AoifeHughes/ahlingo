@@ -27,9 +27,7 @@ except ImportError:
 
 # Centralized model configuration
 MODEL_CONFIG = {
-    "base_url": os.environ.get(
-        "AHLINGO_OUTLINES_URL", "http://192.168.68.51:11434/v1"
-    ),
+    "base_url": os.environ.get("AHLINGO_OUTLINES_URL", "http://192.168.68.51:11434/v1"),
     "api_key": os.environ.get("AHLINGO_OUTLINES_API_KEY", "sk-no-key-required"),
     "temperature": float(os.environ.get("AHLINGO_OUTLINES_TEMPERATURE", "0.75")),
     "exercise_temperatures": {
@@ -57,9 +55,7 @@ class OutlinesModelManager:
             return self._thread_local.model
 
         with self._lock:
-            model = outlines.models.OpenAI(
-                self._client, model_name=self._model_name
-            )
+            model = outlines.models.OpenAI(self._client, model_name=self._model_name)
         self._thread_local.model = model
         return model
 
@@ -448,7 +444,13 @@ def format_examples_for_prompt(examples: List[Dict], max_examples: int = 2) -> s
     return json.dumps(limited_examples, ensure_ascii=False, indent=2)
 
 
-def generate_conversations(model, language: str, level: str, topic: str, existing_examples: Optional[List[Dict]] = None):
+def generate_conversations(
+    model,
+    language: str,
+    level: str,
+    topic: str,
+    existing_examples: Optional[List[Dict]] = None,
+):
     """Generate conversation exercises with guaranteed structure.
 
     Args:
@@ -496,7 +498,7 @@ Avoid repetitive patterns. Focus on practical situations related to {topic}."""
                     conversations = []
             example_dict = {
                 "conversations": conversations,
-                "summary": ex.get("summary", "")
+                "summary": ex.get("summary", ""),
             }
             all_examples.append(example_dict)
 
@@ -564,7 +566,13 @@ Avoid repetitive patterns. Focus on practical situations related to {topic}."""
     return [ConversationExercise(**item) for item in result_data]
 
 
-def generate_pairs(model, language: str, level: str, topic: str, existing_examples: Optional[List[Dict]] = None):
+def generate_pairs(
+    model,
+    language: str,
+    level: str,
+    topic: str,
+    existing_examples: Optional[List[Dict]] = None,
+):
     """Generate word pairs with guaranteed structure - creates exactly 5 pairs per exercise.
 
     Args:
@@ -608,9 +616,7 @@ Create EXACTLY 5 word pairs at {level} level:
                     pairs = json.loads(pairs)
                 except:
                     pairs = []
-            example_dict = {
-                "pairs": pairs
-            }
+            example_dict = {"pairs": pairs}
             all_examples.append(example_dict)
 
     # Add default examples if available
@@ -622,7 +628,10 @@ Create EXACTLY 5 word pairs at {level} level:
             for ex in default_examples[:1]:  # Take just first default example
                 # Check if pairs already exist in all_examples
                 ex_pairs_str = json.dumps(ex.get("pairs", []), sort_keys=True)
-                if not any(json.dumps(e.get("pairs", []), sort_keys=True) == ex_pairs_str for e in all_examples):
+                if not any(
+                    json.dumps(e.get("pairs", []), sort_keys=True) == ex_pairs_str
+                    for e in all_examples
+                ):
                     all_examples.append(ex)
 
     # Build examples context if we have examples
@@ -680,7 +689,13 @@ Create EXACTLY 5 word pairs at {level} level:
     return [WordPairModel(**item) for item in result_data]
 
 
-def generate_translations(model, language: str, level: str, topic: str, existing_examples: Optional[List[Dict]] = None):
+def generate_translations(
+    model,
+    language: str,
+    level: str,
+    topic: str,
+    existing_examples: Optional[List[Dict]] = None,
+):
     """Generate sentence translations with guaranteed structure.
 
     Args:
@@ -724,7 +739,7 @@ Create 5-8 sentence pairs at {level} level:
             # Convert database format to example format
             example_dict = {
                 "language_1_content": ex.get("language_1_content", ""),
-                "language_2_content": ex.get("language_2_content", "")
+                "language_2_content": ex.get("language_2_content", ""),
             }
             all_examples.append(example_dict)
 
@@ -737,8 +752,8 @@ Create 5-8 sentence pairs at {level} level:
             for ex in default_examples[:1]:  # Take just first default example
                 # Check if content already exists in all_examples
                 if not any(
-                    e.get("language_1_content") == ex.get("language_1_content") and
-                    e.get("language_2_content") == ex.get("language_2_content")
+                    e.get("language_1_content") == ex.get("language_1_content")
+                    and e.get("language_2_content") == ex.get("language_2_content")
                     for e in all_examples
                 ):
                     all_examples.append(ex)
@@ -1006,7 +1021,13 @@ Generate 2 alternatives (1-3 words each) that are obviously wrong in this contex
     )
 
 
-def generate_fill_in_blank_structured(model, language: str, level: str, topic: str, existing_examples: Optional[List[Dict]] = None):
+def generate_fill_in_blank_structured(
+    model,
+    language: str,
+    level: str,
+    topic: str,
+    existing_examples: Optional[List[Dict]] = None,
+):
     """Generate a single fill-in-blank exercise using structured generation.
 
     Args:
@@ -1071,7 +1092,7 @@ CRITICAL: correct_answer, incorrect_1, and incorrect_2 must be three different w
                 "incorrect_1": ex.get("incorrect_1", ""),
                 "incorrect_2": ex.get("incorrect_2", ""),
                 "blank_position": ex.get("blank_position", 0),
-                "translation": ex.get("translation", "")
+                "translation": ex.get("translation", ""),
             }
             all_examples.append(example_dict)
 
@@ -1086,17 +1107,18 @@ CRITICAL: correct_answer, incorrect_1, and incorrect_2 must be three different w
                 # Add default examples, avoiding duplicates
                 for ex in default_examples[:1]:  # Take just first default example
                     # Check if sentence already exists in all_examples
-                    if not any(e.get("sentence") == ex.get("sentence") for e in all_examples):
+                    if not any(
+                        e.get("sentence") == ex.get("sentence") for e in all_examples
+                    ):
                         all_examples.append(ex)
     except (ImportError, KeyError):
         pass
 
     # Build examples context if we have examples
     if all_examples:
-        examples_text = "\n\n".join([
-            json.dumps(ex, ensure_ascii=False, indent=2)
-            for ex in all_examples
-        ])
+        examples_text = "\n\n".join(
+            [json.dumps(ex, ensure_ascii=False, indent=2) for ex in all_examples]
+        )
         diversity_note = ""
         if existing_examples:
             diversity_note = "\n\nIMPORTANT: The examples above show exercises that ALREADY EXIST in the database. Generate exercises that are DIFFERENT from these examples. Vary sentence structure, vocabulary, and grammar patterns. Avoid repeating similar content."
@@ -1158,7 +1180,7 @@ CRITICAL: correct_answer, incorrect_1, and incorrect_2 must be three different w
 
         exercise = FillInBlankExercise(**result_data)
         # Return dict instead of Pydantic model for consistency with other exercise types
-        return exercise.dict() if hasattr(exercise, 'dict') else exercise.model_dump()
+        return exercise.dict() if hasattr(exercise, "dict") else exercise.model_dump()
     except Exception as e:
         logging.warning(f"Error creating exercise: {e}\nData: {result_data}")
         return None

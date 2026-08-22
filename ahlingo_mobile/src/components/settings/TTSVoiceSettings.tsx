@@ -31,7 +31,11 @@ interface TTSVoiceSettingsProps {
   onVoiceChange: (languageCode: string, voiceId: string) => void;
 }
 
-const LANGUAGE_CODE_MAP: Array<{ keywords: string[]; ios: string; android: string }> = [
+const LANGUAGE_CODE_MAP: Array<{
+  keywords: string[];
+  ios: string;
+  android: string;
+}> = [
   { keywords: ['english'], ios: 'en-US', android: 'en' },
   { keywords: ['french'], ios: 'fr-FR', android: 'fr' },
   { keywords: ['spanish', 'español'], ios: 'es-ES', android: 'es' },
@@ -55,7 +59,9 @@ const TTSVoiceSettings: React.FC<TTSVoiceSettingsProps> = ({
 
   const [loading, setLoading] = useState(true);
   const [groupedVoices, setGroupedVoices] = useState<GroupedVoices>({});
-  const [expandedLanguages, setExpandedLanguages] = useState<Set<string>>(new Set());
+  const [expandedLanguages, setExpandedLanguages] = useState<Set<string>>(
+    new Set()
+  );
 
   useEffect(() => {
     loadVoices();
@@ -108,8 +114,16 @@ const TTSVoiceSettings: React.FC<TTSVoiceSettingsProps> = ({
 
           // Finally, check for premium in iOS voice IDs
           if (Platform.OS === 'ios') {
-            const aPremium = a.id.includes('premium') ? 2 : a.id.includes('enhanced') ? 1 : 0;
-            const bPremium = b.id.includes('premium') ? 2 : b.id.includes('enhanced') ? 1 : 0;
+            const aPremium = a.id.includes('premium')
+              ? 2
+              : a.id.includes('enhanced')
+              ? 1
+              : 0;
+            const bPremium = b.id.includes('premium')
+              ? 2
+              : b.id.includes('enhanced')
+              ? 1
+              : 0;
             return bPremium - aPremium;
           }
 
@@ -152,13 +166,18 @@ const TTSVoiceSettings: React.FC<TTSVoiceSettingsProps> = ({
     });
   };
 
-  const getVoiceQualityBadge = (voice: Voice): { text: string; color: string } => {
+  const getVoiceQualityBadge = (
+    voice: Voice
+  ): { text: string; color: string } => {
     if (voice.notInstalled) {
       return { text: 'Not Installed', color: theme.colors.error };
     }
 
     if (voice.networkConnectionRequired) {
-      return { text: 'Requires Network', color: theme.colors.warning || '#FFA500' };
+      return {
+        text: 'Requires Network',
+        color: theme.colors.warning || '#FFA500',
+      };
     }
 
     // Both iOS and Android use the quality field consistently
@@ -172,9 +191,15 @@ const TTSVoiceSettings: React.FC<TTSVoiceSettingsProps> = ({
         return { text: 'Premium', color: theme.colors.success };
       } else if (quality >= 300) {
         // Compact/default voices
-        return { text: 'Compact', color: theme.colors.textSecondary || theme.colors.text };
+        return {
+          text: 'Compact',
+          color: theme.colors.textSecondary || theme.colors.text,
+        };
       }
-      return { text: 'Standard', color: theme.colors.textSecondary || theme.colors.text };
+      return {
+        text: 'Standard',
+        color: theme.colors.textSecondary || theme.colors.text,
+      };
     } else {
       // Android quality levels
       if (quality >= 500) {
@@ -182,9 +207,15 @@ const TTSVoiceSettings: React.FC<TTSVoiceSettingsProps> = ({
       } else if (quality >= 400) {
         return { text: 'High Quality', color: theme.colors.secondary };
       } else if (quality >= 300) {
-        return { text: 'Normal', color: theme.colors.textSecondary || theme.colors.text };
+        return {
+          text: 'Normal',
+          color: theme.colors.textSecondary || theme.colors.text,
+        };
       } else {
-        return { text: 'Low Quality', color: theme.colors.warning || '#FFA500' };
+        return {
+          text: 'Low Quality',
+          color: theme.colors.warning || '#FFA500',
+        };
       }
     }
   };
@@ -197,7 +228,9 @@ const TTSVoiceSettings: React.FC<TTSVoiceSettingsProps> = ({
     const missingLanguages = selectedLanguages.filter(langName => {
       const languageCode = getLanguageCode(langName);
       const voices = groupedVoices[languageCode] || [];
-      const hasHighQuality = voices.some(v => !v.notInstalled && (v.quality ?? 0) >= 400);
+      const hasHighQuality = voices.some(
+        v => !v.notInstalled && (v.quality ?? 0) >= 400
+      );
       return !hasHighQuality;
     });
 
@@ -220,15 +253,26 @@ const TTSVoiceSettings: React.FC<TTSVoiceSettingsProps> = ({
       <View style={styles.header}>
         <Text style={styles.title}>Text-to-Speech Voices</Text>
         <Text style={styles.subtitle}>
-          Choose your preferred voice for each language. Premium/Enhanced voices (quality: 500) provide better pronunciation than Compact voices (quality: 300). Only voices already downloaded on your device are shown.
+          Choose your preferred voice for each language. Premium/Enhanced voices
+          (quality: 500) provide better pronunciation than Compact voices
+          (quality: 300). Only voices already downloaded on your device are
+          shown.
         </Text>
       </View>
 
-      <TouchableOpacity style={styles.downloadButton} onPress={handleDownloadPrompt}>
-        <Text style={styles.downloadButtonText}>📥 Download Premium Voices</Text>
+      <TouchableOpacity
+        style={styles.downloadButton}
+        onPress={handleDownloadPrompt}
+      >
+        <Text style={styles.downloadButtonText}>
+          📥 Download Premium Voices
+        </Text>
       </TouchableOpacity>
 
-      <ScrollView style={styles.languageList} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={styles.languageList}
+        showsVerticalScrollIndicator={false}
+      >
         {selectedLanguages.map((langName, index) => {
           const languageCode = getLanguageCode(langName);
           const voices = groupedVoices[languageCode] || [];
@@ -238,18 +282,25 @@ const TTSVoiceSettings: React.FC<TTSVoiceSettingsProps> = ({
           // Get currently selected voice info
           const selectedVoice = voices.find(v => v.id === selectedVoiceId);
           const selectedVoiceDisplay = selectedVoice
-            ? `${selectedVoice.name} (${getVoiceQualityBadge(selectedVoice).text})`
+            ? `${selectedVoice.name} (${
+                getVoiceQualityBadge(selectedVoice).text
+              })`
             : 'Auto-select best';
 
           return (
-            <View key={`${languageCode}-${index}`} style={styles.languageSection}>
+            <View
+              key={`${languageCode}-${index}`}
+              style={styles.languageSection}
+            >
               <TouchableOpacity
                 style={styles.languageHeader}
                 onPress={() => toggleLanguage(languageCode)}
               >
                 <View style={styles.languageHeaderLeft}>
                   <Text style={styles.languageName}>{langName}</Text>
-                  <Text style={styles.selectedVoice}>{selectedVoiceDisplay}</Text>
+                  <Text style={styles.selectedVoice}>
+                    {selectedVoiceDisplay}
+                  </Text>
                 </View>
                 <Text style={styles.expandIcon}>{isExpanded ? '▼' : '▶'}</Text>
               </TouchableOpacity>
@@ -265,20 +316,28 @@ const TTSVoiceSettings: React.FC<TTSVoiceSettingsProps> = ({
                     onPress={() => handleVoiceSelect(languageCode, '')}
                   >
                     <View style={styles.voiceInfo}>
-                      <Text style={[styles.voiceName, !selectedVoiceId && styles.voiceNameSelected]}>
+                      <Text
+                        style={[
+                          styles.voiceName,
+                          !selectedVoiceId && styles.voiceNameSelected,
+                        ]}
+                      >
                         Auto-select best
                       </Text>
                       <Text style={styles.voiceDescription}>
                         Automatically choose the highest quality voice available
                       </Text>
                     </View>
-                    {!selectedVoiceId && <Text style={styles.checkmark}>✓</Text>}
+                    {!selectedVoiceId && (
+                      <Text style={styles.checkmark}>✓</Text>
+                    )}
                   </TouchableOpacity>
 
                   {voices.map(voice => {
                     const badge = getVoiceQualityBadge(voice);
                     const isSelected = selectedVoiceId === voice.id;
-                    const isAvailable = !voice.notInstalled && !voice.networkConnectionRequired;
+                    const isAvailable =
+                      !voice.notInstalled && !voice.networkConnectionRequired;
 
                     return (
                       <TouchableOpacity
@@ -288,21 +347,37 @@ const TTSVoiceSettings: React.FC<TTSVoiceSettingsProps> = ({
                           isSelected && styles.voiceItemSelected,
                           !isAvailable && styles.voiceItemDisabled,
                         ]}
-                        onPress={() => isAvailable && handleVoiceSelect(languageCode, voice.id)}
+                        onPress={() =>
+                          isAvailable &&
+                          handleVoiceSelect(languageCode, voice.id)
+                        }
                         disabled={!isAvailable}
                       >
                         <View style={styles.voiceInfo}>
                           <View style={styles.voiceNameRow}>
-                            <Text style={[styles.voiceName, isSelected && styles.voiceNameSelected]}>
+                            <Text
+                              style={[
+                                styles.voiceName,
+                                isSelected && styles.voiceNameSelected,
+                              ]}
+                            >
                               {voice.name}
                             </Text>
-                            <View style={[styles.badge, { backgroundColor: badge.color }]}>
+                            <View
+                              style={[
+                                styles.badge,
+                                { backgroundColor: badge.color },
+                              ]}
+                            >
                               <Text style={styles.badgeText}>{badge.text}</Text>
                             </View>
                           </View>
-                          {Platform.OS === 'android' && voice.quality !== undefined && (
-                            <Text style={styles.voiceDescription}>Quality: {voice.quality}</Text>
-                          )}
+                          {Platform.OS === 'android' &&
+                            voice.quality !== undefined && (
+                              <Text style={styles.voiceDescription}>
+                                Quality: {voice.quality}
+                              </Text>
+                            )}
                         </View>
                         {isSelected && <Text style={styles.checkmark}>✓</Text>}
                       </TouchableOpacity>
@@ -310,7 +385,9 @@ const TTSVoiceSettings: React.FC<TTSVoiceSettingsProps> = ({
                   })}
 
                   {voices.length === 0 && (
-                    <Text style={styles.noVoices}>No voices available for this language</Text>
+                    <Text style={styles.noVoices}>
+                      No voices available for this language
+                    </Text>
                   )}
                 </View>
               )}

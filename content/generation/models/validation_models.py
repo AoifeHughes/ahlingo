@@ -227,7 +227,9 @@ def _normalize_exercise_type(exercise_type: str) -> str:
         "translation": "translation",
         "fill_in_blank": "fill_in_blank",
     }
-    return type_mapping.get(exercise_type.lower().strip(), exercise_type.lower().strip())
+    return type_mapping.get(
+        exercise_type.lower().strip(), exercise_type.lower().strip()
+    )
 
 
 def parse_validation_result(response_text: str, exercise_type: str) -> ValidationResult:
