@@ -73,7 +73,7 @@ ahlingo/
 
 ### Architecture
 
-The generation system talks to a local LLM (via OpenAI-compatible API, typically Ollama) using the standard `openai` SDK. Structured output is obtained via native tool-calling: each exercise type is a Pydantic model, its JSON schema becomes a forced tool call, and the API response is validated straight into that model (with a self-repair retry on a validation error). See `content/generation/core/llm_client.py`.
+The generation system talks to a local LLM via an OpenAI-compatible API using the standard `openai` SDK. Structured output is obtained via native tool-calling: each exercise type is a Pydantic model, its JSON schema becomes a forced tool call, and the API response is validated straight into that model (with a self-repair retry on a validation error). See `content/generation/core/llm_client.py`.
 
 **Pipeline**: Config → LLM Generation (tool-call forced to a Pydantic schema) → Validation → Similarity Check → SQLite Database
 

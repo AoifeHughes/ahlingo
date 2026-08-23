@@ -44,8 +44,7 @@ python content/generate_content.py
 ```
 
 **Requirements:**
-- An OpenAI-compatible server running locally (default: `http://localhost:11434/v1`)
-- Ollama or similar local LLM server
+- An OpenAI-compatible LLM server running locally (default: `http://localhost:11434/v1`)
 
 ### Content Generation Configuration
 

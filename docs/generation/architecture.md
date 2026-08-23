@@ -105,9 +105,9 @@ Traditional LLM generation produces free-form text. We need:
 We generate structured output by forcing a single tool call whose `parameters` are a
 Pydantic model's JSON schema (`model_json_schema()`), then validating the model's
 arguments straight into that model:
-- Every OpenAI-compatible server we target (Ollama, llama.cpp server, vLLM, LM Studio)
-  speaks the same `tools`/`tool_choice` protocol, so this isn't vendor lock-in to the
-  hosted OpenAI API -- it's the same client already pointed at `base_url`
+- Any OpenAI-compatible server we target speaks the same `tools`/`tool_choice`
+  protocol, so this isn't vendor lock-in to the hosted OpenAI API -- it's the
+  same client already pointed at `base_url`
 - Guarantees a JSON *object* back (required for tool arguments), which maps directly
   onto Pydantic validation -- no prompt-embedded schema text, no regex extraction of a
   JSON array/object out of free-form text, no stripping of `<think>` blocks
@@ -426,7 +426,7 @@ See `content/database/database_manager.py` for detailed function signatures.
 
 ### Generation Speed
 
-**Typical Performance** (MacBook Pro M1, Ollama with llama model):
+**Typical Performance** (MacBook Pro M1, local OpenAI-compatible server):
 - Conversations: ~15-20 seconds each
 - Pairs: ~10-15 seconds each
 - Translations: ~10-15 seconds each
@@ -526,11 +526,11 @@ else:
 - ❌ Costs $0.01-0.03 per exercise
 - ❌ Requires internet
 
-**Local Models (Ollama)**:
+**Local Models**:
 - ✅ Free (after hardware cost)
 - ✅ Offline capable
 - ✅ Data privacy
-- ❌ Lower quality (llama models)
+- ❌ Lower quality than frontier hosted models
 - ❌ Requires powerful hardware
 
 **Decision**: Support both, default to local for development, OpenAI for production.

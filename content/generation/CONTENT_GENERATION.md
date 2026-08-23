@@ -198,8 +198,8 @@ python -c "from database.database_manager import LanguageDB; db = LanguageDB(':m
 ### Common Issues
 
 1. **LLM Server Not Running**
-   - Ensure Ollama or compatible server is running on `http://localhost:11434/v1`
-   - Verify the "llama" model is available
+   - Ensure your OpenAI-compatible LLM server is running at the configured `url`
+   - Verify the configured model is available on that server
 
 2. **JSON Parsing Errors**
    - Check LLM responses for malformed JSON

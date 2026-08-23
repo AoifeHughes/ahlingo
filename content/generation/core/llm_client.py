@@ -2,12 +2,12 @@
 """
 Thin OpenAI-compatible client for structured generation via native tool-calling.
 
-Every local, OpenAI-compatible inference server used by this project (Ollama,
-llama.cpp server, vLLM, LM Studio, ...) speaks the same `tools` / `tool_choice`
-protocol as the hosted OpenAI API. Forcing a single tool call whose parameters
-are a Pydantic model's JSON schema gives us guaranteed-parseable, schema-shaped
-output directly from the API -- no prompt-embedded schema text, no regex JSON
-extraction, no stripping of <think> blocks.
+Every local, OpenAI-compatible inference server speaks the same `tools` /
+`tool_choice` protocol as the hosted OpenAI API. Forcing a single tool call
+whose parameters are a Pydantic model's JSON schema gives us
+guaranteed-parseable, schema-shaped output directly from the API -- no
+prompt-embedded schema text, no regex JSON extraction, no stripping of
+<think> blocks.
 
 This module is the single place that talks to the LLM. Everything else just
 hands it a Pydantic model and a prompt.
