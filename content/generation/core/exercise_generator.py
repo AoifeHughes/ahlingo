@@ -80,7 +80,9 @@ def _build_examples_block(
         all_examples.extend(existing_shape_fn(ex) for ex in existing_examples)
 
     if language in default_assistants:
-        default_examples = parse_assistant_examples(default_assistants[language]["content"])
+        default_examples = parse_assistant_examples(
+            default_assistants[language]["content"]
+        )
         for ex in default_examples[:1]:
             if ex not in all_examples:
                 all_examples.append(ex)
@@ -132,7 +134,11 @@ Avoid repetitive patterns. Focus on a practical situation related to {topic}."""
         return {"conversation": conversations, "summary": ex.get("summary", "")}
 
     examples_block = _build_examples_block(
-        existing_examples, _shape, default_conversation_assistants, language, "conversation"
+        existing_examples,
+        _shape,
+        default_conversation_assistants,
+        language,
+        "conversation",
     )
     user_prompt = f"Generate a {level} level conversation in {language} about: {topic}{examples_block}"
 
@@ -171,9 +177,15 @@ Create 5-7 word pairs at {level} level:
         return {"pairs": pairs}
 
     examples_block = _build_examples_block(
-        existing_examples, _shape, default_pairs_assistants, language, "set of word pairs"
+        existing_examples,
+        _shape,
+        default_pairs_assistants,
+        language,
+        "set of word pairs",
     )
-    user_prompt = f"Generate 5-7 word pairs in {language} for topic: {topic}{examples_block}"
+    user_prompt = (
+        f"Generate 5-7 word pairs in {language} for topic: {topic}{examples_block}"
+    )
 
     PairListModel = create_pair_list_model(language)
     result = client.generate(
@@ -209,7 +221,11 @@ Requirements:
         }
 
     examples_block = _build_examples_block(
-        existing_examples, _shape, default_translation_assistants, language, "sentence translation"
+        existing_examples,
+        _shape,
+        default_translation_assistants,
+        language,
+        "sentence translation",
     )
     user_prompt = f"Generate one {level} level sentence translation in {language} for topic: {topic}{examples_block}"
 
@@ -257,7 +273,11 @@ Quality standards:
         }
 
     examples_block = _build_examples_block(
-        existing_examples, _shape, default_fill_in_blank_assistants, language, "fill-in-blank exercise"
+        existing_examples,
+        _shape,
+        default_fill_in_blank_assistants,
+        language,
+        "fill-in-blank exercise",
     )
     user_prompt = f"Generate one {level} level fill-in-blank exercise in {language} for topic: {topic}{examples_block}"
 

@@ -9,7 +9,14 @@ and constraints here directly shape what the model is asked to produce.
 
 from typing import List, Type
 
-from pydantic import BaseModel, ConfigDict, Field, create_model, field_validator, model_validator
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Field,
+    create_model,
+    field_validator,
+    model_validator,
+)
 
 
 class ConversationTurn(BaseModel):
@@ -216,7 +223,9 @@ class ImageDescriptor(BaseModel):
         ..., description="English translation of the correct descriptor"
     )
 
-    @field_validator("correct_descriptor", "incorrect_1", "incorrect_2", "english_meaning")
+    @field_validator(
+        "correct_descriptor", "incorrect_1", "incorrect_2", "english_meaning"
+    )
     @classmethod
     def not_empty(cls, v):
         if not v or not v.strip():

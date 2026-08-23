@@ -15,7 +15,10 @@ import threading
 
 try:
     from generation.core.llm_client import LLMClient
-    from generation.models.validation_models import ValidationResult, get_validation_schema
+    from generation.models.validation_models import (
+        ValidationResult,
+        get_validation_schema,
+    )
     from generation.utils.exercise_converters import (
         get_converter,
         identify_exercise_type,
@@ -132,7 +135,9 @@ class DatabaseValidator:
             )
 
             if validation_result is None:
-                raise RuntimeError("Validation model failed to return structured output")
+                raise RuntimeError(
+                    "Validation model failed to return structured output"
+                )
 
             return validation_result
 

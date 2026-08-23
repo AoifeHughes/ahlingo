@@ -37,7 +37,10 @@ sys.path.insert(0, str(Path(__file__).parent))
 from database.database_manager import LanguageDB
 from generation.core import exercise_generator
 from generation.core.llm_client import LLMClient
-from generation.models.validation_models import FillInBlankValidation, get_validation_schema
+from generation.models.validation_models import (
+    FillInBlankValidation,
+    get_validation_schema,
+)
 from generation.utils.exercise_converters import get_converter
 
 

@@ -48,7 +48,8 @@ class ConversationValidation(ValidationResult):
         default=False, description="Does the conversation flow naturally?"
     )
     appropriate_for_level: bool = Field(
-        default=False, description="Is the difficulty appropriate for the specified level?"
+        default=False,
+        description="Is the difficulty appropriate for the specified level?",
     )
 
 
@@ -70,7 +71,8 @@ class TranslationValidation(ValidationResult):
         default=False, description="Does the translation preserve the original meaning?"
     )
     uses_natural_language: bool = Field(
-        default=False, description="Does the translation use natural, idiomatic language?"
+        default=False,
+        description="Does the translation use natural, idiomatic language?",
     )
 
 
@@ -114,9 +116,13 @@ def _normalize_exercise_type(exercise_type: str) -> str:
         "translation": "translation",
         "fill_in_blank": "fill_in_blank",
     }
-    return type_mapping.get(exercise_type.lower().strip(), exercise_type.lower().strip())
+    return type_mapping.get(
+        exercise_type.lower().strip(), exercise_type.lower().strip()
+    )
 
 
 def get_validation_schema(exercise_type: str) -> Type[ValidationResult]:
     """Get the validation Pydantic model for an exercise type."""
-    return VALIDATION_SCHEMAS.get(_normalize_exercise_type(exercise_type), ValidationResult)
+    return VALIDATION_SCHEMAS.get(
+        _normalize_exercise_type(exercise_type), ValidationResult
+    )
