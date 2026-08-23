@@ -98,9 +98,16 @@ jobs:
         # ahlingo_mobile/android/app/debug.keystore is Android's standard,
         # publicly-known debug-signing keystore (alias "androiddebugkey",
         # password "android") that every RN project commits — not a secret.
-        if find . -name "*.key" -o -name "*.pem" -o -name "*.p12" -o -name "*keystore*" -o -name "google-services.json" \
-            | grep -v node_modules | grep -v '/debug\.keystore$' | head -1; then
-          echo "Sensitive files found in repository"
+        #
+        # (Checking `head -1`'s own exit status here — as the original
+        # version of this check did — is a no-op: head exits 0 even on an
+        # empty stream, so it always reported "found" regardless of
+        # whether anything actually matched. Capture the matches instead.)
+        matches=$(find . \( -name "*.key" -o -name "*.pem" -o -name "*.p12" -o -name "*keystore*" -o -name "google-services.json" \) \
+            | grep -v node_modules | grep -v '/debug\.keystore$' || true)
+        if [ -n "$matches" ]; then
+          echo "Sensitive files found in repository:"
+          echo "$matches"
           exit 1
         else
           echo "No sensitive files found"
