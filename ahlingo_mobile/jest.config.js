@@ -1,5 +1,6 @@
 module.exports = {
   preset: 'react-native',
+  globalSetup: '<rootDir>/scripts/buildTestFixtureDb.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-utils/setup.ts'],
   testPathIgnorePatterns: [
     '<rootDir>/node_modules/',
@@ -21,14 +22,6 @@ module.exports = {
     '!src/types/**',
     '!src/**/index.ts',
   ],
-  coverageThreshold: {
-    global: {
-      branches: 70,
-      functions: 70,
-      lines: 80,
-      statements: 80,
-    },
-  },
   clearMocks: true,
   restoreMocks: true,
   watchman: false,

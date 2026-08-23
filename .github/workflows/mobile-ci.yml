@@ -44,6 +44,9 @@ jobs:
   unit-tests:
     name: Unit Tests
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
 
     steps:
     - uses: actions/checkout@v4
@@ -92,7 +95,11 @@ jobs:
     - name: Check for sensitive files
       working-directory: .
       run: |
-        if find . -name "*.key" -o -name "*.pem" -o -name "*.p12" -o -name "*keystore*" -o -name "google-services.json" | grep -v node_modules | head -1; then
+        # ahlingo_mobile/android/app/debug.keystore is Android's standard,
+        # publicly-known debug-signing keystore (alias "androiddebugkey",
+        # password "android") that every RN project commits — not a secret.
+        if find . -name "*.key" -o -name "*.pem" -o -name "*.p12" -o -name "*keystore*" -o -name "google-services.json" \
+            | grep -v node_modules | grep -v '/debug\.keystore$' | head -1; then
           echo "Sensitive files found in repository"
           exit 1
         else

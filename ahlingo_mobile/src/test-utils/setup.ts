@@ -135,12 +135,14 @@ jest.mock('react-redux', () => ({
 // Global test timeout
 jest.setTimeout(10000);
 
-if (typeof window === 'undefined') {
-  (global as any).window = global;
+const globalAny = global as any;
+
+if (typeof globalAny.window === 'undefined') {
+  globalAny.window = global;
 }
 
-if (typeof (window as any).dispatchEvent !== 'function') {
-  (window as any).dispatchEvent = () => {};
+if (typeof globalAny.window.dispatchEvent !== 'function') {
+  globalAny.window.dispatchEvent = () => {};
 }
 
 beforeEach(() => {
