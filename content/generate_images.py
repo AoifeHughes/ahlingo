@@ -27,7 +27,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 from tqdm import tqdm
 from database.database_manager import LanguageDB
-from generation.core import outlines_generator
+from generation.core.llm_client import LLMClient
 from generation.core.image_generator import ImageGenerator, check_comfy_running, slugify
 from generation.core.descriptors_generator import (
     generate_image_prompts,
@@ -105,18 +105,14 @@ class ImageContentGenerator:
         """Set up LLM model and ComfyUI client."""
         print("Setting up LLM model...", flush=True)
         gen_config = self.config["llm_servers"]["generation"]
-        outlines_generator.MODEL_CONFIG.update(
-            {
-                "base_url": gen_config["url"],
-                "api_key": gen_config["api_key"],
-                "temperature": gen_config["temperature"],
-                "exercise_temperatures": self.config.get("exercise_temperatures", {}),
-                "no_think": self.no_think,
-                "debug": self.debug,
-            }
+        self.model = LLMClient(
+            base_url=gen_config["url"],
+            api_key=gen_config["api_key"],
+            model=gen_config["model"],
+            debug=self.debug,
+            no_think=self.no_think,
         )
-        self.model = outlines_generator.setup_outlines_model()
-        print(f"  Model ready", flush=True)
+        print(f"  Model ready: {self.model.model}", flush=True)
 
         if not self.dry_run:
             print("Setting up ComfyUI client...")

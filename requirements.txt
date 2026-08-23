@@ -1,6 +1,5 @@
 huggingface_hub
 openai
-outlines
 pydantic
 tqdm
 TTS
