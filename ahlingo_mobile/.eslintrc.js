@@ -22,6 +22,7 @@ module.exports = {
     'react/jsx-uses-react': 'error',
     'react/jsx-uses-vars': 'error',
     'react/no-unused-prop-types': 'warn',
+    'react/no-unstable-nested-components': ['warn', { allowAsProps: true }],
     'react/prop-types': 'off', // TypeScript handles this
     'react-hooks/exhaustive-deps': 'warn', // Warn instead of error for hook dependencies
 
@@ -49,4 +50,19 @@ module.exports = {
       version: 'detect',
     },
   },
+  overrides: [
+    {
+      files: ['e2e/**/*.js'],
+      env: {
+        jest: true,
+      },
+      globals: {
+        device: 'readonly',
+        element: 'readonly',
+        by: 'readonly',
+        waitFor: 'readonly',
+        expect: 'readonly',
+      },
+    },
+  ],
 };

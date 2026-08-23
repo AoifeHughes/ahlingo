@@ -52,14 +52,14 @@ const gameSlice = createSlice({
     setRecentExercises: (state, action: PayloadAction<RecentExercise[]>) => {
       state.recentExercises = action.payload;
     },
-    clearRecentExercises: (state) => {
+    clearRecentExercises: state => {
       state.recentExercises = [];
     },
-    cleanupOldExercises: (state) => {
+    cleanupOldExercises: state => {
       const now = Date.now();
       const maxAge = 60 * 60 * 1000; // 1 hour in milliseconds
       state.recentExercises = state.recentExercises.filter(
-        ex => (now - ex.timestamp) <= maxAge
+        ex => now - ex.timestamp <= maxAge
       );
     },
   },

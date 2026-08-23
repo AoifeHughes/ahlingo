@@ -1,3 +1,9 @@
+ci:
+  # pre-commit.ci's runner image has no Node.js, so these `language: system`
+  # hooks (which shell out to npm/npx) can't run there — exit 127. They still
+  # run locally and in the ahlingo_mobile GitHub Actions workflows.
+  skip: [react-native-lint, react-native-prettier, typescript-check]
+
 repos:
   # Python formatting and linting
   - repo: https://github.com/psf/black
@@ -50,7 +56,10 @@ repos:
       - id: check-xml
         exclude: ^(test/|ahlingo_mobile/node_modules/|ahlingo_mobile/ios/|ahlingo_mobile/android/)
       - id: check-yaml
-        exclude: ^(test/|ahlingo_mobile/node_modules/|ahlingo_mobile/ios/|ahlingo_mobile/android/)
+        # mkdocs.yml uses a `!!python/name:` tag (mermaid2 plugin's custom_fences
+        # config) that plain yaml.safe_load can't parse, even though mkdocs
+        # itself handles it fine.
+        exclude: ^(test/|ahlingo_mobile/node_modules/|ahlingo_mobile/ios/|ahlingo_mobile/android/|mkdocs\.yml)
       - id: check-merge-conflict
         exclude: ^(test/|ahlingo_mobile/node_modules/|ahlingo_mobile/ios/|ahlingo_mobile/android/)
       - id: detect-private-key

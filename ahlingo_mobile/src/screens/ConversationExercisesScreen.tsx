@@ -10,7 +10,11 @@ import {
   BackHandler,
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RouteProp, useFocusEffect, usePreventRemove } from '@react-navigation/native';
+import {
+  RouteProp,
+  useFocusEffect,
+  usePreventRemove,
+} from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import { RootStackParamList, ExerciseInfo } from '../types';
 import { RootState } from '../store';
@@ -110,7 +114,7 @@ const ConversationExercisesScreen: React.FC<Props> = ({
           {
             text: 'Exit',
             style: 'destructive',
-            onPress: () => navigation.navigate('MainMenu')
+            onPress: () => navigation.navigate('MainMenu'),
           },
         ]
       );
@@ -123,7 +127,10 @@ const ConversationExercisesScreen: React.FC<Props> = ({
     useCallback(() => {
       if (shuffleContext) {
         const onBackPress = () => handleBackPress();
-        const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress);
+        const subscription = BackHandler.addEventListener(
+          'hardwareBackPress',
+          onBackPress
+        );
         return () => subscription.remove();
       }
     }, [shuffleContext, handleBackPress])
@@ -139,7 +146,7 @@ const ConversationExercisesScreen: React.FC<Props> = ({
         {
           text: 'Exit',
           style: 'destructive',
-          onPress: () => navigation.navigate('MainMenu')
+          onPress: () => navigation.navigate('MainMenu'),
         },
       ]
     );
@@ -170,8 +177,10 @@ const ConversationExercisesScreen: React.FC<Props> = ({
         return;
       }
 
-      const language = userContext.settings.language || settings.language || 'French';
-      const difficulty = userContext.settings.difficulty || settings.difficulty || 'Beginner';
+      const language =
+        userContext.settings.language || settings.language || 'French';
+      const difficulty =
+        userContext.settings.difficulty || settings.difficulty || 'Beginner';
 
       setUserLanguage(language);
       setUserDifficulty(difficulty);
@@ -242,6 +251,24 @@ const ConversationExercisesScreen: React.FC<Props> = ({
           hasAnswered: false,
           isCorrect: null,
         }));
+      } else if (correctSummary) {
+        // Fewer than 2 wrong summaries - show quiz with available options only
+        const cleanCorrectSummary = cleanText(correctSummary);
+        const cleanWrongSummaries = wrongSummaries.map(summary =>
+          cleanText(summary)
+        );
+
+        const options = [cleanCorrectSummary, ...cleanWrongSummaries];
+        const shuffledOptions = options.sort(() => Math.random() - 0.5);
+
+        setQuizState(prev => ({
+          ...prev,
+          correctAnswer: cleanCorrectSummary,
+          options: shuffledOptions,
+          selectedOption: null,
+          hasAnswered: false,
+          isCorrect: null,
+        }));
       }
     } catch (error) {
       console.error('Failed to load conversation data:', error);
@@ -259,10 +286,13 @@ const ConversationExercisesScreen: React.FC<Props> = ({
     loadConversationData();
   };
 
-  const handleSpeak = useCallback((message: string) => {
-    // Speak the message in the user's target language
-    TTSService.speakWithLanguageDetection(message, userLanguage);
-  }, [userLanguage]);
+  const handleSpeak = useCallback(
+    (message: string) => {
+      // Speak the message in the user's target language
+      TTSService.speakWithLanguageDetection(message, userLanguage);
+    },
+    [userLanguage]
+  );
 
   const handleOptionPress = async (optionIndex: number) => {
     if (quizState.hasAnswered) return;
@@ -316,7 +346,10 @@ const ConversationExercisesScreen: React.FC<Props> = ({
       {/* Header with refresh button - hidden in shuffle mode */}
       {!shuffleContext && (
         <View style={styles.header}>
-          <TouchableOpacity style={styles.refreshButton} onPress={handleRefresh}>
+          <TouchableOpacity
+            style={styles.refreshButton}
+            onPress={handleRefresh}
+          >
             <Text style={styles.refreshButtonText}>🔄 New Exercise</Text>
           </TouchableOpacity>
         </View>
@@ -396,10 +429,21 @@ const ConversationExercisesScreen: React.FC<Props> = ({
             >
               <Text style={styles.nextButtonText}>
                 {shuffleContext
-                  ? (quizState.isCorrect ? '✅ Perfect! Next Exercise' : '➡️ Next Exercise')
-                  : 'Next Exercise'
-                }
+                  ? quizState.isCorrect
+                    ? '✅ Perfect! Next Exercise'
+                    : '➡️ Next Exercise'
+                  : 'Next Exercise'}
               </Text>
+            </TouchableOpacity>
+          </View>
+        )}
+        {quizState.options.length === 0 && (
+          <View style={styles.feedbackContainer}>
+            <TouchableOpacity
+              style={styles.nextButton}
+              onPress={handleNextExercise}
+            >
+              <Text style={styles.nextButtonText}>Next Exercise</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -408,141 +452,142 @@ const ConversationExercisesScreen: React.FC<Props> = ({
   );
 };
 
-const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) => StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: currentTheme.colors.background,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: currentTheme.colors.background,
-  },
-  loadingText: {
-    marginTop: currentTheme.spacing.lg,
-    fontSize: currentTheme.typography.fontSizes.lg,
-    color: currentTheme.colors.textSecondary,
-  },
-  header: {
-    backgroundColor: currentTheme.colors.surface,
-    paddingVertical: currentTheme.spacing.md,
-    paddingHorizontal: currentTheme.spacing.lg,
-    borderBottomWidth: 1,
-    borderBottomColor: currentTheme.colors.border,
-    alignItems: 'center',
-  },
-  refreshButton: {
-    backgroundColor: currentTheme.colors.primary,
-    paddingVertical: currentTheme.spacing.base,
-    paddingHorizontal: currentTheme.spacing.lg,
-    borderRadius: currentTheme.spacing.xl,
-    ...currentTheme.shadows.base,
-  },
-  refreshButtonText: {
-    color: currentTheme.colors.background,
-    fontSize: currentTheme.typography.fontSizes.base,
-    fontWeight: currentTheme.typography.fontWeights.semibold,
-  },
-  conversationContainer: {
-    flex: 1.2,
-    backgroundColor: currentTheme.colors.surface,
-    marginBottom: currentTheme.spacing.base,
-  },
-  quizContainer: {
-    flex: 1.8,
-    backgroundColor: currentTheme.colors.surface,
-    paddingHorizontal: currentTheme.spacing.lg,
-    paddingTop: currentTheme.spacing.base,
-  },
-  quizTitle: {
-    fontSize: currentTheme.typography.fontSizes.xl,
-    fontWeight: currentTheme.typography.fontWeights.bold,
-    color: currentTheme.colors.text,
-    textAlign: 'center',
-    marginBottom: currentTheme.spacing.xs,
-  },
-  quizSubtitle: {
-    fontSize: currentTheme.typography.fontSizes.base,
-    color: currentTheme.colors.textSecondary,
-    textAlign: 'center',
-    marginBottom: currentTheme.spacing.md,
-  },
-  optionsContainer: {
-    flex: 1,
-  },
-  optionButton: {
-    backgroundColor: currentTheme.colors.background,
-    borderWidth: 2,
-    borderColor: currentTheme.colors.border,
-    borderRadius: currentTheme.borderRadius.lg,
-    padding: currentTheme.spacing.md,
-    marginBottom: currentTheme.spacing.base,
-  },
-  selectedOption: {
-    borderColor: currentTheme.colors.primary,
-    backgroundColor: currentTheme.colors.primaryLight,
-  },
-  correctOption: {
-    borderColor: currentTheme.colors.success,
-    backgroundColor: currentTheme.colors.successLight,
-  },
-  incorrectOption: {
-    borderColor: currentTheme.colors.error,
-    backgroundColor: currentTheme.colors.errorLight,
-  },
-  optionText: {
-    fontSize: currentTheme.typography.fontSizes.lg,
-    color: currentTheme.colors.text,
-    lineHeight: 22,
-  },
-  selectedOptionText: {
-    color: currentTheme.colors.primary,
-    fontWeight: currentTheme.typography.fontWeights.semibold,
-  },
-  correctOptionText: {
-    color: currentTheme.colors.success,
-    fontWeight: currentTheme.typography.fontWeights.semibold,
-  },
-  feedbackContainer: {
-    paddingVertical: currentTheme.spacing.md,
-    alignItems: 'center',
-  },
-  feedbackText: {
-    fontSize: currentTheme.typography.fontSizes.xl,
-    fontWeight: currentTheme.typography.fontWeights.semibold,
-    textAlign: 'center',
-    marginBottom: currentTheme.spacing.base,
-  },
-  correctFeedback: {
-    color: currentTheme.colors.success,
-  },
-  incorrectFeedback: {
-    color: currentTheme.colors.error,
-  },
-  nextButton: {
-    backgroundColor: currentTheme.colors.primary,
-    paddingVertical: currentTheme.spacing.md,
-    paddingHorizontal: currentTheme.spacing.xl,
-    borderRadius: currentTheme.borderRadius.base,
-    ...currentTheme.shadows.base,
-  },
-  nextButtonText: {
-    color: currentTheme.colors.background,
-    fontSize: currentTheme.typography.fontSizes.lg,
-    fontWeight: currentTheme.typography.fontWeights.semibold,
-  },
-  noDataContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: currentTheme.spacing['2xl'],
-  },
-  noDataText: {
-    fontSize: currentTheme.typography.fontSizes.lg,
-    color: currentTheme.colors.textSecondary,
-    textAlign: 'center',
-  },
-});
+const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: currentTheme.colors.background,
+    },
+    loadingContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: currentTheme.colors.background,
+    },
+    loadingText: {
+      marginTop: currentTheme.spacing.lg,
+      fontSize: currentTheme.typography.fontSizes.lg,
+      color: currentTheme.colors.textSecondary,
+    },
+    header: {
+      backgroundColor: currentTheme.colors.surface,
+      paddingVertical: currentTheme.spacing.md,
+      paddingHorizontal: currentTheme.spacing.lg,
+      borderBottomWidth: 1,
+      borderBottomColor: currentTheme.colors.border,
+      alignItems: 'center',
+    },
+    refreshButton: {
+      backgroundColor: currentTheme.colors.primary,
+      paddingVertical: currentTheme.spacing.base,
+      paddingHorizontal: currentTheme.spacing.lg,
+      borderRadius: currentTheme.spacing.xl,
+      ...currentTheme.shadows.base,
+    },
+    refreshButtonText: {
+      color: currentTheme.colors.background,
+      fontSize: currentTheme.typography.fontSizes.base,
+      fontWeight: currentTheme.typography.fontWeights.semibold,
+    },
+    conversationContainer: {
+      flex: 1.2,
+      backgroundColor: currentTheme.colors.surface,
+      marginBottom: currentTheme.spacing.base,
+    },
+    quizContainer: {
+      flex: 1.8,
+      backgroundColor: currentTheme.colors.surface,
+      paddingHorizontal: currentTheme.spacing.lg,
+      paddingTop: currentTheme.spacing.base,
+    },
+    quizTitle: {
+      fontSize: currentTheme.typography.fontSizes.xl,
+      fontWeight: currentTheme.typography.fontWeights.bold,
+      color: currentTheme.colors.text,
+      textAlign: 'center',
+      marginBottom: currentTheme.spacing.xs,
+    },
+    quizSubtitle: {
+      fontSize: currentTheme.typography.fontSizes.base,
+      color: currentTheme.colors.textSecondary,
+      textAlign: 'center',
+      marginBottom: currentTheme.spacing.md,
+    },
+    optionsContainer: {
+      flex: 1,
+    },
+    optionButton: {
+      backgroundColor: currentTheme.colors.background,
+      borderWidth: 2,
+      borderColor: currentTheme.colors.border,
+      borderRadius: currentTheme.borderRadius.lg,
+      padding: currentTheme.spacing.md,
+      marginBottom: currentTheme.spacing.base,
+    },
+    selectedOption: {
+      borderColor: currentTheme.colors.primary,
+      backgroundColor: currentTheme.colors.primaryLight,
+    },
+    correctOption: {
+      borderColor: currentTheme.colors.success,
+      backgroundColor: currentTheme.colors.successLight,
+    },
+    incorrectOption: {
+      borderColor: currentTheme.colors.error,
+      backgroundColor: currentTheme.colors.errorLight,
+    },
+    optionText: {
+      fontSize: currentTheme.typography.fontSizes.lg,
+      color: currentTheme.colors.text,
+      lineHeight: 22,
+    },
+    selectedOptionText: {
+      color: currentTheme.colors.primary,
+      fontWeight: currentTheme.typography.fontWeights.semibold,
+    },
+    correctOptionText: {
+      color: currentTheme.colors.success,
+      fontWeight: currentTheme.typography.fontWeights.semibold,
+    },
+    feedbackContainer: {
+      paddingVertical: currentTheme.spacing.md,
+      alignItems: 'center',
+    },
+    feedbackText: {
+      fontSize: currentTheme.typography.fontSizes.xl,
+      fontWeight: currentTheme.typography.fontWeights.semibold,
+      textAlign: 'center',
+      marginBottom: currentTheme.spacing.base,
+    },
+    correctFeedback: {
+      color: currentTheme.colors.success,
+    },
+    incorrectFeedback: {
+      color: currentTheme.colors.error,
+    },
+    nextButton: {
+      backgroundColor: currentTheme.colors.primary,
+      paddingVertical: currentTheme.spacing.md,
+      paddingHorizontal: currentTheme.spacing.xl,
+      borderRadius: currentTheme.borderRadius.base,
+      ...currentTheme.shadows.base,
+    },
+    nextButtonText: {
+      color: currentTheme.colors.background,
+      fontSize: currentTheme.typography.fontSizes.lg,
+      fontWeight: currentTheme.typography.fontWeights.semibold,
+    },
+    noDataContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: currentTheme.spacing['2xl'],
+    },
+    noDataText: {
+      fontSize: currentTheme.typography.fontSizes.lg,
+      color: currentTheme.colors.textSecondary,
+      textAlign: 'center',
+    },
+  });
 
 export default ConversationExercisesScreen;

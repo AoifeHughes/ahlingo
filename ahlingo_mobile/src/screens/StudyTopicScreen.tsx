@@ -9,10 +9,7 @@ type StudyTopicScreenNavigationProp = NativeStackNavigationProp<
   'StudyTopic'
 >;
 
-type StudyTopicScreenRouteProp = RouteProp<
-  RootStackParamList,
-  'StudyTopic'
->;
+type StudyTopicScreenRouteProp = RouteProp<RootStackParamList, 'StudyTopic'>;
 
 interface Props {
   navigation: StudyTopicScreenNavigationProp;
@@ -20,12 +17,7 @@ interface Props {
 }
 
 const StudyTopicScreen: React.FC<Props> = ({ navigation, route }) => {
-  return (
-    <StudyTopicSelectionScreen
-      navigation={navigation}
-      route={route}
-    />
-  );
+  return <StudyTopicSelectionScreen navigation={navigation} route={route} />;
 };
 
 export default StudyTopicScreen;

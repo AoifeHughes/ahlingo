@@ -80,6 +80,10 @@ class FillInBlankValidation(ValidationResult):
         default=False,
         description="Does the English translation accurately convey the meaning of the original sentence? (true/false)",
     )
+    translation_has_no_blanks: bool = Field(
+        default=True,
+        description="Does the English translation contain NO blanks or underscores? It must be a complete sentence (true/false)",
+    )
     answer_options_appropriate: bool = Field(
         default=False,
         description="Are the answer options appropriate and at the right difficulty level? (true/false)",
@@ -120,6 +124,7 @@ def clean_validation_data(data: Dict[str, Any]) -> Dict[str, Any]:
         "preserves_meaning",
         "uses_natural_language",
         "translation_matches_original",
+        "translation_has_no_blanks",
         "answer_options_appropriate",
         "is_unambiguous",
     ]
@@ -171,51 +176,93 @@ def clean_validation_data(data: Dict[str, Any]) -> Dict[str, Any]:
     return cleaned
 
 
+def extract_json_object(text: str) -> Optional[str]:
+    """Extract a JSON object from text robustly.
+
+    Handles markdown code fences, prose before/after JSON, and nested braces
+    by finding the first balanced JSON object.
+    """
+    import re
+
+    # Strip markdown code fences
+    cleaned = re.sub(r"^```(?:json)?\s*", "", text.strip(), flags=re.MULTILINE)
+    cleaned = re.sub(r"\s*```\s*$", "", cleaned, flags=re.MULTILINE)
+    cleaned = cleaned.strip()
+
+    # Try direct parse first
+    try:
+        json.loads(cleaned)
+        return cleaned
+    except json.JSONDecodeError:
+        pass
+
+    # Find first balanced JSON object using bracket counting
+    depth = 0
+    start = None
+    for i, ch in enumerate(cleaned):
+        if ch == "{":
+            if start is None:
+                start = i
+            depth += 1
+        elif ch == "}":
+            depth -= 1
+            if depth == 0 and start is not None:
+                candidate = cleaned[start : i + 1]
+                try:
+                    json.loads(candidate)
+                    return candidate
+                except json.JSONDecodeError:
+                    start = None
+    return None
+
+
+def _normalize_exercise_type(exercise_type: str) -> str:
+    """Normalize exercise type to singular form for validation model matching."""
+    type_mapping = {
+        "conversations": "conversation",
+        "conversation": "conversation",
+        "pairs": "pair",
+        "pair": "pair",
+        "translations": "translation",
+        "translation": "translation",
+        "fill_in_blank": "fill_in_blank",
+    }
+    return type_mapping.get(
+        exercise_type.lower().strip(), exercise_type.lower().strip()
+    )
+
+
 def parse_validation_result(response_text: str, exercise_type: str) -> ValidationResult:
     """Parse validation response into appropriate model."""
+    normalized_type = _normalize_exercise_type(exercise_type)
     try:
-        # Extract JSON from response if needed
-        import re
-
-        json_match = re.search(r"\{.*\}", response_text, re.DOTALL)
-        if json_match:
-            json_str = json_match.group()
-        else:
-            json_str = response_text
+        json_str = extract_json_object(response_text)
+        if json_str is None:
+            raise ValueError("No JSON object found in response")
 
         data = json.loads(json_str)
 
         # Clean the data to handle null values and type issues
         cleaned_data = clean_validation_data(data)
 
-        # Return appropriate validation model based on type
-        if exercise_type == "conversation":
+        # Return appropriate validation model based on normalized type
+        if normalized_type == "conversation":
             return ConversationValidation(**cleaned_data)
-        elif exercise_type == "pair":
+        elif normalized_type == "pair":
             return PairValidation(**cleaned_data)
-        elif exercise_type == "translation":
+        elif normalized_type == "translation":
             return TranslationValidation(**cleaned_data)
-        elif exercise_type == "fill_in_blank":
+        elif normalized_type == "fill_in_blank":
             return FillInBlankValidation(**cleaned_data)
         else:
             return ValidationResult(**cleaned_data)
 
     except Exception as e:
-        # Show detailed error information for debugging
         error_msg = f"Error parsing validation result: {e}"
         print(error_msg)
-        print(f"Exercise type: {exercise_type}")
+        print(f"Exercise type: {exercise_type} (normalized: {normalized_type})")
         print(f"Raw response length: {len(response_text)} characters")
-        print(
-            f"Raw response: {response_text!r}"
-        )  # Show full response with repr for exact chars
-
-        # Check if we can find any JSON-like structure
-        import re
-
-        json_matches = re.findall(r"\{[^{}]*\}", response_text)
-        if json_matches:
-            print(f"Found potential JSON objects: {json_matches}")
+        print(f"Raw response: {response_text!r}")
 
         # Return a default "failed" validation
         return ValidationResult(

@@ -67,3 +67,15 @@ ahlingo_mobile/.ruby-version
 # Generation logs
 generation_failures*.csv
 logs/
+
+*/coverage/
+
+# MkDocs build output
+site/
+
+# Generated images
+content/images/
+
+# Local AI-assistant tool configs
+.opencode/
+.claude/

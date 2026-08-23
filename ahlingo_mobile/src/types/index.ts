@@ -24,7 +24,12 @@ export interface TopicWithProgress extends Topic {
 }
 
 export interface StudyTopicInfo extends Topic {
-  availableExerciseTypes: ('pairs' | 'conversation' | 'translation' | 'fill_in_blank')[];
+  availableExerciseTypes: (
+    | 'pairs'
+    | 'conversation'
+    | 'translation'
+    | 'fill_in_blank'
+  )[];
   totalExercises: number;
   completedExercises: number;
   percentage: number;
@@ -195,7 +200,9 @@ export interface ExerciseShuffleContext {
 export type RootStackParamList = {
   Welcome: undefined;
   MainMenu: undefined;
-  TopicSelection: { exerciseType?: 'pairs' | 'conversation' | 'translation' | 'fill_in_blank' };
+  TopicSelection: {
+    exerciseType?: 'pairs' | 'conversation' | 'translation' | 'fill_in_blank';
+  };
   PairsGame: {
     topicId?: number;
     shuffleContext?: ExerciseShuffleContext;

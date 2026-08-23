@@ -81,36 +81,50 @@ const StatsScreen: React.FC<Props> = ({ navigation }) => {
     try {
       setLoading(true);
 
-      // Add timeout promise
-      const timeoutPromise = new Promise<never>((_, reject) => {
-        const timeoutId = setTimeout(() => {
-          reject(new Error('Database operation timed out'));
-        }, 10000); // 10 second timeout
+      const raceWithTimeout = async <T,>(task: Promise<T>): Promise<T> => {
+        let timeoutId: ReturnType<typeof setTimeout>;
+        let cleanupCalled = false;
+        let onAbort: () => void = () => {};
 
-        // Clear timeout if request is aborted
-        signal.addEventListener('abort', () => {
+        const cleanup = () => {
+          if (cleanupCalled) return;
+          cleanupCalled = true;
           clearTimeout(timeoutId);
-          reject(new Error('Request was cancelled'));
+          signal.removeEventListener('abort', onAbort);
+        };
+
+        const timeoutPromise = new Promise<never>((_, reject) => {
+          onAbort = () => {
+            cleanup();
+            reject(new Error('Request was cancelled'));
+          };
+
+          timeoutId = setTimeout(() => {
+            cleanup();
+            reject(new Error('Database operation timed out'));
+          }, 10000);
+
+          signal.addEventListener('abort', onAbort);
         });
-      });
+
+        try {
+          return await Promise.race([task, timeoutPromise]);
+        } finally {
+          cleanup();
+        }
+      };
 
       // Get user settings (this creates user if doesn't exist)
-      const username = await Promise.race([
-        getMostRecentUser(),
-        timeoutPromise,
-      ]);
+      const username = await raceWithTimeout(getMostRecentUser());
 
       if (signal.aborted) return;
 
-      const userSettings = await Promise.race([
-        getUserSettings(username),
-        timeoutPromise,
-      ]);
+      const userSettings = await raceWithTimeout(getUserSettings(username));
 
       if (signal.aborted) return;
 
       // Now get the user ID
-      const userId = await Promise.race([getUserId(username), timeoutPromise]);
+      const userId = await raceWithTimeout(getUserId(username));
 
       if (signal.aborted) return;
 
@@ -131,10 +145,9 @@ const StatsScreen: React.FC<Props> = ({ navigation }) => {
       setUserDifficulty(difficulty);
 
       // Load topic stats and progress summary with timeout using batched function
-      const { stats: topicData, summary: summaryData } = await Promise.race([
-        getUserStatsAndSummary(userId, language, difficulty),
-        timeoutPromise,
-      ]);
+      const { stats: topicData, summary: summaryData } = await raceWithTimeout(
+        getUserStatsAndSummary(userId, language, difficulty)
+      );
 
       if (signal.aborted) return;
 
@@ -306,157 +319,158 @@ const StatsScreen: React.FC<Props> = ({ navigation }) => {
   );
 };
 
-const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) => StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: currentTheme.colors.background,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: currentTheme.colors.background,
-  },
-  loadingText: {
-    marginTop: currentTheme.spacing.lg,
-    fontSize: currentTheme.typography.fontSizes.lg,
-    color: currentTheme.colors.textSecondary,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  summaryCard: {
-    backgroundColor: currentTheme.colors.surface,
-    margin: currentTheme.spacing.lg,
-    padding: currentTheme.spacing.xl,
-    borderRadius: currentTheme.borderRadius.md,
-    ...currentTheme.shadows.lg,
-  },
-  summaryTitle: {
-    fontSize: currentTheme.typography.fontSizes.xl,
-    fontWeight: currentTheme.typography.fontWeights.bold,
-    color: currentTheme.colors.text,
-    marginBottom: currentTheme.spacing.base,
-    textAlign: 'center',
-  },
-  summarySubtitle: {
-    fontSize: currentTheme.typography.fontSizes.base,
-    color: currentTheme.colors.textSecondary,
-    marginBottom: currentTheme.spacing.lg,
-    textAlign: 'center',
-    fontStyle: 'italic',
-  },
-  summaryStats: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginBottom: currentTheme.spacing.xl,
-  },
-  statItem: {
-    alignItems: 'center',
-  },
-  statNumber: {
-    fontSize: currentTheme.typography.fontSizes['3xl'],
-    fontWeight: currentTheme.typography.fontWeights.bold,
-    color: currentTheme.colors.primary,
-  },
-  statLabel: {
-    fontSize: currentTheme.typography.fontSizes.sm,
-    color: currentTheme.colors.textSecondary,
-    marginTop: currentTheme.spacing.xs,
-  },
-  overallProgress: {
-    marginBottom: currentTheme.spacing.lg,
-  },
-  overallProgressLabel: {
-    fontSize: currentTheme.typography.fontSizes.lg,
-    fontWeight: currentTheme.typography.fontWeights.semibold,
-    color: currentTheme.colors.text,
-    marginBottom: currentTheme.spacing.base,
-  },
-  progressBarContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  progressBarBackground: {
-    flex: 1,
-    height: currentTheme.spacing.base,
-    backgroundColor: currentTheme.colors.border,
-    borderRadius: currentTheme.borderRadius.sm,
-    marginRight: currentTheme.spacing.md,
-  },
-  progressBarFill: {
-    height: '100%',
-    backgroundColor: currentTheme.colors.success,
-    borderRadius: currentTheme.borderRadius.sm,
-  },
-  progressText: {
-    fontSize: currentTheme.typography.fontSizes.base,
-    fontWeight: currentTheme.typography.fontWeights.semibold,
-    color: currentTheme.colors.text,
-    minWidth: 40,
-  },
-  topicsSection: {
-    margin: currentTheme.spacing.lg,
-  },
-  sectionTitle: {
-    fontSize: currentTheme.typography.fontSizes.xl,
-    fontWeight: currentTheme.typography.fontWeights.bold,
-    color: currentTheme.colors.text,
-    marginBottom: currentTheme.spacing.xs,
-  },
-  sectionSubtitle: {
-    fontSize: currentTheme.typography.fontSizes.base,
-    color: currentTheme.colors.textSecondary,
-    marginBottom: currentTheme.spacing.md,
-    fontStyle: 'italic',
-  },
-  topicCard: {
-    backgroundColor: currentTheme.colors.surface,
-    padding: currentTheme.spacing.lg,
-    borderRadius: currentTheme.borderRadius.base,
-    marginBottom: currentTheme.spacing.md,
-    ...currentTheme.shadows.base,
-  },
-  topicHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: currentTheme.spacing.xs,
-  },
-  topicName: {
-    fontSize: currentTheme.typography.fontSizes.lg,
-    fontWeight: currentTheme.typography.fontWeights.semibold,
-    color: currentTheme.colors.text,
-  },
-  topicStats: {
-    fontSize: currentTheme.typography.fontSizes.lg,
-    fontWeight: currentTheme.typography.fontWeights.bold,
-    color: currentTheme.colors.primary,
-  },
-  topicAttempted: {
-    fontSize: currentTheme.typography.fontSizes.base,
-    color: currentTheme.colors.textSecondary,
-    marginBottom: currentTheme.spacing.base,
-  },
-  noDataCard: {
-    backgroundColor: currentTheme.colors.surface,
-    padding: currentTheme.spacing['4xl'],
-    borderRadius: currentTheme.borderRadius.base,
-    alignItems: 'center',
-    ...currentTheme.shadows.base,
-  },
-  noDataText: {
-    fontSize: currentTheme.typography.fontSizes.lg,
-    fontWeight: currentTheme.typography.fontWeights.semibold,
-    color: currentTheme.colors.textSecondary,
-    marginBottom: currentTheme.spacing.base,
-    textAlign: 'center',
-  },
-  noDataSubtext: {
-    fontSize: currentTheme.typography.fontSizes.base,
-    color: currentTheme.colors.textLight,
-    textAlign: 'center',
-  },
-});
+const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: currentTheme.colors.background,
+    },
+    loadingContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: currentTheme.colors.background,
+    },
+    loadingText: {
+      marginTop: currentTheme.spacing.lg,
+      fontSize: currentTheme.typography.fontSizes.lg,
+      color: currentTheme.colors.textSecondary,
+    },
+    scrollView: {
+      flex: 1,
+    },
+    summaryCard: {
+      backgroundColor: currentTheme.colors.surface,
+      margin: currentTheme.spacing.lg,
+      padding: currentTheme.spacing.xl,
+      borderRadius: currentTheme.borderRadius.md,
+      ...currentTheme.shadows.lg,
+    },
+    summaryTitle: {
+      fontSize: currentTheme.typography.fontSizes.xl,
+      fontWeight: currentTheme.typography.fontWeights.bold,
+      color: currentTheme.colors.text,
+      marginBottom: currentTheme.spacing.base,
+      textAlign: 'center',
+    },
+    summarySubtitle: {
+      fontSize: currentTheme.typography.fontSizes.base,
+      color: currentTheme.colors.textSecondary,
+      marginBottom: currentTheme.spacing.lg,
+      textAlign: 'center',
+      fontStyle: 'italic',
+    },
+    summaryStats: {
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+      marginBottom: currentTheme.spacing.xl,
+    },
+    statItem: {
+      alignItems: 'center',
+    },
+    statNumber: {
+      fontSize: currentTheme.typography.fontSizes['3xl'],
+      fontWeight: currentTheme.typography.fontWeights.bold,
+      color: currentTheme.colors.primary,
+    },
+    statLabel: {
+      fontSize: currentTheme.typography.fontSizes.sm,
+      color: currentTheme.colors.textSecondary,
+      marginTop: currentTheme.spacing.xs,
+    },
+    overallProgress: {
+      marginBottom: currentTheme.spacing.lg,
+    },
+    overallProgressLabel: {
+      fontSize: currentTheme.typography.fontSizes.lg,
+      fontWeight: currentTheme.typography.fontWeights.semibold,
+      color: currentTheme.colors.text,
+      marginBottom: currentTheme.spacing.base,
+    },
+    progressBarContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    progressBarBackground: {
+      flex: 1,
+      height: currentTheme.spacing.base,
+      backgroundColor: currentTheme.colors.border,
+      borderRadius: currentTheme.borderRadius.sm,
+      marginRight: currentTheme.spacing.md,
+    },
+    progressBarFill: {
+      height: '100%',
+      backgroundColor: currentTheme.colors.success,
+      borderRadius: currentTheme.borderRadius.sm,
+    },
+    progressText: {
+      fontSize: currentTheme.typography.fontSizes.base,
+      fontWeight: currentTheme.typography.fontWeights.semibold,
+      color: currentTheme.colors.text,
+      minWidth: 40,
+    },
+    topicsSection: {
+      margin: currentTheme.spacing.lg,
+    },
+    sectionTitle: {
+      fontSize: currentTheme.typography.fontSizes.xl,
+      fontWeight: currentTheme.typography.fontWeights.bold,
+      color: currentTheme.colors.text,
+      marginBottom: currentTheme.spacing.xs,
+    },
+    sectionSubtitle: {
+      fontSize: currentTheme.typography.fontSizes.base,
+      color: currentTheme.colors.textSecondary,
+      marginBottom: currentTheme.spacing.md,
+      fontStyle: 'italic',
+    },
+    topicCard: {
+      backgroundColor: currentTheme.colors.surface,
+      padding: currentTheme.spacing.lg,
+      borderRadius: currentTheme.borderRadius.base,
+      marginBottom: currentTheme.spacing.md,
+      ...currentTheme.shadows.base,
+    },
+    topicHeader: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: currentTheme.spacing.xs,
+    },
+    topicName: {
+      fontSize: currentTheme.typography.fontSizes.lg,
+      fontWeight: currentTheme.typography.fontWeights.semibold,
+      color: currentTheme.colors.text,
+    },
+    topicStats: {
+      fontSize: currentTheme.typography.fontSizes.lg,
+      fontWeight: currentTheme.typography.fontWeights.bold,
+      color: currentTheme.colors.primary,
+    },
+    topicAttempted: {
+      fontSize: currentTheme.typography.fontSizes.base,
+      color: currentTheme.colors.textSecondary,
+      marginBottom: currentTheme.spacing.base,
+    },
+    noDataCard: {
+      backgroundColor: currentTheme.colors.surface,
+      padding: currentTheme.spacing['4xl'],
+      borderRadius: currentTheme.borderRadius.base,
+      alignItems: 'center',
+      ...currentTheme.shadows.base,
+    },
+    noDataText: {
+      fontSize: currentTheme.typography.fontSizes.lg,
+      fontWeight: currentTheme.typography.fontWeights.semibold,
+      color: currentTheme.colors.textSecondary,
+      marginBottom: currentTheme.spacing.base,
+      textAlign: 'center',
+    },
+    noDataSubtext: {
+      fontSize: currentTheme.typography.fontSizes.base,
+      color: currentTheme.colors.textLight,
+      textAlign: 'center',
+    },
+  });
 
 export default StatsScreen;

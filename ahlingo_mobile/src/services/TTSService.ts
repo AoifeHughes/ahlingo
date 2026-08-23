@@ -1,5 +1,5 @@
 import { Platform } from 'react-native';
-import Tts from 'react-native-tts';
+import Tts, { AndroidOptions } from 'react-native-tts';
 
 export interface TTSOptions {
   rate?: number;
@@ -160,7 +160,10 @@ class TTSService {
 
         if (Platform.OS === 'android') {
           const highQuality = this.availableVoices.filter(
-            v => !v.networkConnectionRequired && !v.notInstalled && (v.quality ?? 0) >= ANDROID_MIN_QUALITY
+            v =>
+              !v.networkConnectionRequired &&
+              !v.notInstalled &&
+              (v.quality ?? 0) >= ANDROID_MIN_QUALITY
           );
           console.log(`High-quality offline voices: ${highQuality.length}`);
         }
@@ -176,7 +179,9 @@ class TTSService {
    * Set user-preferred voices for languages (e.g., from settings)
    * This allows users to override the automatic voice selection.
    */
-  public setUserPreferredVoices(preferredVoices: { [languageCode: string]: string }): void {
+  public setUserPreferredVoices(preferredVoices: {
+    [languageCode: string]: string;
+  }): void {
     this.userPreferredVoices = preferredVoices;
     // Clear cache so new preferences take effect
     this.voiceCache = {};
@@ -189,7 +194,9 @@ class TTSService {
    * On iOS: Prefers premium > enhanced > compact voices
    * On Android: Prefers highest quality offline voices (quality >= 400)
    */
-  private async getBestVoiceForLanguage(languageCode: string): Promise<string | null> {
+  private async getBestVoiceForLanguage(
+    languageCode: string
+  ): Promise<string | null> {
     // Check cache first
     if (this.voiceCache[languageCode]) {
       return this.voiceCache[languageCode];
@@ -200,11 +207,13 @@ class TTSService {
     // Check if user has a preferred voice for this language
     if (this.userPreferredVoices[languageCode]) {
       const preferredVoiceId = this.userPreferredVoices[languageCode];
-      const voice = this.availableVoices.find((v) => v.id === preferredVoiceId);
+      const voice = this.availableVoices.find(v => v.id === preferredVoiceId);
 
       // Only use the preferred voice if it's installed and available offline
       if (voice && !voice.notInstalled && !voice.networkConnectionRequired) {
-        console.log(`Using user-preferred voice for ${languageCode}: ${voice.name}`);
+        console.log(
+          `Using user-preferred voice for ${languageCode}: ${voice.name}`
+        );
         this.voiceCache[languageCode] = preferredVoiceId;
         return preferredVoiceId;
       } else {
@@ -226,7 +235,9 @@ class TTSService {
     const preferredVoices = IOS_PREMIUM_VOICES[languageCode];
 
     if (!preferredVoices) {
-      console.warn(`No premium voice configuration for language: ${languageCode}`);
+      console.warn(
+        `No premium voice configuration for language: ${languageCode}`
+      );
       return null;
     }
 
@@ -240,7 +251,9 @@ class TTSService {
       }
     }
 
-    console.warn(`No premium voices found for ${languageCode}. Using system default.`);
+    console.warn(
+      `No premium voices found for ${languageCode}. Using system default.`
+    );
     this.voiceCache[languageCode] = null;
     return null;
   }
@@ -277,7 +290,11 @@ class TTSService {
 
       if (fallbackVoices.length > 0) {
         const fallback = fallbackVoices[0];
-        console.log(`Using fallback Android voice: ${fallback.name} (quality: ${fallback.quality ?? 'unknown'})`);
+        console.log(
+          `Using fallback Android voice: ${fallback.name} (quality: ${
+            fallback.quality ?? 'unknown'
+          })`
+        );
         this.voiceCache[languageCode] = fallback.id;
         return fallback.id;
       }
@@ -290,13 +307,18 @@ class TTSService {
     suitableVoices.sort((a, b) => (b.quality ?? 0) - (a.quality ?? 0));
 
     const bestVoice = suitableVoices[0];
-    console.log(`Selected Android voice: ${bestVoice.name} (quality: ${bestVoice.quality})`);
+    console.log(
+      `Selected Android voice: ${bestVoice.name} (quality: ${bestVoice.quality})`
+    );
     this.voiceCache[languageCode] = bestVoice.id;
 
     return bestVoice.id;
   }
 
-  public async speak(text: string, options?: IOSTTSOptions | AndroidTTSOptions): Promise<string | void> {
+  public async speak(
+    text: string,
+    options?: IOSTTSOptions | AndroidTTSOptions
+  ): Promise<string | void> {
     await this.initialize();
 
     if (!text || text.trim().length === 0) {
@@ -307,20 +329,31 @@ class TTSService {
     try {
       if (Platform.OS === 'ios') {
         const iosOptions = options as IOSTTSOptions;
-        return await Tts.speak(text, {
-          iosVoiceId: iosOptions?.iosVoiceId,
+        const utteranceId = await Tts.speak(text, {
+          iosVoiceId: iosOptions?.iosVoiceId ?? '',
           rate: iosOptions?.rate ?? 0.5,
-        });
-      } else {
-        const androidOptions = options as AndroidTTSOptions;
-        return await Tts.speak(text, {
           androidParams: {
-            KEY_PARAM_PAN: androidOptions?.androidParams?.KEY_PARAM_PAN ?? 0,
-            KEY_PARAM_VOLUME: androidOptions?.androidParams?.KEY_PARAM_VOLUME ?? 1.0,
-            KEY_PARAM_STREAM: androidOptions?.androidParams?.KEY_PARAM_STREAM ?? 'STREAM_MUSIC',
-            ...androidOptions?.androidParams,
+            KEY_PARAM_PAN: 0,
+            KEY_PARAM_VOLUME: 1.0,
+            KEY_PARAM_STREAM: 'STREAM_MUSIC',
           },
         });
+        return String(utteranceId);
+      } else {
+        const androidOptions = options as AndroidTTSOptions;
+        const utteranceId = await Tts.speak(text, {
+          iosVoiceId: '',
+          rate: 0.5,
+          androidParams: {
+            KEY_PARAM_PAN: androidOptions?.androidParams?.KEY_PARAM_PAN ?? 0,
+            KEY_PARAM_VOLUME:
+              androidOptions?.androidParams?.KEY_PARAM_VOLUME ?? 1.0,
+            KEY_PARAM_STREAM: (androidOptions?.androidParams
+              ?.KEY_PARAM_STREAM ??
+              'STREAM_MUSIC') as AndroidOptions['KEY_PARAM_STREAM'],
+          },
+        });
+        return String(utteranceId);
       }
     } catch (error) {
       console.error('TTS speak error:', error);
@@ -331,7 +364,11 @@ class TTSService {
   /**
    * Speak text in a specific language with automatic best-voice selection
    */
-  public async speakInLanguage(text: string, languageCode: string, options?: TTSOptions): Promise<string | void> {
+  public async speakInLanguage(
+    text: string,
+    languageCode: string,
+    options?: TTSOptions
+  ): Promise<string | void> {
     await this.initialize();
 
     // Get the best voice for this language
@@ -410,49 +447,70 @@ class TTSService {
    */
   private getLanguageCode(languageName: string): string {
     const languageMap: { [key: string]: string } = {
-      'english': Platform.OS === 'ios' ? 'en-US' : 'en',
-      'french': Platform.OS === 'ios' ? 'fr-FR' : 'fr',
-      'spanish': Platform.OS === 'ios' ? 'es-ES' : 'es',
-      'german': Platform.OS === 'ios' ? 'de-DE' : 'de',
-      'italian': Platform.OS === 'ios' ? 'it-IT' : 'it',
-      'portuguese': Platform.OS === 'ios' ? 'pt-BR' : 'pt',
-      'japanese': Platform.OS === 'ios' ? 'ja-JP' : 'ja',
-      'chinese': Platform.OS === 'ios' ? 'zh-CN' : 'zh',
-      'korean': Platform.OS === 'ios' ? 'ko-KR' : 'ko',
-      'russian': Platform.OS === 'ios' ? 'ru-RU' : 'ru',
-      'ukrainian': Platform.OS === 'ios' ? 'uk-UA' : 'uk',
+      english: Platform.OS === 'ios' ? 'en-US' : 'en',
+      french: Platform.OS === 'ios' ? 'fr-FR' : 'fr',
+      spanish: Platform.OS === 'ios' ? 'es-ES' : 'es',
+      german: Platform.OS === 'ios' ? 'de-DE' : 'de',
+      italian: Platform.OS === 'ios' ? 'it-IT' : 'it',
+      portuguese: Platform.OS === 'ios' ? 'pt-BR' : 'pt',
+      japanese: Platform.OS === 'ios' ? 'ja-JP' : 'ja',
+      chinese: Platform.OS === 'ios' ? 'zh-CN' : 'zh',
+      korean: Platform.OS === 'ios' ? 'ko-KR' : 'ko',
+      russian: Platform.OS === 'ios' ? 'ru-RU' : 'ru',
+      ukrainian: Platform.OS === 'ios' ? 'uk-UA' : 'uk',
     };
 
-    return languageMap[languageName.toLowerCase()] || (Platform.OS === 'ios' ? 'en-US' : 'en');
+    return (
+      languageMap[languageName.toLowerCase()] ||
+      (Platform.OS === 'ios' ? 'en-US' : 'en')
+    );
   }
 
   // Convenience methods for common language settings
-  public async speakFrench(text: string, options?: TTSOptions): Promise<string | void> {
+  public async speakFrench(
+    text: string,
+    options?: TTSOptions
+  ): Promise<string | void> {
     const languageCode = Platform.OS === 'ios' ? 'fr-FR' : 'fr';
     return this.speakInLanguage(text, languageCode, options);
   }
 
-  public async speakEnglish(text: string, options?: TTSOptions): Promise<string | void> {
+  public async speakEnglish(
+    text: string,
+    options?: TTSOptions
+  ): Promise<string | void> {
     const languageCode = Platform.OS === 'ios' ? 'en-US' : 'en';
     return this.speakInLanguage(text, languageCode, options);
   }
 
-  public async speakSpanish(text: string, options?: TTSOptions): Promise<string | void> {
+  public async speakSpanish(
+    text: string,
+    options?: TTSOptions
+  ): Promise<string | void> {
     const languageCode = Platform.OS === 'ios' ? 'es-ES' : 'es';
     return this.speakInLanguage(text, languageCode, options);
   }
 
-  public async speakGerman(text: string, options?: TTSOptions): Promise<string | void> {
+  public async speakGerman(
+    text: string,
+    options?: TTSOptions
+  ): Promise<string | void> {
     const languageCode = Platform.OS === 'ios' ? 'de-DE' : 'de';
     return this.speakInLanguage(text, languageCode, options);
   }
 
-  public async speakItalian(text: string, options?: TTSOptions): Promise<string | void> {
+  public async speakItalian(
+    text: string,
+    options?: TTSOptions
+  ): Promise<string | void> {
     const languageCode = Platform.OS === 'ios' ? 'it-IT' : 'it';
     return this.speakInLanguage(text, languageCode, options);
   }
 
-  public async speakPortuguese(text: string, options?: TTSOptions): Promise<string | void> {
+  public async speakPortuguese(
+    text: string,
+    options?: TTSOptions
+  ): Promise<string | void> {
     const languageCode = Platform.OS === 'ios' ? 'pt-BR' : 'pt';
     return this.speakInLanguage(text, languageCode, options);
   }
@@ -460,7 +518,11 @@ class TTSService {
   /**
    * Speak with automatic language detection based on user's language setting
    */
-  public async speakWithLanguageDetection(text: string, userLanguage: string = 'French', options?: TTSOptions): Promise<string | void> {
+  public async speakWithLanguageDetection(
+    text: string,
+    userLanguage: string = 'French',
+    options?: TTSOptions
+  ): Promise<string | void> {
     const languageCode = this.getLanguageCode(userLanguage);
     return this.speakInLanguage(text, languageCode, options);
   }
@@ -468,7 +530,11 @@ class TTSService {
   /**
    * Get voice quality info for a language (useful for UI/debugging)
    */
-  public async getVoiceQualityInfo(languageCode: string): Promise<{ hasHighQuality: boolean; voiceName?: string; quality?: number }> {
+  public async getVoiceQualityInfo(languageCode: string): Promise<{
+    hasHighQuality: boolean;
+    voiceName?: string;
+    quality?: number;
+  }> {
     await this.initialize();
     const voiceId = await this.getBestVoiceForLanguage(languageCode);
 
@@ -481,9 +547,10 @@ class TTSService {
       return { hasHighQuality: false };
     }
 
-    const isHighQuality = Platform.OS === 'ios'
-      ? voiceId.includes('premium') || voiceId.includes('enhanced')
-      : (voice.quality ?? 0) >= ANDROID_MIN_QUALITY;
+    const isHighQuality =
+      Platform.OS === 'ios'
+        ? voiceId.includes('premium') || voiceId.includes('enhanced')
+        : (voice.quality ?? 0) >= ANDROID_MIN_QUALITY;
 
     return {
       hasHighQuality: isHighQuality,
@@ -496,7 +563,9 @@ class TTSService {
    * Get all available voices for a specific language
    * Useful for building voice selection UI in settings
    */
-  public async getAvailableVoicesForLanguage(languageCode: string): Promise<Voice[]> {
+  public async getAvailableVoicesForLanguage(
+    languageCode: string
+  ): Promise<Voice[]> {
     await this.initialize();
     const baseLanguage = languageCode.split('-')[0].toLowerCase();
 

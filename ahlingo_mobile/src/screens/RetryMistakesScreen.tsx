@@ -111,6 +111,8 @@ const RetryMistakesScreen: React.FC<Props> = ({ navigation }) => {
         return '💬';
       case 'translation':
         return '📝';
+      case 'fill_in_blank':
+        return '✏️';
       default:
         return '❓';
     }
@@ -124,6 +126,8 @@ const RetryMistakesScreen: React.FC<Props> = ({ navigation }) => {
         return 'Conversation';
       case 'translation':
         return 'Translation';
+      case 'fill_in_blank':
+        return 'Fill in the Blank';
       default:
         return 'Unknown';
     }
@@ -230,160 +234,161 @@ const RetryMistakesScreen: React.FC<Props> = ({ navigation }) => {
   );
 };
 
-const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) => StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: currentTheme.colors.background,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: currentTheme.colors.background,
-  },
-  loadingText: {
-    marginTop: currentTheme.spacing.lg,
-    fontSize: currentTheme.typography.fontSizes.lg,
-    color: currentTheme.colors.textSecondary,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  headerCard: {
-    backgroundColor: currentTheme.colors.surface,
-    margin: currentTheme.spacing.lg,
-    padding: currentTheme.spacing.xl,
-    borderRadius: currentTheme.borderRadius.md,
-    ...currentTheme.shadows.lg,
-    alignItems: 'center',
-  },
-  headerTitle: {
-    fontSize: currentTheme.typography.fontSizes.xl,
-    fontWeight: currentTheme.typography.fontWeights.bold,
-    color: currentTheme.colors.text,
-    marginBottom: currentTheme.spacing.base,
-    textAlign: 'center',
-  },
-  headerSubtitle: {
-    fontSize: currentTheme.typography.fontSizes.lg,
-    color: currentTheme.colors.textSecondary,
-    marginBottom: currentTheme.spacing.md,
-    textAlign: 'center',
-  },
-  exerciseCount: {
-    fontSize: currentTheme.typography.fontSizes.base,
-    fontWeight: currentTheme.typography.fontWeights.semibold,
-    color: currentTheme.colors.error,
-    backgroundColor: currentTheme.colors.error + '20',
-    paddingHorizontal: currentTheme.spacing.md,
-    paddingVertical: currentTheme.spacing.sm,
-    borderRadius: currentTheme.borderRadius.md,
-  },
-  topicSection: {
-    marginBottom: currentTheme.spacing.lg,
-  },
-  topicTitle: {
-    fontSize: currentTheme.typography.fontSizes.xl,
-    fontWeight: currentTheme.typography.fontWeights.bold,
-    color: currentTheme.colors.text,
-    marginLeft: currentTheme.spacing.lg,
-    marginBottom: currentTheme.spacing.base,
-    marginTop: currentTheme.spacing.base,
-  },
-  exerciseCard: {
-    backgroundColor: currentTheme.colors.surface,
-    marginHorizontal: currentTheme.spacing.lg,
-    marginBottom: currentTheme.spacing.base,
-    borderRadius: currentTheme.borderRadius.base,
-    ...currentTheme.shadows.base,
-  },
-  exerciseContent: {
-    padding: currentTheme.spacing.lg,
-  },
-  exerciseHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: currentTheme.spacing.base,
-  },
-  exerciseInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-  },
-  exerciseIcon: {
-    fontSize: currentTheme.typography.fontSizes['3xl'],
-    marginRight: currentTheme.spacing.md,
-  },
-  exerciseDetails: {
-    flex: 1,
-  },
-  exerciseType: {
-    fontSize: currentTheme.typography.fontSizes.base,
-    fontWeight: currentTheme.typography.fontWeights.semibold,
-    color: currentTheme.colors.primary,
-    marginBottom: currentTheme.spacing.xs,
-  },
-  exerciseName: {
-    fontSize: currentTheme.typography.fontSizes.lg,
-    fontWeight: currentTheme.typography.fontWeights.medium,
-    color: currentTheme.colors.text,
-  },
-  retryButton: {
-    backgroundColor: currentTheme.colors.error,
-    paddingHorizontal: currentTheme.spacing.lg,
-    paddingVertical: currentTheme.spacing.base,
-    borderRadius: currentTheme.spacing.xl,
-    ...currentTheme.shadows.sm,
-  },
-  retryButtonText: {
-    color: currentTheme.colors.background,
-    fontSize: currentTheme.typography.fontSizes.base,
-    fontWeight: currentTheme.typography.fontWeights.semibold,
-  },
-  exerciseFooter: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  exerciseLanguage: {
-    fontSize: currentTheme.typography.fontSizes.sm,
-    color: currentTheme.colors.textSecondary,
-  },
-  exerciseDate: {
-    fontSize: currentTheme.typography.fontSizes.sm,
-    color: currentTheme.colors.textLight,
-  },
-  noDataCard: {
-    backgroundColor: currentTheme.colors.surface,
-    margin: currentTheme.spacing.lg,
-    padding: currentTheme.spacing['4xl'],
-    borderRadius: currentTheme.borderRadius.md,
-    alignItems: 'center',
-    ...currentTheme.shadows.base,
-  },
-  noDataIcon: {
-    fontSize: currentTheme.spacing['5xl'],
-    marginBottom: currentTheme.spacing.lg,
-  },
-  noDataTitle: {
-    fontSize: currentTheme.typography.fontSizes.xl,
-    fontWeight: currentTheme.typography.fontWeights.bold,
-    color: currentTheme.colors.success,
-    marginBottom: currentTheme.spacing.md,
-    textAlign: 'center',
-  },
-  noDataText: {
-    fontSize: currentTheme.typography.fontSizes.lg,
-    color: currentTheme.colors.textSecondary,
-    marginBottom: currentTheme.spacing.base,
-    textAlign: 'center',
-  },
-  noDataSubtext: {
-    fontSize: currentTheme.typography.fontSizes.base,
-    color: currentTheme.colors.textLight,
-    textAlign: 'center',
-  },
-});
+const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: currentTheme.colors.background,
+    },
+    loadingContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: currentTheme.colors.background,
+    },
+    loadingText: {
+      marginTop: currentTheme.spacing.lg,
+      fontSize: currentTheme.typography.fontSizes.lg,
+      color: currentTheme.colors.textSecondary,
+    },
+    scrollView: {
+      flex: 1,
+    },
+    headerCard: {
+      backgroundColor: currentTheme.colors.surface,
+      margin: currentTheme.spacing.lg,
+      padding: currentTheme.spacing.xl,
+      borderRadius: currentTheme.borderRadius.md,
+      ...currentTheme.shadows.lg,
+      alignItems: 'center',
+    },
+    headerTitle: {
+      fontSize: currentTheme.typography.fontSizes.xl,
+      fontWeight: currentTheme.typography.fontWeights.bold,
+      color: currentTheme.colors.text,
+      marginBottom: currentTheme.spacing.base,
+      textAlign: 'center',
+    },
+    headerSubtitle: {
+      fontSize: currentTheme.typography.fontSizes.lg,
+      color: currentTheme.colors.textSecondary,
+      marginBottom: currentTheme.spacing.md,
+      textAlign: 'center',
+    },
+    exerciseCount: {
+      fontSize: currentTheme.typography.fontSizes.base,
+      fontWeight: currentTheme.typography.fontWeights.semibold,
+      color: currentTheme.colors.error,
+      backgroundColor: currentTheme.colors.error + '20',
+      paddingHorizontal: currentTheme.spacing.md,
+      paddingVertical: currentTheme.spacing.sm,
+      borderRadius: currentTheme.borderRadius.md,
+    },
+    topicSection: {
+      marginBottom: currentTheme.spacing.lg,
+    },
+    topicTitle: {
+      fontSize: currentTheme.typography.fontSizes.xl,
+      fontWeight: currentTheme.typography.fontWeights.bold,
+      color: currentTheme.colors.text,
+      marginLeft: currentTheme.spacing.lg,
+      marginBottom: currentTheme.spacing.base,
+      marginTop: currentTheme.spacing.base,
+    },
+    exerciseCard: {
+      backgroundColor: currentTheme.colors.surface,
+      marginHorizontal: currentTheme.spacing.lg,
+      marginBottom: currentTheme.spacing.base,
+      borderRadius: currentTheme.borderRadius.base,
+      ...currentTheme.shadows.base,
+    },
+    exerciseContent: {
+      padding: currentTheme.spacing.lg,
+    },
+    exerciseHeader: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: currentTheme.spacing.base,
+    },
+    exerciseInfo: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      flex: 1,
+    },
+    exerciseIcon: {
+      fontSize: currentTheme.typography.fontSizes['3xl'],
+      marginRight: currentTheme.spacing.md,
+    },
+    exerciseDetails: {
+      flex: 1,
+    },
+    exerciseType: {
+      fontSize: currentTheme.typography.fontSizes.base,
+      fontWeight: currentTheme.typography.fontWeights.semibold,
+      color: currentTheme.colors.primary,
+      marginBottom: currentTheme.spacing.xs,
+    },
+    exerciseName: {
+      fontSize: currentTheme.typography.fontSizes.lg,
+      fontWeight: currentTheme.typography.fontWeights.medium,
+      color: currentTheme.colors.text,
+    },
+    retryButton: {
+      backgroundColor: currentTheme.colors.error,
+      paddingHorizontal: currentTheme.spacing.lg,
+      paddingVertical: currentTheme.spacing.base,
+      borderRadius: currentTheme.spacing.xl,
+      ...currentTheme.shadows.sm,
+    },
+    retryButtonText: {
+      color: currentTheme.colors.background,
+      fontSize: currentTheme.typography.fontSizes.base,
+      fontWeight: currentTheme.typography.fontWeights.semibold,
+    },
+    exerciseFooter: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    exerciseLanguage: {
+      fontSize: currentTheme.typography.fontSizes.sm,
+      color: currentTheme.colors.textSecondary,
+    },
+    exerciseDate: {
+      fontSize: currentTheme.typography.fontSizes.sm,
+      color: currentTheme.colors.textLight,
+    },
+    noDataCard: {
+      backgroundColor: currentTheme.colors.surface,
+      margin: currentTheme.spacing.lg,
+      padding: currentTheme.spacing['4xl'],
+      borderRadius: currentTheme.borderRadius.md,
+      alignItems: 'center',
+      ...currentTheme.shadows.base,
+    },
+    noDataIcon: {
+      fontSize: currentTheme.spacing['5xl'],
+      marginBottom: currentTheme.spacing.lg,
+    },
+    noDataTitle: {
+      fontSize: currentTheme.typography.fontSizes.xl,
+      fontWeight: currentTheme.typography.fontWeights.bold,
+      color: currentTheme.colors.success,
+      marginBottom: currentTheme.spacing.md,
+      textAlign: 'center',
+    },
+    noDataText: {
+      fontSize: currentTheme.typography.fontSizes.lg,
+      color: currentTheme.colors.textSecondary,
+      marginBottom: currentTheme.spacing.base,
+      textAlign: 'center',
+    },
+    noDataSubtext: {
+      fontSize: currentTheme.typography.fontSizes.base,
+      color: currentTheme.colors.textLight,
+      textAlign: 'center',
+    },
+  });
 
 export default RetryMistakesScreen;

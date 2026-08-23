@@ -1,6 +1,9 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react-native';
-import { renderSimple, createMockFunction } from '../../test-utils/simple-render';
+import {
+  renderSimple,
+  createMockFunction,
+} from '../../test-utils/simple-render';
 
 // Mock the theme hook
 jest.mock('../../contexts/ThemeContext', () => ({
@@ -80,7 +83,9 @@ describe('ComingSoonScreen', () => {
 
   it('renders default message', () => {
     const { getByText } = renderSimple(<ComingSoonScreen {...defaultProps} />);
-    expect(getByText(/We're working hard to bring you this exciting new feature/)).toBeTruthy();
+    expect(
+      getByText(/We're working hard to bring you this exciting new feature/)
+    ).toBeTruthy();
   });
 
   it('renders optional description when provided', () => {
@@ -88,12 +93,16 @@ describe('ComingSoonScreen', () => {
       ...defaultProps,
       description: 'This feature will help you learn faster',
     };
-    const { getByText } = renderSimple(<ComingSoonScreen {...propsWithDescription} />);
+    const { getByText } = renderSimple(
+      <ComingSoonScreen {...propsWithDescription} />
+    );
     expect(getByText('This feature will help you learn faster')).toBeTruthy();
   });
 
   it('does not render description when not provided', () => {
-    const { queryByText } = renderSimple(<ComingSoonScreen {...defaultProps} />);
+    const { queryByText } = renderSimple(
+      <ComingSoonScreen {...defaultProps} />
+    );
     expect(queryByText('This feature will help you learn faster')).toBeNull();
   });
 
@@ -127,16 +136,25 @@ describe('ComingSoonScreen', () => {
       featureName: 'Very Long Feature Name That Should Be Displayed Properly',
     };
     const { getByText } = renderSimple(<ComingSoonScreen {...longNameProps} />);
-    expect(getByText('Very Long Feature Name That Should Be Displayed Properly')).toBeTruthy();
+    expect(
+      getByText('Very Long Feature Name That Should Be Displayed Properly')
+    ).toBeTruthy();
   });
 
   it('handles long descriptions', () => {
     const longDescriptionProps = {
       ...defaultProps,
-      description: 'This is a very long description that explains all the amazing features and benefits that this new functionality will bring to users when it becomes available in future updates.',
+      description:
+        'This is a very long description that explains all the amazing features and benefits that this new functionality will bring to users when it becomes available in future updates.',
     };
-    const { getByText } = renderSimple(<ComingSoonScreen {...longDescriptionProps} />);
-    expect(getByText(/This is a very long description that explains all the amazing features/)).toBeTruthy();
+    const { getByText } = renderSimple(
+      <ComingSoonScreen {...longDescriptionProps} />
+    );
+    expect(
+      getByText(
+        /This is a very long description that explains all the amazing features/
+      )
+    ).toBeTruthy();
   });
 
   it('back button is pressable', () => {

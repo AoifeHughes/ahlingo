@@ -9,7 +9,11 @@ import {
   TouchableOpacity,
   BackHandler,
 } from 'react-native';
-import { RouteProp, useFocusEffect, usePreventRemove } from '@react-navigation/native';
+import {
+  RouteProp,
+  useFocusEffect,
+  usePreventRemove,
+} from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useSelector } from 'react-redux';
 import { RootStackParamList, PairExercise, ExerciseInfo } from '../types';
@@ -68,6 +72,7 @@ const PairsGameScreen: React.FC<Props> = ({ route, navigation }) => {
     matchedPairs: [],
     correctCount: 0,
     incorrectCount: 0,
+    showCompletionMessage: false,
   });
   const [userLanguage, setUserLanguage] = useState<string>('French');
   const [userDifficulty, setUserDifficulty] = useState<string>('Beginner');
@@ -88,7 +93,7 @@ const PairsGameScreen: React.FC<Props> = ({ route, navigation }) => {
           {
             text: 'Exit',
             style: 'destructive',
-            onPress: () => navigation.navigate('MainMenu')
+            onPress: () => navigation.navigate('MainMenu'),
           },
         ]
       );
@@ -101,7 +106,10 @@ const PairsGameScreen: React.FC<Props> = ({ route, navigation }) => {
     useCallback(() => {
       if (shuffleContext) {
         const onBackPress = () => handleBackPress();
-        const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress);
+        const subscription = BackHandler.addEventListener(
+          'hardwareBackPress',
+          onBackPress
+        );
         return () => subscription.remove();
       }
     }, [shuffleContext, handleBackPress])
@@ -117,7 +125,7 @@ const PairsGameScreen: React.FC<Props> = ({ route, navigation }) => {
         {
           text: 'Exit',
           style: 'destructive',
-          onPress: () => navigation.navigate('MainMenu')
+          onPress: () => navigation.navigate('MainMenu'),
         },
       ]
     );
@@ -135,8 +143,10 @@ const PairsGameScreen: React.FC<Props> = ({ route, navigation }) => {
         return;
       }
 
-      const language = userContext.settings.language || settings.language || 'French';
-      const difficulty = userContext.settings.difficulty || settings.difficulty || 'Beginner';
+      const language =
+        userContext.settings.language || settings.language || 'French';
+      const difficulty =
+        userContext.settings.difficulty || settings.difficulty || 'Beginner';
 
       setUserLanguage(language);
       setUserDifficulty(difficulty);
@@ -299,7 +309,10 @@ const PairsGameScreen: React.FC<Props> = ({ route, navigation }) => {
         if (currentExercise) {
           // Exercise is considered successful only if user had no incorrect attempts
           const isSuccessful = gameState.incorrectCount === 0;
-          await recordExerciseAttemptForCurrentUser(currentExercise.id, isSuccessful);
+          await recordExerciseAttemptForCurrentUser(
+            currentExercise.id,
+            isSuccessful
+          );
         }
 
         // Handle shuffle mode completion
@@ -350,7 +363,9 @@ const PairsGameScreen: React.FC<Props> = ({ route, navigation }) => {
         await TTSService.speakEnglish(text, { rate: 0.5 });
       } else {
         // Right column - target language (e.g., French), use target language TTS
-        await TTSService.speakWithLanguageDetection(text, userLanguage, { rate: 0.5 });
+        await TTSService.speakWithLanguageDetection(text, userLanguage, {
+          rate: 0.5,
+        });
       }
     } catch (error) {
       console.error('Failed to speak text:', error);
@@ -374,12 +389,14 @@ const PairsGameScreen: React.FC<Props> = ({ route, navigation }) => {
       {/* Header with refresh button - hidden in shuffle mode */}
       {!shuffleContext && (
         <View style={styles.header}>
-          <TouchableOpacity style={styles.refreshButton} onPress={handleRefresh}>
+          <TouchableOpacity
+            style={styles.refreshButton}
+            onPress={handleRefresh}
+          >
             <Text style={styles.refreshButtonText}>🔄 New Exercise</Text>
           </TouchableOpacity>
         </View>
       )}
-
 
       {/* Score display */}
       <View style={styles.scoreContainer}>
@@ -441,26 +458,33 @@ const PairsGameScreen: React.FC<Props> = ({ route, navigation }) => {
         <View style={styles.completionOverlay}>
           <View style={styles.completionMessage}>
             <Text style={styles.completionTitle}>
-              {gameState.incorrectCount === 0 ? '🎉 Perfect!' : '✅ Exercise Complete!'}
+              {gameState.incorrectCount === 0
+                ? '🎉 Perfect!'
+                : '✅ Exercise Complete!'}
             </Text>
             <Text style={styles.completionText}>
               {gameState.incorrectCount === 0
                 ? 'All pairs matched with no mistakes!'
-                : `All pairs matched! ${gameState.correctCount} correct, ${gameState.incorrectCount} incorrect.`
-              }
+                : `All pairs matched! ${gameState.correctCount} correct, ${gameState.incorrectCount} incorrect.`}
             </Text>
             <TouchableOpacity
               style={[
                 styles.continueButton,
-                { backgroundColor: gameState.incorrectCount === 0 ? theme.colors.success : theme.colors.primary }
+                {
+                  backgroundColor:
+                    gameState.incorrectCount === 0
+                      ? theme.colors.success
+                      : theme.colors.primary,
+                },
               ]}
               onPress={handleContinue}
             >
               <Text style={styles.continueButtonText}>
                 {shuffleContext
-                  ? (gameState.incorrectCount === 0 ? '✅ Perfect! Next Exercise' : '➡️ Next Exercise')
-                  : 'Next Exercise'
-                }
+                  ? gameState.incorrectCount === 0
+                    ? '✅ Perfect! Next Exercise'
+                    : '➡️ Next Exercise'
+                  : 'Next Exercise'}
               </Text>
             </TouchableOpacity>
           </View>
@@ -470,114 +494,115 @@ const PairsGameScreen: React.FC<Props> = ({ route, navigation }) => {
   );
 };
 
-const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) => StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: currentTheme.colors.background,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: currentTheme.colors.background,
-  },
-  loadingText: {
-    marginTop: currentTheme.spacing.lg,
-    fontSize: currentTheme.typography.fontSizes.lg,
-    color: currentTheme.colors.textSecondary,
-  },
-  header: {
-    backgroundColor: currentTheme.colors.surface,
-    paddingVertical: currentTheme.spacing.md,
-    paddingHorizontal: currentTheme.spacing.lg,
-    borderBottomWidth: 1,
-    borderBottomColor: currentTheme.colors.border,
-    alignItems: 'center',
-  },
-  refreshButton: {
-    backgroundColor: currentTheme.colors.primary,
-    paddingVertical: currentTheme.spacing.base,
-    paddingHorizontal: currentTheme.spacing.lg,
-    borderRadius: currentTheme.spacing.xl,
-    ...currentTheme.shadows.base,
-  },
-  refreshButtonText: {
-    color: currentTheme.colors.background,
-    fontSize: currentTheme.typography.fontSizes.base,
-    fontWeight: currentTheme.typography.fontWeights.semibold,
-  },
-  scoreContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    backgroundColor: currentTheme.colors.surface,
-    paddingVertical: currentTheme.spacing.md,
-    marginBottom: 1,
-  },
-  scoreText: {
-    fontSize: currentTheme.typography.fontSizes.lg,
-    fontWeight: currentTheme.typography.fontWeights.semibold,
-    color: currentTheme.colors.text,
-  },
-  gameContainer: {
-    flex: 1,
-    flexDirection: 'row',
-  },
-  column: {
-    flex: 1,
-    paddingHorizontal: currentTheme.spacing.base,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    paddingVertical: currentTheme.spacing.lg,
-  },
-  completionOverlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 1000,
-  },
-  completionMessage: {
-    backgroundColor: currentTheme.colors.surface,
-    padding: currentTheme.spacing['2xl'],
-    borderRadius: currentTheme.borderRadius.lg,
-    alignItems: 'center',
-    maxWidth: '80%',
-    ...currentTheme.shadows.lg,
-  },
-  completionTitle: {
-    fontSize: currentTheme.typography.fontSizes['2xl'],
-    fontWeight: currentTheme.typography.fontWeights.bold,
-    color: currentTheme.colors.text,
-    marginBottom: currentTheme.spacing.lg,
-    textAlign: 'center',
-  },
-  completionText: {
-    fontSize: currentTheme.typography.fontSizes.lg,
-    color: currentTheme.colors.textSecondary,
-    marginBottom: currentTheme.spacing['2xl'],
-    textAlign: 'center',
-    lineHeight: 24,
-  },
-  continueButton: {
-    paddingVertical: currentTheme.spacing.lg,
-    paddingHorizontal: currentTheme.spacing['2xl'],
-    borderRadius: currentTheme.borderRadius.base,
-    minWidth: 200,
-    alignItems: 'center',
-    ...currentTheme.shadows.base,
-  },
-  continueButtonText: {
-    color: currentTheme.colors.surface,
-    fontSize: currentTheme.typography.fontSizes.lg,
-    fontWeight: currentTheme.typography.fontWeights.bold,
-  },
-});
+const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: currentTheme.colors.background,
+    },
+    loadingContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: currentTheme.colors.background,
+    },
+    loadingText: {
+      marginTop: currentTheme.spacing.lg,
+      fontSize: currentTheme.typography.fontSizes.lg,
+      color: currentTheme.colors.textSecondary,
+    },
+    header: {
+      backgroundColor: currentTheme.colors.surface,
+      paddingVertical: currentTheme.spacing.md,
+      paddingHorizontal: currentTheme.spacing.lg,
+      borderBottomWidth: 1,
+      borderBottomColor: currentTheme.colors.border,
+      alignItems: 'center',
+    },
+    refreshButton: {
+      backgroundColor: currentTheme.colors.primary,
+      paddingVertical: currentTheme.spacing.base,
+      paddingHorizontal: currentTheme.spacing.lg,
+      borderRadius: currentTheme.spacing.xl,
+      ...currentTheme.shadows.base,
+    },
+    refreshButtonText: {
+      color: currentTheme.colors.background,
+      fontSize: currentTheme.typography.fontSizes.base,
+      fontWeight: currentTheme.typography.fontWeights.semibold,
+    },
+    scoreContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+      backgroundColor: currentTheme.colors.surface,
+      paddingVertical: currentTheme.spacing.md,
+      marginBottom: 1,
+    },
+    scoreText: {
+      fontSize: currentTheme.typography.fontSizes.lg,
+      fontWeight: currentTheme.typography.fontWeights.semibold,
+      color: currentTheme.colors.text,
+    },
+    gameContainer: {
+      flex: 1,
+      flexDirection: 'row',
+    },
+    column: {
+      flex: 1,
+      paddingHorizontal: currentTheme.spacing.base,
+    },
+    scrollView: {
+      flex: 1,
+    },
+    scrollContent: {
+      paddingVertical: currentTheme.spacing.lg,
+    },
+    completionOverlay: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: 'rgba(0, 0, 0, 0.7)',
+      justifyContent: 'center',
+      alignItems: 'center',
+      zIndex: 1000,
+    },
+    completionMessage: {
+      backgroundColor: currentTheme.colors.surface,
+      padding: currentTheme.spacing['2xl'],
+      borderRadius: currentTheme.borderRadius.lg,
+      alignItems: 'center',
+      maxWidth: '80%',
+      ...currentTheme.shadows.lg,
+    },
+    completionTitle: {
+      fontSize: currentTheme.typography.fontSizes['2xl'],
+      fontWeight: currentTheme.typography.fontWeights.bold,
+      color: currentTheme.colors.text,
+      marginBottom: currentTheme.spacing.lg,
+      textAlign: 'center',
+    },
+    completionText: {
+      fontSize: currentTheme.typography.fontSizes.lg,
+      color: currentTheme.colors.textSecondary,
+      marginBottom: currentTheme.spacing['2xl'],
+      textAlign: 'center',
+      lineHeight: 24,
+    },
+    continueButton: {
+      paddingVertical: currentTheme.spacing.lg,
+      paddingHorizontal: currentTheme.spacing['2xl'],
+      borderRadius: currentTheme.borderRadius.base,
+      minWidth: 200,
+      alignItems: 'center',
+      ...currentTheme.shadows.base,
+    },
+    continueButtonText: {
+      color: currentTheme.colors.surface,
+      fontSize: currentTheme.typography.fontSizes.lg,
+      fontWeight: currentTheme.typography.fontWeights.bold,
+    },
+  });
 
 export default PairsGameScreen;

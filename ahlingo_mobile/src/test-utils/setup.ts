@@ -19,12 +19,34 @@ jest.mock('react-native-sqlite-storage', () => {
   };
 });
 
-jest.mock('react-native-fs', () => ({
-  DocumentDirectoryPath: '/mock/path',
-  exists: jest.fn(() => Promise.resolve(true)),
-  copyFile: jest.fn(() => Promise.resolve()),
-  mkdir: jest.fn(() => Promise.resolve()),
-}));
+jest.mock('react-native-fs', () => {
+  const existsMock = jest.fn(() => Promise.resolve(true));
+  const statMock = jest.fn(() => Promise.resolve({ size: 1024 }));
+  const unlinkMock = jest.fn(() => Promise.resolve());
+  const copyFileMock = jest.fn(() => Promise.resolve());
+  const copyFileAssetsMock = jest.fn(() => Promise.resolve());
+  const downloadFileMock = jest.fn(() => ({
+    promise: Promise.resolve(),
+    jobId: 1,
+    statusCode: 200,
+    contentLength: 1024,
+    bytesWritten: 0,
+    headers: {},
+  }));
+
+  return {
+    DocumentDirectoryPath: '/mock/documents',
+    ExternalDirectoryPath: '/mock/external',
+    MainBundlePath: '/mock/bundle',
+    exists: existsMock,
+    copyFile: copyFileMock,
+    copyFileAssets: copyFileAssetsMock,
+    mkdir: jest.fn(() => Promise.resolve()),
+    stat: statMock,
+    unlink: unlinkMock,
+    downloadFile: downloadFileMock,
+  };
+});
 
 jest.mock('@react-native-async-storage/async-storage', () => ({
   getItem: jest.fn(() => Promise.resolve(null)),
@@ -38,23 +60,44 @@ jest.mock('react-native-vector-icons/MaterialIcons', () => 'MaterialIcons');
 // Mock navigation-related modules for screen tests
 jest.mock('@react-navigation/native', () => {
   const actual = jest.requireActual('@react-navigation/native');
+  let focusEffectHasRun = false;
+
+  const resetFocusEffect = () => {
+    focusEffectHasRun = false;
+  };
+
+  (globalThis as any).__resetFocusEffectMock = resetFocusEffect;
+
   return {
     ...actual,
-    useFocusEffect: jest.fn((callback) => {
-      // Just call the callback immediately for testing
-      if (typeof callback === 'function') {
+    useNavigation: () => ({
+      navigate: jest.fn(),
+      goBack: jest.fn(),
+      replace: jest.fn(),
+    }),
+    useRoute: () => ({
+      params: {},
+    }),
+    useFocusEffect: jest.fn(callback => {
+      if (!focusEffectHasRun && typeof callback === 'function') {
+        focusEffectHasRun = true;
         const cleanup = callback();
         return cleanup;
       }
+      return () => {};
     }),
     usePreventRemove: jest.fn(),
+    NavigationContainer: ({ children }: any) => children,
   };
 });
 
 // Mock BackHandler
-jest.mock('react-native/Libraries/Utilities/BackHandler', () => ({
-  addEventListener: jest.fn(() => ({ remove: jest.fn() })),
-  removeEventListener: jest.fn(),
+jest.doMock('react-native/Libraries/Utilities/BackHandler', () => ({
+  __esModule: true,
+  default: {
+    addEventListener: jest.fn(() => ({ remove: jest.fn() })),
+    removeEventListener: jest.fn(),
+  },
 }));
 
 // Mock theme utilities
@@ -81,20 +124,6 @@ jest.mock('../utils/theme', () => ({
   })),
 }));
 
-// Mock navigation
-jest.mock('@react-navigation/native', () => ({
-  useNavigation: () => ({
-    navigate: jest.fn(),
-    goBack: jest.fn(),
-    replace: jest.fn(),
-  }),
-  useRoute: () => ({
-    params: {},
-  }),
-  useFocusEffect: jest.fn(),
-  NavigationContainer: ({ children }: any) => children,
-}));
-
 // Mock Redux hooks
 jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
@@ -105,3 +134,17 @@ jest.mock('react-redux', () => ({
 
 // Global test timeout
 jest.setTimeout(10000);
+
+const globalAny = global as any;
+
+if (typeof globalAny.window === 'undefined') {
+  globalAny.window = global;
+}
+
+if (typeof globalAny.window.dispatchEvent !== 'function') {
+  globalAny.window.dispatchEvent = () => {};
+}
+
+beforeEach(() => {
+  (globalThis as any).__resetFocusEffectMock?.();
+});

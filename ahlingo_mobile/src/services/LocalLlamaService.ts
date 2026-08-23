@@ -14,7 +14,8 @@ const AVAILABLE_LOCAL_MODELS: LocalModel[] = [
     id: 'tinyllama-1.1b-q4',
     name: 'TinyLlama 1.1B Q4',
     filename: 'tinyllama-1.1b-chat-v1.0.Q4_K_M.gguf',
-    downloadUrl: 'https://huggingface.co/TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF/resolve/main/tinyllama-1.1b-chat-v1.0.Q4_K_M.gguf',
+    downloadUrl:
+      'https://huggingface.co/TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF/resolve/main/tinyllama-1.1b-chat-v1.0.Q4_K_M.gguf',
     description: 'Compact and fast model, optimized for mobile devices',
     fileSize: 638 * 1024 * 1024, // ~638MB
   },
@@ -22,7 +23,8 @@ const AVAILABLE_LOCAL_MODELS: LocalModel[] = [
     id: 'phi-3-mini-4k-instruct-q4',
     name: 'Phi-3 Mini 4K Instruct (Q4)',
     filename: 'phi-3-mini-4k-instruct-q4.gguf',
-    downloadUrl: 'https://huggingface.co/microsoft/Phi-3-mini-4k-instruct-gguf/resolve/main/Phi-3-mini-4k-instruct-q4.gguf',
+    downloadUrl:
+      'https://huggingface.co/microsoft/Phi-3-mini-4k-instruct-gguf/resolve/main/Phi-3-mini-4k-instruct-q4.gguf',
     description: 'Microsoft Phi-3 Mini optimized for instruction following',
     fileSize: 2.4 * 1024 * 1024 * 1024, // ~2.4GB
   },
@@ -30,16 +32,24 @@ const AVAILABLE_LOCAL_MODELS: LocalModel[] = [
     id: 'phi-4-mini-instruct-q4',
     name: 'Phi-4 Mini Instruct (Q4)',
     filename: 'microsoft_Phi-4-mini-instruct-Q4_0.gguf',
-    downloadUrl: 'https://huggingface.co/bartowski/microsoft_Phi-4-mini-instruct-GGUF/resolve/main/microsoft_Phi-4-mini-instruct-Q4_0.gguf?download=true',
-    description: 'Latest Microsoft Phi-4 Mini model with enhanced instruction following',
+    downloadUrl:
+      'https://huggingface.co/bartowski/microsoft_Phi-4-mini-instruct-GGUF/resolve/main/microsoft_Phi-4-mini-instruct-Q4_0.gguf?download=true',
+    description:
+      'Latest Microsoft Phi-4 Mini model with enhanced instruction following',
     fileSize: 2.7 * 1024 * 1024 * 1024, // ~2.7GB
   },
 ];
 
 const STOP_WORDS = [
-  '</s>', '<|end|>', '<|eot_id|>', '<|end_of_text|>',
-  '<|im_end|>', '<|EOT|>', '<|END_OF_TURN_TOKEN|>',
-  '<|end_of_turn|>', '<|endoftext|>'
+  '</s>',
+  '<|end|>',
+  '<|eot_id|>',
+  '<|end_of_text|>',
+  '<|im_end|>',
+  '<|EOT|>',
+  '<|END_OF_TURN_TOKEN|>',
+  '<|end_of_turn|>',
+  '<|endoftext|>',
 ];
 
 export interface LocalLlamaCallbacks {
@@ -101,7 +111,7 @@ class LocalLlamaService {
       modelId,
       filename: model.filename,
       filePath,
-      exists
+      exists,
     });
 
     if (exists) {
@@ -113,13 +123,18 @@ class LocalLlamaService {
           modelId,
           filename: model.filename,
           actualSizeGB: actualSize / (1024 * 1024 * 1024),
-          actualSizeMB: actualSize / (1024 * 1024)
+          actualSizeMB: actualSize / (1024 * 1024),
         });
 
         // File exists and has content, consider it valid
         // No size validation - just check that it's not empty
         if (actualSize > 0) {
-          console.log(`✅ Model ${modelId} is downloaded and valid (size: ${(actualSize / (1024 * 1024 * 1024)).toFixed(2)} GB)`);
+          console.log(
+            `✅ Model ${modelId} is downloaded and valid (size: ${(
+              actualSize /
+              (1024 * 1024 * 1024)
+            ).toFixed(2)} GB)`
+          );
           return true;
         } else {
           console.log(`❌ Model ${modelId} file is empty`);
@@ -155,13 +170,17 @@ class LocalLlamaService {
         console.log(`Model ${modelId} already downloaded and complete`);
         return;
       } else {
-        console.log(`Model ${modelId} exists but incomplete, removing partial download`);
+        console.log(
+          `Model ${modelId} exists but incomplete, removing partial download`
+        );
         await RNFS.unlink(filePath);
       }
     }
 
     try {
-      console.log(`🚀 Starting download for ${model.name} from ${model.downloadUrl}`);
+      console.log(
+        `🚀 Starting download for ${model.name} from ${model.downloadUrl}`
+      );
       console.log(`📁 Downloading to: ${filePath}`);
 
       const { promise } = RNFS.downloadFile({
@@ -171,12 +190,12 @@ class LocalLlamaService {
         discretionary: true, // Allow OS to control timing for better performance (iOS)
         cacheable: true, // Allow caching in shared NSURLCache (iOS)
         progressDivider: 1, // Report progress for every byte written
-        begin: (res) => {
+        begin: res => {
           console.log(`📋 Download begin for ${model.name}:`, {
             jobId: res.jobId,
             statusCode: res.statusCode,
             contentLength: res.contentLength,
-            headers: res.headers
+            headers: res.headers,
           });
 
           // Initialize progress tracking with content length
@@ -189,9 +208,14 @@ class LocalLlamaService {
             });
           }
         },
-        progress: (res) => {
-          const progressPercent = res.contentLength > 0 ? (res.bytesWritten / res.contentLength) : 0;
-          console.log(`📊 Download progress: ${Math.round(progressPercent * 100)}% (${res.bytesWritten}/${res.contentLength})`);
+        progress: res => {
+          const progressPercent =
+            res.contentLength > 0 ? res.bytesWritten / res.contentLength : 0;
+          console.log(
+            `📊 Download progress: ${Math.round(progressPercent * 100)}% (${
+              res.bytesWritten
+            }/${res.contentLength})`
+          );
 
           if (onProgress) {
             onProgress({
@@ -216,7 +240,11 @@ class LocalLlamaService {
         console.error('Error cleaning up partial download:', cleanupError);
       }
 
-      throw new Error(`Failed to download ${model.name}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to download ${model.name}: ${
+          error instanceof Error ? error.message : 'Unknown error'
+        }`
+      );
     }
   }
 
@@ -242,7 +270,11 @@ class LocalLlamaService {
       }
     } catch (error) {
       console.error(`Error deleting model ${modelId}:`, error);
-      throw new Error(`Failed to delete ${model.name}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to delete ${model.name}: ${
+          error instanceof Error ? error.message : 'Unknown error'
+        }`
+      );
     }
   }
 
@@ -272,7 +304,9 @@ class LocalLlamaService {
       const exists = await RNFS.exists(filePath);
 
       if (!exists) {
-        throw new Error(`Model ${model.name} is not downloaded. Please download it first.`);
+        throw new Error(
+          `Model ${model.name} is not downloaded. Please download it first.`
+        );
       }
 
       console.log(`Initializing ${model.name}...`);
@@ -312,7 +346,11 @@ class LocalLlamaService {
       console.error(`Error initializing model ${modelId}:`, error);
       this.context = null;
       this.currentModelId = null;
-      throw new Error(`Failed to initialize model: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to initialize model: ${
+          error instanceof Error ? error.message : 'Unknown error'
+        }`
+      );
     } finally {
       this.isInitializing = false;
     }
@@ -353,7 +391,10 @@ class LocalLlamaService {
       };
     } catch (error) {
       console.error('Error during completion:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error during completion';
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : 'Unknown error during completion';
       callbacks.onError(new Error(errorMessage));
       throw error;
     }
@@ -386,7 +427,10 @@ class LocalLlamaService {
   // Get storage usage
   async getStorageUsage(): Promise<{ totalSize: number; modelCount: number }> {
     const downloadedModels = await this.getDownloadedModels();
-    const totalSize = downloadedModels.reduce((sum, model) => sum + (model.fileSize || 0), 0);
+    const totalSize = downloadedModels.reduce(
+      (sum, model) => sum + (model.fileSize || 0),
+      0
+    );
 
     return {
       totalSize,

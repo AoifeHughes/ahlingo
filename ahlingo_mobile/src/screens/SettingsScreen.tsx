@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import {
   View,
   ScrollView,
@@ -56,6 +56,11 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
     }
   }, [formData.preferredVoices]);
 
+  const selectedLanguages = useMemo(
+    () => languages.map(l => l.value),
+    [languages]
+  );
+
   const handleVoiceChange = (languageCode: string, voiceId: string) => {
     const newPreferredVoices = { ...formData.preferredVoices };
 
@@ -107,18 +112,18 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
         testID="settings-scroll"
       >
         <View style={styles.content}>
-        <BasicSettingsForm
-          formData={formData}
-          languages={languages}
-          difficulties={difficulties}
-          themes={themes}
-          onUpdateFormData={updateFormData}
-          theme={theme}
-          serverStatus={serverStatus}
-          serverModelOptions={serverModelOptions}
-          onServerModelChange={value => updateFormData('serverModel', value)}
-          refreshServerModels={refreshServerModels}
-        />
+          <BasicSettingsForm
+            formData={formData}
+            languages={languages}
+            difficulties={difficulties}
+            themes={themes}
+            onUpdateFormData={updateFormData}
+            theme={theme}
+            serverStatus={serverStatus}
+            serverModelOptions={serverModelOptions}
+            onServerModelChange={value => updateFormData('serverModel', value)}
+            refreshServerModels={refreshServerModels}
+          />
 
           <LocalModelsSection
             enableLocalModels={formData.enableLocalModels}
@@ -129,7 +134,7 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
           />
 
           <TTSVoiceSettings
-            selectedLanguages={languages.map(l => l.value)}
+            selectedLanguages={selectedLanguages}
             preferredVoices={formData.preferredVoices}
             onVoiceChange={handleVoiceChange}
           />
@@ -137,7 +142,8 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
           <View style={styles.dangerZone} testID="danger-zone">
             <Text style={styles.dangerZoneTitle}>Danger Zone</Text>
             <Text style={styles.dangerZoneDescription}>
-              Reset the entire app and return to the welcome screen. This will delete all user accounts, progress, and settings.
+              Reset the entire app and return to the welcome screen. This will
+              delete all user accounts, progress, and settings.
             </Text>
             <Button
               title={isResetting ? 'Resetting App...' : 'Reset App Completely'}
@@ -155,60 +161,61 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
   );
 };
 
-const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) => StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: currentTheme.colors.background,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: currentTheme.colors.background,
-  },
-  loadingText: {
-    marginTop: currentTheme.spacing.lg,
-    fontSize: currentTheme.typography.fontSizes.lg,
-    color: currentTheme.colors.textSecondary,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  content: {
-    padding: currentTheme.spacing.lg,
-  },
-  dangerZone: {
-    marginTop: currentTheme.spacing['3xl'],
-    marginBottom: currentTheme.spacing['4xl'],
-    padding: currentTheme.spacing.lg,
-    borderRadius: currentTheme.borderRadius.base,
-    borderWidth: 1,
-    borderColor: currentTheme.colors.error,
-    backgroundColor: currentTheme.colors.surface,
-  },
-  dangerZoneTitle: {
-    fontSize: currentTheme.typography.fontSizes.xl,
-    fontWeight: currentTheme.typography.fontWeights.bold,
-    color: currentTheme.colors.error,
-    marginBottom: currentTheme.spacing.base,
-  },
-  dangerZoneDescription: {
-    fontSize: currentTheme.typography.fontSizes.base,
-    color: currentTheme.colors.textSecondary,
-    marginBottom: currentTheme.spacing.lg,
-    lineHeight: 20,
-  },
-  resetButton: {
-    backgroundColor: currentTheme.colors.error,
-    borderRadius: currentTheme.borderRadius.base,
-    paddingVertical: currentTheme.spacing.lg,
-    ...currentTheme.shadows.base,
-  },
-  resetButtonText: {
-    fontSize: currentTheme.typography.fontSizes.lg,
-    fontWeight: currentTheme.typography.fontWeights.bold,
-    color: currentTheme.colors.surface,
-  },
-});
+const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: currentTheme.colors.background,
+    },
+    loadingContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: currentTheme.colors.background,
+    },
+    loadingText: {
+      marginTop: currentTheme.spacing.lg,
+      fontSize: currentTheme.typography.fontSizes.lg,
+      color: currentTheme.colors.textSecondary,
+    },
+    scrollView: {
+      flex: 1,
+    },
+    content: {
+      padding: currentTheme.spacing.lg,
+    },
+    dangerZone: {
+      marginTop: currentTheme.spacing['3xl'],
+      marginBottom: currentTheme.spacing['4xl'],
+      padding: currentTheme.spacing.lg,
+      borderRadius: currentTheme.borderRadius.base,
+      borderWidth: 1,
+      borderColor: currentTheme.colors.error,
+      backgroundColor: currentTheme.colors.surface,
+    },
+    dangerZoneTitle: {
+      fontSize: currentTheme.typography.fontSizes.xl,
+      fontWeight: currentTheme.typography.fontWeights.bold,
+      color: currentTheme.colors.error,
+      marginBottom: currentTheme.spacing.base,
+    },
+    dangerZoneDescription: {
+      fontSize: currentTheme.typography.fontSizes.base,
+      color: currentTheme.colors.textSecondary,
+      marginBottom: currentTheme.spacing.lg,
+      lineHeight: 20,
+    },
+    resetButton: {
+      backgroundColor: currentTheme.colors.error,
+      borderRadius: currentTheme.borderRadius.base,
+      paddingVertical: currentTheme.spacing.lg,
+      ...currentTheme.shadows.base,
+    },
+    resetButtonText: {
+      fontSize: currentTheme.typography.fontSizes.lg,
+      fontWeight: currentTheme.typography.fontWeights.bold,
+      color: currentTheme.colors.surface,
+    },
+  });
 
 export default SettingsScreen;

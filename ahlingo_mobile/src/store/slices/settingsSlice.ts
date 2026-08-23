@@ -42,14 +42,21 @@ const settingsSlice = createSlice({
     setPreferLocalModels: (state, action: PayloadAction<boolean>) => {
       state.settings.preferLocalModels = action.payload;
     },
-    setPreferredVoices: (state, action: PayloadAction<{ [languageCode: string]: string }>) => {
+    setPreferredVoices: (
+      state,
+      action: PayloadAction<{ [languageCode: string]: string }>
+    ) => {
       state.settings.preferredVoices = action.payload;
     },
-    setPreferredVoice: (state, action: PayloadAction<{ languageCode: string; voiceId: string }>) => {
+    setPreferredVoice: (
+      state,
+      action: PayloadAction<{ languageCode: string; voiceId: string }>
+    ) => {
       if (!state.settings.preferredVoices) {
         state.settings.preferredVoices = {};
       }
-      state.settings.preferredVoices[action.payload.languageCode] = action.payload.voiceId;
+      state.settings.preferredVoices[action.payload.languageCode] =
+        action.payload.voiceId;
     },
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload;

@@ -15,16 +15,28 @@ import warnings
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import threading
 
-from content.generation.models.validation_models import (
-    ValidationResult,
-    get_validation_schema,
-    parse_validation_result,
-)
-from content.generation.utils.exercise_converters import (
-    get_converter,
-    identify_exercise_type,
-)
-from content.database.database_manager import LanguageDB
+try:
+    from generation.models.validation_models import (
+        ValidationResult,
+        get_validation_schema,
+        parse_validation_result,
+    )
+    from generation.utils.exercise_converters import (
+        get_converter,
+        identify_exercise_type,
+    )
+    from database.database_manager import LanguageDB
+except ImportError:
+    from content.generation.models.validation_models import (
+        ValidationResult,
+        get_validation_schema,
+        parse_validation_result,
+    )
+    from content.generation.utils.exercise_converters import (
+        get_converter,
+        identify_exercise_type,
+    )
+    from content.database.database_manager import LanguageDB
 
 
 # Centralized model configuration (reuse from outlines_generator)

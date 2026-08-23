@@ -1,7 +1,18 @@
-import { ExerciseInfo, PairExercise, TranslationExercise, ConversationExercise, FillInBlankExercise, Topic, StudyTopicInfo, ShuffleExercise } from '../types';
+import {
+  ExerciseInfo,
+  PairExercise,
+  TranslationExercise,
+  ConversationExercise,
+  FillInBlankExercise,
+  Topic,
+  StudyTopicInfo,
+  ShuffleExercise,
+} from '../types';
 
 // Factory for creating test exercises
-export const createExercise = (overrides: Partial<ExerciseInfo> = {}): ExerciseInfo => ({
+export const createExercise = (
+  overrides: Partial<ExerciseInfo> = {}
+): ExerciseInfo => ({
   id: 1,
   exercise_name: 'Test Exercise',
   topic_id: 1,
@@ -20,7 +31,9 @@ export const createTopic = (overrides: Partial<Topic> = {}): Topic => ({
 });
 
 // Factory for creating study topic info
-export const createStudyTopicInfo = (overrides: Partial<StudyTopicInfo> = {}): StudyTopicInfo => ({
+export const createStudyTopicInfo = (
+  overrides: Partial<StudyTopicInfo> = {}
+): StudyTopicInfo => ({
   id: 1,
   topic: 'Test Study Topic',
   availableExerciseTypes: ['pairs', 'conversation'],
@@ -31,7 +44,9 @@ export const createStudyTopicInfo = (overrides: Partial<StudyTopicInfo> = {}): S
 });
 
 // Factory for creating pair exercises
-export const createPairExercise = (overrides: Partial<PairExercise> = {}): PairExercise => ({
+export const createPairExercise = (
+  overrides: Partial<PairExercise> = {}
+): PairExercise => ({
   id: 1,
   exercise_id: 1,
   language_1: 'English',
@@ -42,7 +57,9 @@ export const createPairExercise = (overrides: Partial<PairExercise> = {}): PairE
 });
 
 // Factory for creating translation exercises
-export const createTranslationExercise = (overrides: Partial<TranslationExercise> = {}): TranslationExercise => ({
+export const createTranslationExercise = (
+  overrides: Partial<TranslationExercise> = {}
+): TranslationExercise => ({
   id: 1,
   exercise_id: 1,
   language_1: 'English',
@@ -53,7 +70,9 @@ export const createTranslationExercise = (overrides: Partial<TranslationExercise
 });
 
 // Factory for creating conversation exercises
-export const createConversationExercise = (overrides: Partial<ConversationExercise> = {}): ConversationExercise => ({
+export const createConversationExercise = (
+  overrides: Partial<ConversationExercise> = {}
+): ConversationExercise => ({
   id: 1,
   exercise_id: 1,
   speaker: 'Alice',
@@ -64,7 +83,9 @@ export const createConversationExercise = (overrides: Partial<ConversationExerci
 });
 
 // Factory for creating fill-in-blank exercises
-export const createFillInBlankExercise = (overrides: Partial<FillInBlankExercise> = {}): FillInBlankExercise => ({
+export const createFillInBlankExercise = (
+  overrides: Partial<FillInBlankExercise> = {}
+): FillInBlankExercise => ({
   id: 1,
   exercise_id: 1,
   sentence: 'Bonjour, je _ Jacques.',
@@ -76,7 +97,9 @@ export const createFillInBlankExercise = (overrides: Partial<FillInBlankExercise
 });
 
 // Factory for creating shuffle exercises
-export const createShuffleExercise = (overrides: Partial<ShuffleExercise> = {}): ShuffleExercise => ({
+export const createShuffleExercise = (
+  overrides: Partial<ShuffleExercise> = {}
+): ShuffleExercise => ({
   exerciseInfo: createExercise(),
   exerciseType: 'pairs',
   topicName: 'Test Topic',
@@ -84,7 +107,10 @@ export const createShuffleExercise = (overrides: Partial<ShuffleExercise> = {}):
 });
 
 // Factory for creating multiple exercises
-export const createExercises = (count: number, type: ExerciseInfo['exercise_type'] = 'pairs'): ExerciseInfo[] => {
+export const createExercises = (
+  count: number,
+  type: ExerciseInfo['exercise_type'] = 'pairs'
+): ExerciseInfo[] => {
   return Array.from({ length: count }, (_, index) =>
     createExercise({
       id: index + 1,
@@ -96,7 +122,12 @@ export const createExercises = (count: number, type: ExerciseInfo['exercise_type
 
 // Factory for creating multiple shuffle exercises
 export const createShuffleExercises = (count: number): ShuffleExercise[] => {
-  const types: ExerciseInfo['exercise_type'][] = ['pairs', 'conversation', 'translation', 'fill_in_blank'];
+  const types: ExerciseInfo['exercise_type'][] = [
+    'pairs',
+    'conversation',
+    'translation',
+    'fill_in_blank',
+  ];
 
   return Array.from({ length: count }, (_, index) => {
     const type = types[index % types.length];
@@ -113,14 +144,14 @@ export const createShuffleExercises = (count: number): ShuffleExercise[] => {
 };
 
 // Mock database results
-export const createMockDatabaseResult = (data: any[] = []) => ([
+export const createMockDatabaseResult = (data: any[] = []) => [
   {
     rows: {
       length: data.length,
       item: (index: number) => data[index],
     },
   },
-]);
+];
 
 // Mock user data
 export const createMockUser = () => ({
@@ -130,7 +161,10 @@ export const createMockUser = () => ({
 });
 
 // Mock exercise attempt data
-export const createMockExerciseAttempt = (exerciseId: number, isCorrect: boolean = true) => ({
+export const createMockExerciseAttempt = (
+  exerciseId: number,
+  isCorrect: boolean = true
+) => ({
   id: 1,
   user_id: 1,
   exercise_id: exerciseId,

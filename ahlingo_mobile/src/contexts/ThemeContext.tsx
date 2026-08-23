@@ -1,6 +1,21 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { setTheme as setGlobalTheme, getCurrentTheme, getTheme, ThemeVariant } from '../utils/theme';
-import { getUserSettings, getMostRecentUser, setUserSetting } from '../services/RefactoredDatabaseService';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from 'react';
+import {
+  setTheme as setGlobalTheme,
+  getCurrentTheme,
+  getTheme,
+  ThemeVariant,
+} from '../utils/theme';
+import {
+  getUserSettings,
+  getMostRecentUser,
+  setUserSetting,
+} from '../services/RefactoredDatabaseService';
 
 interface ThemeContextType {
   theme: ReturnType<typeof getTheme>;
@@ -15,7 +30,9 @@ interface ThemeProviderProps {
 }
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
-  const [themeVariant, setThemeVariant] = useState<ThemeVariant>(getCurrentTheme());
+  const [themeVariant, setThemeVariant] = useState<ThemeVariant>(
+    getCurrentTheme()
+  );
   const [theme, setThemeState] = useState(getTheme());
 
   // Load saved theme on mount
@@ -63,9 +80,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   };
 
   return (
-    <ThemeContext.Provider value={value}>
-      {children}
-    </ThemeContext.Provider>
+    <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
   );
 };
 

@@ -1,6 +1,6 @@
 {
   "name": "ahlingo",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -20,8 +20,10 @@
     "test:e2e:test:ios": "detox test --configuration ios.sim.debug",
     "test:e2e:build:android": "detox build --configuration android.emu.debug",
     "test:e2e:test:android": "detox test --configuration android.emu.debug",
+    "build:apk": "../scripts/build_android_apk.sh",
     "clean": "react-native-clean-project",
-    "postinstall": "cd ios && pod install && cd .."
+    "sync:ios-assets": "node scripts/syncIosAssets.js",
+    "postinstall": "node scripts/postinstall.js"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^2.2.0",
@@ -55,17 +57,18 @@
     "@react-native/eslint-config": "0.80.0",
     "@react-native/metro-config": "0.80.0",
     "@react-native/typescript-config": "0.80.0",
-    "@testing-library/react-native": "^12.9.0",
-    "@types/jest": "^29.5.13",
+    "@testing-library/react-native": "^13.3.3",
+    "@types/jest": "^29.5.14",
     "@types/react": "^19.1.0",
     "@types/react-test-renderer": "^19.1.0",
-    "detox": "^20.13.5",
+    "detox": "^20.45.1",
     "eslint": "^8.19.0",
     "jest": "^29.6.3",
     "msw": "^2.0.11",
     "prettier": "2.8.8",
     "react-test-renderer": "19.1.0",
     "redux-mock-store": "^1.5.5",
+    "sqlite3": "^5.1.7",
     "typescript": "5.0.4"
   },
   "engines": {

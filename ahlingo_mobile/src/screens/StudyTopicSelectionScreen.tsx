@@ -61,14 +61,20 @@ const StudyTopicSelectionScreen: React.FC<Props> = ({ navigation, route }) => {
         return;
       }
 
-      const language = userContext.settings.language || settings.language || 'French';
-      const difficulty = userContext.settings.difficulty || settings.difficulty || 'Beginner';
+      const language =
+        userContext.settings.language || settings.language || 'French';
+      const difficulty =
+        userContext.settings.difficulty || settings.difficulty || 'Beginner';
 
       setUserLanguage(language);
       setUserDifficulty(difficulty);
 
       // Load topics with progress and available exercise types
-      const studyTopics = await getTopicsForStudy(userContext.userId, language, difficulty);
+      const studyTopics = await getTopicsForStudy(
+        userContext.userId,
+        language,
+        difficulty
+      );
       setTopics(studyTopics);
     } catch (error) {
       console.error('Failed to load study topics:', error);
@@ -90,8 +96,10 @@ const StudyTopicSelectionScreen: React.FC<Props> = ({ navigation, route }) => {
         return;
       }
 
-      const language = userContext.settings.language || settings.language || 'French';
-      const difficulty = userContext.settings.difficulty || settings.difficulty || 'Beginner';
+      const language =
+        userContext.settings.language || settings.language || 'French';
+      const difficulty =
+        userContext.settings.difficulty || settings.difficulty || 'Beginner';
 
       // Get 5 random mixed exercises for this topic
       const exercises = await getRandomMixedExercisesForTopic(
@@ -118,11 +126,12 @@ const StudyTopicSelectionScreen: React.FC<Props> = ({ navigation, route }) => {
             { text: 'Cancel' },
             {
               text: 'Continue',
-              onPress: () => navigation.navigate('StudyTopicShuffle', {
-                topicId: topic.id,
-                topicName: topic.topic,
-                exercises,
-              })
+              onPress: () =>
+                navigation.navigate('StudyTopicShuffle', {
+                  topicId: topic.id,
+                  topicName: topic.topic,
+                  exercises,
+                }),
             },
           ]
         );
@@ -135,7 +144,10 @@ const StudyTopicSelectionScreen: React.FC<Props> = ({ navigation, route }) => {
       }
     } catch (error) {
       console.error('Failed to prepare study session:', error);
-      Alert.alert('Error', 'Failed to prepare study session. Please try again.');
+      Alert.alert(
+        'Error',
+        'Failed to prepare study session. Please try again.'
+      );
     } finally {
       setLoading(false);
     }
@@ -161,10 +173,7 @@ const StudyTopicSelectionScreen: React.FC<Props> = ({ navigation, route }) => {
       <View style={styles.progressBarContainer}>
         <View style={styles.progressBarBackground}>
           <View
-            style={[
-              styles.progressBarFill,
-              { width: `${item.percentage}%` }
-            ]}
+            style={[styles.progressBarFill, { width: `${item.percentage}%` }]}
           />
         </View>
       </View>
@@ -191,7 +200,8 @@ const StudyTopicSelectionScreen: React.FC<Props> = ({ navigation, route }) => {
       <Text style={styles.emptyIcon}>📚</Text>
       <Text style={styles.emptyTitle}>No Study Topics Available</Text>
       <Text style={styles.emptyText}>
-        No topics with sufficient exercises found for {userLanguage} at {userDifficulty} level.
+        No topics with sufficient exercises found for {userLanguage} at{' '}
+        {userDifficulty} level.
       </Text>
       <Text style={styles.emptyHint}>
         Topics need at least 5 exercises to be available for study sessions.
@@ -242,143 +252,144 @@ const StudyTopicSelectionScreen: React.FC<Props> = ({ navigation, route }) => {
   );
 };
 
-const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) => StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: currentTheme.colors.background,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: currentTheme.colors.background,
-  },
-  loadingText: {
-    marginTop: currentTheme.spacing.lg,
-    fontSize: currentTheme.typography.fontSizes.lg,
-    color: currentTheme.colors.textSecondary,
-  },
-  header: {
-    backgroundColor: currentTheme.colors.surface,
-    paddingVertical: currentTheme.spacing.xl,
-    paddingHorizontal: currentTheme.spacing.lg,
-    borderBottomWidth: 1,
-    borderBottomColor: currentTheme.colors.border,
-  },
-  headerTitle: {
-    fontSize: currentTheme.typography.fontSizes['3xl'],
-    fontWeight: currentTheme.typography.fontWeights.bold,
-    color: currentTheme.colors.text,
-    textAlign: 'center',
-  },
-  headerSubtitle: {
-    fontSize: currentTheme.typography.fontSizes.lg,
-    color: currentTheme.colors.textSecondary,
-    textAlign: 'center',
-    marginTop: currentTheme.spacing.xs,
-  },
-  headerDetails: {
-    fontSize: currentTheme.typography.fontSizes.base,
-    color: currentTheme.colors.primary,
-    textAlign: 'center',
-    marginTop: currentTheme.spacing.xs,
-    fontWeight: currentTheme.typography.fontWeights.medium,
-  },
-  listContainer: {
-    padding: currentTheme.spacing.base,
-    flexGrow: 1,
-  },
-  topicCard: {
-    backgroundColor: currentTheme.colors.surface,
-    borderRadius: currentTheme.borderRadius.lg,
-    padding: currentTheme.spacing.lg,
-    marginBottom: currentTheme.spacing.base,
-    ...currentTheme.shadows.base,
-  },
-  topicHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: currentTheme.spacing.base,
-  },
-  topicTitle: {
-    fontSize: currentTheme.typography.fontSizes.xl,
-    fontWeight: currentTheme.typography.fontWeights.semibold,
-    color: currentTheme.colors.text,
-    flex: 1,
-  },
-  progressText: {
-    fontSize: currentTheme.typography.fontSizes.lg,
-    fontWeight: currentTheme.typography.fontWeights.bold,
-    color: currentTheme.colors.primary,
-  },
-  progressBarContainer: {
-    marginBottom: currentTheme.spacing.base,
-  },
-  progressBarBackground: {
-    height: 8,
-    backgroundColor: currentTheme.colors.border,
-    borderRadius: 4,
-    overflow: 'hidden',
-  },
-  progressBarFill: {
-    height: '100%',
-    backgroundColor: currentTheme.colors.primary,
-  },
-  topicDetails: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  exerciseCount: {
-    fontSize: currentTheme.typography.fontSizes.base,
-    color: currentTheme.colors.textSecondary,
-  },
-  exerciseTypes: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-  },
-  exerciseTypeBadge: {
-    backgroundColor: currentTheme.colors.primary + '20',
-    paddingHorizontal: currentTheme.spacing.xs,
-    paddingVertical: 2,
-    borderRadius: currentTheme.borderRadius.sm,
-    marginLeft: currentTheme.spacing.xs,
-  },
-  exerciseTypeText: {
-    fontSize: currentTheme.typography.fontSizes.sm,
-    color: currentTheme.colors.primary,
-    fontWeight: currentTheme.typography.fontWeights.medium,
-  },
-  emptyContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: currentTheme.spacing['4xl'],
-  },
-  emptyIcon: {
-    fontSize: 64,
-    marginBottom: currentTheme.spacing.lg,
-  },
-  emptyTitle: {
-    fontSize: currentTheme.typography.fontSizes['2xl'],
-    fontWeight: currentTheme.typography.fontWeights.bold,
-    color: currentTheme.colors.text,
-    marginBottom: currentTheme.spacing.base,
-    textAlign: 'center',
-  },
-  emptyText: {
-    fontSize: currentTheme.typography.fontSizes.lg,
-    color: currentTheme.colors.textSecondary,
-    textAlign: 'center',
-    marginBottom: currentTheme.spacing.base,
-  },
-  emptyHint: {
-    fontSize: currentTheme.typography.fontSizes.base,
-    color: currentTheme.colors.textLight,
-    textAlign: 'center',
-    fontStyle: 'italic',
-  },
-});
+const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: currentTheme.colors.background,
+    },
+    loadingContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: currentTheme.colors.background,
+    },
+    loadingText: {
+      marginTop: currentTheme.spacing.lg,
+      fontSize: currentTheme.typography.fontSizes.lg,
+      color: currentTheme.colors.textSecondary,
+    },
+    header: {
+      backgroundColor: currentTheme.colors.surface,
+      paddingVertical: currentTheme.spacing.xl,
+      paddingHorizontal: currentTheme.spacing.lg,
+      borderBottomWidth: 1,
+      borderBottomColor: currentTheme.colors.border,
+    },
+    headerTitle: {
+      fontSize: currentTheme.typography.fontSizes['3xl'],
+      fontWeight: currentTheme.typography.fontWeights.bold,
+      color: currentTheme.colors.text,
+      textAlign: 'center',
+    },
+    headerSubtitle: {
+      fontSize: currentTheme.typography.fontSizes.lg,
+      color: currentTheme.colors.textSecondary,
+      textAlign: 'center',
+      marginTop: currentTheme.spacing.xs,
+    },
+    headerDetails: {
+      fontSize: currentTheme.typography.fontSizes.base,
+      color: currentTheme.colors.primary,
+      textAlign: 'center',
+      marginTop: currentTheme.spacing.xs,
+      fontWeight: currentTheme.typography.fontWeights.medium,
+    },
+    listContainer: {
+      padding: currentTheme.spacing.base,
+      flexGrow: 1,
+    },
+    topicCard: {
+      backgroundColor: currentTheme.colors.surface,
+      borderRadius: currentTheme.borderRadius.lg,
+      padding: currentTheme.spacing.lg,
+      marginBottom: currentTheme.spacing.base,
+      ...currentTheme.shadows.base,
+    },
+    topicHeader: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: currentTheme.spacing.base,
+    },
+    topicTitle: {
+      fontSize: currentTheme.typography.fontSizes.xl,
+      fontWeight: currentTheme.typography.fontWeights.semibold,
+      color: currentTheme.colors.text,
+      flex: 1,
+    },
+    progressText: {
+      fontSize: currentTheme.typography.fontSizes.lg,
+      fontWeight: currentTheme.typography.fontWeights.bold,
+      color: currentTheme.colors.primary,
+    },
+    progressBarContainer: {
+      marginBottom: currentTheme.spacing.base,
+    },
+    progressBarBackground: {
+      height: 8,
+      backgroundColor: currentTheme.colors.border,
+      borderRadius: 4,
+      overflow: 'hidden',
+    },
+    progressBarFill: {
+      height: '100%',
+      backgroundColor: currentTheme.colors.primary,
+    },
+    topicDetails: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    exerciseCount: {
+      fontSize: currentTheme.typography.fontSizes.base,
+      color: currentTheme.colors.textSecondary,
+    },
+    exerciseTypes: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+    },
+    exerciseTypeBadge: {
+      backgroundColor: currentTheme.colors.primary + '20',
+      paddingHorizontal: currentTheme.spacing.xs,
+      paddingVertical: 2,
+      borderRadius: currentTheme.borderRadius.sm,
+      marginLeft: currentTheme.spacing.xs,
+    },
+    exerciseTypeText: {
+      fontSize: currentTheme.typography.fontSizes.sm,
+      color: currentTheme.colors.primary,
+      fontWeight: currentTheme.typography.fontWeights.medium,
+    },
+    emptyContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingHorizontal: currentTheme.spacing['4xl'],
+    },
+    emptyIcon: {
+      fontSize: 64,
+      marginBottom: currentTheme.spacing.lg,
+    },
+    emptyTitle: {
+      fontSize: currentTheme.typography.fontSizes['2xl'],
+      fontWeight: currentTheme.typography.fontWeights.bold,
+      color: currentTheme.colors.text,
+      marginBottom: currentTheme.spacing.base,
+      textAlign: 'center',
+    },
+    emptyText: {
+      fontSize: currentTheme.typography.fontSizes.lg,
+      color: currentTheme.colors.textSecondary,
+      textAlign: 'center',
+      marginBottom: currentTheme.spacing.base,
+    },
+    emptyHint: {
+      fontSize: currentTheme.typography.fontSizes.base,
+      color: currentTheme.colors.textLight,
+      textAlign: 'center',
+      fontStyle: 'italic',
+    },
+  });
 
 export default StudyTopicSelectionScreen;

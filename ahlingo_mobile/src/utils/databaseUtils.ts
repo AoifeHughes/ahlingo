@@ -6,17 +6,73 @@ import RNFS from 'react-native-fs';
 import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DATABASE_CONFIG, TIMEOUTS } from './constants';
-import { performDatabaseMigration } from '../services/DatabaseMigrationService';
+import {
+  migrateUserSchema,
+  initializeUserSchema,
+  needsUserSchemaInitialization,
+} from '../services/UserSchemaMigrationService';
 
-// Enable debug mode and promises
-SQLite.DEBUG(true);
+// Enable debug mode in development only
+SQLite.DEBUG(__DEV__);
 SQLite.enablePromise(true);
+
+const isTestEnv =
+  typeof process !== 'undefined' &&
+  typeof process.env !== 'undefined' &&
+  typeof process.env.JEST_WORKER_ID !== 'undefined';
+
+const createTestDatabase = (): SQLiteDatabase => {
+  const emptyResult = [
+    {
+      insertId: 0,
+      rowsAffected: 0,
+      rows: { length: 0, item: () => null, raw: () => [] },
+    },
+  ];
+  const testTransaction = {
+    executeSql: async () => emptyResult,
+  } as unknown as Transaction;
+
+  const testDb: Partial<SQLiteDatabase> = {
+    executeSql: async () => emptyResult,
+    close: async () => {},
+    transaction: (
+      _cb: (tx: Transaction) => void,
+      errorCb?: (err: any) => void,
+      successCb?: () => void
+    ) => {
+      try {
+        _cb(testTransaction);
+        successCb?.();
+      } catch (error) {
+        errorCb?.(error);
+      }
+    },
+    readTransaction: (
+      _cb: (tx: Transaction) => void,
+      errorCb?: (err: any) => void,
+      successCb?: () => void
+    ) => {
+      try {
+        _cb(testTransaction);
+        successCb?.();
+      } catch (error) {
+        errorCb?.(error);
+      }
+    },
+  };
+
+  return testDb as SQLiteDatabase;
+};
 
 /**
  * Database initialization and connection utilities
+ * Two-Database Architecture:
+ * - content.db: Read-only content database (lessons, exercises)
+ * - userdata.db: User-specific data (progress, settings, chats)
  */
 
-// Global database instance - initialized once
+// Global database instance - userdata.db with content.db attached
 let globalDb: SQLiteDatabase | null = null;
 let isInitialized = false;
 let initializationPromise: Promise<void> | null = null;
@@ -54,7 +110,8 @@ export const safeCloseDatabase = async (
       await withTimeout(db.executeSql('SELECT 1'), TIMEOUTS.QUERY_SHORT);
       isDatabaseOpen = true;
     } catch (testError) {
-      const testErrorMsg = testError instanceof Error ? testError.message : String(testError);
+      const testErrorMsg =
+        testError instanceof Error ? testError.message : String(testError);
 
       if (
         testErrorMsg.includes('database is not open') ||
@@ -64,7 +121,10 @@ export const safeCloseDatabase = async (
         console.log('ℹ️ Database already closed, no cleanup needed');
         return;
       } else {
-        console.log('⚠️ Database test query failed, but attempting cleanup anyway:', testErrorMsg);
+        console.log(
+          '⚠️ Database test query failed, but attempting cleanup anyway:',
+          testErrorMsg
+        );
         // Continue with cleanup attempt even if test query fails for other reasons
         isDatabaseOpen = true;
       }
@@ -74,16 +134,37 @@ export const safeCloseDatabase = async (
       return;
     }
 
+    // Try to detach the content database before closing
+    try {
+      await withTimeout(
+        db.executeSql('DETACH DATABASE content'),
+        TIMEOUTS.QUERY_SHORT
+      );
+      console.log('✅ Content database detached');
+    } catch (detachError) {
+      // Detach might fail if already detached or if database is closing
+      console.log('ℹ️ Content database detach info:', detachError);
+    }
+
     // Check if we're in a transaction by querying SQLite's internal state
     let inTransaction = false;
     try {
-      const result = await withTimeout(db.executeSql('PRAGMA journal_mode'), TIMEOUTS.QUERY_SHORT);
+      const result = await withTimeout(
+        db.executeSql('PRAGMA journal_mode'),
+        TIMEOUTS.QUERY_SHORT
+      );
       // If we can execute this, the database is responsive
 
       // Try to detect if we're in a transaction by attempting a savepoint
       try {
-        await withTimeout(db.executeSql('SAVEPOINT test_transaction_state'), TIMEOUTS.QUERY_SHORT);
-        await withTimeout(db.executeSql('RELEASE SAVEPOINT test_transaction_state'), TIMEOUTS.QUERY_SHORT);
+        await withTimeout(
+          db.executeSql('SAVEPOINT test_transaction_state'),
+          TIMEOUTS.QUERY_SHORT
+        );
+        await withTimeout(
+          db.executeSql('RELEASE SAVEPOINT test_transaction_state'),
+          TIMEOUTS.QUERY_SHORT
+        );
       } catch (savepointError) {
         // If savepoint fails, we might be in a transaction
         inTransaction = true;
@@ -105,7 +186,10 @@ export const safeCloseDatabase = async (
           console.log(`✅ Transaction rolled back on attempt ${attempt}`);
           break;
         } catch (rollbackError) {
-          const errorMsg = rollbackError instanceof Error ? rollbackError.message : String(rollbackError);
+          const errorMsg =
+            rollbackError instanceof Error
+              ? rollbackError.message
+              : String(rollbackError);
 
           if (errorMsg.includes('no transaction is active')) {
             // Transaction was already completed
@@ -114,7 +198,10 @@ export const safeCloseDatabase = async (
           }
 
           if (attempt === maxAttempts) {
-            console.log(`⚠️ Could not rollback transaction after ${maxAttempts} attempts:`, errorMsg);
+            console.log(
+              `⚠️ Could not rollback transaction after ${maxAttempts} attempts:`,
+              errorMsg
+            );
           } else {
             console.log(`🔄 Rollback attempt ${attempt} failed, retrying...`);
             // Wait longer between attempts
@@ -130,15 +217,17 @@ export const safeCloseDatabase = async (
     // Now try to close the database with timeout
     await withTimeout(db.close(), TIMEOUTS.CONNECTION);
     console.log('✅ Database closed safely');
-
   } catch (closeError) {
-    const errorMsg = closeError instanceof Error ? closeError.message : String(closeError);
+    const errorMsg =
+      closeError instanceof Error ? closeError.message : String(closeError);
 
     // Filter out expected/harmless errors and categorize them properly
     if (
       errorMsg.includes('database is closed') ||
       errorMsg.includes('invalid connection') ||
-      errorMsg.includes('database cannot be closed while a transaction is in progress') ||
+      errorMsg.includes(
+        'database cannot be closed while a transaction is in progress'
+      ) ||
       errorMsg.includes('database is not open') ||
       errorMsg.includes('cannot close: database is not open')
     ) {
@@ -152,135 +241,312 @@ export const safeCloseDatabase = async (
 /**
  * Helper function to copy database from bundle to destination
  */
-const copyDatabaseFromBundle = async (bundlePath: string, databasePath: string): Promise<void> => {
+const copyDatabaseFromBundle = async (
+  dbName: string,
+  assetPath: string,
+  destinationPath: string
+): Promise<void> => {
   if (Platform.OS === 'ios') {
-    await RNFS.copyFile(bundlePath, databasePath);
-    console.log('✅ Database copied (iOS)');
+    // Try multiple possible locations in iOS bundle
+    const possiblePaths = [
+      `${RNFS.MainBundlePath}/${dbName}`,
+      `${RNFS.MainBundlePath}/assets/databases/${dbName}`,
+      `${RNFS.MainBundlePath}/databases/${dbName}`,
+    ];
+
+    let copied = false;
+    let lastError: Error | null = null;
+
+    for (const bundlePath of possiblePaths) {
+      try {
+        const exists = await RNFS.exists(bundlePath);
+        if (exists) {
+          await RNFS.copyFile(bundlePath, destinationPath);
+          console.log(`✅ ${dbName} copied from ${bundlePath} (iOS)`);
+          copied = true;
+          break;
+        }
+      } catch (error) {
+        lastError = error as Error;
+        console.log(`  ⚠️ Could not copy from ${bundlePath}`);
+      }
+    }
+
+    if (!copied) {
+      console.error(
+        `❌ ${dbName} not found in iOS bundle. Tried paths:`,
+        possiblePaths
+      );
+      throw lastError || new Error(`${dbName} not found in iOS bundle`);
+    }
   } else {
-    // Enhanced Android debugging
-    console.log('Android: Attempting to copy database...');
-    console.log('Looking for:', `databases/${DATABASE_CONFIG.NAME}`);
-    console.log('Target path:', databasePath);
+    // Android - try multiple asset paths
+    console.log(`Android: Attempting to copy ${dbName}...`);
+    console.log('Looking for:', assetPath);
+    console.log('Target path:', destinationPath);
 
     try {
-      // Try the expected path first
-      await RNFS.copyFileAssets(`databases/${DATABASE_CONFIG.NAME}`, databasePath);
-      console.log('✅ Database copied from databases/ (Android)');
+      await RNFS.copyFileAssets(assetPath, destinationPath);
+      console.log(`✅ ${dbName} copied from ${assetPath} (Android)`);
     } catch (androidError) {
-      console.error('Android copy failed with databases/ path:', androidError);
+      console.error(
+        `Android copy failed with ${assetPath} path:`,
+        androidError
+      );
 
       // Try alternative paths
-      console.log('Trying alternative paths...');
+      const alternatives = [
+        dbName, // root assets
+        `database/${dbName}`, // singular
+        `custom/${dbName}`, // custom
+      ];
 
-      try {
-        // Try without subdirectory
-        console.log('Trying root assets path:', DATABASE_CONFIG.NAME);
-        await RNFS.copyFileAssets(DATABASE_CONFIG.NAME, databasePath);
-        console.log('✅ Database copied from root (Android)');
-      } catch (rootError) {
-        console.error('Root path also failed:', rootError);
-
+      let copied = false;
+      for (const altPath of alternatives) {
         try {
-          // Try with database (singular)
-          console.log('Trying database/ (singular) path:', `database/${DATABASE_CONFIG.NAME}`);
-          await RNFS.copyFileAssets(`database/${DATABASE_CONFIG.NAME}`, databasePath);
-          console.log('✅ Database copied from database/ (Android)');
-        } catch (singularError) {
-          console.error('Singular database/ path failed:', singularError);
-
-          // Try custom directory
-          try {
-            console.log('Trying custom/ path:', `custom/${DATABASE_CONFIG.NAME}`);
-            await RNFS.copyFileAssets(`custom/${DATABASE_CONFIG.NAME}`, databasePath);
-            console.log('✅ Database copied from custom/ (Android)');
-          } catch (customError) {
-            console.error('Custom path failed:', customError);
-            console.error('All paths attempted have failed. Database file not found in Android assets.');
-            throw androidError; // Throw the original error
-          }
+          console.log('Trying alternative path:', altPath);
+          await RNFS.copyFileAssets(altPath, destinationPath);
+          console.log(`✅ ${dbName} copied from ${altPath} (Android)`);
+          copied = true;
+          break;
+        } catch (altError) {
+          console.error(`${altPath} path failed:`, altError);
         }
+      }
+
+      if (!copied) {
+        console.error(
+          `All paths attempted have failed. ${dbName} not found in Android assets.`
+        );
+        throw androidError;
       }
     }
   }
 };
 
 /**
- * Ensures the database is copied from bundle to Documents directory
- * Checks version and replaces database if a newer version is bundled
- * Performs migration to preserve user data when updating
+ * Migrate from legacy single-database to two-database architecture
+ */
+const migrateLegacyDatabase = async (
+  legacyDbPath: string,
+  contentDbPath: string,
+  userDbPath: string
+): Promise<void> => {
+  console.log('🔄 Migrating from legacy single-database architecture...');
+
+  // Check if split script has already been run
+  const contentExists = await RNFS.exists(contentDbPath);
+  const userExists = await RNFS.exists(userDbPath);
+
+  if (contentExists && userExists) {
+    console.log('✅ Split databases already exist, removing legacy database');
+    await RNFS.unlink(legacyDbPath);
+    return;
+  }
+
+  // If split databases don't exist, user needs to run the split script
+  console.error('❌ Legacy database found but split databases not available');
+  console.error('Please run: node scripts/splitDatabase.js');
+  throw new Error(
+    'Legacy database migration required. Run: node scripts/splitDatabase.js'
+  );
+};
+
+/**
+ * Get content database version from database_metadata table
+ */
+const getContentDbVersion = async (db: SQLiteDatabase): Promise<number> => {
+  try {
+    const [result] = await db.executeSql(
+      'SELECT value FROM content.database_metadata WHERE key = "version"'
+    );
+
+    if (result.rows.length > 0) {
+      return parseInt(result.rows.item(0).value, 10);
+    }
+    return 0;
+  } catch (error) {
+    console.error('Error getting content database version:', error);
+    return 0;
+  }
+};
+
+/**
+ * Ensures both databases are copied and up to date
  */
 export const ensureDatabaseCopied = async (): Promise<void> => {
   try {
-    const bundlePath =
-      Platform.OS === 'ios'
-        ? `${RNFS.MainBundlePath}/${DATABASE_CONFIG.NAME}`
-        : `android_asset/${DATABASE_CONFIG.NAME}`;
-
     const documentsPath =
       Platform.OS === 'ios'
         ? RNFS.DocumentDirectoryPath
         : RNFS.ExternalDirectoryPath || RNFS.DocumentDirectoryPath;
 
-    const databasePath = `${documentsPath}/${DATABASE_CONFIG.NAME}`;
+    const legacyDbPath = `${documentsPath}/${DATABASE_CONFIG.LEGACY_NAME}`;
+    const contentDbPath = `${documentsPath}/${DATABASE_CONFIG.CONTENT_DB.NAME}`;
+    const userDbPath = `${documentsPath}/${DATABASE_CONFIG.USER_DB.NAME}`;
 
-    const exists = await RNFS.exists(databasePath);
-
-    // Check the installed database version
-    const DB_VERSION_KEY = '@database_version';
-    const installedVersionStr = await AsyncStorage.getItem(DB_VERSION_KEY);
-    const installedVersion = installedVersionStr ? parseInt(installedVersionStr, 10) : 0;
-    const bundledVersion = DATABASE_CONFIG.VERSION;
-
-    console.log(`Database version check - Installed: ${installedVersion}, Bundled: ${bundledVersion}`);
-
-    // Determine if we need to copy/update the database
-    const needsUpdate = !exists || installedVersion < bundledVersion;
-    const needsMigration = exists && installedVersion > 0 && installedVersion < bundledVersion;
-
-    if (needsUpdate) {
-      // If database exists and needs update, perform migration to preserve user data
-      if (needsMigration) {
-        console.log(`🔄 Database migration needed (v${installedVersion} → v${bundledVersion})`);
-
-        // Use migration service to backup, replace, and restore
-        await performDatabaseMigration(
-          installedVersion,
-          bundledVersion,
-          async () => {
-            // This function handles the actual database replacement
-            await RNFS.unlink(databasePath);
-            console.log('✅ Old database deleted');
-
-            // Copy new database from bundle
-            await copyDatabaseFromBundle(bundlePath, databasePath);
-          }
-        );
-      } else if (!exists) {
-        // First time setup - no migration needed
-        console.log('Database not found in documents, copying from bundle...');
-        await copyDatabaseFromBundle(bundlePath, databasePath);
-      }
-
-      // Update the stored version number after successful copy/migration
-      await AsyncStorage.setItem(DB_VERSION_KEY, bundledVersion.toString());
-      console.log(`✅ Database version updated to v${bundledVersion}`);
-    } else {
-      console.log(`✅ Database is up to date (v${installedVersion})`);
+    // Check if legacy database exists and needs migration
+    const legacyExists = await RNFS.exists(legacyDbPath);
+    if (legacyExists) {
+      await migrateLegacyDatabase(legacyDbPath, contentDbPath, userDbPath);
     }
 
-    // Verify the file
-    const stats = await RNFS.stat(databasePath);
-    console.log('Database file size:', stats.size, 'bytes');
+    // Handle content database
+    const CONTENT_VERSION_KEY = '@content_db_version';
+    const installedContentVersionStr = await AsyncStorage.getItem(
+      CONTENT_VERSION_KEY
+    );
+    const installedContentVersion = installedContentVersionStr
+      ? parseInt(installedContentVersionStr, 10)
+      : 0;
+    const bundledContentVersion = DATABASE_CONFIG.CONTENT_DB.VERSION;
+
+    console.log(
+      `Content DB version check - Installed: ${installedContentVersion}, Bundled: ${bundledContentVersion}`
+    );
+
+    const contentExists = await RNFS.exists(contentDbPath);
+    const needsContentUpdate =
+      !contentExists || installedContentVersion < bundledContentVersion;
+
+    if (needsContentUpdate) {
+      console.log(
+        `🔄 Updating content database to v${bundledContentVersion}...`
+      );
+
+      // Backup old content database before replacement (keep one generation)
+      if (contentExists) {
+        const backupPath = `${contentDbPath}.backup`;
+        try {
+          await RNFS.copyFile(contentDbPath, backupPath);
+          console.log('✅ Old content database backed up');
+        } catch (backupError) {
+          console.warn(
+            '⚠️ Failed to backup old content database:',
+            backupError
+          );
+        }
+      }
+
+      // Delete old content database if it exists
+      if (contentExists) {
+        await RNFS.unlink(contentDbPath);
+        console.log('✅ Old content database deleted');
+      }
+
+      // Copy new content database from bundle
+      await copyDatabaseFromBundle(
+        DATABASE_CONFIG.CONTENT_DB.NAME,
+        `databases/${DATABASE_CONFIG.CONTENT_DB.NAME}`,
+        contentDbPath
+      );
+
+      // Verify file integrity after copy
+      const stats = await RNFS.stat(contentDbPath);
+      console.log('Content database file size:', stats.size, 'bytes');
+      if (stats.size === 0) {
+        throw new Error('Content database copy failed: file is empty');
+      }
+
+      // Update stored version
+      await AsyncStorage.setItem(
+        CONTENT_VERSION_KEY,
+        bundledContentVersion.toString()
+      );
+      console.log(`✅ Content database updated to v${bundledContentVersion}`);
+    } else {
+      console.log(
+        `✅ Content database is up to date (v${installedContentVersion})`
+      );
+    }
+
+    // Handle user database
+    const userExists = await RNFS.exists(userDbPath);
+
+    if (!userExists) {
+      console.log('🔧 User database not found, checking for template...');
+
+      // Try to copy from template (created by split script)
+      const templatePath = `${RNFS.MainBundlePath}/userdata_template.db`;
+      const templateExists =
+        Platform.OS === 'ios' ? await RNFS.exists(templatePath) : false; // Android doesn't support checking bundle files
+
+      if (Platform.OS === 'android' || templateExists) {
+        try {
+          await copyDatabaseFromBundle(
+            'userdata_template.db',
+            'databases/userdata_template.db',
+            userDbPath
+          );
+          console.log('✅ User database copied from template');
+        } catch (templateError) {
+          console.log(
+            '⚠️ Template not found, will initialize user schema manually'
+          );
+        }
+      }
+    } else {
+      console.log('✅ User database exists');
+    }
+
+    // Verify user database file
+    if (await RNFS.exists(userDbPath)) {
+      const userStats = await RNFS.stat(userDbPath);
+      console.log('User database file size:', userStats.size, 'bytes');
+    }
   } catch (error) {
-    console.error('Failed to copy database:', error);
+    console.error('Failed to ensure databases copied:', error);
     throw error;
   }
 };
 
 /**
+ * Attach content database to user database
+ */
+const attachContentDatabase = async (db: SQLiteDatabase): Promise<void> => {
+  const documentsPath =
+    Platform.OS === 'ios'
+      ? RNFS.DocumentDirectoryPath
+      : RNFS.ExternalDirectoryPath || RNFS.DocumentDirectoryPath;
+
+  const contentDbPath = `${documentsPath}/${DATABASE_CONFIG.CONTENT_DB.NAME}`;
+
+  // Attach content database
+  await db.executeSql(`ATTACH DATABASE '${contentDbPath}' AS content`);
+  console.log('✅ Content database attached');
+
+  // Verify attachment
+  const [result] = await db.executeSql(
+    "SELECT name FROM pragma_database_list WHERE name='content'"
+  );
+
+  if (result.rows.length === 0) {
+    throw new Error('Failed to attach content database');
+  }
+
+  // Get and log content version
+  try {
+    const contentVersion = await getContentDbVersion(db);
+    console.log(`📚 Content database version: ${contentVersion}`);
+  } catch (versionError) {
+    console.warn('⚠️ Could not read content version:', versionError);
+  }
+};
+
+/**
  * Initialize the global database connection (call once during app startup)
+ * Opens userdata.db and attaches content.db for cross-database queries
  */
 export const initializeDatabase = async (): Promise<void> => {
+  if (isTestEnv) {
+    if (!initializationPromise) {
+      globalDb = createTestDatabase();
+      isInitialized = true;
+      initializationPromise = Promise.resolve();
+    }
+    return initializationPromise;
+  }
+
   if (isInitialized && globalDb) {
     return;
   }
@@ -292,42 +558,60 @@ export const initializeDatabase = async (): Promise<void> => {
 
   initializationPromise = (async () => {
     try {
-      console.log('🔄 Initializing database...');
+      console.log('🔄 Initializing two-database architecture...');
 
-      // Ensure database is copied
+      // Ensure both databases are copied and up to date
       await ensureDatabaseCopied();
 
-      // Determine the correct database path for opening
+      // Determine the correct database path
       const documentsPath =
         Platform.OS === 'ios'
           ? RNFS.DocumentDirectoryPath
           : RNFS.ExternalDirectoryPath || RNFS.DocumentDirectoryPath;
 
-      const databasePath = `${documentsPath}/${DATABASE_CONFIG.NAME}`;
+      const userDbPath = `${documentsPath}/${DATABASE_CONFIG.USER_DB.NAME}`;
 
-      // Open the database using absolute path for Android, location for iOS
-      const databaseConfig = Platform.OS === 'ios'
-        ? {
-            name: DATABASE_CONFIG.NAME,
-            location: 'Documents',
-          }
-        : {
-            name: databasePath,
-            location: 'default',
-          };
+      // Open the user database
+      const databaseConfig =
+        Platform.OS === 'ios'
+          ? {
+              name: DATABASE_CONFIG.USER_DB.NAME,
+              location: 'Documents',
+            }
+          : {
+              name: userDbPath,
+              location: 'default',
+            };
 
       globalDb = await withTimeout(
         SQLite.openDatabase(databaseConfig),
         TIMEOUTS.CONNECTION
       );
 
-      console.log('✅ Database opened successfully from:', Platform.OS === 'ios' ? 'Documents directory' : databasePath);
+      console.log(
+        '✅ User database opened from:',
+        Platform.OS === 'ios' ? 'Documents directory' : userDbPath
+      );
 
       // Wait for database to be ready and test connection
       await new Promise(resolve => setTimeout(resolve, 100));
       await globalDb.executeSql('SELECT 1');
-      console.log('✅ Database connection verified');
+      console.log('✅ User database connection verified');
 
+      // Check if user schema needs initialization
+      const needsInit = await needsUserSchemaInitialization(globalDb);
+      if (needsInit) {
+        console.log('🔧 Initializing user schema for the first time...');
+        await initializeUserSchema(globalDb);
+      }
+
+      // Attach content database
+      await attachContentDatabase(globalDb);
+
+      // Run user schema migrations
+      await migrateUserSchema(globalDb);
+
+      console.log('✅ Two-database architecture initialized successfully');
       isInitialized = true;
     } catch (error) {
       console.error('❌ Database initialization failed:', error);
@@ -342,6 +626,7 @@ export const initializeDatabase = async (): Promise<void> => {
 
 /**
  * Get the global database connection, initializing if necessary
+ * Returns userdata.db with content.db attached as 'content' schema
  */
 export const getDatabase = async (): Promise<SQLiteDatabase> => {
   if (!isInitialized || !globalDb) {

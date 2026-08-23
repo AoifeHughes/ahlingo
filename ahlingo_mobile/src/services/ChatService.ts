@@ -4,7 +4,12 @@
  * Handles all chat-related database operations using the modern database utilities
  */
 
-import { executeQuery, executeSqlSingle, rowsToArray, getSingleRow } from '../utils/databaseUtils';
+import {
+  executeQuery,
+  executeSqlSingle,
+  rowsToArray,
+  getSingleRow,
+} from '../utils/databaseUtils';
 import { SQL_QUERIES, TIMEOUTS } from '../utils/constants';
 import { migrateChatNameColumn } from './ChatMigrationService';
 
@@ -84,7 +89,9 @@ export const getUserChats = async (userId: number): Promise<ChatDetail[]> => {
   }
 };
 
-export const getChatById = async (chatId: number): Promise<ChatDetail | null> => {
+export const getChatById = async (
+  chatId: number
+): Promise<ChatDetail | null> => {
   try {
     await ensureMigrations();
 
@@ -116,7 +123,10 @@ export const updateChatTimestamp = async (chatId: number): Promise<void> => {
   }
 };
 
-export const updateChatModel = async (chatId: number, model: string): Promise<void> => {
+export const updateChatModel = async (
+  chatId: number,
+  model: string
+): Promise<void> => {
   try {
     await ensureMigrations();
 
@@ -131,7 +141,10 @@ export const updateChatModel = async (chatId: number, model: string): Promise<vo
   }
 };
 
-export const updateChatName = async (chatId: number, chatName: string): Promise<void> => {
+export const updateChatName = async (
+  chatId: number,
+  chatName: string
+): Promise<void> => {
   try {
     await ensureMigrations();
 
@@ -146,7 +159,10 @@ export const updateChatName = async (chatId: number, chatName: string): Promise<
   }
 };
 
-export const deleteChat = async (chatId: number, userId: number): Promise<void> => {
+export const deleteChat = async (
+  chatId: number,
+  userId: number
+): Promise<void> => {
   try {
     await ensureMigrations();
 
@@ -196,7 +212,9 @@ export const addChatMessage = async (
   }
 };
 
-export const getChatMessages = async (chatId: number): Promise<ChatMessage[]> => {
+export const getChatMessages = async (
+  chatId: number
+): Promise<ChatMessage[]> => {
   try {
     await ensureMigrations();
 
@@ -217,7 +235,9 @@ export const getChatMessages = async (chatId: number): Promise<ChatMessage[]> =>
   }
 };
 
-export const getRecentChatForUser = async (userId: number): Promise<ChatDetail | null> => {
+export const getRecentChatForUser = async (
+  userId: number
+): Promise<ChatDetail | null> => {
   try {
     await ensureMigrations();
 

@@ -9,10 +9,18 @@ import {
   TouchableOpacity,
   BackHandler,
 } from 'react-native';
-import { RouteProp, useFocusEffect, usePreventRemove } from '@react-navigation/native';
+import {
+  RouteProp,
+  useFocusEffect,
+  usePreventRemove,
+} from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useSelector } from 'react-redux';
-import { RootStackParamList, ExerciseInfo, FillInBlankExercise } from '../types';
+import {
+  RootStackParamList,
+  ExerciseInfo,
+  FillInBlankExercise,
+} from '../types';
 import { RootState } from '../store';
 import { WordButton } from '../components';
 import {
@@ -64,8 +72,12 @@ const FillInTheBlankScreen: React.FC<Props> = ({ route, navigation }) => {
   }, [topicId, exerciseInfo, navigation]);
 
   const [loading, setLoading] = useState(true);
-  const [currentExercise, setCurrentExercise] = useState<ExerciseInfo | null>(null);
-  const [fillInBlankData, setFillInBlankData] = useState<FillInBlankExercise[]>([]);
+  const [currentExercise, setCurrentExercise] = useState<ExerciseInfo | null>(
+    null
+  );
+  const [fillInBlankData, setFillInBlankData] = useState<FillInBlankExercise[]>(
+    []
+  );
   const [gameState, setGameState] = useState<GameState>({
     sentence: '',
     correctAnswer: '',
@@ -95,7 +107,7 @@ const FillInTheBlankScreen: React.FC<Props> = ({ route, navigation }) => {
           {
             text: 'Exit',
             style: 'destructive',
-            onPress: () => navigation.navigate('MainMenu')
+            onPress: () => navigation.navigate('MainMenu'),
           },
         ]
       );
@@ -108,7 +120,10 @@ const FillInTheBlankScreen: React.FC<Props> = ({ route, navigation }) => {
     useCallback(() => {
       if (shuffleContext) {
         const onBackPress = () => handleBackPress();
-        const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress);
+        const subscription = BackHandler.addEventListener(
+          'hardwareBackPress',
+          onBackPress
+        );
         return () => subscription.remove();
       }
     }, [shuffleContext, handleBackPress])
@@ -124,7 +139,7 @@ const FillInTheBlankScreen: React.FC<Props> = ({ route, navigation }) => {
         {
           text: 'Exit',
           style: 'destructive',
-          onPress: () => navigation.navigate('MainMenu')
+          onPress: () => navigation.navigate('MainMenu'),
         },
       ]
     );
@@ -142,8 +157,10 @@ const FillInTheBlankScreen: React.FC<Props> = ({ route, navigation }) => {
         return;
       }
 
-      const language = userContext.settings.language || settings.language || 'French';
-      const difficulty = userContext.settings.difficulty || settings.difficulty || 'Beginner';
+      const language =
+        userContext.settings.language || settings.language || 'French';
+      const difficulty =
+        userContext.settings.difficulty || settings.difficulty || 'Beginner';
 
       setUserLanguage(language);
       setUserDifficulty(difficulty);
@@ -165,7 +182,10 @@ const FillInTheBlankScreen: React.FC<Props> = ({ route, navigation }) => {
 
       if (!exercise) {
         setLoading(false);
-        Alert.alert('Error', 'No fill-in-the-blank exercises found for this topic.');
+        Alert.alert(
+          'Error',
+          'No fill-in-the-blank exercises found for this topic.'
+        );
         navigation.goBack();
         return;
       }
@@ -200,7 +220,9 @@ const FillInTheBlankScreen: React.FC<Props> = ({ route, navigation }) => {
     const translation = fillInBlank.translation;
 
     // Combine correct and incorrect answers and shuffle them
-    const allWords = [correctAnswer, incorrect1, incorrect2].sort(() => Math.random() - 0.5);
+    const allWords = [correctAnswer, incorrect1, incorrect2].sort(
+      () => Math.random() - 0.5
+    );
 
     setGameState({
       sentence,
@@ -233,8 +255,9 @@ const FillInTheBlankScreen: React.FC<Props> = ({ route, navigation }) => {
   const handleSubmit = async () => {
     if (!gameState.selectedWord) return;
 
-    const isCorrect = gameState.selectedWord.toLowerCase().trim() ===
-                     gameState.correctAnswer.toLowerCase().trim();
+    const isCorrect =
+      gameState.selectedWord.toLowerCase().trim() ===
+      gameState.correctAnswer.toLowerCase().trim();
 
     // Record the exercise attempt
     if (currentExercise) {
@@ -249,7 +272,10 @@ const FillInTheBlankScreen: React.FC<Props> = ({ route, navigation }) => {
     }));
 
     // Speak the full correct sentence after submission
-    const completeSentence = gameState.sentence.replace('_', gameState.correctAnswer);
+    const completeSentence = gameState.sentence.replace(
+      '_',
+      gameState.correctAnswer
+    );
     TTSService.speakWithLanguageDetection(completeSentence, userLanguage);
 
     // Handle shuffle mode completion
@@ -269,9 +295,7 @@ const FillInTheBlankScreen: React.FC<Props> = ({ route, navigation }) => {
         const otherExercises = fillInBlankData.filter(
           (_, index) =>
             index !==
-            fillInBlankData.findIndex(
-              fb => fb.sentence === gameState.sentence
-            )
+            fillInBlankData.findIndex(fb => fb.sentence === gameState.sentence)
         );
 
         if (otherExercises.length > 0) {
@@ -301,7 +325,9 @@ const FillInTheBlankScreen: React.FC<Props> = ({ route, navigation }) => {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color={theme.colors.primary} />
-        <Text style={styles.loadingText}>Loading fill-in-the-blank exercise...</Text>
+        <Text style={styles.loadingText}>
+          Loading fill-in-the-blank exercise...
+        </Text>
       </View>
     );
   }
@@ -311,7 +337,10 @@ const FillInTheBlankScreen: React.FC<Props> = ({ route, navigation }) => {
       {/* Header with refresh button - hidden in shuffle mode */}
       {!shuffleContext && (
         <View style={styles.header}>
-          <TouchableOpacity style={styles.refreshButton} onPress={handleRefresh}>
+          <TouchableOpacity
+            style={styles.refreshButton}
+            onPress={handleRefresh}
+          >
             <Text style={styles.refreshButtonText}>🔄 New Exercise</Text>
           </TouchableOpacity>
         </View>
@@ -324,9 +353,7 @@ const FillInTheBlankScreen: React.FC<Props> = ({ route, navigation }) => {
 
       {/* Sentence with blank/answer */}
       <View style={styles.sentenceContainer}>
-        <Text style={styles.sentenceText}>
-          {renderSentenceWithBlank()}
-        </Text>
+        <Text style={styles.sentenceText}>{renderSentenceWithBlank()}</Text>
       </View>
 
       {/* Feedback */}
@@ -373,9 +400,10 @@ const FillInTheBlankScreen: React.FC<Props> = ({ route, navigation }) => {
           >
             <Text style={styles.nextButtonText}>
               {shuffleContext
-                ? (gameState.isCorrect ? '✅ Perfect! Next Exercise' : '➡️ Next Exercise')
-                : 'Next Exercise'
-              }
+                ? gameState.isCorrect
+                  ? '✅ Perfect! Next Exercise'
+                  : '➡️ Next Exercise'
+                : 'Next Exercise'}
             </Text>
           </TouchableOpacity>
         </View>
@@ -383,9 +411,7 @@ const FillInTheBlankScreen: React.FC<Props> = ({ route, navigation }) => {
 
       {/* Word selection area */}
       <View style={styles.wordsContainer}>
-        <Text style={styles.wordsTitle}>
-          Choose the correct word:
-        </Text>
+        <Text style={styles.wordsTitle}>Choose the correct word:</Text>
         <View style={styles.wordsGrid}>
           {gameState.allWords.map((word, index) => (
             <WordButton
@@ -424,189 +450,190 @@ const FillInTheBlankScreen: React.FC<Props> = ({ route, navigation }) => {
   );
 };
 
-const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) => StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: currentTheme.colors.background,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: currentTheme.colors.background,
-  },
-  loadingText: {
-    marginTop: currentTheme.spacing.lg,
-    fontSize: currentTheme.typography.fontSizes.lg,
-    color: currentTheme.colors.textSecondary,
-  },
-  header: {
-    backgroundColor: currentTheme.colors.surface,
-    paddingVertical: currentTheme.spacing.md,
-    paddingHorizontal: currentTheme.spacing.lg,
-    borderBottomWidth: 1,
-    borderBottomColor: currentTheme.colors.border,
-    alignItems: 'center',
-  },
-  refreshButton: {
-    backgroundColor: currentTheme.colors.primary,
-    paddingVertical: currentTheme.spacing.base,
-    paddingHorizontal: currentTheme.spacing.lg,
-    borderRadius: currentTheme.spacing.xl,
-    ...currentTheme.shadows.base,
-  },
-  refreshButtonText: {
-    color: currentTheme.colors.background,
-    fontSize: currentTheme.typography.fontSizes.base,
-    fontWeight: currentTheme.typography.fontWeights.semibold,
-  },
-  instructionsContainer: {
-    backgroundColor: currentTheme.colors.surface,
-    padding: currentTheme.spacing.lg,
-    marginBottom: currentTheme.spacing.base,
-  },
-  instructionsTitle: {
-    fontSize: currentTheme.typography.fontSizes.lg,
-    fontWeight: currentTheme.typography.fontWeights.semibold,
-    color: currentTheme.colors.text,
-    textAlign: 'center',
-  },
-  sentenceContainer: {
-    backgroundColor: currentTheme.colors.surface,
-    padding: currentTheme.spacing.lg,
-    marginBottom: currentTheme.spacing.base,
-  },
-  sentenceText: {
-    fontSize: currentTheme.typography.fontSizes.xl,
-    fontWeight: currentTheme.typography.fontWeights.bold,
-    color: currentTheme.colors.primary,
-    textAlign: 'center',
-    backgroundColor: currentTheme.colors.primaryLight + '20',
-    padding: currentTheme.spacing.lg,
-    borderRadius: currentTheme.borderRadius.md,
-    borderWidth: 2,
-    borderColor: currentTheme.colors.primaryLight,
-    lineHeight: currentTheme.typography.fontSizes.xl * 1.4,
-  },
-  feedbackContainer: {
-    backgroundColor: currentTheme.colors.surface,
-    padding: currentTheme.spacing.lg,
-    marginBottom: currentTheme.spacing.base,
-    alignItems: 'center',
-  },
-  feedbackText: {
-    fontSize: currentTheme.typography.fontSizes.xl,
-    fontWeight: currentTheme.typography.fontWeights.semibold,
-    textAlign: 'center',
-    marginBottom: currentTheme.spacing.base,
-  },
-  correctFeedback: {
-    color: currentTheme.colors.success,
-  },
-  incorrectFeedback: {
-    color: currentTheme.colors.error,
-  },
-  correctAnswerText: {
-    fontSize: currentTheme.typography.fontSizes.lg,
-    color: currentTheme.colors.textSecondary,
-    textAlign: 'center',
-    marginBottom: currentTheme.spacing.md,
-    fontStyle: 'italic',
-  },
-  correctSentenceContainer: {
-    backgroundColor: currentTheme.colors.primaryLight + '20',
-    padding: currentTheme.spacing.md,
-    borderRadius: currentTheme.borderRadius.base,
-    marginVertical: currentTheme.spacing.sm,
-    borderWidth: 1,
-    borderColor: currentTheme.colors.primaryLight,
-  },
-  correctSentenceLabel: {
-    fontSize: currentTheme.typography.fontSizes.sm,
-    color: currentTheme.colors.textSecondary,
-    fontWeight: currentTheme.typography.fontWeights.semibold,
-    marginBottom: currentTheme.spacing.xs,
-    textAlign: 'center',
-  },
-  correctSentenceText: {
-    fontSize: currentTheme.typography.fontSizes.lg,
-    color: currentTheme.colors.primary,
-    fontWeight: currentTheme.typography.fontWeights.semibold,
-    textAlign: 'center',
-  },
-  translationContainer: {
-    backgroundColor: currentTheme.colors.success + '20',
-    padding: currentTheme.spacing.md,
-    borderRadius: currentTheme.borderRadius.base,
-    marginVertical: currentTheme.spacing.sm,
-    borderWidth: 1,
-    borderColor: currentTheme.colors.success,
-  },
-  translationLabel: {
-    fontSize: currentTheme.typography.fontSizes.sm,
-    color: currentTheme.colors.textSecondary,
-    fontWeight: currentTheme.typography.fontWeights.semibold,
-    marginBottom: currentTheme.spacing.xs,
-    textAlign: 'center',
-  },
-  translationText: {
-    fontSize: currentTheme.typography.fontSizes.lg,
-    color: currentTheme.colors.success,
-    fontWeight: currentTheme.typography.fontWeights.medium,
-    textAlign: 'center',
-    fontStyle: 'italic',
-  },
-  nextButton: {
-    backgroundColor: currentTheme.colors.primary,
-    paddingVertical: currentTheme.spacing.md,
-    paddingHorizontal: currentTheme.spacing.xl,
-    borderRadius: currentTheme.borderRadius.base,
-    ...currentTheme.shadows.base,
-  },
-  nextButtonText: {
-    color: currentTheme.colors.background,
-    fontSize: currentTheme.typography.fontSizes.lg,
-    fontWeight: currentTheme.typography.fontWeights.semibold,
-  },
-  wordsContainer: {
-    flex: 1,
-    backgroundColor: currentTheme.colors.surface,
-    padding: currentTheme.spacing.lg,
-  },
-  wordsTitle: {
-    fontSize: currentTheme.typography.fontSizes.lg,
-    fontWeight: currentTheme.typography.fontWeights.semibold,
-    color: currentTheme.colors.text,
-    textAlign: 'center',
-    marginBottom: currentTheme.spacing.lg,
-  },
-  wordsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    alignItems: 'flex-start',
-    marginBottom: currentTheme.spacing.lg,
-  },
-  submitButton: {
-    backgroundColor: currentTheme.colors.success,
-    paddingVertical: currentTheme.spacing.md,
-    paddingHorizontal: currentTheme.spacing.xl,
-    borderRadius: currentTheme.borderRadius.md,
-    alignItems: 'center',
-    ...currentTheme.shadows.base,
-  },
-  submitButtonDisabled: {
-    backgroundColor: currentTheme.colors.buttonDisabled,
-    opacity: 0.6,
-  },
-  submitButtonText: {
-    color: currentTheme.colors.background,
-    fontSize: currentTheme.typography.fontSizes.lg,
-    fontWeight: currentTheme.typography.fontWeights.semibold,
-  },
-  submitButtonTextDisabled: {
-    color: currentTheme.colors.textSecondary,
-  },
-});
+const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: currentTheme.colors.background,
+    },
+    loadingContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: currentTheme.colors.background,
+    },
+    loadingText: {
+      marginTop: currentTheme.spacing.lg,
+      fontSize: currentTheme.typography.fontSizes.lg,
+      color: currentTheme.colors.textSecondary,
+    },
+    header: {
+      backgroundColor: currentTheme.colors.surface,
+      paddingVertical: currentTheme.spacing.md,
+      paddingHorizontal: currentTheme.spacing.lg,
+      borderBottomWidth: 1,
+      borderBottomColor: currentTheme.colors.border,
+      alignItems: 'center',
+    },
+    refreshButton: {
+      backgroundColor: currentTheme.colors.primary,
+      paddingVertical: currentTheme.spacing.base,
+      paddingHorizontal: currentTheme.spacing.lg,
+      borderRadius: currentTheme.spacing.xl,
+      ...currentTheme.shadows.base,
+    },
+    refreshButtonText: {
+      color: currentTheme.colors.background,
+      fontSize: currentTheme.typography.fontSizes.base,
+      fontWeight: currentTheme.typography.fontWeights.semibold,
+    },
+    instructionsContainer: {
+      backgroundColor: currentTheme.colors.surface,
+      padding: currentTheme.spacing.lg,
+      marginBottom: currentTheme.spacing.base,
+    },
+    instructionsTitle: {
+      fontSize: currentTheme.typography.fontSizes.lg,
+      fontWeight: currentTheme.typography.fontWeights.semibold,
+      color: currentTheme.colors.text,
+      textAlign: 'center',
+    },
+    sentenceContainer: {
+      backgroundColor: currentTheme.colors.surface,
+      padding: currentTheme.spacing.lg,
+      marginBottom: currentTheme.spacing.base,
+    },
+    sentenceText: {
+      fontSize: currentTheme.typography.fontSizes.xl,
+      fontWeight: currentTheme.typography.fontWeights.bold,
+      color: currentTheme.colors.primary,
+      textAlign: 'center',
+      backgroundColor: currentTheme.colors.primaryLight + '20',
+      padding: currentTheme.spacing.lg,
+      borderRadius: currentTheme.borderRadius.md,
+      borderWidth: 2,
+      borderColor: currentTheme.colors.primaryLight,
+      lineHeight: currentTheme.typography.fontSizes.xl * 1.4,
+    },
+    feedbackContainer: {
+      backgroundColor: currentTheme.colors.surface,
+      padding: currentTheme.spacing.lg,
+      marginBottom: currentTheme.spacing.base,
+      alignItems: 'center',
+    },
+    feedbackText: {
+      fontSize: currentTheme.typography.fontSizes.xl,
+      fontWeight: currentTheme.typography.fontWeights.semibold,
+      textAlign: 'center',
+      marginBottom: currentTheme.spacing.base,
+    },
+    correctFeedback: {
+      color: currentTheme.colors.success,
+    },
+    incorrectFeedback: {
+      color: currentTheme.colors.error,
+    },
+    correctAnswerText: {
+      fontSize: currentTheme.typography.fontSizes.lg,
+      color: currentTheme.colors.textSecondary,
+      textAlign: 'center',
+      marginBottom: currentTheme.spacing.md,
+      fontStyle: 'italic',
+    },
+    correctSentenceContainer: {
+      backgroundColor: currentTheme.colors.primaryLight + '20',
+      padding: currentTheme.spacing.md,
+      borderRadius: currentTheme.borderRadius.base,
+      marginVertical: currentTheme.spacing.sm,
+      borderWidth: 1,
+      borderColor: currentTheme.colors.primaryLight,
+    },
+    correctSentenceLabel: {
+      fontSize: currentTheme.typography.fontSizes.sm,
+      color: currentTheme.colors.textSecondary,
+      fontWeight: currentTheme.typography.fontWeights.semibold,
+      marginBottom: currentTheme.spacing.xs,
+      textAlign: 'center',
+    },
+    correctSentenceText: {
+      fontSize: currentTheme.typography.fontSizes.lg,
+      color: currentTheme.colors.primary,
+      fontWeight: currentTheme.typography.fontWeights.semibold,
+      textAlign: 'center',
+    },
+    translationContainer: {
+      backgroundColor: currentTheme.colors.success + '20',
+      padding: currentTheme.spacing.md,
+      borderRadius: currentTheme.borderRadius.base,
+      marginVertical: currentTheme.spacing.sm,
+      borderWidth: 1,
+      borderColor: currentTheme.colors.success,
+    },
+    translationLabel: {
+      fontSize: currentTheme.typography.fontSizes.sm,
+      color: currentTheme.colors.textSecondary,
+      fontWeight: currentTheme.typography.fontWeights.semibold,
+      marginBottom: currentTheme.spacing.xs,
+      textAlign: 'center',
+    },
+    translationText: {
+      fontSize: currentTheme.typography.fontSizes.lg,
+      color: currentTheme.colors.success,
+      fontWeight: currentTheme.typography.fontWeights.medium,
+      textAlign: 'center',
+      fontStyle: 'italic',
+    },
+    nextButton: {
+      backgroundColor: currentTheme.colors.primary,
+      paddingVertical: currentTheme.spacing.md,
+      paddingHorizontal: currentTheme.spacing.xl,
+      borderRadius: currentTheme.borderRadius.base,
+      ...currentTheme.shadows.base,
+    },
+    nextButtonText: {
+      color: currentTheme.colors.background,
+      fontSize: currentTheme.typography.fontSizes.lg,
+      fontWeight: currentTheme.typography.fontWeights.semibold,
+    },
+    wordsContainer: {
+      flex: 1,
+      backgroundColor: currentTheme.colors.surface,
+      padding: currentTheme.spacing.lg,
+    },
+    wordsTitle: {
+      fontSize: currentTheme.typography.fontSizes.lg,
+      fontWeight: currentTheme.typography.fontWeights.semibold,
+      color: currentTheme.colors.text,
+      textAlign: 'center',
+      marginBottom: currentTheme.spacing.lg,
+    },
+    wordsGrid: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      justifyContent: 'center',
+      alignItems: 'flex-start',
+      marginBottom: currentTheme.spacing.lg,
+    },
+    submitButton: {
+      backgroundColor: currentTheme.colors.success,
+      paddingVertical: currentTheme.spacing.md,
+      paddingHorizontal: currentTheme.spacing.xl,
+      borderRadius: currentTheme.borderRadius.md,
+      alignItems: 'center',
+      ...currentTheme.shadows.base,
+    },
+    submitButtonDisabled: {
+      backgroundColor: currentTheme.colors.buttonDisabled,
+      opacity: 0.6,
+    },
+    submitButtonText: {
+      color: currentTheme.colors.background,
+      fontSize: currentTheme.typography.fontSizes.lg,
+      fontWeight: currentTheme.typography.fontWeights.semibold,
+    },
+    submitButtonTextDisabled: {
+      color: currentTheme.colors.textSecondary,
+    },
+  });
 
 export default FillInTheBlankScreen;

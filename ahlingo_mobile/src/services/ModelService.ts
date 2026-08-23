@@ -21,7 +21,11 @@ export interface ModelInfo {
 }
 
 export class ModelService {
-  static async fetchAllModels(serverUrl?: string, apiKey?: string, includeLocal: boolean = true): Promise<ModelInfo[]> {
+  static async fetchAllModels(
+    serverUrl?: string,
+    apiKey?: string,
+    includeLocal: boolean = true
+  ): Promise<ModelInfo[]> {
     const allModels: ModelInfo[] = [];
 
     // Fetch local models if enabled
@@ -93,7 +97,10 @@ export class ModelService {
     }
   }
 
-  static async fetchAvailableModels(serverUrl: string, apiKey?: string): Promise<ModelInfo[]> {
+  static async fetchAvailableModels(
+    serverUrl: string,
+    apiKey?: string
+  ): Promise<ModelInfo[]> {
     try {
       // Clean up the URL and add the OpenAI models endpoint
       let apiUrl = serverUrl.replace(/\/$/, '');
@@ -107,7 +114,10 @@ export class ModelService {
         }
       }
 
-      console.log('🔍 Fetching models from OpenAI-compatible endpoint:', apiUrl);
+      console.log(
+        '🔍 Fetching models from OpenAI-compatible endpoint:',
+        apiUrl
+      );
 
       const headers: Record<string, string> = {
         'Content-Type': 'application/json',
@@ -131,7 +141,9 @@ export class ModelService {
       clearTimeout(timeoutId);
 
       if (!response.ok) {
-        throw new Error(`Failed to fetch models: ${response.status} ${response.statusText}`);
+        throw new Error(
+          `Failed to fetch models: ${response.status} ${response.statusText}`
+        );
       }
 
       const data: OpenAIModelsResponse = await response.json();
@@ -139,7 +151,9 @@ export class ModelService {
       console.log('📋 Raw models data:', data);
 
       if (!data.data || !Array.isArray(data.data)) {
-        throw new Error('Invalid models response format - expected OpenAI format with data array');
+        throw new Error(
+          'Invalid models response format - expected OpenAI format with data array'
+        );
       }
 
       const models: ModelInfo[] = data.data.map(model => ({
@@ -162,13 +176,20 @@ export class ModelService {
 
       return uniqueModels;
     } catch (error) {
-    if (error instanceof Error) {
+      if (error instanceof Error) {
         if (error.name === 'AbortError' || error.message.includes('timeout')) {
-          throw new Error('Request timed out. Please check your server URL and network connection.');
+          throw new Error(
+            'Request timed out. Please check your server URL and network connection.'
+          );
         }
 
-        if (error.message.includes('NetworkError') || error.message.includes('Failed to fetch')) {
-          throw new Error('Network error. Please check your server URL and ensure the server is running.');
+        if (
+          error.message.includes('NetworkError') ||
+          error.message.includes('Failed to fetch')
+        ) {
+          throw new Error(
+            'Network error. Please check your server URL and ensure the server is running.'
+          );
         }
 
         if (error.message.includes('401')) {
@@ -182,12 +203,16 @@ export class ModelService {
     }
   }
 
-  static async testServerConnection(serverUrl: string, apiKey?: string): Promise<{ success: boolean; error?: string }> {
+  static async testServerConnection(
+    serverUrl: string,
+    apiKey?: string
+  ): Promise<{ success: boolean; error?: string }> {
     try {
       const models = await this.fetchAvailableModels(serverUrl, apiKey);
       return { success: true };
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error occurred';
       return { success: false, error: errorMessage };
     }
   }

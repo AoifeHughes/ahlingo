@@ -3,14 +3,28 @@ import { SQLiteDatabase } from 'react-native-sqlite-storage';
 import { getDatabase, executeQuery, rowsToArray } from '../utils/databaseUtils';
 
 /**
- * Database Migration Service
+ * @deprecated DEPRECATED - No longer used with two-database architecture
  *
- * Handles database version migrations while preserving user data.
- * When a new database version is detected, this service:
- * 1. Backs up user data (users, settings, chats) to AsyncStorage
- * 2. Calculates and stores aggregate statistics
- * 3. Allows database replacement
- * 4. Restores user data to the new database
+ * This service is kept for historical reference only.
+ *
+ * OLD APPROACH (Single Database - v140 and earlier):
+ * - Used backup-replace-restore strategy
+ * - Backed up user data to AsyncStorage
+ * - Deleted entire database and copied new one
+ * - Restored user data (but lost individual exercise history)
+ *
+ * NEW APPROACH (Two-Database Architecture - v141+):
+ * - content.db: Read-only content (lessons/exercises) - safe to replace
+ * - userdata.db: User data (progress/settings) - NEVER replaced
+ * - User schema migrations via UserSchemaMigrationService
+ * - Zero data loss
+ *
+ * This file remains for:
+ * 1. Reference implementation for backup/restore logic
+ * 2. Potential recovery scenarios from old app versions
+ * 3. Historical context
+ *
+ * DO NOT USE for new migrations. Use UserSchemaMigrationService instead.
  */
 
 const MIGRATION_STORAGE_KEY = '@database_migration_backup';
@@ -56,7 +70,7 @@ export const calculateAggregateStats = async (
     console.log(`📊 Calculating aggregate stats for user ${userId}...`);
 
     // Get total attempts and correct count
-    const totalStats = await executeQuery(async (db) => {
+    const totalStats = await executeQuery(async db => {
       const result = await db.executeSql(
         `SELECT
           COUNT(*) as totalAttempts,
@@ -69,7 +83,7 @@ export const calculateAggregateStats = async (
     });
 
     // Get per-topic stats
-    const topicStats = await executeQuery(async (db) => {
+    const topicStats = await executeQuery(async db => {
       const result = await db.executeSql(
         `SELECT
           t.id as topicId,
@@ -83,11 +97,16 @@ export const calculateAggregateStats = async (
         GROUP BY t.id, t.topic`,
         [userId]
       );
-      return rowsToArray(result[0].rows);
+      return rowsToArray<{
+        topicId: number;
+        topicName: string;
+        attemptedCount: number;
+        correctCount: number;
+      }>(result[0].rows);
     });
 
     // Get per-language stats
-    const languageStatsArray = await executeQuery(async (db) => {
+    const languageStatsArray = await executeQuery(async db => {
       const result = await db.executeSql(
         `SELECT
           l.language,
@@ -119,7 +138,9 @@ export const calculateAggregateStats = async (
       languageStats,
     };
 
-    console.log(`✅ Aggregate stats calculated: ${stats.totalAttempts} total attempts, ${stats.totalCorrect} correct`);
+    console.log(
+      `✅ Aggregate stats calculated: ${stats.totalAttempts} total attempts, ${stats.totalCorrect} correct`
+    );
     return stats;
   } catch (error) {
     console.error('❌ Failed to calculate aggregate stats:', error);
@@ -147,7 +168,7 @@ export const backupUserData = async (
 
     // Backup users table
     const usersResult = await db.executeSql('SELECT * FROM users');
-    const users = rowsToArray(usersResult[0].rows);
+    const users = rowsToArray<{ id: number }>(usersResult[0].rows);
     console.log(`  - Backed up ${users.length} users`);
 
     // Backup user_settings table
@@ -161,7 +182,9 @@ export const backupUserData = async (
     console.log(`  - Backed up ${chatDetails.length} chat sessions`);
 
     // Backup chat_histories table
-    const chatHistoriesResult = await db.executeSql('SELECT * FROM chat_histories');
+    const chatHistoriesResult = await db.executeSql(
+      'SELECT * FROM chat_histories'
+    );
     const chatHistories = rowsToArray(chatHistoriesResult[0].rows);
     console.log(`  - Backed up ${chatHistories.length} chat messages`);
 
@@ -200,7 +223,9 @@ export const backupUserData = async (
     return backup;
   } catch (error) {
     console.error('❌ Failed to backup user data:', error);
-    throw new Error(`Backup failed: ${error instanceof Error ? error.message : String(error)}`);
+    throw new Error(
+      `Backup failed: ${error instanceof Error ? error.message : String(error)}`
+    );
   }
 };
 
@@ -239,22 +264,34 @@ export const restoreUserData = async (backup: UserBackup): Promise<void> => {
       // Store total stats
       await db.executeSql(
         'INSERT OR REPLACE INTO user_settings (user_id, setting_name, setting_value) VALUES (?, ?, ?)',
-        [userId, 'legacy_total_attempts', backup.aggregateStats.totalAttempts.toString()]
+        [
+          userId,
+          'legacy_total_attempts',
+          backup.aggregateStats.totalAttempts.toString(),
+        ]
       );
       await db.executeSql(
         'INSERT OR REPLACE INTO user_settings (user_id, setting_name, setting_value) VALUES (?, ?, ?)',
-        [userId, 'legacy_total_correct', backup.aggregateStats.totalCorrect.toString()]
+        [
+          userId,
+          'legacy_total_correct',
+          backup.aggregateStats.totalCorrect.toString(),
+        ]
       );
 
       // Store per-language stats
-      const languageStatsJson = JSON.stringify(backup.aggregateStats.languageStats);
+      const languageStatsJson = JSON.stringify(
+        backup.aggregateStats.languageStats
+      );
       await db.executeSql(
         'INSERT OR REPLACE INTO user_settings (user_id, setting_name, setting_value) VALUES (?, ?, ?)',
         [userId, 'legacy_language_stats', languageStatsJson]
       );
 
       // Store per-topic stats
-      const topicStatsJson = JSON.stringify(backup.aggregateStats.topicsAttempted);
+      const topicStatsJson = JSON.stringify(
+        backup.aggregateStats.topicsAttempted
+      );
       await db.executeSql(
         'INSERT OR REPLACE INTO user_settings (user_id, setting_name, setting_value) VALUES (?, ?, ?)',
         [userId, 'legacy_topic_stats', topicStatsJson]
@@ -279,29 +316,58 @@ export const restoreUserData = async (backup: UserBackup): Promise<void> => {
       if (hasChatName) {
         await db.executeSql(
           'INSERT OR REPLACE INTO chat_details (id, user_id, language, difficulty, model, chat_name, created_at, last_updated) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-          [chat.id, chat.user_id, chat.language, chat.difficulty, chat.model, chat.chat_name, chat.created_at, chat.last_updated]
+          [
+            chat.id,
+            chat.user_id,
+            chat.language,
+            chat.difficulty,
+            chat.model,
+            chat.chat_name,
+            chat.created_at,
+            chat.last_updated,
+          ]
         );
       } else {
         await db.executeSql(
           'INSERT OR REPLACE INTO chat_details (id, user_id, language, difficulty, model, created_at, last_updated) VALUES (?, ?, ?, ?, ?, ?, ?)',
-          [chat.id, chat.user_id, chat.language, chat.difficulty, chat.model, chat.created_at, chat.last_updated]
+          [
+            chat.id,
+            chat.user_id,
+            chat.language,
+            chat.difficulty,
+            chat.model,
+            chat.created_at,
+            chat.last_updated,
+          ]
         );
       }
     }
 
     // Restore chat_histories
-    console.log(`  - Restoring ${backup.chatHistories.length} chat messages...`);
+    console.log(
+      `  - Restoring ${backup.chatHistories.length} chat messages...`
+    );
     for (const message of backup.chatHistories) {
       await db.executeSql(
         'INSERT OR REPLACE INTO chat_histories (id, chat_id, role, content, timestamp) VALUES (?, ?, ?, ?, ?)',
-        [message.id, message.chat_id, message.role, message.content, message.timestamp]
+        [
+          message.id,
+          message.chat_id,
+          message.role,
+          message.content,
+          message.timestamp,
+        ]
       );
     }
 
     console.log('✅ User data restoration completed successfully');
   } catch (error) {
     console.error('❌ Failed to restore user data:', error);
-    throw new Error(`Restore failed: ${error instanceof Error ? error.message : String(error)}`);
+    throw new Error(
+      `Restore failed: ${
+        error instanceof Error ? error.message : String(error)
+      }`
+    );
   }
 };
 
@@ -316,8 +382,13 @@ export const isMigrationInProgress = async (): Promise<boolean> => {
 /**
  * Mark migration as in progress
  */
-export const setMigrationInProgress = async (inProgress: boolean): Promise<void> => {
-  await AsyncStorage.setItem(MIGRATION_IN_PROGRESS_KEY, inProgress ? 'true' : 'false');
+export const setMigrationInProgress = async (
+  inProgress: boolean
+): Promise<void> => {
+  await AsyncStorage.setItem(
+    MIGRATION_IN_PROGRESS_KEY,
+    inProgress ? 'true' : 'false'
+  );
 };
 
 /**
@@ -354,7 +425,9 @@ export const performDatabaseMigration = async (
 ): Promise<void> => {
   try {
     console.log('🔄 ======================================');
-    console.log(`🔄 Starting database migration: v${oldVersion} → v${newVersion}`);
+    console.log(
+      `🔄 Starting database migration: v${oldVersion} → v${newVersion}`
+    );
     console.log('🔄 ======================================');
 
     // Check if migration is already in progress

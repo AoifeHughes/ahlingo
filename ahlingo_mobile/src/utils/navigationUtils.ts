@@ -1,6 +1,10 @@
 import { RootStackParamList } from '../types';
 
-export type ExerciseType = 'pairs' | 'conversation' | 'translation';
+export type ExerciseType =
+  | 'pairs'
+  | 'conversation'
+  | 'translation'
+  | 'fill_in_blank';
 
 /**
  * Navigation utilities for exercise types
@@ -19,6 +23,8 @@ export const getExerciseScreenName = (
       return 'ConversationExercises';
     case 'translation':
       return 'TranslationExercises';
+    case 'fill_in_blank':
+      return 'FillInTheBlank';
     default:
       return 'PairsGame';
   }
@@ -35,6 +41,8 @@ export const getExerciseTypeName = (exerciseType: ExerciseType): string => {
       return 'Conversation';
     case 'translation':
       return 'Translation';
+    case 'fill_in_blank':
+      return 'Fill in the Blank';
     default:
       return 'Unknown';
   }
@@ -51,6 +59,8 @@ export const getExerciseIcon = (exerciseType: ExerciseType): string => {
       return '💬';
     case 'translation':
       return '📝';
+    case 'fill_in_blank':
+      return '✏️';
     default:
       return '❓';
   }
@@ -67,6 +77,8 @@ export const getExerciseTypeTitle = (exerciseType: ExerciseType): string => {
       return 'Conversation Exercises';
     case 'translation':
       return 'Translation Exercises';
+    case 'fill_in_blank':
+      return 'Fill in the Blank Exercises';
     default:
       return 'Choose a Topic';
   }

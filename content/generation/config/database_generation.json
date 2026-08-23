@@ -1,0 +1,90 @@
+{
+  "llm_servers": {
+    "generation": {
+      "url": "http://localhost:11434/v1",
+      "api_key": "sk-no-key-required",
+      "model": "auto",
+      "temperature": 0.75,
+      "comment": "Model 'auto' will use the first available model from the server. Override with --generation-model flag."
+    },
+    "validation": {
+      "url": "http://192.168.0.167:11434/v1",
+      "api_key": "sk-no-key-required",
+      "model": "auto",
+      "temperature": 0.3,
+      "comment": "If model is 'auto' and not specified via --validation-model, will use the same model as generation."
+    }
+  },
+  "exercise_temperatures": {
+    "conversations": 0.8,
+    "pairs": 0.68,
+    "translations": 0.72,
+    "fill_in_blank": 0.75,
+    "comment": "Per-exercise-type temperature overrides. Higher = more creative, lower = more consistent."
+  },
+  "languages": [
+    "French",
+    "Ukrainian",
+    "Spanish",
+    "German",
+    "Italian"
+  ],
+  "levels": [
+    "beginner",
+    "intermediate",
+    "advanced"
+  ],
+  "topics": [
+    "Greetings and introductions",
+    "Basic questions and polite expressions",
+    "Numbers, time, and dates",
+    "Colors, weather, and descriptions",
+    "Food, drinks, and restaurants",
+    "Shopping and money",
+    "Directions and transportation",
+    "Health and body",
+    "Family and relationships",
+    "Work and school",
+    "Hobbies and entertainment",
+    "Technology and communication",
+    "Home and daily life",
+    "Travel and accommodations",
+    "Cultural customs",
+    "Video Games"
+  ],
+  "exercise_types": [
+    "conversations",
+    "pairs",
+    "translations",
+    "fill_in_blank"
+  ],
+  "generation_settings": {
+    "lessons_per_combination": 10,
+    "max_retries": 5,
+    "validation_threshold": 6,
+    "require_unambiguous_fill_in_blank": true,
+    "comment": "lessons_per_combination: Number of lessons to generate per (language, level, topic, exercise_type). max_retries: Retry attempts if generation or validation fails. validation_threshold: Minimum quality score (1-10) to accept. require_unambiguous_fill_in_blank: Reject ambiguous fill-in-blank exercises even if score >= threshold."
+  },
+  "image_generation": {
+    "images_per_topic": 10,
+    "comfyui_host": "127.0.0.1:8188",
+    "comfyui_dir": "/Users/aoife/git/ComfyUI",
+    "output_dir": "content/images",
+    "image_width": 1024,
+    "image_height": 1024,
+    "steps": 20,
+    "cfg": 1.0,
+    "sampler": "euler",
+    "scheduler": "sgm_uniform",
+    "unet_model": "flux1-dev-Q6_K.gguf",
+    "lora_model": "simplevectorflux.safetensors",
+    "lora_strength": 0.7,
+    "lora_trigger": "v3ct0r",
+    "vae_model": "ae.safetensors",
+    "clip_l_model": "clip_l.safetensors",
+    "t5_model": "t5xxl_fp16.safetensors",
+    "timeout": 600,
+    "temperature": 0.7,
+    "validation_threshold": 6
+  }
+}

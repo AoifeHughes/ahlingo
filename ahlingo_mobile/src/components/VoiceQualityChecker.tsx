@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  ActivityIndicator,
+} from 'react-native';
 import { TTSVoiceHelper, VoiceAvailability } from '../utils/TTSVoiceHelper';
 import { useTheme } from '../contexts/ThemeContext';
 
@@ -32,7 +38,9 @@ const VoiceQualityChecker: React.FC<VoiceQualityCheckerProps> = ({
   const { theme } = useTheme();
   const styles = createStyles(theme);
   const [loading, setLoading] = useState(true);
-  const [voiceAvailability, setVoiceAvailability] = useState<VoiceAvailability[]>([]);
+  const [voiceAvailability, setVoiceAvailability] = useState<
+    VoiceAvailability[]
+  >([]);
   const [allHighQuality, setAllHighQuality] = useState(false);
 
   useEffect(() => {
@@ -42,10 +50,14 @@ const VoiceQualityChecker: React.FC<VoiceQualityCheckerProps> = ({
   const checkVoices = async () => {
     setLoading(true);
     try {
-      const availability = await TTSVoiceHelper.checkVoiceAvailability(languages);
+      const availability = await TTSVoiceHelper.checkVoiceAvailability(
+        languages
+      );
       setVoiceAvailability(availability);
 
-      const missingLanguages = availability.filter(a => !a.hasHighQuality).map(a => a.language);
+      const missingLanguages = availability
+        .filter(a => !a.hasHighQuality)
+        .map(a => a.language);
       setAllHighQuality(missingLanguages.length === 0);
 
       // Auto-prompt if enabled and voices are missing
@@ -100,7 +112,9 @@ const VoiceQualityChecker: React.FC<VoiceQualityCheckerProps> = ({
                   <>
                     <Text style={styles.qualityGood}>✓</Text>
                     {availability.voiceName && (
-                      <Text style={styles.voiceName}>{availability.voiceName}</Text>
+                      <Text style={styles.voiceName}>
+                        {availability.voiceName}
+                      </Text>
                     )}
                   </>
                 ) : (

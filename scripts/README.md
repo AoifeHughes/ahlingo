@@ -101,17 +101,6 @@ python scripts/validate_content.py --db_path ./my_database.db
 
 ## Utility Scripts
 
-### extract_model_template.py
-
-Extracts chat templates from GGUF model files for use with local LLMs.
-
-**Usage:**
-```bash
-python scripts/extract_model_template.py model_file.gguf
-```
-
----
-
 ### Icon Generation Scripts
 
 - `generate_icons.sh` - Generate iOS app icons

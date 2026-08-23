@@ -87,7 +87,8 @@ const BasicSettingsForm: React.FC<BasicSettingsFormProps> = ({
           autoCapitalize="none"
         />
         <Text style={styles.helpText}>
-          Enter the full URL including port number for your AI server (Ollama, etc.)
+          Enter the full URL including port number for your AI server (Ollama,
+          etc.)
         </Text>
         <View style={styles.serverStatusRow}>
           <View style={styles.serverStatusIndicator}>
@@ -97,15 +98,16 @@ const BasicSettingsForm: React.FC<BasicSettingsFormProps> = ({
               <Text
                 style={[
                   styles.serverStatusText,
-                  serverStatus.status === 'success' && styles.serverStatusSuccess,
+                  serverStatus.status === 'success' &&
+                    styles.serverStatusSuccess,
                   serverStatus.status === 'error' && styles.serverStatusError,
                 ]}
               >
                 {serverStatus.status === 'success'
                   ? '✅ Server reachable'
                   : serverStatus.status === 'error'
-                    ? '⚠️ Server error'
-                    : 'Server status unknown'}
+                  ? '⚠️ Server error'
+                  : 'Server status unknown'}
               </Text>
             )}
           </View>
@@ -155,64 +157,65 @@ const BasicSettingsForm: React.FC<BasicSettingsFormProps> = ({
   );
 };
 
-const createStyles = (currentTheme: any) => StyleSheet.create({
-  textInput: {
-    backgroundColor: currentTheme.colors.surface,
-    borderWidth: 1,
-    borderColor: currentTheme.colors.border,
-    borderRadius: currentTheme.borderRadius.base,
-    paddingHorizontal: currentTheme.spacing.lg,
-    paddingVertical: currentTheme.spacing.md,
-    fontSize: currentTheme.typography.fontSizes.lg,
-    color: currentTheme.colors.text,
-    minHeight: currentTheme.spacing['5xl'],
-  },
-  helpText: {
-    fontSize: currentTheme.typography.fontSizes.sm,
-    color: currentTheme.colors.textSecondary,
-    marginTop: currentTheme.spacing.xs,
-    fontStyle: 'italic',
-  },
-  serverStatusRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginTop: currentTheme.spacing.md,
-  },
-  serverStatusIndicator: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  serverStatusText: {
-    fontSize: currentTheme.typography.fontSizes.sm,
-    color: currentTheme.colors.textSecondary,
-  },
-  serverStatusSuccess: {
-    color: currentTheme.colors.success,
-  },
-  serverStatusError: {
-    color: currentTheme.colors.error,
-  },
-  serverStatusMessage: {
-    marginTop: currentTheme.spacing.xs,
-    fontSize: currentTheme.typography.fontSizes.xs,
-    color: currentTheme.colors.textSecondary,
-  },
-  refreshButton: {
-    paddingHorizontal: currentTheme.spacing.md,
-    paddingVertical: currentTheme.spacing.xs,
-    borderRadius: currentTheme.borderRadius.sm,
-    borderWidth: 1,
-    borderColor: currentTheme.colors.border,
-    marginLeft: currentTheme.spacing.md,
-    backgroundColor: currentTheme.colors.surface,
-  },
-  refreshButtonText: {
-    fontSize: currentTheme.typography.fontSizes.sm,
-    color: currentTheme.colors.primary,
-    fontWeight: currentTheme.typography.fontWeights.semibold,
-  },
-});
+const createStyles = (currentTheme: any) =>
+  StyleSheet.create({
+    textInput: {
+      backgroundColor: currentTheme.colors.surface,
+      borderWidth: 1,
+      borderColor: currentTheme.colors.border,
+      borderRadius: currentTheme.borderRadius.base,
+      paddingHorizontal: currentTheme.spacing.lg,
+      paddingVertical: currentTheme.spacing.md,
+      fontSize: currentTheme.typography.fontSizes.lg,
+      color: currentTheme.colors.text,
+      minHeight: currentTheme.spacing['5xl'],
+    },
+    helpText: {
+      fontSize: currentTheme.typography.fontSizes.sm,
+      color: currentTheme.colors.textSecondary,
+      marginTop: currentTheme.spacing.xs,
+      fontStyle: 'italic',
+    },
+    serverStatusRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      marginTop: currentTheme.spacing.md,
+    },
+    serverStatusIndicator: {
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    serverStatusText: {
+      fontSize: currentTheme.typography.fontSizes.sm,
+      color: currentTheme.colors.textSecondary,
+    },
+    serverStatusSuccess: {
+      color: currentTheme.colors.success,
+    },
+    serverStatusError: {
+      color: currentTheme.colors.error,
+    },
+    serverStatusMessage: {
+      marginTop: currentTheme.spacing.xs,
+      fontSize: currentTheme.typography.fontSizes.xs,
+      color: currentTheme.colors.textSecondary,
+    },
+    refreshButton: {
+      paddingHorizontal: currentTheme.spacing.md,
+      paddingVertical: currentTheme.spacing.xs,
+      borderRadius: currentTheme.borderRadius.sm,
+      borderWidth: 1,
+      borderColor: currentTheme.colors.border,
+      marginLeft: currentTheme.spacing.md,
+      backgroundColor: currentTheme.colors.surface,
+    },
+    refreshButtonText: {
+      fontSize: currentTheme.typography.fontSizes.sm,
+      color: currentTheme.colors.primary,
+      fontWeight: currentTheme.typography.fontWeights.semibold,
+    },
+  });
 
 export default BasicSettingsForm;

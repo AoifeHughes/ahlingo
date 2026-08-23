@@ -8,7 +8,11 @@ import {
   BackHandler,
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RouteProp, useFocusEffect, usePreventRemove } from '@react-navigation/native';
+import {
+  RouteProp,
+  useFocusEffect,
+  usePreventRemove,
+} from '@react-navigation/native';
 import { RootStackParamList, ExerciseShuffleContext } from '../types';
 import { useTheme } from '../contexts/ThemeContext';
 
@@ -27,8 +31,18 @@ interface Props {
   route: ExerciseShuffleTransitionScreenRouteProp;
 }
 
-const ExerciseShuffleTransitionScreen: React.FC<Props> = ({ navigation, route }) => {
-  const { currentChallenge, totalChallenges, success, nextExercise, results, exercises } = route.params;
+const ExerciseShuffleTransitionScreen: React.FC<Props> = ({
+  navigation,
+  route,
+}) => {
+  const {
+    currentChallenge,
+    totalChallenges,
+    success,
+    nextExercise,
+    results,
+    exercises,
+  } = route.params;
   const { theme } = useTheme();
 
   const isLastExercise = currentChallenge >= totalChallenges;
@@ -43,7 +57,7 @@ const ExerciseShuffleTransitionScreen: React.FC<Props> = ({ navigation, route })
         {
           text: 'Exit',
           style: 'destructive',
-          onPress: () => navigation.navigate('MainMenu')
+          onPress: () => navigation.navigate('MainMenu'),
         },
       ]
     );
@@ -53,7 +67,10 @@ const ExerciseShuffleTransitionScreen: React.FC<Props> = ({ navigation, route })
   useFocusEffect(
     useCallback(() => {
       const onBackPress = () => handleBackPress();
-      const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress);
+      const subscription = BackHandler.addEventListener(
+        'hardwareBackPress',
+        onBackPress
+      );
       return () => subscription.remove();
     }, [handleBackPress])
   );
@@ -68,17 +85,17 @@ const ExerciseShuffleTransitionScreen: React.FC<Props> = ({ navigation, route })
         {
           text: 'Exit',
           style: 'destructive',
-          onPress: () => navigation.navigate('MainMenu')
+          onPress: () => navigation.navigate('MainMenu'),
         },
       ]
     );
   });
 
   const message = success
-    ? "Well done! Ready for the next?"
+    ? 'Well done! Ready for the next?'
     : "Keep trying, you've got this";
 
-  const buttonText = isLastExercise ? "See Results" : "Next Challenge";
+  const buttonText = isLastExercise ? 'See Results' : 'Next Challenge';
 
   const handleContinue = () => {
     if (isLastExercise) {
@@ -177,7 +194,14 @@ const ExerciseShuffleTransitionScreen: React.FC<Props> = ({ navigation, route })
         )}
 
         <TouchableOpacity
-          style={[styles.continueButton, { backgroundColor: success ? theme.colors.success : theme.colors.primary }]}
+          style={[
+            styles.continueButton,
+            {
+              backgroundColor: success
+                ? theme.colors.success
+                : theme.colors.primary,
+            },
+          ]}
           onPress={handleContinue}
           activeOpacity={0.8}
         >
@@ -188,84 +212,85 @@ const ExerciseShuffleTransitionScreen: React.FC<Props> = ({ navigation, route })
   );
 };
 
-const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) => StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: currentTheme.colors.background,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: currentTheme.spacing.xl,
-  },
-  content: {
-    alignItems: 'center',
-    maxWidth: 350,
-    width: '100%',
-  },
-  icon: {
-    fontSize: 80,
-    marginBottom: currentTheme.spacing.xl,
-  },
-  message: {
-    fontSize: currentTheme.typography.fontSizes['3xl'],
-    fontWeight: currentTheme.typography.fontWeights.bold,
-    color: currentTheme.colors.text,
-    textAlign: 'center',
-    marginBottom: currentTheme.spacing.xl,
-  },
-  progressIndicator: {
-    backgroundColor: currentTheme.colors.primary,
-    paddingVertical: currentTheme.spacing.base,
-    paddingHorizontal: currentTheme.spacing.lg,
-    borderRadius: currentTheme.borderRadius.lg,
-    marginBottom: currentTheme.spacing.xl,
-  },
-  progressText: {
-    fontSize: currentTheme.typography.fontSizes.lg,
-    fontWeight: currentTheme.typography.fontWeights.bold,
-    color: currentTheme.colors.background,
-  },
-  nextExercisePreview: {
-    backgroundColor: currentTheme.colors.surface,
-    padding: currentTheme.spacing.lg,
-    borderRadius: currentTheme.borderRadius.lg,
-    marginBottom: currentTheme.spacing.xl,
-    width: '100%',
-  },
-  previewTitle: {
-    fontSize: currentTheme.typography.fontSizes.lg,
-    fontWeight: currentTheme.typography.fontWeights.semibold,
-    color: currentTheme.colors.text,
-    marginBottom: currentTheme.spacing.xs,
-    textAlign: 'center',
-  },
-  exerciseDetails: {
-    fontSize: currentTheme.typography.fontSizes.base,
-    color: currentTheme.colors.textSecondary,
-    textAlign: 'center',
-  },
-  continueButton: {
-    paddingVertical: currentTheme.spacing.lg,
-    paddingHorizontal: currentTheme.spacing['2xl'],
-    borderRadius: currentTheme.borderRadius.lg,
-    marginBottom: currentTheme.spacing.lg,
-    width: '100%',
-    ...currentTheme.shadows.base,
-  },
-  continueButtonText: {
-    fontSize: currentTheme.typography.fontSizes.xl,
-    fontWeight: currentTheme.typography.fontWeights.semibold,
-    color: currentTheme.colors.background,
-    textAlign: 'center',
-  },
-  exitButton: {
-    paddingVertical: currentTheme.spacing.lg,
-    paddingHorizontal: currentTheme.spacing.lg,
-  },
-  exitButtonText: {
-    fontSize: currentTheme.typography.fontSizes.base,
-    color: currentTheme.colors.textSecondary,
-    textAlign: 'center',
-  },
-});
+const createStyles = (currentTheme: ReturnType<typeof useTheme>['theme']) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: currentTheme.colors.background,
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: currentTheme.spacing.xl,
+    },
+    content: {
+      alignItems: 'center',
+      maxWidth: 350,
+      width: '100%',
+    },
+    icon: {
+      fontSize: 80,
+      marginBottom: currentTheme.spacing.xl,
+    },
+    message: {
+      fontSize: currentTheme.typography.fontSizes['3xl'],
+      fontWeight: currentTheme.typography.fontWeights.bold,
+      color: currentTheme.colors.text,
+      textAlign: 'center',
+      marginBottom: currentTheme.spacing.xl,
+    },
+    progressIndicator: {
+      backgroundColor: currentTheme.colors.primary,
+      paddingVertical: currentTheme.spacing.base,
+      paddingHorizontal: currentTheme.spacing.lg,
+      borderRadius: currentTheme.borderRadius.lg,
+      marginBottom: currentTheme.spacing.xl,
+    },
+    progressText: {
+      fontSize: currentTheme.typography.fontSizes.lg,
+      fontWeight: currentTheme.typography.fontWeights.bold,
+      color: currentTheme.colors.background,
+    },
+    nextExercisePreview: {
+      backgroundColor: currentTheme.colors.surface,
+      padding: currentTheme.spacing.lg,
+      borderRadius: currentTheme.borderRadius.lg,
+      marginBottom: currentTheme.spacing.xl,
+      width: '100%',
+    },
+    previewTitle: {
+      fontSize: currentTheme.typography.fontSizes.lg,
+      fontWeight: currentTheme.typography.fontWeights.semibold,
+      color: currentTheme.colors.text,
+      marginBottom: currentTheme.spacing.xs,
+      textAlign: 'center',
+    },
+    exerciseDetails: {
+      fontSize: currentTheme.typography.fontSizes.base,
+      color: currentTheme.colors.textSecondary,
+      textAlign: 'center',
+    },
+    continueButton: {
+      paddingVertical: currentTheme.spacing.lg,
+      paddingHorizontal: currentTheme.spacing['2xl'],
+      borderRadius: currentTheme.borderRadius.lg,
+      marginBottom: currentTheme.spacing.lg,
+      width: '100%',
+      ...currentTheme.shadows.base,
+    },
+    continueButtonText: {
+      fontSize: currentTheme.typography.fontSizes.xl,
+      fontWeight: currentTheme.typography.fontWeights.semibold,
+      color: currentTheme.colors.background,
+      textAlign: 'center',
+    },
+    exitButton: {
+      paddingVertical: currentTheme.spacing.lg,
+      paddingHorizontal: currentTheme.spacing.lg,
+    },
+    exitButtonText: {
+      fontSize: currentTheme.typography.fontSizes.base,
+      color: currentTheme.colors.textSecondary,
+      textAlign: 'center',
+    },
+  });
 
 export default ExerciseShuffleTransitionScreen;

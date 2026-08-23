@@ -1,1 +1,0 @@
-pip install coqui-tts; pip install coqui-tts install git+https://github.com/robinhad/ukrainian-tts.git
