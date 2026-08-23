@@ -22,19 +22,19 @@ ahlingo/
 │   ├── generate_images.py            # Main entry point for image generation
 │   ├── generation/
 │   │   ├── core/
-│   │   │   ├── outlines_generator.py # LLM generation with JSON schema constraints
+│   │   │   ├── llm_client.py         # OpenAI-compatible client (structured output via tool-calling)
+│   │   │   ├── exercise_generator.py # Per-exercise-type generation, built on llm_client
 │   │   │   ├── audio_generator.py    # TTS audio generation
 │   │   │   ├── image_generator.py    # ComfyUI/FLUX.1 clip-art image generation
 │   │   │   ├── descriptors_generator.py # Image prompt/descriptor generation
 │   │   │   └── model_downloader.py   # Downloads models/LoRAs for the image pipeline
 │   │   ├── models/
-│   │   │   ├── models.py             # Pydantic models for exercise types
-│   │   │   ├── schemas.py            # JSON schemas
-│   │   │   └── validation_models.py  # Validation result models
+│   │   │   ├── models.py             # Pydantic models for exercise types (also the tool schemas)
+│   │   │   └── validation_models.py  # Validation result models (also tool schemas)
 │   │   ├── utils/
 │   │   │   ├── assistants.py         # Default example templates per language
 │   │   │   ├── exercise_converters.py # Text conversion & validation prompts
-│   │   │   └── database_validator.py # Database content validation
+│   │   │   └── database_validator.py # Bulk re-validation of exercises already in the DB
 │   │   ├── config/
 │   │   │   └── database_generation.json # Generation config (languages, topics, LLM settings)
 │   │   └── CONTENT_GENERATION.md     # Detailed generation docs
@@ -73,9 +73,9 @@ ahlingo/
 
 ### Architecture
 
-The generation system uses a local LLM (via OpenAI-compatible API, typically Ollama) with the `outlines` library to enforce JSON schema constraints on LLM output.
+The generation system talks to a local LLM (via OpenAI-compatible API, typically Ollama) using the standard `openai` SDK. Structured output is obtained via native tool-calling: each exercise type is a Pydantic model, its JSON schema becomes a forced tool call, and the API response is validated straight into that model (with a self-repair retry on a validation error). See `content/generation/core/llm_client.py`.
 
-**Pipeline**: Config → LLM Generation (with JSON schema) → Validation → Similarity Check → SQLite Database
+**Pipeline**: Config → LLM Generation (tool-call forced to a Pydantic schema) → Validation → Similarity Check → SQLite Database
 
 ### Key File: `content/generate_content.py`
 
@@ -110,13 +110,17 @@ Defines:
 - `max_retries` (default: 5)
 - `validation_threshold` (default: 6/10 minimum quality score)
 
-### Generator: `content/generation/core/outlines_generator.py`
+### Generator: `content/generation/core/exercise_generator.py`
 
-Uses `outlines` library for schema-constrained generation. Four generators:
-- `generate_conversations()` - 2-4 dialogues with culturally-appropriate speaker names
-- `generate_pairs()` - Exactly 5 English↔target language word pairs
-- `generate_translations()` - 5-8 sentence translations
-- `generate_fill_in_blank_structured()` - 1 sentence with blank, correct answer, 2 distractors
+Each exercise type is generated as a single object via `LLMClient.generate()` (forced tool-calling):
+- `generate_conversation()` - 1 dialogue with culturally-appropriate speaker names
+- `generate_pairs()` - 5-7 English↔target language word pairs (one exercise, bundled)
+- `generate_translation()` - 1 English↔target language sentence pair
+- `generate_fill_in_blank()` - 1 sentence with blank, correct answer, 2 distractors
+
+Conversations and translations request exactly the one exercise that gets inserted, rather
+than a batch that's mostly discarded (the historical `outlines`-based generator asked for a
+batch of e.g. 2-4 conversations and just used the first, wasting most of the generation).
 
 Each generator fetches existing exercises from the database as examples to ensure diversity.
 
@@ -153,9 +157,8 @@ The `TTS` Python library (with XTTS-v2) generates pronunciation audio. Special h
 
 ```
 huggingface_hub  # Model downloads for the image generation pipeline
-openai           # LLM API client
-outlines         # Schema-constrained generation
-pydantic         # Data models
+openai           # LLM API client (structured output via tool-calling)
+pydantic         # Data models / tool schemas
 tqdm             # Progress bars
 TTS              # Text-to-speech
 ```

@@ -48,7 +48,10 @@ except ImportError:
     print("Ukrainian TTS library not found. Install with:")
     print("pip install git+https://github.com/robinhad/ukrainian-tts.git")
 
-from AHLingo.database.database_manager import LanguageDB
+try:
+    from database.database_manager import LanguageDB
+except ImportError:
+    from content.database.database_manager import LanguageDB
 
 
 class PronunciationAudioGenerator:

@@ -80,13 +80,14 @@ See `content/generation/config/database_generation.json` for the full set of con
 **What**: LLM-based exercise creation with structured output
 
 **Files**:
-- `content/generation/core/outlines_generator.py` (main generator)
+- `content/generation/core/llm_client.py` (OpenAI-compatible client, structured output)
+- `content/generation/core/exercise_generator.py` (per-exercise-type generation)
 - `content/generation/models/models.py` (Pydantic schemas)
 - `content/generation/utils/assistants.py` (prompt templates)
 
 **Responsibilities**:
 - Connect to LLM server (OpenAI-compatible)
-- Use Outlines library for structured JSON generation
+- Use native tool-calling for structured JSON generation
 - Generate exercises matching Pydantic schemas
 - Handle retries and errors
 - Apply exercise-type-specific temperatures
@@ -99,19 +100,29 @@ Traditional LLM generation produces free-form text. We need:
 - **Reliability**: No parsing errors from malformed JSON
 - **Efficiency**: No post-processing string manipulation
 
-**Technology Choice: Outlines Library**
+**Technology Choice: Native Tool-Calling via the OpenAI SDK**
 
-We use [Outlines](https://github.com/outlines-dev/outlines) because it:
-- Enforces JSON schemas at token generation time
-- Guarantees valid output matching Pydantic models
-- Works with any OpenAI-compatible LLM
-- Reduces hallucination by constraining output space
+We generate structured output by forcing a single tool call whose `parameters` are a
+Pydantic model's JSON schema (`model_json_schema()`), then validating the model's
+arguments straight into that model:
+- Every OpenAI-compatible server we target (Ollama, llama.cpp server, vLLM, LM Studio)
+  speaks the same `tools`/`tool_choice` protocol, so this isn't vendor lock-in to the
+  hosted OpenAI API -- it's the same client already pointed at `base_url`
+- Guarantees a JSON *object* back (required for tool arguments), which maps directly
+  onto Pydantic validation -- no prompt-embedded schema text, no regex extraction of a
+  JSON array/object out of free-form text, no stripping of `<think>` blocks
+- On a validation error, the error is fed back to the model as a correction request
+  (a self-repair loop) instead of silently accepting malformed data
 
-**Alternative Considered**: OpenAI Function Calling
-- ✅ Pro: Native OpenAI support
-- ❌ Con: Vendor lock-in
-- ❌ Con: Can't use local models (Ollama, llama.cpp)
-- ❌ Con: Costs more per token
+**Previously Considered: the `outlines` library**
+
+An earlier version of this system used `outlines` for grammar-constrained decoding.
+In practice, `outlines`' schema enforcement only applies to models it can introspect
+directly -- it explicitly does **not** enforce schemas against OpenAI-compatible HTTP
+endpoints (which is 100% of what this project talks to), silently falling back to
+"prompt-based JSON guidance only" and leaving all the JSON-extraction problems above
+unsolved. Native tool-calling gets the guarantee `outlines` was meant to provide,
+without an extra dependency or that failure mode.
 
 ### Tier 3: Validation
 
@@ -119,7 +130,7 @@ We use [Outlines](https://github.com/outlines-dev/outlines) because it:
 
 **Files**:
 - `content/generation/models/validation_models.py` (validation schemas)
-- Validation logic in `outlines_generator.py`
+- Validation logic in `content/generate_content.py` (`ContentGenerator.validate_exercise`)
 
 **Responsibilities**:
 - Check generated exercises for:
@@ -205,10 +216,10 @@ graph TB
     end
 
     subgraph "Generation Layer"
-        B[outlines_generator.py]
+        B[exercise_generator.py]
         B1[Pydantic Models]
         B2[Assistant Prompts]
-        B3[LLM Client]
+        B3[llm_client.py]
         B --> B1
         B --> B2
         B --> B3
@@ -279,8 +290,9 @@ class ConversationExercise(BaseModel):
 **Why Pydantic?**
 - Catches errors early (at model creation, not database insertion)
 - Self-documenting (schema is the code)
-- Works seamlessly with Outlines
-- Provides excellent error messages
+- `model_json_schema()` is handed directly to the LLM as a tool's `parameters` -- one
+  schema definition drives both the prompt-side contract and the response validation
+- Provides excellent error messages, which get fed back to the model on a self-repair retry
 
 ### 2. Template-Based Prompts
 
@@ -345,7 +357,8 @@ content/
 ├── generate_content.py          # Main entry point (consolidated script)
 ├── generation/
 │   ├── core/
-│   │   ├── outlines_generator.py   # LLM generation with Outlines
+│   │   ├── llm_client.py           # OpenAI-compatible client (tool-calling structured output)
+│   │   ├── exercise_generator.py   # LLM generation, one Pydantic model per exercise
 │   │   └── audio_generator.py      # TTS audio generation
 │   ├── models/
 │   │   ├── models.py               # Pydantic exercise models
@@ -379,14 +392,15 @@ When exploring the codebase, start here:
 - Line ~500: Database insertion
 
 ### 2. Core Generator
-**File**: `content/generation/core/outlines_generator.py` (500+ lines)
+**File**: `content/generation/core/exercise_generator.py`
 
-**What**: LLM-based exercise generation with Outlines
+**What**: LLM-based exercise generation, one Pydantic model requested per call via
+`content/generation/core/llm_client.py`'s tool-calling `LLMClient.generate()`
 
 **Start Reading At**:
-- `generate_exercise()` - Main generation function
-- `generate_conversation_exercise()` - Conversation generation
-- `validate_exercise()` - LLM-based validation
+- `generate_exercise()` - Dispatches to the right generator by exercise type
+- `generate_conversation()` / `generate_pairs()` / `generate_translation()` / `generate_fill_in_blank()`
+- `LLMClient.generate()` in `llm_client.py` - The tool-call + self-repair loop itself
 
 ### 3. Data Models
 **File**: `content/generation/models/models.py`
@@ -453,20 +467,25 @@ for language in config["languages"]:
 
 **When to Use**: Adding new languages/topics (just update config)
 
-### Pattern 2: Structured Generation with Outlines
+### Pattern 2: Structured Generation via Tool-Calling
 
 ```python
-from outlines import generate
+from generation.core.llm_client import LLMClient
 
-# Define schema
-schema = ConversationExercise.model_json_schema()
+client = LLMClient(base_url=..., api_key=..., model=...)
 
-# Generate with schema enforcement
-generator = generate.json(llm_client, schema)
-exercise = generator(prompt)  # Guaranteed valid JSON
+# schema.model_json_schema() becomes the forced tool's parameters;
+# the response is validated straight back into `schema`, with a
+# self-repair retry on a validation error.
+exercise = client.generate(
+    ConversationExercise,
+    system_prompt=system_prompt,
+    user_prompt=user_prompt,
+    temperature=0.8,
+)  # -> ConversationExercise instance, or None if repair attempts are exhausted
 ```
 
-**When to Use**: Any new exercise type (define Pydantic model, get structured output)
+**When to Use**: Any new exercise type (define a Pydantic model, hand it to `LLMClient.generate()`)
 
 ### Pattern 3: LLM-Based Validation
 
@@ -518,16 +537,19 @@ else:
 
 ### Trade-off 3: Structured vs. Free-Form Output
 
-**Current Choice**: Structured (Outlines + Pydantic)
+**Current Choice**: Structured, via native tool-calling (Pydantic schema -> forced tool call)
 
 **Alternative**: Free-form text with regex/parsing
 
-**Structured**:
-- ✅ Guaranteed valid JSON
+**Structured (tool-calling)**:
+- ✅ Guaranteed JSON *object* back from the API, ready for Pydantic validation
 - ✅ Type safety
-- ✅ No parsing errors
-- ❌ Requires Outlines library
-- ❌ Slightly slower (constrained generation)
+- ✅ No manual JSON extraction (no markdown-fence stripping, no `<think>`-block scraping,
+  no regex bracket-balancing)
+- ✅ No extra dependency -- just the `openai` SDK already in use
+- ✅ Validation errors get fed back to the model as a correction request (self-repair)
+- ⚠️ Depends on the backend actually honoring `tool_choice` (all backends we target do;
+  `LLMClient` falls back to parsing plain content if one doesn't)
 
 **Free-Form**:
 - ✅ Works with any LLM
@@ -535,7 +557,8 @@ else:
 - ❌ Parsing errors common
 - ❌ No guarantees on format
 
-**Decision**: Structured output is worth the complexity. Parsing errors break everything.
+**Decision**: Structured output is worth it. Parsing errors break everything, and native
+tool-calling gets there without extra client-side JSON scraping.
 
 ## Extending the Architecture
 
@@ -560,13 +583,14 @@ else:
    PROMPTS["English"]["new_type"] = "Generate a new type exercise..."
    ```
 
-4. **Implement Generator** (`outlines_generator.py`):
+4. **Implement Generator** (`exercise_generator.py`):
    ```python
-   def generate_new_exercise(...) -> NewExerciseType:
-       schema = NewExerciseType.model_json_schema()
-       generator = generate.json(llm, schema)
-       return generator(prompt)
+   def generate_new_exercise(client, language, level, topic, existing_examples=None):
+       system_prompt = f"..."
+       user_prompt = f"..."
+       return client.generate(NewExerciseType, system_prompt=system_prompt, user_prompt=user_prompt)
    ```
+   Then register it in `GENERATORS` so `generate_exercise()` can dispatch to it.
 
 5. **Update Database Schema** (`database_manager.py`):
    ```sql

@@ -84,7 +84,8 @@ python generate_content.py \
 
 **Key Files**:
 - `content/generate_content.py` - Main generation script
-- `content/generation/core/outlines_generator.py` - LLM generation
+- `content/generation/core/exercise_generator.py` - LLM generation
+- `content/generation/core/llm_client.py` - OpenAI-compatible tool-calling client
 - `content/database/database_manager.py` - Database creation
 
 [Learn about Generation System →](../generation/architecture.md)

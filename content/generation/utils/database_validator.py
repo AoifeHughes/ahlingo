@@ -1,36 +1,31 @@
 # -*- coding: utf-8 -*-
 """
-Database validation script using locally running LLM to validate exercise quality.
+Bulk database validation using an LLM to re-review exercises already stored
+in the database (as opposed to the validation done inline during generation
+in generate_content.py). Useful for re-validating older content against a
+new quality bar, or after changing the validation threshold.
 """
 
-import openai
-import outlines
 import json
-import sqlite3
-from typing import Dict, List, Any, Optional, Tuple
-from tqdm import tqdm
 from pathlib import Path
-import uuid
-import warnings
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from typing import Dict, List, Any, Optional
+from tqdm import tqdm
+from concurrent.futures import ThreadPoolExecutor
 import threading
 
 try:
-    from generation.models.validation_models import (
-        ValidationResult,
-        get_validation_schema,
-        parse_validation_result,
-    )
+    from generation.core.llm_client import LLMClient
+    from generation.models.validation_models import ValidationResult, get_validation_schema
     from generation.utils.exercise_converters import (
         get_converter,
         identify_exercise_type,
     )
     from database.database_manager import LanguageDB
 except ImportError:
+    from content.generation.core.llm_client import LLMClient
     from content.generation.models.validation_models import (
         ValidationResult,
         get_validation_schema,
-        parse_validation_result,
     )
     from content.generation.utils.exercise_converters import (
         get_converter,
@@ -39,126 +34,51 @@ except ImportError:
     from content.database.database_manager import LanguageDB
 
 
-# Centralized model configuration (reuse from outlines_generator)
-MODEL_CONFIG = {
-    "base_url": "http://localhost:11434/v1",
-    "api_key": "sk-no-key-required",
-    "temperature": 0.3,  # Lower temperature for more consistent validation
-    "no_think": False,  # Set to True to prepend /no_think to prompts
-    "debug": False,  # Set to True to show debug info and pause for user input
-}
-
-
-def prepare_prompt(prompt: str) -> str:
-    """Prepare prompt by adding /no_think prefix if enabled."""
-    if MODEL_CONFIG.get("no_think", False):
-        return "/no_think\n" + prompt
-    return prompt
-
-
-def clean_model_response(response: str) -> str:
-    """Clean model response by removing <think> blocks and other artifacts."""
-    import re
-
-    # Remove <think>...</think> blocks (including multiline)
-    response = re.sub(
-        r"<think>.*?</think>", "", response, flags=re.DOTALL | re.IGNORECASE
-    )
-
-    # Remove any leading/trailing whitespace
-    response = response.strip()
-
-    return response
-
-
-def debug_show_error(
-    prompt: str, response: str, error: str, context: str = "Validation"
-):
-    """Show debug information for errors and pause for user input if debug mode is enabled."""
-    if MODEL_CONFIG.get("debug", False):
-        print("\n" + "=" * 80)
-        print(f"🚨 DEBUG ERROR: {context}")
-        print("=" * 80)
-        print(f"\n❌ ERROR: {error}")
-        print("\n📝 PROMPT SENT TO MODEL:")
-        print("-" * 40)
-        print(prompt)
-        print("-" * 40)
-        print("\n🤖 MODEL RESPONSE:")
-        print("-" * 40)
-        print(repr(response))  # Use repr to show exact string with escape chars
-        print("-" * 40)
-        print(f"\n📊 RESPONSE DETAILS:")
-        print(f"  Length: {len(response)} characters")
-        print(f"  Type: {type(response)}")
-        if response.strip():
-            print(f"  First 100 chars: {response[:100]!r}")
-            print(f"  Last 100 chars: {response[-100:]!r}")
-        else:
-            print("  ⚠️  RESPONSE IS EMPTY OR WHITESPACE ONLY!")
-        print("\n" + "=" * 80)
-        input("🔍 Press ENTER to continue after error...")
-        print()
-
-
 class DatabaseValidator:
     """Main class for validating database exercises."""
 
-    def __init__(self, db_path: str, quality_threshold: int = 6):
+    def __init__(
+        self,
+        db_path: str,
+        quality_threshold: int = 6,
+        base_url: str = "http://localhost:11434/v1",
+        api_key: str = "sk-no-key-required",
+        model: str = "auto",
+        temperature: float = 0.3,
+        debug: bool = False,
+        no_think: bool = False,
+    ):
         """
         Initialize validator.
 
         Args:
             db_path: Path to the language learning database
             quality_threshold: Minimum quality score (1-10) to keep exercises
+            base_url: OpenAI-compatible server URL for the validation model
+            api_key: API key for that server
+            model: Model name, or "auto" to use the server's first available model
+            temperature: Sampling temperature for validation calls
+            debug: Enable verbose validation-failure logging
+            no_think: Prepend /no_think to prompts (for Qwen3-style models)
         """
         self.db_path = db_path
         self.quality_threshold = quality_threshold
-        self.model = None
+        self.temperature = temperature
+        self.debug = debug
+        self.client: LLMClient = LLMClient(
+            base_url=base_url,
+            api_key=api_key,
+            model=model,
+            debug=debug,
+            no_think=no_think,
+        )
         self.validation_results = []
 
     def setup_model(self):
-        """Setup the validation model."""
-        warnings.filterwarnings(
-            "ignore", category=RuntimeWarning, message=".*Event loop is closed.*"
-        )
-
-        try:
-            # Create OpenAI client first
-            client = openai.OpenAI(
-                base_url=MODEL_CONFIG["base_url"],
-                api_key=MODEL_CONFIG["api_key"],
-            )
-
-            # Get the first available model from the server
-            try:
-                models = client.models.list()
-                if models.data:
-                    model_name = models.data[0].id
-                    print(f"Using model: {model_name}")
-                else:
-                    raise RuntimeError("No models available on server")
-            except Exception as e:
-                print(f"Failed to get models from server: {e}")
-                # Try common model names as fallbacks
-                for fallback in ["qwen3-4b", "mistral", "llama3", "default"]:
-                    try:
-                        model_name = fallback
-                        print(f"Falling back to model: {model_name}")
-                        break
-                    except:
-                        continue
-                else:
-                    raise RuntimeError("No accessible models found")
-
-            # Create Outlines model with specific model name
-            self.model = outlines.models.OpenAI(client, model_name=model_name)
-        except Exception as e:
-            print(f"Error setting up outlines model: {e}")
-            # Fallback to direct OpenAI client
-            self.model = openai.OpenAI(
-                base_url=MODEL_CONFIG["base_url"], api_key=MODEL_CONFIG["api_key"]
-            )
+        """Resolve and log the model name. The client itself is thread-safe and
+        already usable without calling this -- it's here mainly to surface the
+        resolved model name up front."""
+        print(f"Using validation model: {self.client.model}")
 
     def get_exercise_counts(
         self, exercise_type_filter: Optional[str] = None
@@ -198,70 +118,27 @@ class DatabaseValidator:
             language = exercise_data.get("language", "Unknown")
             level = exercise_data.get("difficulty_level", "Unknown")
 
-            # Convert exercise to text
+            # Convert exercise to text and build the validation prompt
             converter = get_converter(exercise_type, language, level)
             exercise_text = converter.convert_to_text(exercise_data)
-
-            # Generate validation prompt
             prompt = converter.get_validation_prompt(exercise_text)
 
-            # Get validation schema
-            schema = get_validation_schema(exercise_type)
+            validation_schema = get_validation_schema(exercise_type)
+            validation_result = self.client.generate(
+                validation_schema,
+                system_prompt="You are a rigorous language learning content reviewer.",
+                user_prompt=prompt,
+                temperature=self.temperature,
+            )
 
-            # Validate using the model
-            if hasattr(self.model, "chat") and hasattr(self.model.chat, "completions"):
-                # OpenAI client fallback - get available models and use the first one
-                try:
-                    models = self.model.models.list()
-                    model_name = models.data[0].id if models.data else "default"
-                except:
-                    model_name = "default"  # Fallback if models endpoint fails
+            if validation_result is None:
+                raise RuntimeError("Validation model failed to return structured output")
 
-                prepared_prompt = prepare_prompt(prompt)
-                response = self.model.chat.completions.create(
-                    model=model_name,
-                    messages=[{"role": "user", "content": prepared_prompt}],
-                    temperature=MODEL_CONFIG["temperature"],
-                )
-                result_text = response.choices[0].message.content
-
-            else:
-                # Outlines structured generation
-                generator = outlines.Generator(self.model)
-                prepared_prompt = prepare_prompt(prompt)
-                result_text = generator(prepared_prompt)
-
-            # Clean the response before parsing
-            cleaned_result_text = clean_model_response(result_text)
-
-            # Parse the result
-            try:
-                validation_result = parse_validation_result(
-                    cleaned_result_text, exercise_type
-                )
-                return validation_result
-            except Exception as parse_error:
-                # Show debug info for parsing errors
-                exercise_id = exercise_data.get("id", "unknown")
-                debug_show_error(
-                    prepared_prompt,
-                    result_text,
-                    f"Validation Parse Error: {parse_error}",
-                    f"Validation (exercise_id={exercise_id})",
-                )
-                raise parse_error
+            return validation_result
 
         except Exception as e:
             exercise_id = exercise_data.get("id", "unknown")
             print(f"Error validating exercise {exercise_id}: {e}")
-            # Show debug info for general validation errors
-            if "prepared_prompt" in locals() and "result_text" in locals():
-                debug_show_error(
-                    prepared_prompt,
-                    result_text,
-                    f"Validation Error: {e}",
-                    f"Validation (exercise_id={exercise_id})",
-                )
             # Return failed validation
             return ValidationResult(
                 is_correct_language=False,
@@ -291,7 +168,7 @@ class DatabaseValidator:
                     "language": exercise.get("language"),
                     "level": exercise.get("difficulty_level"),
                     "topic": exercise.get("topic"),
-                    "validation": validation_result.dict(),
+                    "validation": validation_result.model_dump(),
                     "passed": validation_result.overall_quality_score
                     >= self.quality_threshold,
                 }
@@ -331,8 +208,7 @@ class DatabaseValidator:
         Returns:
             Dictionary with validation statistics and results
         """
-        if self.model is None:
-            self.setup_model()
+        self.setup_model()
 
         # Get exercise counts first
         print("Getting exercise counts...")
@@ -608,6 +484,10 @@ def run_validation(
     no_think: bool = False,
     debug: bool = False,
     exercise_type: Optional[str] = None,
+    base_url: str = "http://localhost:11434/v1",
+    api_key: str = "sk-no-key-required",
+    model: str = "auto",
+    temperature: float = 0.3,
 ) -> Dict[str, Any]:
     """
     Main function to run database validation.
@@ -624,15 +504,24 @@ def run_validation(
         no_think: If True, prepend /no_think to prompts
         debug: If True, enable debug mode with prompt/response inspection
         exercise_type: Only validate specific exercise type (conversation, pair, translation, fill_in_blank)
+        base_url: OpenAI-compatible server URL for the validation model
+        api_key: API key for that server
+        model: Model name, or "auto" for the server's first available model
+        temperature: Sampling temperature for validation calls
 
     Returns:
         Validation results dictionary
     """
-    # Set global flags
-    MODEL_CONFIG["no_think"] = no_think
-    MODEL_CONFIG["debug"] = debug
-
-    validator = DatabaseValidator(db_path, quality_threshold)
+    validator = DatabaseValidator(
+        db_path,
+        quality_threshold,
+        base_url=base_url,
+        api_key=api_key,
+        model=model,
+        temperature=temperature,
+        debug=debug,
+        no_think=no_think,
+    )
 
     print(f"Starting database validation...")
     print(f"Database: {db_path}")
@@ -715,6 +604,12 @@ if __name__ == "__main__":
         help="Path to database file",
     )
     parser.add_argument(
+        "--config",
+        type=str,
+        default="content/generation/config/database_generation.json",
+        help="Path to database_generation.json (used for the validation LLM server)",
+    )
+    parser.add_argument(
         "--threshold", type=int, default=6, help="Quality threshold (1-10, default: 6)"
     )
     parser.add_argument(
@@ -758,6 +653,19 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
+    val_config = {
+        "url": "http://localhost:11434/v1",
+        "api_key": "sk-no-key-required",
+        "model": "auto",
+        "temperature": 0.3,
+    }
+    config_file = Path(args.config)
+    if config_file.exists():
+        with open(config_file, "r") as f:
+            val_config.update(json.load(f).get("llm_servers", {}).get("validation", {}))
+    else:
+        print(f"WARNING: config file not found at {config_file}, using defaults")
+
     # Run validation
     run_validation(
         db_path=args.db_path,
@@ -770,4 +678,8 @@ if __name__ == "__main__":
         batch_size=args.batch_size,
         no_think=args.nothink,
         debug=args.debug,
+        base_url=val_config["url"],
+        api_key=val_config["api_key"],
+        model=val_config["model"],
+        temperature=val_config["temperature"],
     )

@@ -35,13 +35,9 @@ from tqdm import tqdm
 sys.path.insert(0, str(Path(__file__).parent))
 
 from database.database_manager import LanguageDB
-from generation.core import outlines_generator
-from generation.models.validation_models import (
-    parse_validation_result,
-    FillInBlankValidation,
-    get_validation_schema,
-    _normalize_exercise_type,
-)
+from generation.core import exercise_generator
+from generation.core.llm_client import LLMClient
+from generation.models.validation_models import FillInBlankValidation, get_validation_schema
 from generation.utils.exercise_converters import get_converter
 
 
@@ -151,62 +147,36 @@ class ContentGenerator:
         return config
 
     def setup_models(self):
-        """Set up generation and validation models."""
+        """Set up generation and validation LLM clients."""
         print("Setting up LLM models...")
 
-        # Set global config for outlines_generator
         gen_config = self.config["llm_servers"]["generation"]
-        outlines_generator.MODEL_CONFIG.update(
-            {
-                "base_url": gen_config["url"],
-                "api_key": gen_config["api_key"],
-                "temperature": gen_config["temperature"],
-                "exercise_temperatures": self.config["exercise_temperatures"],
-                "no_think": self.no_think,
-                "debug": self.debug,
-            }
+        self.generation_model = LLMClient(
+            base_url=gen_config["url"],
+            api_key=gen_config["api_key"],
+            model=gen_config["model"],
+            debug=self.debug,
+            no_think=self.no_think,
         )
+        print(f"  Generation model: {self.generation_model.model}")
 
-        # Setup generation model
-        self.generation_model = outlines_generator.setup_outlines_model()
-        print(f"  Generation model: {type(self.generation_model).__name__}")
-
-        # Setup validation model (can be same as generation)
+        # Reuse the same client when validation targets the same server+model
         val_config = self.config["llm_servers"]["validation"]
         if (
             val_config["url"] == gen_config["url"]
             and val_config["model"] == gen_config["model"]
         ):
-            # Use same model for validation
             self.validation_model = self.generation_model
-            print(f"  Validation model: (same as generation)")
+            print("  Validation model: (same as generation)")
         else:
-            # Create separate validation model
-            # This is a simplified version - in production you'd need to create another model instance
-            print(
-                f"  Validation model: Separate model not yet implemented, using generation model"
+            self.validation_model = LLMClient(
+                base_url=val_config["url"],
+                api_key=val_config["api_key"],
+                model=val_config["model"],
+                debug=self.debug,
+                no_think=self.no_think,
             )
-            self.validation_model = self.generation_model
-
-        # Cache validation model name (avoids models.list() per exercise)
-        self._cached_validation_model_name = self._resolve_model_name(val_config)
-        print(f"  Cached validation model name: {self._cached_validation_model_name}")
-
-    def _resolve_model_name(self, server_config: Dict) -> str:
-        """Resolve and cache the model name for a server config."""
-        model = server_config.get("model", "auto")
-        if model != "auto":
-            return model
-        import openai
-
-        client = openai.OpenAI(
-            base_url=server_config["url"],
-            api_key=server_config["api_key"],
-        )
-        models = client.models.list()
-        if models.data:
-            return models.data[0].id
-        return "qwen3-4b"
+            print(f"  Validation model: {self.validation_model.model}")
 
     def get_combinations(
         self,
@@ -259,9 +229,8 @@ class ContentGenerator:
             exercise_type: Type of exercise
 
         Returns:
-            Generated exercise data or None if generation failed.
-            For fill_in_blank, returns a FillInBlankExercise object with multiple exercises.
-            For other types, returns a dict.
+            Dict of generated exercise data in the shape `insert_exercise` expects,
+            or None if generation/validation failed.
         """
         try:
             # Fetch existing exercises to use as examples for diversity
@@ -274,85 +243,25 @@ class ContentGenerator:
                     f"Using {len(existing_examples)} existing exercises as examples for diversity"
                 )
 
-            # Call appropriate generator function (model is first parameter)
-            if exercise_type == "conversations":
-                result = outlines_generator.generate_conversations(
-                    self.generation_model, language, level, topic, existing_examples
-                )
-            elif exercise_type == "pairs":
-                result = outlines_generator.generate_pairs(
-                    self.generation_model, language, level, topic, existing_examples
-                )
-            elif exercise_type == "translations":
-                result = outlines_generator.generate_translations(
-                    self.generation_model, language, level, topic, existing_examples
-                )
-            elif exercise_type == "fill_in_blank":
-                result = outlines_generator.generate_fill_in_blank_structured(
-                    self.generation_model, language, level, topic, existing_examples
-                )
-                # Result is now a single dict (not a list)
-                if result:
-                    self.stats["total_generated"] += 1
-                    return result
-                else:
-                    # None means generation or validation failed
-                    return None
-            else:
-                raise ValueError(f"Unknown exercise type: {exercise_type}")
+            result = exercise_generator.generate_exercise(
+                self.generation_model,
+                exercise_type,
+                language,
+                level,
+                topic,
+                existing_examples,
+            )
 
-            # Handle result - could be a list of Pydantic models or None
-            if result is None or (isinstance(result, list) and len(result) == 0):
+            if result is None:
                 return None
 
-            # Convert list of Pydantic models to appropriate dict format
-            if isinstance(result, list) and len(result) > 0:
-                # For pairs, conversations, and translations, the list IS the exercise
-                # We need to convert it to the format expected by insert_exercise
-                if exercise_type == "pairs":
-                    # Convert list of word pair models to dict with "word_pairs" field
-                    pairs_list = []
-                    for pair in result:
-                        if hasattr(pair, "model_dump"):
-                            pairs_list.append(pair.model_dump())
-                        elif hasattr(pair, "dict"):
-                            pairs_list.append(pair.dict())
-                        else:
-                            pairs_list.append(pair)
-                    result_dict = {"word_pairs": pairs_list}
-                elif exercise_type == "conversations":
-                    # Take first conversation from the list
-                    first_conv = result[0]
-                    if hasattr(first_conv, "model_dump"):
-                        result_dict = first_conv.model_dump()
-                    elif hasattr(first_conv, "dict"):
-                        result_dict = first_conv.dict()
-                    else:
-                        result_dict = first_conv
-                elif exercise_type == "translations":
-                    # Take first translation from the list
-                    first_trans = result[0]
-                    if hasattr(first_trans, "model_dump"):
-                        result_dict = first_trans.model_dump()
-                    elif hasattr(first_trans, "dict"):
-                        result_dict = first_trans.dict()
-                    else:
-                        result_dict = first_trans
-                else:
-                    # Unknown type, take first item
-                    first_item = result[0]
-                    if hasattr(first_item, "model_dump"):
-                        result_dict = first_item.model_dump()
-                    elif hasattr(first_item, "dict"):
-                        result_dict = first_item.dict()
-                    else:
-                        result_dict = first_item
-
-                self.stats["total_generated"] += 1
-                return result_dict
+            if exercise_type == "pairs":
+                result_dict = {"word_pairs": [pair.model_dump() for pair in result]}
+            else:
+                result_dict = result.model_dump()
 
             self.stats["total_generated"] += 1
-            return result
+            return result_dict
 
         except Exception as e:
             if self.debug:
@@ -391,39 +300,24 @@ class ContentGenerator:
                     self.stats["validation_failures"] += 1
                     return False, {"error": error_msg, "issues_found": [error_msg]}
 
-            # Convert exercise to text
+            # Convert exercise to text and build the validation prompt
             exercise_text = converter.convert_to_text(exercise_data)
-
-            # Get validation prompt
             prompt = converter.get_validation_prompt(exercise_text)
 
-            # Prepare prompt with /no_think if requested
-            if self.no_think:
-                prompt = "/no_think\n" + prompt
-
-            # Get validation schema for this exercise type (normalized to singular)
-            normalized_type = _normalize_exercise_type(exercise_type)
-            val_schema_json = get_validation_schema(normalized_type)
-            val_schema = json.loads(val_schema_json)
-
-            # Call validation using outlines generator with schema constraints
+            validation_schema = get_validation_schema(exercise_type)
             temperature = self.config["llm_servers"]["validation"]["temperature"]
-            result = outlines_generator.run_outlines_generation(
-                prompt,
-                self.validation_model,
-                schema=val_schema,
+            validation_result = self.validation_model.generate(
+                validation_schema,
+                system_prompt="You are a rigorous language learning content reviewer.",
+                user_prompt=prompt,
                 temperature=temperature,
             )
 
-            # Handle structured result from outlines (dict/list) or string fallback
-            if isinstance(result, dict):
-                cleaned_text = json.dumps(result)
-            elif isinstance(result, list):
-                cleaned_text = json.dumps(result[0]) if result else "{}"
-            else:
-                cleaned_text = outlines_generator.clean_model_response(str(result))
-
-            validation_result = parse_validation_result(cleaned_text, exercise_type)
+            if validation_result is None:
+                self.stats["validation_failures"] += 1
+                return False, {
+                    "error": "Validation model failed to return structured output"
+                }
 
             self.stats["total_validated"] += 1
 

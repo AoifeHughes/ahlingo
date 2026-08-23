@@ -1,62 +1,16 @@
 #!/usr/bin/env python3
 """
-LLM-based image descriptor generation for AHLingo.
+LLM-based image prompt and descriptor generation for AHLingo.
 
-Generates correct and incorrect descriptors for images in a target language
-at a given difficulty level.
+Generates candidate scene descriptions for a topic, and correct/incorrect
+descriptors for a given image in a target language at a given difficulty
+level.
 """
 
-import json
-import logging
-import re
 from typing import Dict, List, Optional
 
-from generation.core.outlines_generator import (
-    build_schema_for_lesson,
-    clean_model_response,
-    debug_show_error,
-    prepare_prompt,
-    resolve_outlines_model,
-    run_outlines_generation,
-)
-
-
-def _image_prompt_schema() -> Dict:
-    """JSON schema for LLM-generated image prompts."""
-    return {
-        "type": "array",
-        "minItems": 5,
-        "maxItems": 15,
-        "items": {
-            "type": "object",
-            "required": ["prompt", "topic"],
-            "properties": {
-                "prompt": {"type": "string"},
-                "topic": {"type": "string"},
-            },
-            "additionalProperties": False,
-        },
-    }
-
-
-def _image_descriptor_schema() -> Dict:
-    """JSON schema for image descriptors."""
-    return {
-        "type": "object",
-        "required": [
-            "correct_descriptor",
-            "incorrect_1",
-            "incorrect_2",
-            "english_meaning",
-        ],
-        "properties": {
-            "correct_descriptor": {"type": "string"},
-            "incorrect_1": {"type": "string"},
-            "incorrect_2": {"type": "string"},
-            "english_meaning": {"type": "string"},
-        },
-        "additionalProperties": False,
-    }
+from generation.core.llm_client import LLMClient
+from generation.models.models import ImageDescriptor, ImagePromptList
 
 
 def _difficulty_instructions(difficulty: str) -> str:
@@ -85,82 +39,50 @@ def _difficulty_instructions(difficulty: str) -> str:
     return instructions.get(difficulty.lower(), instructions["intermediate"])
 
 
-def generate_image_prompts(model, topic: str, count: int = 10) -> Optional[List[Dict]]:
-    """Generate image prompts for a topic using the LLM.
+def generate_image_prompts(
+    client: LLMClient, topic: str, count: int = 10
+) -> Optional[List[Dict]]:
+    """Generate `count` image prompts for a topic.
 
-    Args:
-        model: The outlines model to use
-        topic: The topic to generate prompts for
-        count: Number of prompts to generate
-
-    Returns:
-        List of dicts with 'prompt' and 'topic' keys, or None on failure
+    Returns a list of dicts with 'prompt' and 'topic' keys, or None on failure.
     """
-    system_content = f"""Generate {count} simple scene descriptions for topic "{topic}". Each should be a concrete visual moment (5-15 words) suitable for flat clip art. Examples: "person eating pasta at a restaurant table", "chef holding a wooden spoon in a kitchen". Avoid abstract concepts and similar scenes."""
-
-    schema = _image_prompt_schema()
-    full_prompt = (
-        system_content
-        + "\n\nReturn a JSON array of prompt objects, each with 'prompt' and 'topic' fields."
+    system_prompt = (
+        f'Generate {count} simple scene descriptions for topic "{topic}". '
+        "Each should be a concrete visual moment (5-15 words) suitable for flat "
+        'clip art. Examples: "person eating pasta at a restaurant table", '
+        '"chef holding a wooden spoon in a kitchen". Avoid abstract concepts and '
+        "similar scenes."
     )
+    user_prompt = f"Generate {count} distinct scene prompts for topic: {topic}"
 
-    prepared_prompt = prepare_prompt(full_prompt)
-    resolved_model = resolve_outlines_model(model)
-
-    try:
-        result = run_outlines_generation(
-            prepared_prompt, resolved_model, schema=schema, temperature=0.8
-        )
-
-        if isinstance(result, str):
-            cleaned = clean_model_response(result)
-            json_match = re.search(r"\[.*\]", cleaned, re.DOTALL)
-            if json_match:
-                result_data = json.loads(json_match.group())
-            else:
-                result_data = json.loads(cleaned)
-        else:
-            result_data = result
-
-        return result_data[:count]
-
-    except Exception as e:
-        logging.warning(f"Failed to generate image prompts for topic '{topic}': {e}")
-        debug_show_error(
-            prepared_prompt,
-            str(result) if "result" in locals() else "",
-            str(e),
-            f"Image Prompt Generation ({topic})",
-        )
+    result = client.generate(
+        ImagePromptList,
+        system_prompt=system_prompt,
+        user_prompt=user_prompt,
+        temperature=0.8,
+    )
+    if not result:
         return None
+    return [p.model_dump() for p in result.prompts[:count]]
 
 
 def generate_descriptors(
-    model,
+    client: LLMClient,
     image_prompt: str,
     language: str,
     difficulty: str,
 ) -> Optional[Dict]:
-    """Generate correct and incorrect descriptors for an image.
+    """Generate correct and incorrect descriptors for an image scene.
 
-    Args:
-        model: The outlines model to use
-        image_prompt: English description of the image scene
-        language: Target language (e.g., "French")
-        difficulty: Difficulty level (beginner/intermediate/advanced)
-
-    Returns:
-        Dict with correct_descriptor, incorrect_1, incorrect_2, english_meaning
-        or None on failure
+    Returns a dict with correct_descriptor, incorrect_1, incorrect_2,
+    english_meaning, or None on failure.
     """
     difficulty_instructions = _difficulty_instructions(difficulty)
 
-    system_content = f"""You are a {language} language learning tool. Given a description of an image scene, generate 3 descriptions in {language} at {difficulty.capitalize()} level.
-
-IMAGE SCENE (English): "{image_prompt}"
+    system_prompt = f"""You are a {language} language learning tool. Given a description of an image scene, generate 3 descriptions in {language} at {difficulty.capitalize()} level.
 
 TASK:
-1. Write ONE correct description of this scene in {language}
+1. Write ONE correct description of the scene in {language}
 2. Write TWO clearly incorrect descriptions that describe completely different scenes
 
 REQUIREMENTS:
@@ -174,44 +96,14 @@ REQUIREMENTS:
 Example format:
 - Correct: "un homme mange des pâtes" (man eating pasta)
 - Incorrect 1: "une femme conduit une voiture" (woman driving a car)
-- Incorrect 2: "un enfant joue au football" (child playing football)
+- Incorrect 2: "un enfant joue au football" (child playing football)"""
 
-The incorrect descriptors should be about different actions, objects, or settings that are clearly not matching the image."""
+    user_prompt = f'Image scene (English): "{image_prompt}"'
 
-    schema = _image_descriptor_schema()
-    full_prompt = (
-        system_content
-        + "\n\nReturn a JSON object with 'correct_descriptor', 'incorrect_1', 'incorrect_2', and 'english_meaning' fields."
+    result = client.generate(
+        ImageDescriptor,
+        system_prompt=system_prompt,
+        user_prompt=user_prompt,
+        temperature=0.7,
     )
-
-    prepared_prompt = prepare_prompt(full_prompt)
-    resolved_model = resolve_outlines_model(model)
-
-    try:
-        result = run_outlines_generation(
-            prepared_prompt, resolved_model, schema=schema, temperature=0.7
-        )
-
-        if isinstance(result, str):
-            cleaned = clean_model_response(result)
-            json_match = re.search(r"\{.*\}", cleaned, re.DOTALL)
-            if json_match:
-                result_data = json.loads(json_match.group())
-            else:
-                result_data = json.loads(cleaned)
-        else:
-            result_data = result
-
-        return result_data
-
-    except Exception as e:
-        logging.warning(
-            f"Failed to generate descriptors for image '{image_prompt[:50]}': {e}"
-        )
-        debug_show_error(
-            prepared_prompt,
-            str(result) if "result" in locals() else "",
-            str(e),
-            f"Descriptor Generation ({language}-{difficulty})",
-        )
-        return None
+    return result.model_dump() if result else None

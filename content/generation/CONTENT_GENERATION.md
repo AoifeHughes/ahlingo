@@ -107,16 +107,16 @@ The generation system is configured through three key files in `content/generati
 3. **Error Handling**: Graceful failure handling with detailed logging
 
 ### LLM Integration
-- **Local Server**: Connects to OpenAI-compatible endpoint (`http://localhost:11434/v1`)
-- **Model**: Uses "llama" model for generation
-- **Temperature**: Set to 0.9 for creative variation
+- **Local Server**: Connects to an OpenAI-compatible endpoint (default `http://localhost:11434/v1`, configurable per-server in `database_generation.json`)
+- **Model**: `"auto"` uses the server's first available model, or pin one explicitly
+- **Structured Output**: Native tool-calling -- each exercise type's Pydantic schema becomes a forced tool call, so the response is guaranteed to be a JSON object shaped like that schema (see `content/generation/core/llm_client.py`)
+- **Temperature**: Per-exercise-type overrides in config (creative for conversations, more conservative for validation)
 - **Prompt Engineering**: Exercise-specific prompts with template examples
 
 ### Output Processing
-1. **JSON Extraction**: Regex-based extraction of JSON arrays from LLM responses
-2. **Text Cleaning**: Normalization of text content and escape sequence handling
-3. **Validation**: Basic structure validation before database insertion
-4. **Unique ID Generation**: Each exercise gets a unique ID, with lesson_id for grouping
+1. **Schema Validation**: The tool-call arguments are validated straight into the Pydantic model; a validation error triggers a self-repair retry rather than a parsing failure
+2. **Similarity Check**: Word-overlap comparison against existing exercises to avoid near-duplicates
+3. **Unique ID Generation**: Each exercise gets a unique ID, with lesson_id for grouping
 
 ## Database Schema
 
@@ -180,13 +180,14 @@ Days, months, seasons
 ### Running Content Generation
 ```bash
 cd content/
-python create_exercise_database.py
+python generate_content.py
+python generate_content.py --languages French --levels beginner --dry-run
 ```
 
 ### Testing Individual Components
 ```bash
-# Test generation system
-python test_outlines_generation.py
+# Integration tests (require a running LLM server)
+python -m pytest content/tests/test_generation_integration.py -v -s
 
 # Test database operations
 python -c "from database.database_manager import LanguageDB; db = LanguageDB(':memory:'); print('Database initialized successfully')"
