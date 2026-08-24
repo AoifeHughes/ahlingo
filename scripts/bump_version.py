@@ -10,6 +10,7 @@ Usage (from repo root):
     python scripts/bump_version.py patch  # 1.4.0 -> 1.4.1
     python scripts/bump_version.py 1.5.0  # Set to specific version
 """
+
 import json
 import re
 import sys
