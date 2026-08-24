@@ -6,8 +6,8 @@ ci:
 
 repos:
   # Python formatting and linting
-  - repo: https://github.com/psf/black
-    rev: "25.1.0"
+  - repo: https://github.com/psf/black-pre-commit-mirror
+    rev: "26.5.1"
     hooks:
       - id: black
         exclude: ^testing/
@@ -49,7 +49,7 @@ repos:
 
   # General file checks
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
+    rev: v6.0.0
     hooks:
       - id: check-json
         exclude: ^(test/|ahlingo_mobile/node_modules/|ahlingo_mobile/ios/|ahlingo_mobile/android/)
