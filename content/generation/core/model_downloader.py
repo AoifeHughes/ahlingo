@@ -336,8 +336,7 @@ def print_pipeline_summary():
     print(f"\n{'='*80}")
     print(f"TARGET COMFYUI PIPELINE (FLUX.1 Dev GGUF + Clip-Art LoRA)")
     print(f"{'='*80}")
-    print(
-        """
+    print("""
 Node Chain:
   [1]  Unet Loader (GGUF)
        File: flux1-dev-Q6_K.gguf
@@ -413,8 +412,7 @@ Key changes from current workflow:
   - 1024x1024 resolution (native FLUX resolution, vs 512)
   - Upscaler (clean 2x for final output)
   - Background removal (transparent PNG)
-"""
-    )
+""")
 
 
 def main():
