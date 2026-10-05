@@ -4,6 +4,7 @@
 One-time script to add versioning metadata to existing database.
 This script adds the database_metadata table and sets the current version.
 """
+
 import sys
 from pathlib import Path
 
@@ -38,12 +39,10 @@ def update_database_with_versioning(db_path: str):
 
             if not table_exists:
                 print("Creating database_metadata table...")
-                db.cursor.execute(
-                    """CREATE TABLE database_metadata (
+                db.cursor.execute("""CREATE TABLE database_metadata (
                         key TEXT PRIMARY KEY,
                         value TEXT NOT NULL
-                    )"""
-                )
+                    )""")
                 db.conn.commit()
                 print("✓ database_metadata table created")
             else:

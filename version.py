@@ -4,6 +4,7 @@
 Centralized version management for AhLingo.
 Reads version from package.json as the single source of truth.
 """
+
 import json
 from pathlib import Path
 
