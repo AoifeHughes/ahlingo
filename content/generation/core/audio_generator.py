@@ -494,8 +494,7 @@ class PronunciationAudioGenerator:
         cursor = conn.cursor()
 
         # Get all translation exercises
-        cursor.execute(
-            """
+        cursor.execute("""
             SELECT
                 e.id as exercise_id,
                 e.exercise_name,
@@ -509,8 +508,7 @@ class PronunciationAudioGenerator:
             JOIN topics t ON e.topic_id = t.id
             JOIN difficulties d ON e.difficulty_id = d.id
             JOIN languages l ON e.language_id = l.id
-        """
-        )
+        """)
 
         translations = cursor.fetchall()
 
@@ -606,8 +604,7 @@ class PronunciationAudioGenerator:
         cursor = conn.cursor()
 
         # Get all conversation exercises
-        cursor.execute(
-            """
+        cursor.execute("""
             SELECT DISTINCT
                 e.id as exercise_id,
                 e.exercise_name,
@@ -619,8 +616,7 @@ class PronunciationAudioGenerator:
             JOIN topics t ON e.topic_id = t.id
             JOIN difficulties d ON e.difficulty_id = d.id
             JOIN languages l ON e.language_id = l.id
-        """
-        )
+        """)
 
         conversations = cursor.fetchall()
 
